@@ -80,5 +80,10 @@ let editor = new EditorView({
 </html>
 ∞∞∞sql
 SELECT * FROM table WHERE id = 1;
+∞∞∞text
+Shopping list:
 
-`;
+- Milk
+- Eggs
+- Bread
+- Cheese`;
