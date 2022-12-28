@@ -20,13 +20,6 @@ body {
     overflow-y: auto;
 }
 
-.kuken {
-    background: #f00;
-}
-.balle .test-marker {
-    background: rgb(94, 84, 106);
-}
-
 
 .blocks-layer .block-even {
     background: #3f3b4b;
