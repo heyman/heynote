@@ -173,6 +173,30 @@ const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
     }
 })
 
+/**
+ * Transaction filter to prevent the selection from being before the first block
+  */
+const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) => {
+    //console.log("transaction:", tr)
+    tr?.selection?.ranges.forEach(range => {
+        // change the selection to after the first block if the transaction sets the selection before the first block
+        if (range && range.from < 10) {
+            range.from = 10
+        }
+        if (range && range.to < 10) {
+            range.to = 10
+        }
+    })
+    return tr
+})
+
+
 export const noteBlockExtension = () => {
-    return [noteBlockWidget(), atomicNoteBlock, blockLayer(), preventFirstBlockFromBeingDeleted]
+    return [
+        noteBlockWidget(), 
+        atomicNoteBlock, 
+        blockLayer(), 
+        preventFirstBlockFromBeingDeleted, 
+        preventSelectionBeforeFirstBlock,
+    ]
 }
