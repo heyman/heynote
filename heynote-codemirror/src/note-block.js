@@ -122,7 +122,18 @@ const atomicNoteBlock = ViewPlugin.fromClass(
 )
 
 const blockLayer = () => {
-    return layer({
+    let editorWidth = 0;
+    const measureEditorWidth = EditorView.updateListener.of((update) => {
+        if (update.geometryChanged) {
+            update.view.requestMeasure({
+                read(a) {
+                    editorWidth = update.view.dom.clientWidth
+                }
+            })
+        }
+    })
+
+    const layerExtension = layer({
         above: false,
 
         markers(view) {
@@ -145,7 +156,7 @@ const blockLayer = () => {
                             idx++ % 2 == 0 ? "block-even" : "block-odd", 
                             0, 
                             fromCoords.top - (view.documentTop - view.documentPadding.top), 
-                            2000, 
+                            editorWidth, 
                             (toCoords.bottom - fromCoords.top),
                         ))
                         return false;
@@ -164,6 +175,8 @@ const blockLayer = () => {
 
         class: "blocks-layer"
     })
+
+    return [measureEditorWidth, layerExtension]
 }
 
 
