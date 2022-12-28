@@ -3,7 +3,7 @@ import { layer, RectangleMarker } from "@codemirror/view"
 import { EditorState, RangeSetBuilder, StateField } from "@codemirror/state";
 import { RangeSet } from "@codemirror/rangeset";
 import { syntaxTree } from "@codemirror/language"
-import { Note, Document, NoteDelimiter } from "./lang-heynote/heynote.terms.js"
+import { Note, Document, NoteDelimiter } from "./lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
 import { INITIAL_DATA } from "./annotation.js";
 

@@ -8,7 +8,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "rollup -c",
         "watch": "rollup -c -w",
-        "build_grammar": "lezer-generator src/lang-heynote/heynote.grammar -o src/lang-heynote/heynote.js"
+        "build_grammar": "lezer-generator src/lang-heynote/heynote.grammar -o src/lang-heynote/parser.js"
     },
     "keywords": [],
     "author": "",

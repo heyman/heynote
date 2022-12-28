@@ -10,7 +10,7 @@ import { javaLanguage } from "@codemirror/lang-java"
 import { lezerLanguage } from "@codemirror/lang-lezer"
 import { phpLanguage } from "@codemirror/lang-php"
 
-import { NoteContent, NoteLanguage } from "./heynote.terms.js"
+import { NoteContent, NoteLanguage } from "./parser.terms.js"
 
 
 const languageMapping = {

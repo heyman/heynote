@@ -1,5 +1,5 @@
 import { ExternalTokenizer } from '@lezer/lr'
-import { NoteContent } from "./heynote.terms.js"
+import { NoteContent } from "./parser.terms.js"
 
 const EOF = -1;
 

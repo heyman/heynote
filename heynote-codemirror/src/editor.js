@@ -5,7 +5,7 @@ import {indentWithTab, insertTab, indentLess, indentMore} from "@codemirror/comm
 import {nord} from "./theme/nord.mjs"
 import initialData from "./fixture.js"
 import { customSetup } from "./setup.js"
-import { heynoteLang } from "./lang-heynote/parser.js"
+import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./note-block.js"
 import { heynoteEvent, INITIAL_DATA } from "./annotation.js"
 
