@@ -1,0 +1,21 @@
+@top Document { Note* }
+
+Note {
+  NoteDelimiter NoteContent
+}
+
+NoteDelimiter {
+    noteDelimiterMark NoteLanguage noteDelimiterEnter
+}
+
+
+@tokens {
+    noteDelimiterMark { "∞∞∞" }
+    NoteLanguage { "text" | "javascript" | "json" | "python" | "html" | "sql" | "markdown" | "java" | "lezer" | "php" }
+    noteDelimiterEnter { "\n" }
+    //NoteContent { String }
+    //String { (![∞])+ }
+}
+
+@external tokens noteContent from "./external-tokens.js" { NoteContent }
+

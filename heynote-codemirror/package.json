@@ -1,0 +1,38 @@
+{
+    "name": "heynote-codemirror",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "rollup -c",
+        "watch": "rollup -c -w",
+        "build_grammar": "lezer-generator src/lang-heynote/heynote.grammar -o src/lang-heynote/heynote.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@codemirror/commands": "^6.1.2",
+        "@codemirror/lang-html": "^6.4.0",
+        "@codemirror/lang-java": "^6.0.1",
+        "@codemirror/lang-javascript": "^6.1.2",
+        "@codemirror/lang-json": "^6.0.1",
+        "@codemirror/lang-lezer": "^6.0.1",
+        "@codemirror/lang-markdown": "^6.0.5",
+        "@codemirror/lang-php": "^6.0.1",
+        "@codemirror/lang-python": "^6.1.1",
+        "@codemirror/lang-sql": "^6.3.3",
+        "@codemirror/rangeset": "^0.19.9",
+        "@codemirror/search": "^6.2.3",
+        "@lezer/generator": "^1.1.3",
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "codemirror": "^6.0.1",
+        "i": "^0.3.7",
+        "npm": "^9.2.0",
+        "rollup": "^3.8.1",
+        "rollup-plugin-typescript2": "^0.34.1",
+        "typescript": "^4.9.4"
+    }
+}

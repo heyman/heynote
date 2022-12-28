@@ -1,0 +1,41 @@
+html, 
+body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #444;
+    font-family: 'Gill Sans','Gill Sans MT',Calibri,'Trebuchet MS',sans-serif;
+    height: 100%;
+}
+
+#editor {
+    height: 100%;
+}
+#editor .cm-editor {
+    height: 100%;
+}
+
+#syntaxTree {
+    height: 20%;
+    overflow-y: auto;
+}
+
+.kuken {
+    background: #f00;
+}
+.balle .test-marker {
+    background: rgb(94, 84, 106);
+}
+
+
+.blocks-layer .block-even {
+    background: #3f3b4b;
+}
+.blocks-layer .block-odd {
+    background: rgb(57, 71, 77);
+}
+
+.block-start {
+    /*background: rgb(0, 0, 0);
+    height: 2px*/
+}
