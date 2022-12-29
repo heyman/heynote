@@ -126,7 +126,8 @@ const blockLayer = () => {
         if (update.geometryChanged) {
             update.view.requestMeasure({
                 read(a) {
-                    editorWidth = update.view.dom.clientWidth
+                    const gutterWidth = update.view.contentDOM.previousSibling.clientWidth
+                    editorWidth = update.view.contentDOM.clientWidth + gutterWidth
                 }
             })
         }
