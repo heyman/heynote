@@ -8,6 +8,9 @@ import { IterMode } from "@lezer/common";
 import { INITIAL_DATA } from "./annotation.js";
 
 
+// tracks the size of the first delimiter
+let firstBlockDelimiterSize
+
 function getBlocks(state) {
     const blocks = [];
     syntaxTree(state).iterate({
@@ -32,6 +35,7 @@ function getBlocks(state) {
         },
         mode: IterMode.IgnoreMounts,
     });
+    firstBlockDelimiterSize = blocks[0]?.delimiter.to
     return blocks
 }
 
@@ -42,6 +46,7 @@ const blockState = StateField.define({
     update(blocks, transaction) {
         //console.log("blocks", blocks)
         if (transaction.docChanged) {
+            //console.log("updating block state", transaction)
             return getBlocks(transaction.state);
         }
         //return widgets.map(transaction.changes);
@@ -80,6 +85,7 @@ const noteBlockWidget = () => {
                 block: true,
                 side: 0,
             });
+            //console.log("deco range:", delimiter.from === 0 ? delimiter.from : delimiter.from+1,delimiter.to-1)
             widgets.push(deco.range(
                 delimiter.from === 0 ? delimiter.from : delimiter.from+1, 
                 delimiter.to-1,
@@ -115,7 +121,11 @@ const noteBlockWidget = () => {
 function atomicRanges(view) {
     let builder = new RangeSetBuilder()
     view.state.facet(blockState).forEach(block => {
-        builder.add(block.delimiter.from, block.delimiter.to, {})
+        builder.add(
+            block.delimiter.from,
+            block.delimiter.to, 
+            {},
+        )
     })
     return builder.finish()
 }
@@ -193,8 +203,8 @@ const blockLayer = () => {
 
 
 const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
-    if (!tr.annotations.some(a => a.value === INITIAL_DATA)) {
-        return [-1,11]
+    if (!tr.annotations.some(a => a.value === INITIAL_DATA) && firstBlockDelimiterSize) {
+        return [0, firstBlockDelimiterSize]
     }
 })
 
@@ -202,15 +212,18 @@ const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
  * Transaction filter to prevent the selection from being before the first block
   */
 const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) => {
-    //console.log("transaction:", tr)
+    if (!firstBlockDelimiterSize) {
+        return tr
+    }
     tr?.selection?.ranges.forEach(range => {
         // change the selection to after the first block if the transaction sets the selection before the first block
-        const markerSize = 11
-        if (range && range.from < markerSize) {
-            range.from = markerSize
+        if (range && range.from < firstBlockDelimiterSize) {
+            range.from = firstBlockDelimiterSize
+            //console.log("changing the from selection to", markerSize)
         }
-        if (range && range.to < markerSize) {
-            range.to = markerSize
+        if (range && range.to < firstBlockDelimiterSize) {
+            range.to = firstBlockDelimiterSize
+            //console.log("changing the from selection to", markerSize)
         }
     })
     return tr
