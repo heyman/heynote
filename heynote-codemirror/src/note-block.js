@@ -1,4 +1,4 @@
-import { ViewPlugin, EditorView, Decoration, WidgetType } from "@codemirror/view"
+import { ViewPlugin, EditorView, Decoration, WidgetType, lineNumbers } from "@codemirror/view"
 import { layer, RectangleMarker } from "@codemirror/view"
 import { EditorState, RangeSetBuilder, StateField } from "@codemirror/state";
 import { RangeSet } from "@codemirror/rangeset";
@@ -68,24 +68,6 @@ class NoteBlockStart extends WidgetType {
         return false
     }
 }
-
-class FirstNoteBlockStart extends WidgetType {
-    constructor() {
-        super()
-    }
-    eq(other) {
-        return true
-    }
-    toDOM() {
-        let wrap = document.createElement("span")
-        wrap.className = "block-start-first"
-        return wrap
-    }
-    ignoreEvent() {
-        return false
-    }
-}
-
 const noteBlockWidget = () => {
     const decorate = (state) => {
         const widgets = [];
@@ -93,14 +75,14 @@ const noteBlockWidget = () => {
         state.facet(blockState).forEach(block => {
             let delimiter = block.delimiter
             let deco = Decoration.replace({
-                widget: delimiter.from === 0 ? new FirstNoteBlockStart() : new NoteBlockStart(),
+                widget: new NoteBlockStart(),
                 inclusive: true,
-                block: delimiter.from === 0 ? false : true,
+                block: true,
                 side: 0,
             });
             widgets.push(deco.range(
                 delimiter.from === 0 ? delimiter.from : delimiter.from+1, 
-                delimiter.from === 0 ? delimiter.to : delimiter.to-1,
+                delimiter.to-1,
             ));
         });
         
@@ -244,5 +226,18 @@ export const noteBlockExtension = () => {
         blockLayer(), 
         preventFirstBlockFromBeingDeleted, 
         preventSelectionBeforeFirstBlock,
+        lineNumbers({
+            formatNumber(lineNo, state) {
+                if (state.doc.lines >= lineNo) {
+                    const lineOffset = state.doc.line(lineNo).from
+                    const block = state.facet(blockState).find(block => block.content.from <= lineOffset && block.content.to >= lineOffset)
+                    if (block) {
+                        const firstBlockLine = state.doc.lineAt(block.content.from).number
+                        return lineNo - firstBlockLine + 1
+                    }
+                }
+                return ""
+            }
+        }),
     ]
 }
