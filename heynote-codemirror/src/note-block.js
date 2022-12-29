@@ -43,7 +43,6 @@ class FirstNoteBlockStart extends WidgetType {
     }
 }
 
-
 const noteBlockWidget = () => {
     const decorate = (state) => {
         const widgets = [];
@@ -54,11 +53,11 @@ const noteBlockWidget = () => {
                     //console.log("found!", type.name, type.from, type.to)
                     let deco = Decoration.replace({
                         widget: type.from === 0 ? new FirstNoteBlockStart() : new NoteBlockStart(),
-                        inclusive: false,
+                        inclusive: true,
                         block: type.from === 0 ? false : true,
                         side: 0,
                     });
-                    widgets.push(deco.range(type.from, type.from === 0 ? type.to :type.to-1));
+                    widgets.push(deco.range(type.from === 0 ? type.from : type.from+1, type.from === 0 ? type.to : type.to-1));
                 }
             },
             mode: IterMode.IgnoreMounts,

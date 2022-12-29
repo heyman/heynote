@@ -5,7 +5,7 @@ Note {
 }
 
 NoteDelimiter {
-    noteDelimiterMark NoteLanguage noteDelimiterEnter
+    noteDelimiterEnter noteDelimiterMark NoteLanguage noteDelimiterEnter
 }
 
 
