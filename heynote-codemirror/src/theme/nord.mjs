@@ -23,10 +23,10 @@ base0C = '#d08770', // orange
 base0D = '#ebcb8b', // yellow
 base0E = '#a3be8c', // green
 base0F = '#b48ead'; // purple
-const invalid = '#d30102', darkBackground = '#252a33', background = base00, tooltipBackground = base01, selection = base03, cursor = '#fff';
+const invalid = '#d30102', darkBackground = '#252a33', background = '#1e222a', tooltipBackground = base01, selection = base03, cursor = '#fff';
 const highlightBackground = 'rgba(255,255,255,0.04)';
 
-const lineNumberColor = '#535963';
+const lineNumberColor = 'rgba(255,255,255, 0.15)';
 const commentColor = '#888d97';
 const matchingBracket = 'rgba(255,255,255,0.1)';
 
@@ -72,7 +72,8 @@ const nordTheme = /*@__PURE__*/EditorView.theme({
         outline: `0.5px solid #bc8f8f`
     },
     '.cm-gutters': {
-        backgroundColor: base00,
+        //backgroundColor: base00,
+        backgroundColor: 'rgba(0,0,0, 0.1)',
         color: lineNumberColor,
         border: 'none'
     },
