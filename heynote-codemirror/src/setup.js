@@ -1,5 +1,5 @@
 import { lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, rectangularSelection, crosshairCursor, highlightActiveLine, keymap } from '@codemirror/view';
-export { EditorView } from '@codemirror/view';
+import { EditorView } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldKeymap } from '@codemirror/language';
 import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
@@ -64,6 +64,7 @@ const customSetup = /*@__PURE__*/(() => [
     crosshairCursor(),
     highlightActiveLine(),
     highlightSelectionMatches(),
+    EditorView.lineWrapping,
     keymap.of([
         ...closeBracketsKeymap,
         ...defaultKeymap,
