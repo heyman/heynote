@@ -1,8 +1,9 @@
-import {Annotation, EditorState, Compartment} from "@codemirror/state"
-import {EditorView, keymap, drawSelection} from "@codemirror/view"
+import { Annotation, EditorState, Compartment } from "@codemirror/state"
+import { EditorView, keymap, drawSelection } from "@codemirror/view"
+import { indentUnit } from "@codemirror/language"
 
-import {indentWithTab, insertTab, indentLess, indentMore} from "@codemirror/commands"
-import {nord} from "./theme/nord.mjs"
+import { indentWithTab, insertTab, indentLess, indentMore } from "@codemirror/commands"
+import { nord } from "./theme/nord.mjs"
 import initialData from "./fixture.js"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
@@ -38,7 +39,7 @@ let state = EditorState.create({
             },
         ]),
         nord,
-        
+        indentUnit.of("    "),
         heynoteLang(),
         noteBlockExtension(),
         
