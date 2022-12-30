@@ -64,6 +64,19 @@ editor.update([
     })
 ])
 
+
+editor.dispatch({
+    selection: {anchor: 0, head: 0},
+})
+editor.focus()
+
+
+
+
+
+
+
+
 /*
 // render syntax tree
 setTimeout(() => {
