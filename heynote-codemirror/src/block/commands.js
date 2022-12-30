@@ -1,5 +1,8 @@
 import { EditorView } from "@codemirror/view"
-import { selectAll as defaultSelectAll } from "@codemirror/commands"
+import { 
+    selectAll as defaultSelectAll, 
+    moveLineUp as defaultMoveLineUp,
+} from "@codemirror/commands"
 import { blockState } from "./note-block"
 
 
@@ -17,7 +20,6 @@ export const insertNewNote = ({ state, dispatch }) => {
 
     return true;
 }
-
 
 export const selectAll = ({ state, dispatch }) => {
     // find which block the cursor is in
@@ -37,3 +39,15 @@ export const selectAll = ({ state, dispatch }) => {
     return true
 }
 
+/**
+ * Prevent moveLineUp from executing if any cursor is on the first line of the first note
+ */
+export function moveLineUp({ state, dispatch }) {
+    if (state.selection.ranges.some(range => {
+        let startLine = state.doc.lineAt(range.from)
+        return startLine.from <= state.facet(blockState)[0].content.from
+    })) {
+        return true;
+    }
+    return defaultMoveLineUp({state, dispatch})
+}

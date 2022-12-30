@@ -7,7 +7,7 @@ import { nord } from "./theme/nord.mjs"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./block/note-block.js"
-import { insertNewNote, selectAll } from "./block/commands.js";
+import { insertNewNote, moveLineUp, selectAll } from "./block/commands.js";
 
 
 export class HeynoteEditor {
@@ -48,6 +48,11 @@ export class HeynoteEditor {
                         preventDefault: true,
                         run: selectAll,
                     },
+                    {
+                        key: "Alt-ArrowUp",
+                        preventDefault: true,
+                        run: moveLineUp,
+                    }
                 ]),
 
                 customSetup, 
