@@ -57,7 +57,7 @@ editor.update([
     editor.state.update({
         changes:{
             from: 0,
-            to: editor.state.length,
+            to: editor.state.doc.length,
             insert: initialData,
         },
         annotations: heynoteEvent.of(INITIAL_DATA),
@@ -66,7 +66,8 @@ editor.update([
 
 
 editor.dispatch({
-    selection: {anchor: 0, head: 0},
+    selection: {anchor: editor.state.doc.length, head: editor.state.doc.length},
+    scrollIntoView: true,
 })
 editor.focus()
 
