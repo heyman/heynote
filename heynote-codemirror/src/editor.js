@@ -7,6 +7,7 @@ import { nord } from "./theme/nord.mjs"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./block/note-block.js"
+import { insertNewNote } from "./block/commands.js";
 
 
 export class HeynoteEditor {
@@ -23,12 +24,11 @@ export class HeynoteEditor {
                         },
                     },
                 ]),*/
-                customSetup, 
                 //minimalSetup,
                 
                 keymap.of([
                     {
-                        key: 'Tab',
+                        key: "Tab",
                         preventDefault: true,
                         //run: insertTab,
                         run: indentMore,
@@ -38,7 +38,14 @@ export class HeynoteEditor {
                         preventDefault: true,
                         run: indentLess,
                     },
+                    {
+                        key: "Mod-Enter",
+                        preventDefault: true,
+                        run: insertNewNote,
+                    },
                 ]),
+
+                customSetup, 
                 nord,
                 indentUnit.of("    "),
                 heynoteLang(),
