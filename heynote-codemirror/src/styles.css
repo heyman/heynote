@@ -22,10 +22,12 @@ body {
 
 
 .blocks-layer .block-even {
+    width: 100%;
     /*background: #3f3b4b;*/
     background: #232537;
 }
 .blocks-layer .block-odd {
+    width: 100%;
     /*background: rgb(57, 71, 77);*/
     background: #222f38;
 }

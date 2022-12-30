@@ -1,6 +1,6 @@
 import { ViewPlugin, EditorView, Decoration, WidgetType, lineNumbers } from "@codemirror/view"
 import { layer, RectangleMarker } from "@codemirror/view"
-import { EditorState, RangeSetBuilder, StateField } from "@codemirror/state";
+import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect} from "@codemirror/state";
 import { RangeSet } from "@codemirror/rangeset";
 import { syntaxTree } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "./lang-heynote/parser.terms.js"
@@ -148,63 +148,47 @@ const atomicNoteBlock = ViewPlugin.fromClass(
     }
 )
 
-const blockLayer = () => {
-    let editorWidth = 0;
-    const measureEditorWidth = EditorView.updateListener.of((update) => {
-        if (update.geometryChanged) {
-            update.view.requestMeasure({
-                read(a) {
-                    const gutterWidth = update.view.contentDOM.previousSibling.clientWidth
-                    editorWidth = update.view.contentDOM.clientWidth + gutterWidth
-                }
-            })
+
+const blockLayer = layer({
+    above: false,
+
+    markers(view) {
+        const markers = []
+        let idx = 0
+        //console.log("visible ranges:", view.visibleRanges[0].from, view.visibleRanges[0].to, view.visibleRanges.length)
+        function rangesOverlaps(range1, range2) {
+            return range1.from <= range2.to && range2.from <= range1.to
         }
-    })
-
-    const layerExtension = layer({
-        above: false,
-
-        markers(view) {
-            const markers = []
-            let idx = 0
-            //console.log("visible ranges:", view.visibleRanges[0].from, view.visibleRanges[0].to, view.visibleRanges.length)
-            function rangesOverlaps(range1, range2) {
-                return range1.from <= range2.to && range2.from <= range1.to
+        const blocks = view.state.facet(blockState)
+        blocks.forEach(block => {
+            // make sure the block is visible
+            if (!view.visibleRanges.some(range => rangesOverlaps(block.content, range))) {
+                idx++;
+                return
             }
-            const blocks = view.state.facet(blockState)
-            blocks.forEach(block => {
-                // make sure the block is visible
-                if (!view.visibleRanges.some(range => rangesOverlaps(block.content, range))) {
-                    idx++;
-                    return
-                }
-                const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from)).top
-                let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)).bottom
-                if (idx === blocks.length - 1) {
-                    let extraHeight = view.viewState.editorHeight - view.defaultLineHeight - view.documentPadding.top - 0.5
-                    toCoordsBottom += extraHeight
-                }
-                markers.push(new RectangleMarker(
-                    idx++ % 2 == 0 ? "block-even" : "block-odd",
-                    0,
-                    fromCoordsTop - (view.documentTop - view.documentPadding.top) - 1,
-                    editorWidth,
-                    (toCoordsBottom - fromCoordsTop) + 2,
-                ))
-            })
-            return markers
+            const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from)).top
+            let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)).bottom
+            if (idx === blocks.length - 1) {
+                let extraHeight = view.viewState.editorHeight - view.defaultLineHeight - view.documentPadding.top - 0.5
+                toCoordsBottom += extraHeight
+            }
+            markers.push(new RectangleMarker(
+                idx++ % 2 == 0 ? "block-even" : "block-odd",
+                0,
+                fromCoordsTop - (view.documentTop - view.documentPadding.top) - 1,
+                null, // width is set to 100% in CSS
+                (toCoordsBottom - fromCoordsTop) + 2,
+            ))
+        })
+        return markers
+    },
 
-        },
+    update(update, dom) {
+        return update.docChanged || update.viewportChanged
+    },
 
-        update(update, dom) {
-            return update.docChanged || update.viewportChanged
-        },
-
-        class: "blocks-layer"
-    })
-
-    return [measureEditorWidth, layerExtension]
-}
+    class: "blocks-layer"
+})
 
 
 const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
@@ -240,7 +224,7 @@ export const noteBlockExtension = () => {
         blockState,
         noteBlockWidget(),
         atomicNoteBlock,
-        blockLayer(),
+        blockLayer,
         preventFirstBlockFromBeingDeleted,
         preventSelectionBeforeFirstBlock,
         lineNumbers({
