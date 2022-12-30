@@ -171,20 +171,25 @@ const blockLayer = () => {
             function rangesOverlaps(range1, range2) {
                 return range1.from <= range2.to && range2.from <= range1.to
             }
-            view.state.facet(blockState).forEach(block => {
+            const blocks = view.state.facet(blockState)
+            blocks.forEach(block => {
                 // make sure the block is visible
                 if (!view.visibleRanges.some(range => rangesOverlaps(block.content, range))) {
                     idx++;
                     return
                 }
-                const fromCoords = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from))
-                const toCoords = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to))
+                const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from)).top
+                let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)).bottom
+                if (idx === blocks.length - 1) {
+                    let extraHeight = view.viewState.editorHeight - view.defaultLineHeight - view.documentPadding.top - 0.5
+                    toCoordsBottom += extraHeight
+                }
                 markers.push(new RectangleMarker(
                     idx++ % 2 == 0 ? "block-even" : "block-odd",
                     0,
-                    fromCoords.top - (view.documentTop - view.documentPadding.top) - 1,
+                    fromCoordsTop - (view.documentTop - view.documentPadding.top) - 1,
                     editorWidth,
-                    (toCoords.bottom - fromCoords.top) + 2,
+                    (toCoordsBottom - fromCoordsTop) + 2,
                 ))
             })
             return markers
