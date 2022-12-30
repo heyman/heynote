@@ -41,7 +41,8 @@ const nordTheme = /*@__PURE__*/EditorView.theme({
         backgroundColor: background
     },
     '.cm-content': {
-        caretColor: cursor
+        caretColor: cursor,
+        paddingTop: 0,
     },
     '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor, borderLeftWidth:'2px', height:'19px !important', marginTop:'-2px !important' },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection },
@@ -74,12 +75,13 @@ const nordTheme = /*@__PURE__*/EditorView.theme({
     '.cm-gutters': {
         //backgroundColor: base00,
         backgroundColor: 'rgba(0,0,0, 0.1)',
+        //backgroundColor: 'transparent',
         color: lineNumberColor,
         border: 'none'
     },
     '.cm-activeLineGutter': {
-        backgroundColor: highlightBackground,
-        color: base04
+        backgroundColor: "transparent",
+        color: 'rgba(255,255,255, 0.6)'
     },
     '.cm-foldPlaceholder': {
         backgroundColor: 'transparent',
