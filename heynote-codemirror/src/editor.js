@@ -2,12 +2,11 @@ import { Annotation, EditorState, Compartment } from "@codemirror/state"
 import { EditorView, keymap, drawSelection } from "@codemirror/view"
 import { indentUnit, forceParsing } from "@codemirror/language"
 
-import { indentWithTab, insertTab, indentLess, indentMore } from "@codemirror/commands"
 import { nord } from "./theme/nord.mjs"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./block/note-block.js"
-import { insertNewNote, moveLineUp, selectAll } from "./block/commands.js";
+import { heynoteKeymap } from "./keymap.js"
 
 
 export class HeynoteEditor {
@@ -15,46 +14,9 @@ export class HeynoteEditor {
         this.state = EditorState.create({
             doc: content || "",
             extensions: [
-                /*keymap.of([
-                    {
-                        key: "Shift-Tab",
-                        preventDefault: true,
-                        run: () => {
-                            console.log("debug:", syntaxTree(editor.state).toString())
-                        },
-                    },
-                ]),*/
-                //minimalSetup,
-                
-                keymap.of([
-                    {
-                        key: "Tab",
-                        preventDefault: true,
-                        //run: insertTab,
-                        run: indentMore,
-                    },
-                    {
-                        key: 'Shift-Tab',
-                        preventDefault: true,
-                        run: indentLess,
-                    },
-                    {
-                        key: "Mod-Enter",
-                        preventDefault: true,
-                        run: insertNewNote,
-                    },
-                    {
-                        key: "Mod-a",
-                        preventDefault: true,
-                        run: selectAll,
-                    },
-                    {
-                        key: "Alt-ArrowUp",
-                        preventDefault: true,
-                        run: moveLineUp,
-                    }
-                ]),
+                heynoteKeymap,
 
+                //minimalSetup,
                 customSetup, 
                 nord,
                 indentUnit.of("    "),
