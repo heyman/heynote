@@ -48,6 +48,9 @@ export class HeynoteEditor {
                 customSetup, 
                 nord,
                 indentUnit.of("    "),
+                EditorView.scrollMargins.of(f => {
+                    return {top: 80, bottom: 80}
+                }),
                 heynoteLang(),
                 noteBlockExtension(),
                 
