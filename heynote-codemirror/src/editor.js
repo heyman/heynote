@@ -7,7 +7,7 @@ import { nord } from "./theme/nord.mjs"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./block/note-block.js"
-import { insertNewNote } from "./block/commands.js";
+import { insertNewNote, selectAll } from "./block/commands.js";
 
 
 export class HeynoteEditor {
@@ -42,6 +42,11 @@ export class HeynoteEditor {
                         key: "Mod-Enter",
                         preventDefault: true,
                         run: insertNewNote,
+                    },
+                    {
+                        key: "Mod-a",
+                        preventDefault: true,
+                        run: selectAll,
                     },
                 ]),
 

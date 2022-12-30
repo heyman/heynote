@@ -39,7 +39,7 @@ function getBlocks(state) {
     return blocks
 }
 
-const blockState = StateField.define({
+export const blockState = StateField.define({
     create(state) {
         return getBlocks(state);
     },
