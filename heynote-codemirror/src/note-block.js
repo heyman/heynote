@@ -58,7 +58,7 @@ const blockState = StateField.define({
 class NoteBlockStart extends WidgetType {
     constructor() {
         super()
-    }   
+    }
     eq(other) {
         //return other.checked == this.checked
         return true
@@ -87,14 +87,14 @@ const noteBlockWidget = () => {
             });
             //console.log("deco range:", delimiter.from === 0 ? delimiter.from : delimiter.from+1,delimiter.to-1)
             widgets.push(deco.range(
-                delimiter.from === 0 ? delimiter.from : delimiter.from+1, 
-                delimiter.to-1,
+                delimiter.from === 0 ? delimiter.from : delimiter.from + 1,
+                delimiter.to - 1,
             ));
         });
-        
+
         return widgets.length > 0 ? RangeSet.of(widgets) : Decoration.none;
     };
-    
+
     const noteBlockStartField = StateField.define({
         create(state) {
             return decorate(state);
@@ -103,7 +103,7 @@ const noteBlockWidget = () => {
             if (transaction.docChanged) {
                 return decorate(transaction.state);
             }
-            
+
             //return widgets.map(transaction.changes);
             return widgets
         },
@@ -111,8 +111,8 @@ const noteBlockWidget = () => {
             return EditorView.decorations.from(field);
         }
     });
-    
-    return [noteBlockStartField];
+
+    return noteBlockStartField;
 };
 
 
@@ -123,7 +123,7 @@ function atomicRanges(view) {
     view.state.facet(blockState).forEach(block => {
         builder.add(
             block.delimiter.from,
-            block.delimiter.to, 
+            block.delimiter.to,
             {},
         )
     })
@@ -134,16 +134,16 @@ const atomicNoteBlock = ViewPlugin.fromClass(
         constructor(view) {
             this.atomicRanges = atomicRanges(view)
         }
-    
+
         update(update) {
             if (update.docChanged) {
                 this.atomicRanges = atomicRanges(update.view)
             }
         }
-    }, 
+    },
     {
         provide: plugin => EditorView.atomicRanges.of(view => {
-            return  view.plugin(plugin)?.atomicRanges || []
+            return view.plugin(plugin)?.atomicRanges || []
         })
     }
 )
@@ -180,10 +180,10 @@ const blockLayer = () => {
                 const fromCoords = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from))
                 const toCoords = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to))
                 markers.push(new RectangleMarker(
-                    idx++ % 2 == 0 ? "block-even" : "block-odd", 
-                    0, 
-                    fromCoords.top - (view.documentTop - view.documentPadding.top) - 1, 
-                    editorWidth, 
+                    idx++ % 2 == 0 ? "block-even" : "block-odd",
+                    0,
+                    fromCoords.top - (view.documentTop - view.documentPadding.top) - 1,
+                    editorWidth,
                     (toCoords.bottom - fromCoords.top) + 2,
                 ))
             })
@@ -233,11 +233,10 @@ const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) =
 export const noteBlockExtension = () => {
     return [
         blockState,
-
-        noteBlockWidget(), 
-        atomicNoteBlock, 
-        blockLayer(), 
-        preventFirstBlockFromBeingDeleted, 
+        noteBlockWidget(),
+        atomicNoteBlock,
+        blockLayer(),
+        preventFirstBlockFromBeingDeleted,
         preventSelectionBeforeFirstBlock,
         lineNumbers({
             formatNumber(lineNo, state) {
