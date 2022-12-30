@@ -6,7 +6,7 @@ import { indentWithTab, insertTab, indentLess, indentMore } from "@codemirror/co
 import { nord } from "./theme/nord.mjs"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
-import { noteBlockExtension } from "./note-block.js"
+import { noteBlockExtension } from "./block/note-block.js"
 
 
 export class HeynoteEditor {
