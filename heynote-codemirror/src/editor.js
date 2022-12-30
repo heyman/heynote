@@ -1,59 +1,72 @@
 import { Annotation, EditorState, Compartment } from "@codemirror/state"
 import { EditorView, keymap, drawSelection } from "@codemirror/view"
-import { indentUnit } from "@codemirror/language"
+import { indentUnit, forceParsing } from "@codemirror/language"
 
 import { indentWithTab, insertTab, indentLess, indentMore } from "@codemirror/commands"
 import { nord } from "./theme/nord.mjs"
-import initialData from "./fixture.js"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./note-block.js"
-import { heynoteEvent, INITIAL_DATA } from "./annotation.js"
 
 
-let state = EditorState.create({
-    extensions: [
-        /*keymap.of([
-            {
-                key: "Shift-Tab",
-                preventDefault: true,
-                run: () => {
-                    console.log("debug:", syntaxTree(editor.state).toString())
-                },
-            },
-        ]),*/
-        customSetup, 
-        //minimalSetup,
-        
-        keymap.of([
-            {
-                key: 'Tab',
-                preventDefault: true,
-                //run: insertTab,
-                run: indentMore,
-            },
-            {
-                key: 'Shift-Tab',
-                preventDefault: true,
-                run: indentLess,
-            },
-        ]),
-        nord,
-        indentUnit.of("    "),
-        heynoteLang(),
-        noteBlockExtension(),
-        
-        // set cursor blink rate to 1 second
-        drawSelection({cursorBlinkRate:1000}),
-    ],
-})
+export class HeynoteEditor {
+    constructor({element, content, focus=true}) {
+        this.state = EditorState.create({
+            doc: content || "",
+            extensions: [
+                /*keymap.of([
+                    {
+                        key: "Shift-Tab",
+                        preventDefault: true,
+                        run: () => {
+                            console.log("debug:", syntaxTree(editor.state).toString())
+                        },
+                    },
+                ]),*/
+                customSetup, 
+                //minimalSetup,
+                
+                keymap.of([
+                    {
+                        key: 'Tab',
+                        preventDefault: true,
+                        //run: insertTab,
+                        run: indentMore,
+                    },
+                    {
+                        key: 'Shift-Tab',
+                        preventDefault: true,
+                        run: indentLess,
+                    },
+                ]),
+                nord,
+                indentUnit.of("    "),
+                heynoteLang(),
+                noteBlockExtension(),
+                
+                // set cursor blink rate to 1 second
+                drawSelection({cursorBlinkRate:1000}),
+            ],
+        })
 
-let editor = new EditorView({
-    state,
-    parent: document.getElementById("editor"),
-})
+        this.view = new EditorView({
+            state: this.state,
+            parent: element,
+        })
 
-// set initial data
+        if (focus) {
+            this.view.dispatch({
+                selection: {anchor: this.view.state.doc.length, head: this.view.state.doc.length},
+                scrollIntoView: true,
+            })
+            this.view.focus()
+        }
+    }
+}
+
+
+
+/*// set initial data
 editor.update([
     editor.state.update({
         changes:{
@@ -63,20 +76,7 @@ editor.update([
         },
         annotations: heynoteEvent.of(INITIAL_DATA),
     })
-])
-
-
-editor.dispatch({
-    selection: {anchor: editor.state.doc.length, head: editor.state.doc.length},
-    scrollIntoView: true,
-})
-editor.focus()
-
-
-
-
-
-
+])*/
 
 
 /*

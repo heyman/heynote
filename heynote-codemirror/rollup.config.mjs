@@ -4,10 +4,11 @@ import { nodeResolve } from "@rollup/plugin-node-resolve"
 
 
 export default {
-  input: "./src/editor.js",
+  input: "./src/index.js",
   output: {
-    file: "./src/editor.bundle.js",
+    file: "./src/bundle.js",
     format: "iife",
+    //sourceMap: "inline",
     //globals: {
     //  //
     //},
