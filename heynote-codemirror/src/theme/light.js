@@ -13,8 +13,8 @@ export const heynoteLight = EditorView.theme({
         borderLeftColor: '#000',
     },
     '.cm-gutters': {
-        backgroundColor: 'rgba(0,0,0, 0.03)',
         //backgroundColor: 'transparent',
+        //backgroundColor: 'rgba(0,0,0, 0.03)',
         color: 'rgba(0,0,0, 0.25)',
         border: 'none',
     },

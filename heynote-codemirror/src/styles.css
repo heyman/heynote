@@ -7,6 +7,7 @@ body {
     font-family: 'Gill Sans','Gill Sans MT',Calibri,'Trebuchet MS',sans-serif;
     height: 100%;
     font-size: 13px;
+    overscroll-behavior-y: none;
 }
 
 #editor {
