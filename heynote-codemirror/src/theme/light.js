@@ -1,29 +1,35 @@
-import { EditorView } from '@codemirror/view';
+import { EditorView } from "@codemirror/view";
 
 export const heynoteLight = EditorView.theme({
-    '&': {
+    "&": {
         //color: base04,
         backgroundColor: "#f5f5f5",
     },
-    '.cm-content': {
+    ".cm-content": {
         //caretColor: cursor,
         paddingTop: 0,
     },
-    '.cm-cursor, .cm-dropCursor': {
-        borderLeftColor: '#000',
+    ".cm-cursor, .cm-dropCursor": {
+        borderLeftColor: "#000",
     },
-    '.cm-gutters': {
-        //backgroundColor: 'transparent',
-        //backgroundColor: 'rgba(0,0,0, 0.03)',
-        color: 'rgba(0,0,0, 0.25)',
-        border: 'none',
+    ".cm-gutters": {
+        //backgroundColor: "transparent",
+        //backgroundColor: "rgba(0,0,0, 0.03)",
+        color: "rgba(0,0,0, 0.25)",
+        border: "none",
     },
-    '.cm-activeLineGutter': {
+    ".cm-activeLineGutter": {
         backgroundColor: "transparent",
-        color: 'rgba(0,0,0, 0.6)'
+        color: "rgba(0,0,0, 0.6)"
     },
-    '.cm-activeLine': {
+    ".cm-activeLine": {
         backgroundColor: "rgba(0,0,0, 0.04)",
+    },
+    ".cm-selectionBackground": {
+        background: "#b2c2ca85",
+    },
+    "&.cm-focused .cm-selectionBackground": {
+        background: "#77baff8c",
     },
 })
 
