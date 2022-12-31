@@ -31,11 +31,7 @@ const commentColor = '#888d97';
 const matchingBracket = 'rgba(255,255,255,0.1)';
 
 
-/**
-The editor theme styles for Nord.
-*/
-
-const nordTheme = /*@__PURE__*/EditorView.theme({
+const darkTheme = EditorView.theme({
     '&': {
         color: base04,
         backgroundColor: background
@@ -44,7 +40,7 @@ const nordTheme = /*@__PURE__*/EditorView.theme({
         caretColor: cursor,
         paddingTop: 0,
     },
-    '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor, borderLeftWidth:'2px', height:'19px !important', marginTop:'-2px !important' },
+    '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection },
     '.cm-panels': { backgroundColor: darkBackground, color: base03 },
     '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
@@ -77,7 +73,7 @@ const nordTheme = /*@__PURE__*/EditorView.theme({
         backgroundColor: 'rgba(0,0,0, 0.1)',
         //backgroundColor: 'transparent',
         color: lineNumberColor,
-        border: 'none'
+        border: 'none',
     },
     '.cm-activeLineGutter': {
         backgroundColor: "transparent",
@@ -107,23 +103,24 @@ const nordTheme = /*@__PURE__*/EditorView.theme({
         }
     }
 }, { dark: true });
+
 /**
-The highlighting style for code in the Nord theme.
+The highlighting styles for the dark theme.
 */
-const nordHighlightStyle = /*@__PURE__*/HighlightStyle.define([
+const darkHighlightStyle = HighlightStyle.define([
     { tag: tags.keyword, color: base0A },
     {
         tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
         color: base08
     },
     { tag: [tags.variableName], color: base07 },
-    { tag: [/*@__PURE__*/tags.function(tags.variableName)], color: base07 },
+    { tag: [tags.function(tags.variableName)], color: base07 },
     { tag: [tags.labelName], color: base09 },
     {
-        tag: [tags.color, /*@__PURE__*/tags.constant(tags.name), /*@__PURE__*/tags.standard(tags.name)],
+        tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
         color: base0A
     },
-    { tag: [/*@__PURE__*/tags.definition(tags.name), tags.separator], color: base0E },
+    { tag: [tags.definition(tags.name), tags.separator], color: base0E },
     { tag: [tags.brace], color: base07 },
     {
         tag: [tags.annotation],
@@ -173,7 +170,7 @@ const nordHighlightStyle = /*@__PURE__*/HighlightStyle.define([
         textUnderlinePosition: 'under'
     },
     {
-        tag: [tags.url, tags.escape, /*@__PURE__*/tags.special(tags.string)],
+        tag: [tags.url, tags.escape, tags.special(tags.string)],
         color: base07
     },
     { tag: [tags.meta], color: base08 },
@@ -183,7 +180,7 @@ const nordHighlightStyle = /*@__PURE__*/HighlightStyle.define([
     { tag: tags.emphasis, fontStyle: 'italic', color: base0A },
     { tag: tags.strikethrough, textDecoration: 'line-through' },
     { tag: tags.heading, fontWeight: 'bold', color: base0A },
-    { tag: /*@__PURE__*/tags.special(tags.heading1), fontWeight: 'bold', color: base0A },
+    { tag: tags.special(tags.heading1), fontWeight: 'bold', color: base0A },
     { tag: tags.heading1, fontWeight: 'bold', color: base0A },
     {
         tag: [tags.heading2, tags.heading3, tags.heading4],
@@ -194,7 +191,7 @@ const nordHighlightStyle = /*@__PURE__*/HighlightStyle.define([
         tag: [tags.heading5, tags.heading6],
         color: base0A
     },
-    { tag: [tags.atom, tags.bool, /*@__PURE__*/tags.special(tags.variableName)], color: base0C },
+    { tag: [tags.atom, tags.bool, tags.special(tags.variableName)], color: base0C },
     {
         tag: [tags.processingInstruction, tags.inserted],
         color: base07
@@ -205,13 +202,11 @@ const nordHighlightStyle = /*@__PURE__*/HighlightStyle.define([
     },
     { tag: tags.invalid, color: base02, borderBottom: `1px dotted ${invalid}` }
 ]);
-/**
-Extension to enable the Nord theme (both the editor theme and
-the highlight style).
-*/
-const nord = [
-    nordTheme,
-    /*@__PURE__*/syntaxHighlighting(nordHighlightStyle)
+
+
+const heynoteDark = [
+    darkTheme,
+    syntaxHighlighting(darkHighlightStyle)
 ];
 
-export { nord, nordHighlightStyle, nordTheme };
+export { heynoteDark, darkHighlightStyle, darkTheme };

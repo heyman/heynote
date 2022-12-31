@@ -6,6 +6,7 @@ body {
     color: #444;
     font-family: 'Gill Sans','Gill Sans MT',Calibri,'Trebuchet MS',sans-serif;
     height: 100%;
+    font-size: 13px;
 }
 
 #editor {
@@ -20,16 +21,20 @@ body {
     overflow-y: auto;
 }
 
-
 .blocks-layer .block-even {
     width: 100%;
-    /*background: #3f3b4b;*/
     background: #232537;
 }
 .blocks-layer .block-odd {
     width: 100%;
-    /*background: rgb(57, 71, 77);*/
     background: #222f38;
+}
+
+.light-theme .blocks-layer .block-even {
+    background: #ffffff;
+}
+.light-theme .blocks-layer .block-odd {
+    background: #f5f9f6;
 }
 
 .block-start {
