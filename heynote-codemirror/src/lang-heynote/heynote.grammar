@@ -5,13 +5,14 @@ Note {
 }
 
 NoteDelimiter {
-    noteDelimiterEnter noteDelimiterMark NoteLanguage noteDelimiterEnter
+    noteDelimiterEnter noteDelimiterMark NoteLanguage Auto? noteDelimiterEnter
 }
 
 
 @tokens {
     noteDelimiterMark { "∞∞∞" }
     NoteLanguage { "text" | "javascript" | "json" | "python" | "html" | "sql" | "markdown" | "java" | "lezer" | "php" }
+    Auto { "-a" }
     noteDelimiterEnter { "\n" }
     //NoteContent { String }
     //String { (![∞])+ }

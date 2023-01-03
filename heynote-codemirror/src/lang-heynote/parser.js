@@ -3,14 +3,14 @@ import {LRParser} from "@lezer/lr"
 import {noteContent} from "./external-tokens.js"
 export const parser = LRParser.deserialize({
   version: 14,
-  states: "!^QQOPOOOVOPO'#C`O[OQO'#C_OOOO'#Cb'#CbQQOPOOOaOPO,58zOOOO,58y,58yOOOO-E6`-E6`OfOPO1G.fOOOQ7+$Q7+$Q",
-  stateData: "k~OWPO~OXTO~OPUO~OTWO~OWXO~O",
-  goto: "fVPPPW[P`TROSTQOSQSORVS",
-  nodeNames: "⚠ NoteContent Document Note NoteDelimiter NoteLanguage",
-  maxTerm: 9,
+  states: "!jQQOPOOOVOPO'#C`O[OQO'#C_OOOO'#Cc'#CcQQOPOOOaOPO,58zOOOO,58y,58yOOOO-E6a-E6aOfOPO1G.fOOOQ7+$Q7+$QOnOPO7+$QOOOQ<<Gl<<Gl",
+  stateData: "s~OXPO~OYTO~OPUO~OTWO~OUYOXXO~OXZO~O",
+  goto: "gWPPPX]PPaTROSTQOSQSORVS",
+  nodeNames: "⚠ NoteContent Document Note NoteDelimiter NoteLanguage Auto",
+  maxTerm: 10,
   skippedNodes: [0],
   repeatNodeCount: 1,
-  tokenData: "&e~RXYZn#[#]s#^#_![#`#a#u#a#b$_#d#e%T#g#h%p#h#i%v%&x%&y&S~sOW~~vP#h#iy~|P#a#b!P~!SP#`#a!V~![OT~~!_Q#T#U!e#g#h#i~!hP#j#k!k~!nP#T#U!q~!vPT~#g#h!y~!|P#V#W#P~#SP#f#g#V~#YP#]#^#]~#`P#d#e#c~#fP#h#i!V~#lP#c#d#o~#rP#b#c!V~#xP#X#Y#{~$OP#n#o$R~$UP#X#Y$X~$[P#f#g!V~$bP#T#U$e~$hP#f#g$k~$nP#_#`$q~$tP#W#X$w~$zP#c#d$}~%QP#k#l#o~%WQ#[#]%^#m#n%d~%aP#d#e!V~%gP#h#i%j~%mP#[#]#i~%sP#e#f!P~%yP#X#Y%|~&PP#l#m#c~&VP%&x%&y&Y~&]P%&x%&y&`~&eOX~",
+  tokenData: "&s~RYYZq}!Ov#[#]!R#^#_!j#`#a$T#a#b$m#d#e%c#g#h&O#h#i&U%&x%&y&b~vOX~~yP#T#U|~!ROU~~!UP#h#i!X~![P#a#b!_~!bP#`#a!e~!jOT~~!mQ#T#U!s#g#h#w~!vP#j#k!y~!|P#T#U#P~#UPT~#g#h#X~#[P#V#W#_~#bP#f#g#e~#hP#]#^#k~#nP#d#e#q~#tP#h#i!e~#zP#c#d#}~$QP#b#c!e~$WP#X#Y$Z~$^P#n#o$a~$dP#X#Y$g~$jP#f#g!e~$pP#T#U$s~$vP#f#g$y~$|P#_#`%P~%SP#W#X%V~%YP#c#d%]~%`P#k#l#}~%fQ#[#]%l#m#n%r~%oP#d#e!e~%uP#h#i%x~%{P#[#]#w~&RP#e#f!_~&XP#X#Y&[~&_P#l#m#q~&eP%&x%&y&h~&kP%&x%&y&n~&sOY~",
   tokenizers: [0, noteContent],
   topRules: {"Document":[0,2]},
   tokenPrec: 0

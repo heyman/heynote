@@ -4,4 +4,5 @@ export const
   Document = 2,
   Note = 3,
   NoteDelimiter = 4,
-  NoteLanguage = 5
+  NoteLanguage = 5,
+  Auto = 6

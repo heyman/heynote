@@ -13,10 +13,10 @@ export const noteContent = new ExternalTokenizer((input) => {
 
     while (true) {
         let potentialLang = "";
-        for (let i=0; i<16; i++) {
+        for (let i=0; i<18; i++) {
             potentialLang += String.fromCharCode(input.peek(i));
         }
-        if (potentialLang.match(/^\n∞∞∞(text|javascript|json|python|html|sql|markdown|java|lezer|php)\n/g)) {
+        if (potentialLang.match(/^\n∞∞∞(text|javascript|json|python|html|sql|markdown|java|lezer|php)(-a)?\n/g)) {
             input.acceptToken(NoteContent);
             return;
         }

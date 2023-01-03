@@ -5,7 +5,7 @@ hej∞∞∞python
 f = lambda: 2 +1`;*/
 
 export default `
-∞∞∞python
+∞∞∞text-a
 # hmm
 def my_func():
   print("hejsan")
@@ -16,7 +16,7 @@ import {EditorView, keymap} from "@codemirror/view"
 import {javascript} from "@codemirror/lang-javascript"
 import {indentWithTab, insertTab, indentLess, indentMore} from "@codemirror/commands"
 import {nord} from "./nord.mjs"
-∞∞∞javascript
+∞∞∞javascript-a
 let editor = new EditorView({
   //extensions: [basicSetup, javascript()],
   extensions: [

@@ -9,6 +9,7 @@ import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./block/note-block.js"
 import { heynoteKeymap } from "./keymap.js"
+import { languageDetection } from "./language-detection/autodetect.js"
 
 
 export class HeynoteEditor {
@@ -30,6 +31,7 @@ export class HeynoteEditor {
                 }),
                 heynoteLang(),
                 noteBlockExtension(),
+                languageDetection(() => this.view),
                 
                 // set cursor blink rate to 1 second
                 drawSelection({cursorBlinkRate:1000}),
@@ -70,23 +72,3 @@ editor.update([
     })
 ])*/
 
-
-/*
-// render syntax tree
-setTimeout(() => {
-    function render(tree) {
-        let lists = ''
-        tree.iterate({
-            enter(type) {
-                lists += `<ul><li>${type.name} (${type.from},${type.to})`
-            },
-            leave() {
-                lists += '</ul>'
-            }
-        })
-        return lists
-    }
-    let html = render(syntaxTree(editor.state))
-    document.getElementById("syntaxTree").innerHTML = html;
-}, 1000)
-*/

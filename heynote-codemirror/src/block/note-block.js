@@ -5,7 +5,7 @@ import { RangeSet } from "@codemirror/rangeset";
 import { syntaxTree } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
-import { INITIAL_DATA } from "../annotation.js";
+import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 
 
 // tracks the size of the first delimiter
@@ -18,8 +18,15 @@ function getBlocks(state) {
             if (type.type.id == Document || type.type.id == Note) {
                 return true
             } else if (type.type.id === NoteDelimiter) {
+                const langNode = type.node.getChild("NoteLanguage")
+                const language = state.doc.sliceString(langNode.from, langNode.to)
+                const isAuto = !!type.node.getChild("Auto")
                 const contentNode = type.node.nextSibling
                 blocks.push({
+                    language: {
+                        name: language,
+                        auto: isAuto,
+                    },
                     content: {
                         from: contentNode.from,
                         to: contentNode.to,
@@ -198,7 +205,8 @@ const blockLayer = layer({
 
 
 const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
-    if (!tr.annotations.some(a => a.value === INITIAL_DATA) && firstBlockDelimiterSize) {
+    //console.log("annotations:", tr.annotation(heynoteEvent), tr.annotations.some(a => tr.annotation(heynoteEvent))) 
+    if (!tr.annotations.some(a => a.type === heynoteEvent) && firstBlockDelimiterSize) {
         return [0, firstBlockDelimiterSize]
     }
 })
