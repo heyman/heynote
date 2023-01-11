@@ -6,10 +6,10 @@ export const heynoteBase = EditorView.theme({
         fontFamily: "Menlo, Monaco, 'Courier New', monospace",
     },
     '.cm-gutters': {
-        padding: '0 2px 0 6px',
+        padding: '0 2px 0 4px',
     },
     '.cm-foldGutter': {
-        marginLeft: '4px',
+        marginLeft: '0px',
     },
     '.cm-foldGutter .cm-gutterElement': {
         opacity: 0,
