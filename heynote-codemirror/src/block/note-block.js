@@ -183,7 +183,12 @@ const blockLayer = layer({
             const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from)).top
             let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)).bottom
             if (idx === blocks.length - 1) {
-                let extraHeight = view.viewState.editorHeight - view.defaultLineHeight - view.documentPadding.top - 0.5
+                // Calculate how much extra height we need to add to the last block
+                let extraHeight = view.viewState.editorHeight - (
+                    view.defaultLineHeight + // when scrolling furthest down, one line is still shown at the top
+                    view.documentPadding.top +
+                    7
+                )
                 toCoordsBottom += extraHeight
             }
             markers.push(new RectangleMarker(
