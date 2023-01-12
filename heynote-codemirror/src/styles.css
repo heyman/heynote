@@ -24,7 +24,7 @@ body {
 
 .blocks-layer .block-even {
     width: 100%;
-    background: #232537;
+    background: #252B37;
 }
 .blocks-layer .block-odd {
     width: 100%;
@@ -32,11 +32,10 @@ body {
 }
 
 .light-theme .blocks-layer .block-even {
-    background: #fffae7;
+    background: #ffffff;
 }
 .light-theme .blocks-layer .block-odd {
-    //background: #f5f9f6;
-    background: #e0f0e4;
+    background: #f4f8f4;
 }
 
 .block-start {

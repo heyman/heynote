@@ -3,7 +3,7 @@ import { EditorView } from "@codemirror/view";
 export const heynoteLight = EditorView.theme({
     "&": {
         //color: base04,
-        backgroundColor: "#f5f5f5",
+        backgroundColor: "#dfdfdf",
     },
     ".cm-content": {
         //caretColor: cursor,
@@ -13,10 +13,10 @@ export const heynoteLight = EditorView.theme({
         borderLeftColor: "#000",
     },
     ".cm-gutters": {
-        backgroundColor: "transparent",
+        backgroundColor: "rgba(0,0,0, 0.04)",
         color: "rgba(0,0,0, 0.25)",
         border: "none",
-        borderRight: "1px solid rgba(0,0,0, 0.07)",
+        borderRight: "1px solid rgba(0,0,0, 0.05)",
     },
     ".cm-activeLineGutter": {
         backgroundColor: "transparent",

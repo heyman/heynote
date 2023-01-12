@@ -189,9 +189,11 @@ const blockLayer = layer({
             markers.push(new RectangleMarker(
                 idx++ % 2 == 0 ? "block-even" : "block-odd",
                 0,
-                fromCoordsTop - (view.documentTop - view.documentPadding.top) - 1 - 6,
+                // Change "- 0 - 6" to "+ 1 - 6" on the following line, and "+ 1 + 13" to "+2 + 13" on the line below, 
+                // in order to make the block backgrounds to have no gap between them
+                fromCoordsTop - (view.documentTop - view.documentPadding.top) - 0 - 6,
                 null, // width is set to 100% in CSS
-                (toCoordsBottom - fromCoordsTop) + 2 + 13,
+                (toCoordsBottom - fromCoordsTop) + 1 + 13,
             ))
         })
         return markers
