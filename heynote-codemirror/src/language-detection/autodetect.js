@@ -22,14 +22,17 @@ export function languageDetection(getView) {
         const block = getActiveNoteBlock(state)
         const newLang = HIGHLIGHTJS_TO_TOKEN[event.data.highlightjs.language]
         if (block.language.auto === true && block.language.name !== newLang) {
-            let content = state.doc.sliceString(block.content.from, block.content.to)
-            const threshold = content.length * 0.1
-            if (levenshtein_distance(content, event.data.content) <= threshold) {
-                console.log("Setting new auto detected language:", newLang)
-                // the content has not changed significantly
-                changeLanguageTo(state, view.dispatch, block, newLang, true)
-            } else {
-                console.log("Content has changed significantly, not setting new language")
+            console.log("New auto detected language:", newLang, "Relevance:", event.data.highlightjs.relevance)
+            if (event.data.highlightjs.relevance >= 5) {
+                let content = state.doc.sliceString(block.content.from, block.content.to)
+                const threshold = content.length * 0.1
+                if (levenshtein_distance(content, event.data.content) <= threshold) {
+                    // the content has not changed significantly so it's safe to change the language
+                    console.log("Changing language to", newLang)
+                    changeLanguageTo(state, view.dispatch, block, newLang, true)
+                } else {
+                    console.log("Content has changed significantly, not setting new language")
+                }
             }
         }
     }
