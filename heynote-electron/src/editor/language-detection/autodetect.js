@@ -11,7 +11,7 @@ export function languageDetection(getView) {
     const previousBlockContent = []
     let idleCallbackId = null
 
-    const detectionWorker = new Worker('language-detection/worker.js');
+    const detectionWorker = new Worker('/src/editor/language-detection/worker.js');
     detectionWorker.onmessage = (event) => {
         //console.log("event:", event.data)
         if (!event.data.highlightjs.language) {

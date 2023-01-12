@@ -241,6 +241,20 @@ const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) =
 })
 
 
+const blockLineNumbers = lineNumbers({
+    formatNumber(lineNo, state) {
+        if (state.doc.lines >= lineNo) {
+            const lineOffset = state.doc.line(lineNo).from
+            const block = state.facet(blockState).find(block => block.content.from <= lineOffset && block.content.to >= lineOffset)
+            if (block) {
+                const firstBlockLine = state.doc.lineAt(block.content.from).number
+                return lineNo - firstBlockLine + 1
+            }
+        }
+        return ""
+    }
+})
+
 export const noteBlockExtension = () => {
     return [
         blockState,
@@ -249,18 +263,6 @@ export const noteBlockExtension = () => {
         blockLayer,
         preventFirstBlockFromBeingDeleted,
         preventSelectionBeforeFirstBlock,
-        lineNumbers({
-            formatNumber(lineNo, state) {
-                if (state.doc.lines >= lineNo) {
-                    const lineOffset = state.doc.line(lineNo).from
-                    const block = state.facet(blockState).find(block => block.content.from <= lineOffset && block.content.to >= lineOffset)
-                    if (block) {
-                        const firstBlockLine = state.doc.lineAt(block.content.from).number
-                        return lineNo - firstBlockLine + 1
-                    }
-                }
-                return ""
-            }
-        }),
+        blockLineNumbers,
     ]
 }
