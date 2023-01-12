@@ -32,10 +32,11 @@ body {
 }
 
 .light-theme .blocks-layer .block-even {
-    background: #ffffff;
+    background: #fffae7;
 }
 .light-theme .blocks-layer .block-odd {
-    background: #f5f9f6;
+    //background: #f5f9f6;
+    background: #e0f0e4;
 }
 
 .block-start {

@@ -13,10 +13,10 @@ export const heynoteLight = EditorView.theme({
         borderLeftColor: "#000",
     },
     ".cm-gutters": {
-        //backgroundColor: "transparent",
-        //backgroundColor: "rgba(0,0,0, 0.03)",
+        backgroundColor: "transparent",
         color: "rgba(0,0,0, 0.25)",
         border: "none",
+        borderRight: "1px solid rgba(0,0,0, 0.07)",
     },
     ".cm-activeLineGutter": {
         backgroundColor: "transparent",
