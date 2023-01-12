@@ -44,3 +44,6 @@ body {
     /*background: rgb(0, 0, 0);
     height: 2px*/
 }
+.block-start.first {
+    height: 0;
+}

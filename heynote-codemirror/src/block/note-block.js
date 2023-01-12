@@ -69,8 +69,9 @@ export function getActiveNoteBlock(state) {
 
 
 class NoteBlockStart extends WidgetType {
-    constructor() {
+    constructor(isFirst) {
         super()
+        this.isFirst = isFirst
     }
     eq(other) {
         //return other.checked == this.checked
@@ -78,7 +79,7 @@ class NoteBlockStart extends WidgetType {
     }
     toDOM() {
         let wrap = document.createElement("div")
-        wrap.className = "block-start"
+        wrap.className = "block-start" + (this.isFirst ? " first" : "")
         //wrap.innerHTML = "<br>"
         return wrap
     }
@@ -93,7 +94,7 @@ const noteBlockWidget = () => {
         state.facet(blockState).forEach(block => {
             let delimiter = block.delimiter
             let deco = Decoration.replace({
-                widget: new NoteBlockStart(),
+                widget: new NoteBlockStart(delimiter.from === 0 ? true : false),
                 inclusive: true,
                 block: true,
                 side: 0,
