@@ -23,8 +23,8 @@ export class HeynoteEditor {
                 
                 customSetup, 
                 
-                heynoteDark,
-                //heynoteLight,
+                //heynoteDark,
+                heynoteLight,
                 heynoteBase,
                 indentUnit.of("    "),
                 EditorView.scrollMargins.of(f => {
