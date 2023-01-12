@@ -1,4 +1,4 @@
-importScripts("/public/highlight.min.js")
+importScripts("/highlight.min.js")
 
 const HIGHLIGHTJS_LANGUAGES = ["json", "python", "javascript", "html", "sql", "java", "plaintext"]
 
