@@ -2,11 +2,12 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-  "appId": "YourAppID",
+  "appId": "com.heynote.app",
   "asar": true,
-  "icon": "public/favicon.ico",
+  //"icon": "public/favicon.ico",
   "directories": {
-    "output": "release/${version}"
+    "output": "release/${version}",
+    "buildResources": "resources"
   },
   "files": [
     "dist-electron",

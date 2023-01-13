@@ -1,2 +1,5 @@
 node_modules
 bundle.js
+heynote-electron/dist
+heynote-electron/dist-electron
+heynote-electron/release
