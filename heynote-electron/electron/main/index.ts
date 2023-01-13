@@ -24,10 +24,11 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 // Set application name for Windows 10+ notifications
 if (process.platform === 'win32') app.setAppUserModelId(app.getName())
 
-if (!app.requestSingleInstanceLock()) {
+if (!process.env.VITE_DEV_SERVER_URL && !app.requestSingleInstanceLock()) {
   app.quit()
   process.exit(0)
 }
+
 
 // Remove electron security warnings
 // This warning only shows in development mode
