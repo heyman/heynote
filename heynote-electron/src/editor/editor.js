@@ -12,6 +12,10 @@ import { heynoteKeymap } from "./keymap.js"
 import { languageDetection } from "./language-detection/autodetect.js"
 
 
+// hide loading screen
+postMessage({ payload: 'removeLoading' }, '*')
+
+
 export class HeynoteEditor {
     constructor({element, content, focus=true}) {
         this.state = EditorState.create({
