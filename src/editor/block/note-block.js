@@ -12,38 +12,40 @@ import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 let firstBlockDelimiterSize
 
 function getBlocks(state) {
-    const blocks = [];
-    
-    ensureSyntaxTree(state, state.doc.length).iterate({
-        enter: (type) => {
-            if (type.type.id == Document || type.type.id == Note) {
-                return true
-            } else if (type.type.id === NoteDelimiter) {
-                const langNode = type.node.getChild("NoteLanguage")
-                const language = state.doc.sliceString(langNode.from, langNode.to)
-                const isAuto = !!type.node.getChild("Auto")
-                const contentNode = type.node.nextSibling
-                blocks.push({
-                    language: {
-                        name: language,
-                        auto: isAuto,
-                    },
-                    content: {
-                        from: contentNode.from,
-                        to: contentNode.to,
-                    },
-                    delimiter: {
-                        from: type.from,
-                        to: type.to,
-                    },
-                })
+    const blocks = [];  
+    const tree = ensureSyntaxTree(state, state.doc.length)
+    if (tree) {
+        tree.iterate({
+            enter: (type) => {
+                if (type.type.id == Document || type.type.id == Note) {
+                    return true
+                } else if (type.type.id === NoteDelimiter) {
+                    const langNode = type.node.getChild("NoteLanguage")
+                    const language = state.doc.sliceString(langNode.from, langNode.to)
+                    const isAuto = !!type.node.getChild("Auto")
+                    const contentNode = type.node.nextSibling
+                    blocks.push({
+                        language: {
+                            name: language,
+                            auto: isAuto,
+                        },
+                        content: {
+                            from: contentNode.from,
+                            to: contentNode.to,
+                        },
+                        delimiter: {
+                            from: type.from,
+                            to: type.to,
+                        },
+                    })
+                    return false;
+                }
                 return false;
-            }
-            return false;
-        },
-        mode: IterMode.IgnoreMounts,
-    });
-    firstBlockDelimiterSize = blocks[0]?.delimiter.to
+            },
+            mode: IterMode.IgnoreMounts,
+        });
+        firstBlockDelimiterSize = blocks[0]?.delimiter.to
+    }
     return blocks
 }
 
@@ -52,8 +54,9 @@ export const blockState = StateField.define({
         return getBlocks(state);
     },
     update(blocks, transaction) {
-        //console.log("blocks", blocks)
-        if (transaction.docChanged) {
+        // if blocks are empty it likely means we didn't get a parsed syntax tree, and then we want to update
+        // the blocks on all updates (and not just document changes)
+        if (transaction.docChanged || blocks.length === 0) {
             //console.log("updating block state", transaction)
             return getBlocks(transaction.state);
         }
@@ -115,7 +118,9 @@ const noteBlockWidget = () => {
             return decorate(state);
         },
         update(widgets, transaction) {
-            if (transaction.docChanged) {
+            // if widgets are empty it likely means we didn't get a parsed syntax tree, and then we want to update
+            // the decorations on all updates (and not just document changes)
+            if (transaction.docChanged || widgets.isEmpty) {
                 return decorate(transaction.state);
             }
 
