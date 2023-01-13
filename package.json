@@ -36,6 +36,7 @@
     "@codemirror/lang-php": "^6.0.1",
     "@codemirror/lang-python": "^6.1.1",
     "@codemirror/lang-sql": "^6.3.3",
+    "@codemirror/language": "^6.4.0",
     "@codemirror/rangeset": "^0.19.9",
     "@codemirror/search": "^6.2.3",
     "@electron/asar": "^3.2.2",

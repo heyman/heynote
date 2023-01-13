@@ -2,7 +2,7 @@ import { ViewPlugin, EditorView, Decoration, WidgetType, lineNumbers } from "@co
 import { layer, RectangleMarker } from "@codemirror/view"
 import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect} from "@codemirror/state";
 import { RangeSet } from "@codemirror/rangeset";
-import { syntaxTree } from "@codemirror/language"
+import { syntaxTree, ensureSyntaxTree } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
 import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
@@ -13,7 +13,8 @@ let firstBlockDelimiterSize
 
 function getBlocks(state) {
     const blocks = [];
-    syntaxTree(state).iterate({
+    
+    ensureSyntaxTree(state, state.doc.length).iterate({
         enter: (type) => {
             if (type.type.id == Document || type.type.id == Note) {
                 return true
