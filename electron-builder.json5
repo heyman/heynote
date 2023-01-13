@@ -16,7 +16,14 @@
   "mac": {
     "artifactName": "${productName}_${version}.${ext}",
     "target": [
-      "dmg"
+      "dmg",
+      /*{
+        target: 'default',
+        arch: [
+          'x64',
+          'arm64'
+        ]
+      }*/
     ]
   },
   "win": {
