@@ -29,7 +29,6 @@ async function createWindow() {
   });
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(url);
-    win.webContents.openDevTools();
   } else {
     win.loadFile(indexHtml);
   }
