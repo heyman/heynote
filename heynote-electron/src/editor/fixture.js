@@ -6,6 +6,16 @@ f = lambda: 2 +1`;*/
 
 export default `
 ∞∞∞text-a
+Welcome to Heynote!
+
+[⌘ + Enter]        Insert new note block
+[⌘ + F]            Find text
+[⌘ + A]            Select all text in a note block. Press again to select the whole scratchpad
+[⌘ + Up]           Go to start of note (or start of previous note if already at the start)
+[⌘ + Down]         Go to end of note (or end of next note if already at the end)
+[⌘ + ⌥ + Up/Down]  Add additional cursor above/below
+
+∞∞∞python-a
 # hmm
 def my_func():
   print("hejsan")
