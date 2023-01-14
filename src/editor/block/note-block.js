@@ -84,7 +84,7 @@ class NoteBlockStart extends WidgetType {
     }
     toDOM() {
         let wrap = document.createElement("div")
-        wrap.className = "block-start" + (this.isFirst ? " first" : "")
+        wrap.className = "heynote-block-start" + (this.isFirst ? " first" : "")
         //wrap.innerHTML = "<br>"
         return wrap
     }
@@ -215,7 +215,7 @@ const blockLayer = layer({
         return update.docChanged || update.viewportChanged
     },
 
-    class: "blocks-layer"
+    class: "heynote-blocks-layer"
 })
 
 

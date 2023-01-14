@@ -100,7 +100,15 @@ const darkTheme = EditorView.theme({
             backgroundColor: highlightBackground,
             color: base03
         }
-    }
+    },
+    ".heynote-blocks-layer .block-even": {
+        background: "#252B37",
+        borderTop: "1px solid #1e222a",
+    },
+    ".heynote-blocks-layer .block-odd": {
+        background: "#222f38",
+        borderTop: "1px solid #1e222a",
+    },
 }, { dark: true });
 
 /**

@@ -26,6 +26,15 @@ export const heynoteLight = EditorView.theme({
     "&.cm-focused .cm-selectionBackground": {
         background: "#77baff8c",
     },
+
+    ".heynote-blocks-layer .block-even": {
+        background: "#ffffff",
+        borderTop: "1px solid #dfdfdf",
+    },
+    ".heynote-blocks-layer .block-odd": {
+        background: "#f4f8f4",
+        borderTop: "1px solid #dfdfdf",
+    },
 })
 
 

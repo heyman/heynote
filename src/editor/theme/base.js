@@ -29,4 +29,17 @@ export const heynoteBase = EditorView.theme({
         height:'19px !important', 
         marginTop:'-2px !important'
     },
+    '.heynote-blocks-layer .block-even, .heynote-blocks-layer .block-odd': {
+        width: '100%',
+        boxSizing: 'content-box',
+    },
+    '.heynote-blocks-layer .block-even:first-child': {
+        borderTop: 'none',
+    },
+    '.heynote-block-start': {
+        height: '12px',
+    },
+    '.heynote-block-start.first': {
+        height: '0px',
+    },
 })

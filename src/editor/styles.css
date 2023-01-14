@@ -22,40 +22,7 @@ body {
     height: 100%;
 }
 
-
 #syntaxTree {
     height: 20%;
     overflow-y: auto;
-}
-
-.blocks-layer .block-even,
-.blocks-layer .block-odd {
-    width: 100%;
-    box-sizing: content-box;
-}
-.blocks-layer .block-even:first-child {
-    border-top: none;
-}
-.blocks-layer .block-even {
-    background: #252B37;
-    border-top: 1px solid #1e222a;
-}
-.blocks-layer .block-odd {
-    background: #222f38;
-    border-top: 1px solid #1e222a;
-}
-.light-theme .blocks-layer .block-even {
-    background: #ffffff;
-    border-top: 1px solid #dfdfdf;
-}
-.light-theme .blocks-layer .block-odd {
-    background: #f4f8f4;
-    border-top: 1px solid #dfdfdf;
-}
-
-.block-start {
-    height: 12px;
-}
-.block-start.first {
-    height: 0px;
 }
