@@ -62,7 +62,7 @@ const darkTheme = EditorView.theme({
     },
     '&.cm-focused .cm-matchingBracket': {
         backgroundColor: matchingBracket,
-        color: base02
+        color: "inherit",
     },
     '&.cm-focused .cm-nonmatchingBracket': {
         outline: `0.5px solid #bc8f8f`
@@ -106,7 +106,8 @@ const darkTheme = EditorView.theme({
         borderTop: "1px solid #1e222a",
     },
     ".heynote-blocks-layer .block-odd": {
-        background: "#222f38",
+        //background: "#222f38",
+        background: "#213644",
         borderTop: "1px solid #1e222a",
     },
 }, { dark: true });

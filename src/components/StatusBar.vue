@@ -56,7 +56,7 @@
         box-sizing: border-box
         height: 22px
         width: 100%
-        background-color: #48b57e
+        background: #48b57e
         color: #fff
         font-family: "Open Sans"
         font-size: 12px
@@ -64,6 +64,16 @@
         padding-right: 7px
         display: flex
         flex-direction: row
+
+        &.dark
+            background: #0e1713
+            color: rgba(255, 255, 255, 0.75)
+            .status-block.line-number 
+                color: rgba(255, 255, 255, 0.55)
+                .num
+                    color: rgba(255, 255, 255, 0.75)
+            .status-block.lang .auto
+                color: rgba(255, 255, 255, 0.55)
 
         .spacer
             flex-grow: 1
