@@ -4,6 +4,9 @@
     import initialData from "../editor/fixture.js"
 
     export default {
+        props: [
+            "theme",
+        ],
         mounted() {
             this.$refs.editor.addEventListener("selectionChange", (e) => {
                 //console.log("selectionChange:", e)
@@ -18,6 +21,7 @@
                 element: this.$refs.editor,
                 //content: "\n∞∞∞text\n",
                 content: initialData,
+                theme: this.theme,
             })
         },
     }

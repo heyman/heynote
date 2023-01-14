@@ -18,6 +18,7 @@
                 column: 1,
                 language: "plaintext",
                 languageAuto: true,
+                theme: "dark",
             }
         },
 
@@ -37,6 +38,7 @@
 <template>
     <Editor 
         @cursorChange="onCursorChange"
+        :theme="theme"
         class="editor"
     />
     <StatusBar 
@@ -44,6 +46,7 @@
         :column="column" 
         :language="language" 
         :languageAuto="languageAuto"
+        :theme="theme"
         class="status" 
     />
 </template>

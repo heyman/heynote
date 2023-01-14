@@ -18,6 +18,7 @@
             "column", 
             "language", 
             "languageAuto",
+            "theme",
         ],
 
         mounted() {
@@ -28,12 +29,16 @@
             languageName() {
                 return LANGUAGE_NAMES[this.language] || this.language
             },
+
+            className() {
+                return `status ${this.theme}`
+            },
         },
     }
 </script>
 
 <template>
-    <div class="status">
+    <div :class="className">
         <div class="status-block line-number">
             Ln <span class="num">{{ line }}</span>
             Col <span class="num">{{ column }}</span>

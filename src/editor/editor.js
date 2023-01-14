@@ -13,7 +13,7 @@ import { languageDetection } from "./language-detection/autodetect.js"
 
 
 export class HeynoteEditor {
-    constructor({element, content, focus=true}) {
+    constructor({element, content, focus=true, theme="light"}) {
         this.state = EditorState.create({
             doc: content || "",
             extensions: [
@@ -23,8 +23,7 @@ export class HeynoteEditor {
                 
                 customSetup, 
                 
-                //heynoteDark,
-                heynoteLight,
+                theme === "dark" ? heynoteDark : heynoteLight,
                 heynoteBase,
                 indentUnit.of("    "),
                 EditorView.scrollMargins.of(f => {
