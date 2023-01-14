@@ -2,6 +2,9 @@ import { EditorView } from '@codemirror/view';
 
 
 export const heynoteBase = EditorView.theme({
+    ".cm-content": {
+        paddingTop: 4,
+    },
     '.cm-scroller': {
         fontFamily: "Menlo, Monaco, 'Courier New', monospace",
     },

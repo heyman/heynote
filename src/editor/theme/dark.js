@@ -38,7 +38,6 @@ const darkTheme = EditorView.theme({
     },
     '.cm-content': {
         caretColor: cursor,
-        paddingTop: 0,
     },
     '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection },

@@ -5,10 +5,6 @@ export const heynoteLight = EditorView.theme({
         //color: base04,
         backgroundColor: "#dfdfdf",
     },
-    ".cm-content": {
-        //caretColor: cursor,
-        paddingTop: 0,
-    },
     ".cm-cursor, .cm-dropCursor": {
         borderLeftColor: "#000",
     },

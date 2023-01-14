@@ -193,7 +193,7 @@ const blockLayer = layer({
                 let extraHeight = view.viewState.editorHeight - (
                     view.defaultLineHeight + // when scrolling furthest down, one line is still shown at the top
                     view.documentPadding.top +
-                    7
+                    8
                 )
                 toCoordsBottom += extraHeight
             }
@@ -202,9 +202,9 @@ const blockLayer = layer({
                 0,
                 // Change "- 0 - 6" to "+ 1 - 6" on the following line, and "+ 1 + 13" to "+2 + 13" on the line below, 
                 // in order to make the block backgrounds to have no gap between them
-                fromCoordsTop - (view.documentTop - view.documentPadding.top) - 0 - 6,
+                fromCoordsTop - (view.documentTop - view.documentPadding.top) - 1 - 6,
                 null, // width is set to 100% in CSS
-                (toCoordsBottom - fromCoordsTop) + 1 + 13,
+                (toCoordsBottom - fromCoordsTop) + 15,
             ))
         })
         return markers
