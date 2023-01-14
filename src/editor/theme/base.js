@@ -13,6 +13,7 @@ export const heynoteBase = EditorView.theme({
     },
     '.cm-gutters': {
         padding: '0 2px 0 4px',
+        userSelect: 'none',
     },
     '.cm-foldGutter': {
         marginLeft: '0px',

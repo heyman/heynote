@@ -60,10 +60,11 @@
         color: #fff
         font-family: "Open Sans"
         font-size: 12px
-        padding-left: 7px
-        padding-right: 7px
+        padding-left: 0px
+        padding-right: 0px
         display: flex
         flex-direction: row
+        user-select: none
 
         &.dark
             background: #0e1713
@@ -79,14 +80,17 @@
             flex-grow: 1
         
         .status-block
-            padding: 2px 5px
+            padding: 2px 12px
             cursor: default
             &.line-number
                 color: rgba(255, 255, 255, 0.7)
                 .num
                     color: rgba(255, 255, 255, 1.0)
             &.lang
+                cursor: pointer
                 .auto
                     color: rgba(255, 255, 255, 0.7)
+                &:hover
+                    background: rgba(255,255,255, 0.1)
 
 </style>
