@@ -46,6 +46,7 @@
     "codemirror": "^6.0.1",
     "electron": "^22.0.0",
     "electron-builder": "^23.6.0",
+    "sass": "^1.57.1",
     "typescript": "^4.9.4",
     "vite": "^4.0.3",
     "vite-plugin-electron": "^0.11.1",

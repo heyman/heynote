@@ -2,8 +2,7 @@ import { EditorView } from "@codemirror/view";
 
 export const heynoteLight = EditorView.theme({
     "&": {
-        //color: base04,
-        backgroundColor: "#dfdfdf",
+        backgroundColor: "#fff",
     },
     ".cm-cursor, .cm-dropCursor": {
         borderLeftColor: "#000",

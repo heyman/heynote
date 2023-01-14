@@ -1,5 +1,5 @@
 import { Annotation, EditorState, Compartment } from "@codemirror/state"
-import { EditorView, keymap, drawSelection } from "@codemirror/view"
+import { EditorView, keymap, drawSelection, ViewPlugin } from "@codemirror/view"
 import { indentUnit, forceParsing } from "@codemirror/language"
 
 import { heynoteLight } from "./theme/light.js"
@@ -10,10 +10,6 @@ import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./block/note-block.js"
 import { heynoteKeymap } from "./keymap.js"
 import { languageDetection } from "./language-detection/autodetect.js"
-
-
-// hide loading screen
-postMessage({ payload: 'removeLoading' }, '*')
 
 
 export class HeynoteEditor {
@@ -35,7 +31,7 @@ export class HeynoteEditor {
                     return {top: 80, bottom: 80}
                 }),
                 heynoteLang(),
-                noteBlockExtension(),
+                noteBlockExtension(element),
                 languageDetection(() => this.view),
                 
                 // set cursor blink rate to 1 second

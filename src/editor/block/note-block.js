@@ -6,6 +6,7 @@ import { syntaxTree, ensureSyntaxTree } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
 import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
+import { SelectionChangeEvent } from "../event.js"
 
 
 // tracks the size of the first delimiter
@@ -246,22 +247,49 @@ const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) =
     return tr
 })
 
+export function getBlockLineFromPos(state, pos) {
+    const line = state.doc.lineAt(pos)
+    const block = state.facet(blockState).find(block => block.content.from <= line.from && block.content.to >= line.from)
+    if (block) {
+        const firstBlockLine = state.doc.lineAt(block.content.from).number
+        return {
+            line: line.number - firstBlockLine + 1,
+            col: pos - line.from + 1,
+            length: line.length,
+        }
+    }
+    return null
+}
 
 const blockLineNumbers = lineNumbers({
     formatNumber(lineNo, state) {
         if (state.doc.lines >= lineNo) {
-            const lineOffset = state.doc.line(lineNo).from
-            const block = state.facet(blockState).find(block => block.content.from <= lineOffset && block.content.to >= lineOffset)
-            if (block) {
-                const firstBlockLine = state.doc.lineAt(block.content.from).number
-                return lineNo - firstBlockLine + 1
+            const lineInfo = getBlockLineFromPos(state, state.doc.line(lineNo).from)
+            if (lineInfo !== null) {
+                return lineInfo.line
             }
         }
         return ""
     }
 })
 
-export const noteBlockExtension = () => {
+const emitCursorChange = (element) => ViewPlugin.fromClass(
+    class {
+        update(update) {
+            if (update.selectionSet) {
+                const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
+                const block = getActiveNoteBlock(update.state)
+                element.dispatchEvent(new SelectionChangeEvent({
+                    cursorLine,
+                    language: block?.language.name,
+                    languageAuto: block?.language.auto,
+                }))
+            }
+        }
+    }
+)
+
+export const noteBlockExtension = (element) => {
     return [
         blockState,
         noteBlockWidget(),
@@ -270,5 +298,6 @@ export const noteBlockExtension = () => {
         preventFirstBlockFromBeingDeleted,
         preventSelectionBeforeFirstBlock,
         blockLineNumbers,
+        emitCursorChange(element),
     ]
 }

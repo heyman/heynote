@@ -2,6 +2,9 @@ import { EditorView } from '@codemirror/view';
 
 
 export const heynoteBase = EditorView.theme({
+    "&.cm-editor.cm-focused": {
+        outline: "none",
+    },
     ".cm-content": {
         paddingTop: 4,
     },

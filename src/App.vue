@@ -1,51 +1,58 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+    import HelloWorld from './components/HelloWorld.vue'
+    import StatusBar from './components/StatusBar.vue'
+    import Editor from './components/Editor.vue'
 
-console.log("[App.vue]", `Hello world from Electron ${process.versions.electron}!`)
+    console.log("[App.vue]", `Hello world from Electron ${process.versions.electron}!`)
+
+    export default {
+        components: {
+            HelloWorld,
+            Editor,
+            StatusBar,
+        },
+
+        data() {
+            return {
+                line: 1,
+                column: 1,
+                language: "plaintext",
+                languageAuto: true,
+            }
+        },
+
+        methods: {
+            onCursorChange(e) {
+                //console.log("onCursorChange:", e)
+                this.line = e.cursorLine.line
+                this.column = e.cursorLine.col
+                this.language = e.language
+                this.languageAuto = e.languageAuto
+            },
+        },
+    }
+
 </script>
 
 <template>
-  <div>
-    <a href="https://www.electronjs.org/" target="_blank">
-      <img src="./assets/electron.svg" class="logo electron" alt="Electron logo" />
-    </a>
-    <a href="https://vitejs.dev/" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Electron + Vite + Vue" />
-  <div class="flex-center">
-    Place static files into the <code>/public</code> folder
-    <img style="width:5em;" src="/node.svg" alt="Node logo">
-  </div>
+    <Editor 
+        @cursorChange="onCursorChange"
+        class="editor"
+    />
+    <StatusBar 
+        :line="line" 
+        :column="column" 
+        :language="language" 
+        :languageAuto="languageAuto"
+        class="status" 
+    />
 </template>
 
-<style>
-.flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo.electron:hover {
-  filter: drop-shadow(0 0 2em #9FEAF9);
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<style scoped lang="sass">
+    .editor
+        height: calc(100% - 21px)
+    .status
+        position: absolute
+        bottom: 0
+        left: 0
 </style>
