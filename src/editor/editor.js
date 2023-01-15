@@ -24,7 +24,7 @@ export class HeynoteEditor {
                 //minimalSetup,
                 customSetup, 
                 
-                this.theme.of("dark" ? heynoteDark : heynoteLight),
+                this.theme.of(theme === "dark" ? heynoteDark : heynoteLight),
                 heynoteBase,
                 indentUnit.of("    "),
                 EditorView.scrollMargins.of(f => {
