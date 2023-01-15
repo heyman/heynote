@@ -49,6 +49,7 @@ async function createWindow() {
         title: 'Main window',
         icon: join(process.env.PUBLIC, 'favicon.ico'),
         //titleBarStyle: 'customButtonsOnHover',
+        autoHideMenuBar: true,
         webPreferences: {
             preload,
             // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
