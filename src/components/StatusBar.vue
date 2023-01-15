@@ -116,10 +116,10 @@
                 +dark-mode
                     opacity: 0.9
                 &.dark
-                    background-image: url("/icons/dark-mode.png")
+                    background-image: url("icons/dark-mode.png")
                 &.light
-                    background-image: url("/icons/light-mode.png")
+                    background-image: url("icons/light-mode.png")
                 &.system
-                    background-image: url("/icons/both-mode.png")
+                    background-image: url("icons/both-mode.png")
 
 </style>
