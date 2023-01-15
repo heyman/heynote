@@ -32,7 +32,7 @@
             },
 
             className() {
-                return `status ${this.theme}`
+                return `status`
             },
         },
     }
@@ -56,6 +56,9 @@
 </template>
 
 <style scoped lang="sass">
+    =dark-mode()
+        @media (prefers-color-scheme: dark)
+            @content
     .status
         box-sizing: border-box
         height: 22px
@@ -70,17 +73,9 @@
         flex-direction: row
         user-select: none
 
-        &.dark
+        +dark-mode
             background: #0e1217
             color: rgba(255, 255, 255, 0.75)
-            .status-block.line-number 
-                color: rgba(255, 255, 255, 0.55)
-                .num
-                    color: rgba(255, 255, 255, 0.75)
-            .status-block.lang .auto
-                color: rgba(255, 255, 255, 0.55)
-            .theme .icon
-                opacity: 0.9
 
         .spacer
             flex-grow: 1
@@ -100,9 +95,14 @@
             color: rgba(255, 255, 255, 0.7)
             .num
                 color: rgba(255, 255, 255, 1.0)
-        .lang
-            .auto
-                color: rgba(255, 255, 255, 0.7)
+            +dark-mode
+                color: rgba(255, 255, 255, 0.55)
+                .num
+                    color: rgba(255, 255, 255, 0.75)
+        .lang .auto
+            color: rgba(255, 255, 255, 0.7)
+            +dark-mode
+                color: rgba(255, 255, 255, 0.55)
         .theme
             padding-top: 0
             padding-bottom: 0
@@ -113,6 +113,8 @@
                 background-size: 14px
                 background-repeat: no-repeat
                 background-position: center center
+                +dark-mode
+                    opacity: 0.9
                 &.dark
                     background-image: url("/icons/dark-mode.png")
                 &.light
