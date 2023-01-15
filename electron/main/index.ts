@@ -1,6 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
+import menu from './menu'
 
 // The built directory structure
 //
@@ -29,8 +30,8 @@ if (!process.env.VITE_DEV_SERVER_URL && !app.requestSingleInstanceLock()) {
     process.exit(0)
 }
 
-// remove default menu
-//Menu.setApplicationMenu(null)
+// Set custom application menu
+Menu.setApplicationMenu(menu)
 
 // Remove electron security warnings
 // This warning only shows in development mode
