@@ -67,7 +67,7 @@
         user-select: none
 
         &.dark
-            background: #0e1713
+            background: #0e1217
             color: rgba(255, 255, 255, 0.75)
             .status-block.line-number 
                 color: rgba(255, 255, 255, 0.55)
