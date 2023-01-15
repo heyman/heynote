@@ -44,7 +44,8 @@
             Col <span class="num">{{ column }}</span>
         </div>
         <div class="spacer"></div>
-        <div class="status-block lang">
+        <div class="status-block theme clickable" @click="$emit('toggleTheme')">{{ theme }}</div>
+        <div class="status-block lang clickable">
             {{ languageName }} 
             <span v-if="languageAuto" class="auto">(auto)</span>
         </div>
@@ -82,15 +83,16 @@
         .status-block
             padding: 2px 12px
             cursor: default
+            &.clickable
+                cursor: pointer
+                &:hover
+                    background: rgba(255,255,255, 0.1)
             &.line-number
                 color: rgba(255, 255, 255, 0.7)
                 .num
                     color: rgba(255, 255, 255, 1.0)
             &.lang
-                cursor: pointer
                 .auto
                     color: rgba(255, 255, 255, 0.7)
-                &:hover
-                    background: rgba(255,255,255, 0.1)
 
 </style>

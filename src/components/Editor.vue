@@ -17,12 +17,18 @@
                 })
             })
 
-            const editor = new HeynoteEditor({
+            this.editor = new HeynoteEditor({
                 element: this.$refs.editor,
                 //content: "\n∞∞∞text\n",
                 content: initialData,
                 theme: this.theme,
             })
+        },
+
+        watch: {
+            theme(newTheme) {
+                this.editor.setTheme(newTheme)
+            },
         },
     }
 </script>

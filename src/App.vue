@@ -47,6 +47,7 @@
         :language="language" 
         :languageAuto="languageAuto"
         :theme="theme"
+        @toggleTheme="theme = theme === 'dark' ? 'light' : 'dark'"
         class="status" 
     />
 </template>

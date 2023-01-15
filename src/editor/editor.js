@@ -14,16 +14,17 @@ import { languageDetection } from "./language-detection/autodetect.js"
 
 export class HeynoteEditor {
     constructor({element, content, focus=true, theme="light"}) {
+        this.theme = new Compartment
+
         this.state = EditorState.create({
             doc: content || "",
             extensions: [
                 heynoteKeymap,
 
                 //minimalSetup,
-                
                 customSetup, 
                 
-                theme === "dark" ? heynoteDark : heynoteLight,
+                this.theme.of("dark" ? heynoteDark : heynoteLight),
                 heynoteBase,
                 indentUnit.of("    "),
                 EditorView.scrollMargins.of(f => {
@@ -55,6 +56,12 @@ export class HeynoteEditor {
             })
             this.view.focus()
         }
+    }
+
+    setTheme(theme) {
+        this.view.dispatch({
+            effects: this.theme.reconfigure(theme === "dark" ? heynoteDark : heynoteLight),
+        })
     }
 }
 
