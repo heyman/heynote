@@ -1,11 +1,22 @@
 <script>
     import { ref, shallowRef } from 'vue'
     import { HeynoteEditor } from '../editor/editor.js'
-    import initialData from "../editor/fixture.js"
+    import testContent from "../editor/fixture.js"
+
+    const initialContent = `
+∞∞∞text-a
+Welcome to Heynote!
+
+[⌘ + Enter]        Insert new note block
+[⌘ + A]            Select all text in a note block. Press again to select the whole scratchpad
+[⌘ + ⌥ + Up/Down]  Add additional cursor above/below
+∞∞∞text-a
+`
 
     export default {
         props: [
             "theme",
+            "development",
         ],
         mounted() {
             this.$refs.editor.addEventListener("selectionChange", (e) => {
@@ -19,8 +30,7 @@
 
             this.editor = new HeynoteEditor({
                 element: this.$refs.editor,
-                //content: "\n∞∞∞text\n",
-                content: initialData,
+                content: this.development ? testContent : initialContent,
                 theme: this.theme,
             })
         },

@@ -63,7 +63,7 @@ async function createWindow() {
     //nativeTheme.themeSource = "light"
 
     if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
-        win.loadURL(url)
+        win.loadURL(url + '?dev=1')
         // Open devTool if the app is not packaged
         //win.webContents.openDevTools()
     } else {

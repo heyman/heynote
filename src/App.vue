@@ -2,7 +2,7 @@
     import HelloWorld from './components/HelloWorld.vue'
     import StatusBar from './components/StatusBar.vue'
     import Editor from './components/Editor.vue'
-    
+
 
     export default {
         components: {
@@ -20,6 +20,7 @@
                 theme: window.darkMode.initial,
                 initialTheme: window.darkMode.initial,
                 systemTheme: 'system',
+                development: window.location.href.indexOf("dev=1") !== -1,
             }
         },
 
@@ -66,6 +67,7 @@
     <Editor 
         @cursorChange="onCursorChange"
         :theme="theme"
+        :development="development"
         class="editor"
     />
     <StatusBar 
