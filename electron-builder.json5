@@ -35,7 +35,8 @@
         ]
       }
     ],
-    "artifactName": "${productName}_${version}.${ext}"
+    "artifactName": "${productName}_${version}.${ext}",
+    "icon": "public/favicon.ico"
   },
   "nsis": {
     "oneClick": false,
