@@ -72,20 +72,3 @@ export function changeLanguageTo(state, dispatch, block, language, auto) {
     }
 }
 
-
-export function autoDetectLanguage({ state, dispatch }) {
-    console.log("state:", state)
-    const block = getActiveNoteBlock(state)
-
-    //console.log("content:", state.doc.sliceString(block.content.from, block.content.to))
-    //console.log("langs:", hljs.listLanguages())
-
-    let startTime = new Date();
-    const result = hljs.highlightAuto(state.doc.sliceString(block.content.from, block.content.to), ["json", "python", "javascript", "html", "sql", "java", "plaintext"])
-    console.log("took:", new Date() - startTime)
-    console.log("highlight.js result", result)
-    if (result.language) {
-        changeLanguageTo(state, dispatch, block, HIGHLIGHTJS_TO_TOKEN[result.language], true)
-    }
-}
-
