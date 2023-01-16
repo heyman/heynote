@@ -1,6 +1,20 @@
 importScripts("highlight.min.js")
 
-const HIGHLIGHTJS_LANGUAGES = ["json", "python", "javascript", "html", "sql", "java", "plaintext"]
+const HIGHLIGHTJS_LANGUAGES = [
+    "json", 
+    "python", 
+    "javascript", 
+    "html", 
+    "sql", 
+    "java", 
+    "plaintext", 
+    "cpp", 
+    "php", 
+    "css", 
+    "markdown",
+    "xml",
+    "rust",
+]
 
 onmessage = (event) => {
     //console.log("worker received message:", event.data)

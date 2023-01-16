@@ -8,6 +8,9 @@ import { javaLanguage } from "@codemirror/lang-java"
 import { lezerLanguage } from "@codemirror/lang-lezer"
 import { phpLanguage } from "@codemirror/lang-php"
 import { cssLanguage } from "@codemirror/lang-css"
+import { cppLanguage } from "@codemirror/lang-cpp"
+import { xmlLanguage } from "@codemirror/lang-xml"
+import { rustLanguage } from "@codemirror/lang-rust"
 
 
 class Language {
@@ -28,8 +31,12 @@ export const LANGUAGES = [
     new Language("sql", "SQL", StandardSQL.language.parser, "sql"),
     new Language("markdown", "Markdown", markdownLanguage.parser, "markdown"),
     new Language("java", "Java", javaLanguage.parser, "java"),
-    new Language("lezer", "Lezer", lezerLanguage.parser, "lezer"),
+    //new Language("lezer", "Lezer", lezerLanguage.parser, "lezer"),
     new Language("php", "PHP", phpLanguage.parser, "php"),
     new Language("css", "CSS", cssLanguage.parser, "css"),
+    new Language("xml", "XML", xmlLanguage.parser, "xml"),
+    new Language("cpp", "C++", cppLanguage.parser, "cpp"),
+    new Language("rust", "Rust", rustLanguage.parser, "rust"),
+
 ]
 
