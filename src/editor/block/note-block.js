@@ -220,7 +220,6 @@ const blockLayer = layer({
 
 
 const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
-    //console.log("annotations:", tr.annotation(heynoteEvent), tr.annotations.some(a => tr.annotation(heynoteEvent))) 
     if (!tr.annotations.some(a => a.type === heynoteEvent) && firstBlockDelimiterSize) {
         return [0, firstBlockDelimiterSize]
     }
@@ -276,7 +275,10 @@ const blockLineNumbers = lineNumbers({
 const emitCursorChange = (element) => ViewPlugin.fromClass(
     class {
         update(update) {
-            if (update.selectionSet) {
+            // if the selection changed or the language changed (can happen without selection change), 
+            // emit a selection change event
+            const langChange = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE))
+            if (update.selectionSet || langChange) {
                 const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
                 const block = getActiveNoteBlock(update.state)
                 element.dispatchEvent(new SelectionChangeEvent({
