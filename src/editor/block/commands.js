@@ -5,7 +5,7 @@ import {
 } from "@codemirror/commands"
 import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { HIGHLIGHTJS_TO_TOKEN } from "../languages"
-import { blockState, getActiveNoteBlock } from "./note-block"
+import { blockState, getActiveNoteBlock } from "./block"
 import { levenshtein_distance } from "../language-detection/levenshtein"
 
 

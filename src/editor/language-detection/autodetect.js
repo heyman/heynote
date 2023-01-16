@@ -1,7 +1,7 @@
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "codemirror";
 import { redoDepth } from "@codemirror/commands";
-import { getActiveNoteBlock, blockState } from "../block/note-block";
+import { getActiveNoteBlock, blockState } from "../block/block";
 import { levenshtein_distance } from "./levenshtein";
 import { HIGHLIGHTJS_TO_TOKEN } from "../languages";
 import { changeLanguageTo } from "../block/commands";

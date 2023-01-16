@@ -7,7 +7,7 @@ import { heynoteDark } from "./theme/dark.js"
 import { heynoteBase } from "./theme/base.js"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
-import { noteBlockExtension } from "./block/note-block.js"
+import { noteBlockExtension } from "./block/block.js"
 import { heynoteKeymap } from "./keymap.js"
 import { languageDetection } from "./language-detection/autodetect.js"
 
