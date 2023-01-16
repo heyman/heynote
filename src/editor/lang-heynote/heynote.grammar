@@ -11,7 +11,7 @@ NoteDelimiter {
 
 @tokens {
     noteDelimiterMark { "∞∞∞" }
-    NoteLanguage { "text" | "javascript" | "json" | "python" | "html" | "sql" | "markdown" | "java" | "lezer" | "php" }
+    NoteLanguage { "text" | "javascript" | "json" | "python" | "html" | "sql" | "markdown" | "java" | "lezer" | "php" | "css" }
     Auto { "-a" }
     noteDelimiterEnter { "\n" }
     //NoteContent { String }

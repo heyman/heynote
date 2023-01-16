@@ -11,19 +11,9 @@ import { lezerLanguage } from "@codemirror/lang-lezer"
 import { phpLanguage } from "@codemirror/lang-php"
 
 import { NoteContent, NoteLanguage } from "./parser.terms.js"
+import { LANGUAGES } from "../languages.js"
 
-
-const languageMapping = {
-    "json": jsonLanguage.parser,
-    "javascript": javascriptLanguage.parser,
-    "python": pythonLanguage.parser,
-    "html": htmlLanguage.parser,
-    "sql": StandardSQL.language.parser,
-    "markdown": markdownLanguage.parser,
-    "java": javaLanguage.parser,
-    "lezer": lezerLanguage.parser,
-    "php": phpLanguage.parser,
-}
+const languageMapping = Object.fromEntries(LANGUAGES.map(l => [l.token, l.parser]))
 
 
 export function configureNesting() {
@@ -33,7 +23,7 @@ export function configureNesting() {
             let noteLang = node.node.parent.firstChild.getChildren(NoteLanguage)[0]
             let langName = input.read(noteLang?.from, noteLang?.to)
             //console.log("langName:", langName)
-            if (langName in languageMapping) {
+            if (langName in languageMapping && languageMapping[langName] !== null) {
                 //console.log("found parser for language:", langName)
                 return {
                     parser:languageMapping[langName],

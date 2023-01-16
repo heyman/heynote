@@ -3,9 +3,11 @@ import { EditorView } from "codemirror";
 import { redoDepth } from "@codemirror/commands";
 import { getActiveNoteBlock, blockState } from "../block/block";
 import { levenshtein_distance } from "./levenshtein";
-import { HIGHLIGHTJS_TO_TOKEN } from "../languages";
+import { LANGUAGES } from "../languages";
 import { changeLanguageTo } from "../block/commands";
 import { LANGUAGE_CHANGE } from "../annotation";
+
+const HIGHLIGHTJS_TO_TOKEN = Object.fromEntries(LANGUAGES.map(l => [l.highlightjs,l.token]))
 
 
 export function languageDetection(getView) {

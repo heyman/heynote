@@ -1,16 +1,6 @@
 <script>
-    const LANGUAGE_NAMES = {
-        "text": "Plain Text",
-        "javascript": "JavaScript",
-        "json": "JSON",
-        "python": "Python",
-        "html": "HTML",
-        "sql": "SQL",
-        "markdown": "Markdown",
-        "java": "Java",
-        "lezer": "Lezer",
-        "php": "PHP",
-    }
+    import { LANGUAGES } from '../editor/languages.js'
+    const LANGUAGE_NAMES = Object.fromEntries(LANGUAGES.map(l => [l.token, l.name]))
 
     export default {
         props: [

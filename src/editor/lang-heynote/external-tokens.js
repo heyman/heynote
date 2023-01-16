@@ -1,10 +1,14 @@
 import { ExternalTokenizer } from '@lezer/lr'
 import { NoteContent } from "./parser.terms.js"
+import { LANGUAGES } from '../languages.js';
 
 const EOF = -1;
 
 const FIRST_TOKEN_CHAR = "\n".charCodeAt(0)
 const SECOND_TOKEN_CHAR = "∞".charCodeAt(0)
+
+const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
+const tokenRegEx = new RegExp(`^\\n∞∞∞(${languageTokensMatcher})(-a)?\\n`, "g")
 
 export const noteContent = new ExternalTokenizer((input) => {
     let current = input.peek(0);
@@ -22,7 +26,7 @@ export const noteContent = new ExternalTokenizer((input) => {
             for (let i=0; i<18; i++) {
                 potentialLang += String.fromCharCode(input.peek(i));
             }
-            if (potentialLang.match(/^\n∞∞∞(text|javascript|json|python|html|sql|markdown|java|lezer|php)(-a)?\n/g)) {
+            if (potentialLang.match(tokenRegEx)) {
                 input.acceptToken(NoteContent);
                 return;
             }
