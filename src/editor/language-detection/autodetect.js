@@ -1,5 +1,6 @@
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "codemirror";
+import { redoDepth } from "@codemirror/commands";
 import { getActiveNoteBlock, blockState } from "../block/note-block";
 import { levenshtein_distance } from "./levenshtein";
 import { HIGHLIGHTJS_TO_TOKEN } from "../languages";
@@ -28,8 +29,12 @@ export function languageDetection(getView) {
                 const threshold = content.length * 0.1
                 if (levenshtein_distance(content, event.data.content) <= threshold) {
                     // the content has not changed significantly so it's safe to change the language
-                    console.log("Changing language to", newLang)
-                    changeLanguageTo(state, view.dispatch, block, newLang, true)
+                    if (redoDepth(state) === 0) {
+                        console.log("Changing language to", newLang)
+                        changeLanguageTo(state, view.dispatch, block, newLang, true)
+                    } else {
+                        console.log("Not changing language because the user has undo:ed and has redo history")
+                    }
                 } else {
                     console.log("Content has changed significantly, not setting new language")
                 }
@@ -67,7 +72,7 @@ export function languageDetection(getView) {
                 }
 
                 const content = update.state.doc.sliceString(block.content.from, block.content.to)
-                if (content === "") {
+                if (content === "" && redoDepth(update.state) === 0) {
                     // if content is cleared, set language to plaintext
                     const view = getView()
                     const block = getActiveNoteBlock(view.state)
