@@ -42,7 +42,6 @@
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false,
-    "icon": "public/favicon.png"
+    "deleteAppDataOnUninstall": false
   }
 }
