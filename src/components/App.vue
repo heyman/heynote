@@ -49,6 +49,7 @@
                 }
                 window.darkMode.set(newTheme)
                 this.systemTheme = newTheme
+                this.$refs.editor.focus()
             },
 
             onCursorChange(e) {
