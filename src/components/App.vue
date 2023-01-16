@@ -1,6 +1,6 @@
 <script>
-    import StatusBar from './components/StatusBar.vue'
-    import Editor from './components/Editor.vue'
+    import StatusBar from './StatusBar.vue'
+    import Editor from './Editor.vue'
 
 
     export default {
