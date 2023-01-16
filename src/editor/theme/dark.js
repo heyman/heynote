@@ -23,12 +23,13 @@ base0C = '#d08770', // orange
 base0D = '#ebcb8b', // yellow
 base0E = '#a3be8c', // green
 base0F = '#b48ead'; // purple
-const invalid = '#d30102', darkBackground = '#252a33', background = '#1e222a', tooltipBackground = base01, selection = base03, cursor = '#fff';
+const invalid = '#d30102', darkBackground = '#252a33', background = '#1e222a', tooltipBackground = base01, cursor = '#fff';
 const highlightBackground = 'rgba(255,255,255,0.04)';
 
 const lineNumberColor = 'rgba(255,255,255, 0.15)';
 const commentColor = '#888d97';
 const matchingBracket = 'rgba(255,255,255,0.1)';
+const selection = "#0865a9";
 
 
 const darkTheme = EditorView.theme({
@@ -54,8 +55,8 @@ const darkTheme = EditorView.theme({
     },
     '.cm-activeLine': { backgroundColor: highlightBackground },
     '.cm-selectionMatch': {
-        backgroundColor: base05,
-        color: base01
+        backgroundColor: "#50606D",
+        //color: base01
     },
     '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
         outline: `0.5px solid ${base07}`
