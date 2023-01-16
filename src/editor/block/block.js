@@ -276,7 +276,7 @@ const blockLineNumbers = lineNumbers({
     }
 })
 
-const emitCursorChange = (element) => ViewPlugin.fromClass(
+const emitCursorChange = (editor) => ViewPlugin.fromClass(
     class {
         update(update) {
             // if the selection changed or the language changed (can happen without selection change), 
@@ -285,7 +285,7 @@ const emitCursorChange = (element) => ViewPlugin.fromClass(
             if (update.selectionSet || langChange) {
                 const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
                 const block = getActiveNoteBlock(update.state)
-                element.dispatchEvent(new SelectionChangeEvent({
+                editor.element.dispatchEvent(new SelectionChangeEvent({
                     cursorLine,
                     language: block?.language.name,
                     languageAuto: block?.language.auto,
@@ -295,7 +295,7 @@ const emitCursorChange = (element) => ViewPlugin.fromClass(
     }
 )
 
-export const noteBlockExtension = (element) => {
+export const noteBlockExtension = (editor) => {
     return [
         blockState,
         noteBlockWidget(),
@@ -304,6 +304,6 @@ export const noteBlockExtension = (element) => {
         preventFirstBlockFromBeingDeleted,
         preventSelectionBeforeFirstBlock,
         blockLineNumbers,
-        emitCursorChange(element),
+        emitCursorChange(editor),
     ]
 }

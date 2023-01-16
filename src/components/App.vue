@@ -1,12 +1,13 @@
 <script>
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
-
+    import LanguageSelector from './LanguageSelector.vue'
 
     export default {
         components: {
             Editor,
             StatusBar,
+            LanguageSelector,
         },
 
         data() {
@@ -19,6 +20,7 @@
                 initialTheme: window.darkMode.initial,
                 systemTheme: 'system',
                 development: window.location.href.indexOf("dev=1") !== -1,
+                showLanguageSelector: false,
             }
         },
 
@@ -56,35 +58,65 @@
                 this.language = e.language
                 this.languageAuto = e.languageAuto
             },
+
+            openLanguageSelector() {
+                this.showLanguageSelector = true
+            },
+
+            closeLanguageSelector() {
+                this.showLanguageSelector = false
+                this.$refs.editor.focus()
+            },
+
+            onLanguageSelect(language) {
+                this.showLanguageSelector = false
+                this.$refs.editor.setLanguage(language)
+            },
         },
     }
 
 </script>
 
 <template>
-    <Editor 
-        @cursorChange="onCursorChange"
-        :theme="theme"
-        :development="development"
-        class="editor"
-    />
-    <StatusBar 
-        :line="line" 
-        :column="column" 
-        :language="language" 
-        :languageAuto="languageAuto"
-        :theme="theme"
-        :systemTheme="systemTheme"
-        @toggleTheme="toggleTheme"
-        class="status" 
-    />
+    <div class="container">
+        <Editor 
+            @cursorChange="onCursorChange"
+            :theme="theme"
+            :development="development"
+            class="editor"
+            ref="editor"
+            @openLanguageSelector="openLanguageSelector"
+        />
+        <StatusBar 
+            :line="line" 
+            :column="column" 
+            :language="language" 
+            :languageAuto="languageAuto"
+            :theme="theme"
+            :systemTheme="systemTheme"
+            @toggleTheme="toggleTheme"
+            @openLanguageSelector="openLanguageSelector"
+            class="status" 
+        />
+        <div class="overlay">
+            <LanguageSelector 
+                v-if="showLanguageSelector" 
+                @select="onLanguageSelect"
+                @close="closeLanguageSelector"
+            />
+        </div>
+    </div>
 </template>
 
 <style scoped lang="sass">
-    .editor
-        height: calc(100% - 21px)
-    .status
-        position: absolute
-        bottom: 0
-        left: 0
+    .container
+        width: 100%
+        height: 100%
+        position: relative
+        .editor
+            height: calc(100% - 21px)
+        .status
+            position: absolute
+            bottom: 0
+            left: 0
 </style>

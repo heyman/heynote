@@ -8,18 +8,20 @@ import { heynoteBase } from "./theme/base.js"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./block/block.js"
+import { changeCurrentBlockLanguage } from "./block/commands.js"
 import { heynoteKeymap } from "./keymap.js"
 import { languageDetection } from "./language-detection/autodetect.js"
 
 
 export class HeynoteEditor {
     constructor({element, content, focus=true, theme="light"}) {
+        this.element = element
         this.theme = new Compartment
 
-        this.state = EditorState.create({
+        const state = EditorState.create({
             doc: content || "",
             extensions: [
-                heynoteKeymap,
+                heynoteKeymap(this),
 
                 //minimalSetup,
                 customSetup, 
@@ -31,7 +33,7 @@ export class HeynoteEditor {
                     return {top: 80, bottom: 80}
                 }),
                 heynoteLang(),
-                noteBlockExtension(element),
+                noteBlockExtension(this),
                 languageDetection(() => this.view),
                 
                 // set cursor blink rate to 1 second
@@ -45,7 +47,7 @@ export class HeynoteEditor {
         })
 
         this.view = new EditorView({
-            state: this.state,
+            state: state,
             parent: element,
         })
 
@@ -58,10 +60,22 @@ export class HeynoteEditor {
         }
     }
 
+    focus() {
+        this.view.focus()
+    }
+
     setTheme(theme) {
         this.view.dispatch({
             effects: this.theme.reconfigure(theme === "dark" ? heynoteDark : heynoteLight),
         })
+    }
+
+    openLanguageSelector() {
+        this.element.dispatchEvent(new Event("open-language-selector"))
+    }
+
+    setCurrentLanguage(lang, auto=false) {
+        changeCurrentBlockLanguage(this.view.state, this.view.dispatch, lang, auto)
     }
 }
 

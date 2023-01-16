@@ -10,6 +10,7 @@
 Welcome to Heynote!
 
 [${modChar} + Enter]        Insert new note block
+[${modChar} + L]            Change block language
 [${modChar} + Down]         Goto next block
 [${modChar} + Up]           Goto previous block
 [${modChar} + A]            Select all text in a note block. Press again to select the whole scratchpad
@@ -32,6 +33,10 @@ Welcome to Heynote!
                 })
             })
 
+            this.$refs.editor.addEventListener("openLanguageSelector", (e) => {
+                this.$emit("openLanguageSelector")
+            })
+
             this.editor = new HeynoteEditor({
                 element: this.$refs.editor,
                 content: this.development ? testContent : initialContent,
@@ -42,6 +47,21 @@ Welcome to Heynote!
         watch: {
             theme(newTheme) {
                 this.editor.setTheme(newTheme)
+            },
+        },
+
+        methods: {
+            setLanguage(language) {
+                if (language === "auto") {
+                    this.editor.setCurrentLanguage("text", true)
+                } else {
+                    this.editor.setCurrentLanguage(language, false)
+                }
+                this.editor.focus()
+            },
+
+            focus() {
+                this.editor.focus()
             },
         },
     }

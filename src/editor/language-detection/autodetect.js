@@ -11,7 +11,7 @@ const HIGHLIGHTJS_TO_TOKEN = Object.fromEntries(LANGUAGES.map(l => [l.highlightj
 
 
 export function languageDetection(getView) {
-    const previousBlockContent = []
+    const previousBlockContent = {}
     let idleCallbackId = null
 
     const detectionWorker = new Worker('langdetect-worker.js?worker');
@@ -50,11 +50,6 @@ export function languageDetection(getView) {
                 cancelIdleCallback(idleCallbackId)
                 idleCallbackId = null
             }
-            if (update.transactions.every(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE))) {
-                // don't run language detection if the change was triggered by a language change
-                //console.log("ignoring check after language change")
-                return
-            }
 
             idleCallbackId = requestIdleCallback(() => {
                 idleCallbackId = null
@@ -69,7 +64,12 @@ export function languageDetection(getView) {
                         break
                     }
                 }
-                if (block === null || block.language.auto === false) {
+                if (block === null) {
+                    return
+                } else if (block.language.auto === false) {
+                    // if language is not auto, set it's previousBlockContent to null so that we'll trigger a language detection
+                    // immediately if the user changes the language to auto
+                    delete previousBlockContent[idx]
                     return
                 }
 

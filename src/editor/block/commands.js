@@ -76,6 +76,11 @@ export function changeLanguageTo(state, dispatch, block, language, auto) {
     }
 }
 
+export function changeCurrentBlockLanguage(state, dispatch, language, auto) {
+    const block = getActiveNoteBlock(state)
+    changeLanguageTo(state, dispatch, block, language, auto)
+}
+
 export function gotoPreviousBlock({state, dispatch}) {
     const blocks = state.facet(blockState)
     const newSelection = EditorSelection.create(state.selection.ranges.map(sel => {

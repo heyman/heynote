@@ -35,7 +35,10 @@
             Col <span class="num">{{ column }}</span>
         </div>
         <div class="spacer"></div>
-        <div class="status-block lang clickable">
+        <div 
+            @click="$emit('openLanguageSelector')"
+            class="status-block lang clickable"
+        >
             {{ languageName }} 
             <span v-if="languageAuto" class="auto">(auto)</span>
         </div>
@@ -61,6 +64,7 @@
         padding-right: 0px
         display: flex
         flex-direction: row
+        align-items: center
         user-select: none
 
         +dark-mode
