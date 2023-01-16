@@ -1,12 +1,10 @@
 <script>
-    import HelloWorld from './components/HelloWorld.vue'
     import StatusBar from './components/StatusBar.vue'
     import Editor from './components/Editor.vue'
 
 
     export default {
         components: {
-            HelloWorld,
             Editor,
             StatusBar,
         },
