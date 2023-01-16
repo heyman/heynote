@@ -1,11 +1,12 @@
 import { EditorView } from "@codemirror/view"
+import { EditorSelection } from "@codemirror/state"
 import { 
     selectAll as defaultSelectAll, 
     moveLineUp as defaultMoveLineUp,
 } from "@codemirror/commands"
 import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { HIGHLIGHTJS_TO_TOKEN } from "../languages"
-import { blockState, getActiveNoteBlock } from "./block"
+import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
 import { levenshtein_distance } from "../language-detection/levenshtein"
 
 
@@ -70,5 +71,43 @@ export function changeLanguageTo(state, dispatch, block, language, auto) {
     } else {
         throw new Error("Invalid delimiter: " + state.doc.sliceString(block.delimiter.from, block.delimiter.to))
     }
+}
+
+export function gotoPreviousBlock({state, dispatch}) {
+    const blocks = state.facet(blockState)
+    const newSelection = EditorSelection.create(state.selection.ranges.map(sel => {
+        const block = getNoteBlockFromPos(state, sel.head)
+        if (sel.head === block.content.from) {
+            const index = blocks.indexOf(block)
+            const previousBlockIndex = index > 0 ? index - 1 : 0
+            return EditorSelection.cursor(blocks[previousBlockIndex].content.from)
+        } else {
+            return EditorSelection.cursor(block.content.from)
+        }
+    }), state.selection.mainIndex)
+    dispatch(state.update({
+        selection: newSelection,
+        scrollIntoView: true,
+    }))
+    return true
+}
+
+export function gotoNextBlock({state, dispatch}) {
+    const blocks = state.facet(blockState)
+    const newSelection = EditorSelection.create(state.selection.ranges.map(sel => {
+        const block = getNoteBlockFromPos(state, sel.head)
+        if (sel.head === block.content.to) {
+            const index = blocks.indexOf(block)
+            const previousBlockIndex = index < blocks.length - 1 ? index + 1 : index
+            return EditorSelection.cursor(blocks[previousBlockIndex].content.to)
+        } else {
+            return EditorSelection.cursor(block.content.to)
+        }
+    }), state.selection.mainIndex)
+    dispatch(state.update({
+        selection: newSelection,
+        scrollIntoView: true,
+    }))
+    return true
 }
 

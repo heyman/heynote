@@ -1,6 +1,6 @@
 import { keymap } from "@codemirror/view"
 import { indentWithTab, insertTab, indentLess, indentMore } from "@codemirror/commands"
-import { insertNewNote, moveLineUp, selectAll } from "./block/commands.js";
+import { insertNewNote, moveLineUp, selectAll, gotoPreviousBlock, gotoNextBlock } from "./block/commands.js";
 
 export const heynoteKeymap = keymap.of([
     {
@@ -28,5 +28,15 @@ export const heynoteKeymap = keymap.of([
         key: "Alt-ArrowUp",
         preventDefault: true,
         run: moveLineUp,
+    },
+    {
+        key: "Mod-ArrowUp",
+        preventDefault: true,
+        run: gotoPreviousBlock,
+    },
+    {
+        key: "Mod-ArrowDown",
+        preventDefault: true,
+        run: gotoNextBlock,
     },
 ])

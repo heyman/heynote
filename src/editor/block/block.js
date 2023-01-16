@@ -72,6 +72,10 @@ export function getActiveNoteBlock(state) {
     return state.facet(blockState).find(block => block.content.from <= range.from && block.content.to >= range.from)
 }
 
+export function getNoteBlockFromPos(state, pos) {
+    return state.facet(blockState).find(block => block.content.from <= pos && block.content.to >= pos)
+}
+
 
 class NoteBlockStart extends WidgetType {
     constructor(isFirst) {
