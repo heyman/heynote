@@ -1,30 +1,8 @@
-const { contextBridge, ipcRenderer } = require('electron')
+const { contextBridge } = require('electron')
+import darkMode from "./theme-mode"
 
-const getComputedTheme = () => window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"
-const mediaMatch = window.matchMedia('(prefers-color-scheme: dark)')
-let darkModeChangeListener = null
-
-contextBridge.exposeInMainWorld('darkMode', {
-    set: (mode) => ipcRenderer.invoke('dark-mode:set', mode),
-    get: async () => {
-        const mode = await ipcRenderer.invoke('dark-mode:get')
-        return {
-            theme: mode,
-            computed: getComputedTheme(),
-        }
-    },
-    onChange: (callback) => {
-        darkModeChangeListener = (event) => {
-            callback(event.matches ? "dark" : "light")
-        }
-        mediaMatch.addEventListener('change', darkModeChangeListener)
-        return mediaMatch
-    },
-    removeListener() {
-        mediaMatch.removeEventListener('change', darkModeChangeListener)
-    },
-    initial: getComputedTheme(),
 })
+contextBridge.exposeInMainWorld('darkMode', darkMode)
 
 
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
