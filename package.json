@@ -44,7 +44,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "codemirror": "^6.0.1",
-    "electron": "^22.0.0",
+    "electron": "^22.0.2",
     "electron-builder": "^23.6.0",
     "sass": "^1.57.1",
     "typescript": "^4.9.4",
