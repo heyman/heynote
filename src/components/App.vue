@@ -69,7 +69,7 @@
                 this.$refs.editor.focus()
             },
 
-            onLanguageSelect(language) {
+            onSelectLanguage(language) {
                 this.showLanguageSelector = false
                 this.$refs.editor.setLanguage(language)
             },
@@ -102,7 +102,7 @@
         <div class="overlay">
             <LanguageSelector 
                 v-if="showLanguageSelector" 
-                @select="onLanguageSelect"
+                @selectLanguage="onSelectLanguage"
                 @close="closeLanguageSelector"
             />
         </div>

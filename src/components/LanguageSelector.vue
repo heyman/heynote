@@ -41,12 +41,16 @@
                     this.selected = Math.max(this.selected - 1, 0)
                     event.preventDefault()
                 } else if (event.key === "Enter") {
-                    this.$emit("select", this.filteredItems[this.selected].token)
+                    this.selectItem(this.filteredItems[this.selected].token)
                     event.preventDefault()
                 } else if (event.key === "Escape") {
                     this.$emit("close")
                     event.preventDefault()
                 }
+            },
+
+            selectItem(token) {
+                this.$emit("selectLanguage", token)
             },
 
             onInput(event) {
@@ -78,7 +82,7 @@
                 v-for="item, idx in filteredItems"
                 :key="item.token"
                 :class="idx === selected ? 'selected' : ''"
-                @click="$emit('select', item.token)"
+                @click="selectItem(item.token)"
             >
                 {{ item.name }}
             </li>
