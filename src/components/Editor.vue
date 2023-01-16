@@ -3,13 +3,17 @@
     import { HeynoteEditor } from '../editor/editor.js'
     import testContent from "../editor/fixture.js"
 
+    const modChar = window.platform.isMac ? "⌘" : "Ctrl"
+
     const initialContent = `
 ∞∞∞text-a
 Welcome to Heynote!
 
-[⌘ + Enter]        Insert new note block
-[⌘ + A]            Select all text in a note block. Press again to select the whole scratchpad
-[⌘ + ⌥ + Up/Down]  Add additional cursor above/below
+[${modChar} + Enter]        Insert new note block
+[${modChar} + Down]         Goto next block
+[${modChar} + Up]           Goto previous block
+[${modChar} + A]            Select all text in a note block. Press again to select the whole scratchpad
+[${modChar} + ⌥ + Up/Down]  Add additional cursor above/below
 ∞∞∞text-a
 `
 

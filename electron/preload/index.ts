@@ -1,6 +1,11 @@
 const { contextBridge } = require('electron')
 import darkMode from "./theme-mode"
+import { isMac, isWindows, isLinux } from "./detect-platform"
 
+contextBridge.exposeInMainWorld("platform", {
+    isMac,
+    isWindows,
+    isLinux,
 })
 contextBridge.exposeInMainWorld('darkMode', darkMode)
 
