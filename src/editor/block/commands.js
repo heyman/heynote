@@ -46,6 +46,8 @@ export const selectAll = ({ state, dispatch }) => {
  * Prevent moveLineUp from executing if any cursor is on the first line of the first note
  */
 export function moveLineUp({ state, dispatch }) {
+    if (state.readOnly)
+        return false
     if (state.selection.ranges.some(range => {
         let startLine = state.doc.lineAt(range.from)
         return startLine.from <= state.facet(blockState)[0].content.from
@@ -57,6 +59,8 @@ export function moveLineUp({ state, dispatch }) {
 
 
 export function changeLanguageTo(state, dispatch, block, language, auto) {
+    if (state.readOnly)
+        return false
     const delimRegex = /^\n∞∞∞[a-z]{0,16}(-a)?\n/g
     if (state.doc.sliceString(block.delimiter.from, block.delimiter.to).match(delimRegex)) {
         //console.log("changing language to", language)
