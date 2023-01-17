@@ -6,7 +6,7 @@
     const modChar = window.platform.isMac ? "⌘" : "Ctrl"
 
     const initialContent = `
-∞∞∞text-a
+∞∞∞text
 Welcome to Heynote!
 
 [${modChar} + Enter]        Insert new note block
