@@ -9,7 +9,7 @@
 ∞∞∞text
 Welcome to Heynote!
 
-[${modChar} + Enter]        Insert new note block
+[${modChar} + Enter]        Insert new note block at cursor
 [${modChar} + L]            Change block language
 [${modChar} + Down]         Goto next block
 [${modChar} + Up]           Goto previous block
