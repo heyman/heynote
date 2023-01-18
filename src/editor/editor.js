@@ -11,10 +11,11 @@ import { noteBlockExtension } from "./block/block.js"
 import { changeCurrentBlockLanguage } from "./block/commands.js"
 import { heynoteKeymap } from "./keymap.js"
 import { languageDetection } from "./language-detection/autodetect.js"
+import { autoSaveContent } from "./save.js"
 
 
 export class HeynoteEditor {
-    constructor({element, content, focus=true, theme="light"}) {
+    constructor({element, content, focus=true, theme="light", saveFunction=null}) {
         this.element = element
         this.theme = new Compartment
 
@@ -43,6 +44,8 @@ export class HeynoteEditor {
                 EditorView.editorAttributes.of((view) => {
                     return {class: view.state.facet(EditorView.darkTheme) ? "dark-theme" : "light-theme"}
                 }),
+
+                saveFunction ? autoSaveContent(saveFunction, 2000) : [],
             ],
         })
 
@@ -76,6 +79,10 @@ export class HeynoteEditor {
 
     setCurrentLanguage(lang, auto=false) {
         changeCurrentBlockLanguage(this.view.state, this.view.dispatch, lang, auto)
+    }
+
+    getContent() {
+        return this.view.state.sliceDoc()
     }
 }
 

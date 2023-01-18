@@ -1,10 +1,21 @@
-/*export default `∞∞∞text
-kuk∞∞∞javascript
-oj∞∞∞prutt
-hej∞∞∞python
-f = lambda: 2 +1`;*/
+import { isMac } from "./detect-platform.js"
 
-export default `
+const modChar = isMac ? "⌘" : "Ctrl"
+
+export const initialContent = `
+∞∞∞text
+Welcome to Heynote!
+
+[${modChar} + Enter]        Insert new note block at cursor
+[${modChar} + L]            Change block language
+[${modChar} + Down]         Goto next block
+[${modChar} + Up]           Goto previous block
+[${modChar} + A]            Select all text in a note block. Press again to select the whole scratchpad
+[${modChar} + ⌥ + Up/Down]  Add additional cursor above/below
+∞∞∞text-a
+`
+
+export const initialDevContent = `
 ∞∞∞text-a
 Welcome to Heynote!
 
@@ -98,4 +109,4 @@ Shopping list:
 - Milk
 - Eggs
 - Bread
-- Cheese`;
+- Cheese`

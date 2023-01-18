@@ -1,6 +1,8 @@
 const { contextBridge } = require('electron')
 import darkMode from "./theme-mode"
-import { isMac, isWindows, isLinux } from "./detect-platform"
+import { isMac, isWindows, isLinux } from "../detect-platform"
+import { ipcRenderer } from "electron"
+import { WINDOW_CLOSE_EVENT } from "../constants"
 
 contextBridge.exposeInMainWorld("platform", {
     isMac,
@@ -8,6 +10,31 @@ contextBridge.exposeInMainWorld("platform", {
     isLinux,
 })
 contextBridge.exposeInMainWorld('darkMode', darkMode)
+
+contextBridge.exposeInMainWorld("heynote", {
+    quit() {
+        console.log("quitting")
+        //ipcRenderer.invoke("app_quit")
+    },
+
+    onWindowClose(callback) {
+        ipcRenderer.on(WINDOW_CLOSE_EVENT, callback)
+    },
+
+    buffer: {
+        async load() {
+            return await ipcRenderer.invoke("buffer-content:load")
+        },
+    
+        async save(content) {
+            return await ipcRenderer.invoke("buffer-content:save", content)
+        },
+
+        async saveAndQuit(content) {
+            return await ipcRenderer.invoke("buffer-content:saveAndQuit", content)
+        },
+    }
+})
 
 
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {

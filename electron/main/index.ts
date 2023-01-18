@@ -1,7 +1,10 @@
 import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
+import * as jetpack from "fs-jetpack";
 import menu from './menu'
+import { initialContent, initialDevContent } from '../initial-content'
+import { WINDOW_CLOSE_EVENT } from '../constants';
 
 // The built directory structure
 //
@@ -43,6 +46,9 @@ let win: BrowserWindow | null = null
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
+const isDev = !!process.env.VITE_DEV_SERVER_URL
+let contentSaved = false
+
 
 async function createWindow() {
     win = new BrowserWindow({
@@ -59,6 +65,15 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: true,
         },
+    })
+
+    win.on("close", (event) => {
+        // Prevent the window from closing, and send a message to the renderer which will in turn
+        // send a message to the main process to save the current buffer and close the window.
+        if (!contentSaved) {
+            event.preventDefault()
+        }
+        win?.webContents.send(WINDOW_CLOSE_EVENT)
     })
 
     //nativeTheme.themeSource = "light"
@@ -108,26 +123,35 @@ app.on('activate', () => {
     }
 })
 
-// New window example arg: new windows url
-ipcMain.handle('open-win', (_, arg) => {
-    const childWindow = new BrowserWindow({
-        webPreferences: {
-            preload,
-            nodeIntegration: true,
-            contextIsolation: false,
-        },
-    })
-
-    if (process.env.VITE_DEV_SERVER_URL) {
-        childWindow.loadURL(`${url}#${arg}`)
-    } else {
-        childWindow.loadFile(indexHtml, { hash: arg })
-    }    
-})
-
-
 ipcMain.handle('dark-mode:set', (event, mode) => {
     nativeTheme.themeSource = mode
 })
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
+
+const bufferPath = isDev ? join(app.getPath("userData"), "buffer-dev.txt") : join(app.getPath("userData"), "buffer.txt")
+
+ipcMain.handle('buffer-content:load', async () =>  {
+    if (jetpack.exists(bufferPath) === "file") {
+        return await jetpack.read(bufferPath, 'utf8')
+    } else {
+        return isDev? initialDevContent : initialContent
+    }
+});
+
+async function save(content) {
+    return await jetpack.write(bufferPath, content, {
+        atomic: true,
+        mode: '600',
+    })
+}
+
+ipcMain.handle('buffer-content:save', async (event, content) =>  {
+    return await save(content)
+});
+
+ipcMain.handle('buffer-content:saveAndQuit', async (event, content) => {
+    await save(content)
+    contentSaved = true
+    app.quit()
+})
