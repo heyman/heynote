@@ -78,7 +78,9 @@ export function languageDetection(getView) {
                     // if content is cleared, set language to plaintext
                     const view = getView()
                     const block = getActiveNoteBlock(view.state)
-                    changeLanguageTo(view.state, view.dispatch, block, "text", true)
+                    if (block.language.name !== "text") {
+                        changeLanguageTo(view.state, view.dispatch, block, "text", true)
+                    }
                 }
                 if (content.length <= 8) {
                     return
