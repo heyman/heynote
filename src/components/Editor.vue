@@ -52,7 +52,7 @@
                         let lists = ''
                         tree.iterate({
                             enter(type) {
-                                lists += `<ul class="testlist"><li>${type.name} (${type.from},${type.to})`
+                                lists += `<ul><li>${type.name} (${type.from},${type.to})`
                             },
                             leave() {
                                 lists += '</ul>'
@@ -104,9 +104,9 @@
         position: absolute
         top: 0
         bottom: 0
-        right: 20px
+        right: 0
         width: 50%
-        background-color: #f1f1f1
+        background-color: rgba(240, 240, 240, 0.85)
         color: #000
         font-size: 12px
         font-family: monospace
@@ -114,5 +114,7 @@
         overflow: auto
 
         ul
-            padding-left: 30px
+            padding-left: 20px
+        > ul
+            padding-left: 0
 </style>
