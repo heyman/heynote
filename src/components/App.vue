@@ -84,6 +84,7 @@
             @cursorChange="onCursorChange"
             :theme="theme"
             :development="development"
+            :debugSyntaxTree="false"
             class="editor"
             ref="editor"
             @openLanguageSelector="openLanguageSelector"

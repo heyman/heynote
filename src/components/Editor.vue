@@ -1,11 +1,20 @@
 <script>
     import { HeynoteEditor } from '../editor/editor.js'
+    import { syntaxTree } from "@codemirror/language"
 
     export default {
         props: [
             "theme",
             "development",
+            "debugSyntaxTree",
         ],
+
+        data() {
+            return {
+                syntaxTreeDebugContent: null,
+            }
+        },
+
         mounted() {
             this.$refs.editor.addEventListener("selectionChange", (e) => {
                 //console.log("selectionChange:", e)
@@ -35,6 +44,25 @@
             window.heynote.onWindowClose(() => {
                 window.heynote.buffer.saveAndQuit(this.editor.getContent())
             })
+
+            // if debugSyntaxTree prop is set, display syntax tree for debugging
+            if (this.debugSyntaxTree) {
+                setTimeout(() => {
+                    function render(tree) {
+                        let lists = ''
+                        tree.iterate({
+                            enter(type) {
+                                lists += `<ul class="testlist"><li>${type.name} (${type.from},${type.to})`
+                            },
+                            leave() {
+                                lists += '</ul>'
+                            }
+                        })
+                        return lists
+                    }
+                    this.syntaxTreeDebugContent = render(syntaxTree(this.editor.view.state))
+                }, 1000)
+            }
         },
 
         watch: {
@@ -61,12 +89,30 @@
 </script>
 
 <template>
-    <div class="editor" ref="editor"></div>
+    <div>
+        <div class="editor" ref="editor"></div>
+        <div 
+            v-if="debugSyntaxTree"
+            v-html="syntaxTreeDebugContent"
+            class="debug-syntax-tree"
+        ></div>
+    </div>
 </template>
 
-<style>
-    .editor {
-        width: 100%;
-        background-color: #f1f1f1;
-    }
+<style lang="sass">
+    .debug-syntax-tree
+        position: absolute
+        top: 0
+        bottom: 0
+        right: 20px
+        width: 50%
+        background-color: #f1f1f1
+        color: #000
+        font-size: 12px
+        font-family: monospace
+        padding: 10px
+        overflow: auto
+
+        ul
+            padding-left: 30px
 </style>
