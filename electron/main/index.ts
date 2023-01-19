@@ -81,7 +81,6 @@ async function createWindow() {
     if (windowConfig.isMaximized) {
         win.maximize()
     }
-    console.log("bounds:", win.getBounds())
 
     win.on("close", (event) => {
         // Prevent the window from closing, and send a message to the renderer which will in turn
