@@ -35,8 +35,11 @@ export const noteContent = new ExternalTokenizer((input) => {
             input.acceptToken(NoteContent, 1);
             return;
         }
-        
-        current = input.advance();
+        if (next !== FIRST_TOKEN_CHAR) {
+            current = input.advance(2);
+        } else {
+            current = input.advance(1);
+        }
         next = input.peek(1);
     }
 });
