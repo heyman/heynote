@@ -55,14 +55,13 @@ let contentSaved = false
 
 
 async function createWindow() {
-    // default window size
+    // read any stored window settings from config, or use defaults
     let windowConfig = {
-        width: 900,
-        height: 680,
-        isMaximized: false,
+        width: CONFIG.get("windowConfig.width", 900) as number,
+        height: CONFIG.get("windowConfig.height", 680) as number,
+        isMaximized: CONFIG.get("windowConfig.isMaximized", false) as boolean,
+        isFullScreen: CONFIG.get("windowConfig.isFullScreen", false) as boolean,
     }
-    // read any stored window settings from config
-    Object.assign(windowConfig, CONFIG.get("windowConfig"))
 
     win = new BrowserWindow(Object.assign({
         title: 'heynote',
@@ -80,10 +79,13 @@ async function createWindow() {
         },
 
     }, windowConfig))
-    
+
     // maximize window if it was maximized last time
     if (windowConfig.isMaximized) {
         win.maximize()
+    }
+    if (windowConfig.isFullScreen) {
+        win.setFullScreen(true)
     }
 
     win.on("close", (event) => {
@@ -95,7 +97,8 @@ async function createWindow() {
         } else {
             // save window config
             Object.assign(windowConfig, {
-                isMaximized: win.isMaximized()
+                isMaximized: win.isMaximized(),
+                isFullScreen: win.isFullScreen(),
             }, win.getNormalBounds())
             CONFIG.set("windowConfig", windowConfig)
         }
