@@ -6,12 +6,13 @@ export const initialContent = `
 ∞∞∞text
 Welcome to Heynote!
 
-[${modChar} + Enter]        Insert new note block at cursor
-[${modChar} + L]            Change block language
-[${modChar} + Down]         Goto next block
-[${modChar} + Up]           Goto previous block
-[${modChar} + A]            Select all text in a note block. Press again to select the whole scratchpad
-[${modChar} + ⌥ + Up/Down]  Add additional cursor above/below
+[${modChar} + Enter]          Add new block and move cursor to it
+[${modChar} + Shift + Enter]  Split the current block at cursor position
+[${modChar} + L]              Change block language
+[${modChar} + Down]           Goto next block
+[${modChar} + Up]             Goto previous block
+[${modChar} + A]              Select all text in a note block. Press again to select the whole scratchpad
+[${modChar} + ⌥ + Up/Down]    Add additional cursor above/below
 ∞∞∞text-a
 `
 
@@ -19,12 +20,13 @@ export const initialDevContent = `
 ∞∞∞text-a
 Welcome to Heynote!
 
-[⌘ + Enter]        Insert new note block
-[⌘ + F]            Find text
-[⌘ + A]            Select all text in a note block. Press again to select the whole scratchpad
-[⌘ + Up]           Go to start of note (or start of previous note if already at the start)
-[⌘ + Down]         Go to end of note (or end of next note if already at the end)
-[⌘ + ⌥ + Up/Down]  Add additional cursor above/below
+[${modChar} + Enter]          Add new block and move cursor to it
+[${modChar} + Shift + Enter]  Split the current block at cursor position
+[${modChar} + L]              Change block language
+[${modChar} + Down]           Goto next block
+[${modChar} + Up]             Goto previous block
+[${modChar} + A]              Select all text in a note block. Press again to select the whole scratchpad
+[${modChar} + ⌥ + Up/Down]    Add additional cursor above/below
 
 ∞∞∞python-a
 # hmm

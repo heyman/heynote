@@ -1,6 +1,6 @@
 import { keymap } from "@codemirror/view"
 import { indentWithTab, insertTab, indentLess, indentMore } from "@codemirror/commands"
-import { insertNewNote, moveLineUp, selectAll, gotoPreviousBlock, gotoNextBlock } from "./block/commands.js";
+import { insertNewBlockAtCursor, addNewBlockAfterCurrent, moveLineUp, selectAll, gotoPreviousBlock, gotoNextBlock } from "./block/commands.js";
 
 export function heynoteKeymap(editor) {
     return keymap.of([
@@ -18,7 +18,12 @@ export function heynoteKeymap(editor) {
         {
             key: "Mod-Enter",
             preventDefault: true,
-            run: insertNewNote,
+            run: addNewBlockAfterCurrent,
+        },
+        {
+            key: "Mod-Shift-Enter",
+            preventDefault: true,
+            run: insertNewBlockAtCursor,
         },
         {
             key: "Mod-a",
@@ -44,6 +49,6 @@ export function heynoteKeymap(editor) {
             key: "Mod-l",
             preventDefault: true,
             run: () => editor.openLanguageSelector(),
-        }
+        },
     ])
 }

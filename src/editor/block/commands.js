@@ -9,7 +9,7 @@ import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
 import { levenshtein_distance } from "../language-detection/levenshtein"
 
 
-export const insertNewNote = ({ state, dispatch }) => {
+export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
 
@@ -21,6 +21,25 @@ export const insertNewNote = ({ state, dispatch }) => {
         }
     )
 
+    return true;
+}
+
+export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
+    if (state.readOnly)
+        return false
+    const block = getActiveNoteBlock(state)
+    const delimText = "\n∞∞∞text-a\n"
+
+    dispatch(state.update({
+        changes: {
+            from: block.content.to,
+            insert: delimText,
+        },
+        selection: EditorSelection.cursor(block.content.to + delimText.length)
+    }, {
+        scrollIntoView: true, 
+        userEvent: "input",
+    }))
     return true;
 }
 
