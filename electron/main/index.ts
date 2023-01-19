@@ -55,11 +55,13 @@ let contentSaved = false
 
 
 async function createWindow() {
+    // default window size
     let windowConfig = {
         width: 900,
         height: 680,
         isMaximized: false,
     }
+    // read any stored window settings from config
     Object.assign(windowConfig, CONFIG.get("windowConfig"))
 
     win = new BrowserWindow(Object.assign({
@@ -78,6 +80,8 @@ async function createWindow() {
         },
 
     }, windowConfig))
+    
+    // maximize window if it was maximized last time
     if (windowConfig.isMaximized) {
         win.maximize()
     }
