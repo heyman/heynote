@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
 import * as jetpack from "fs-jetpack";
+import Store from "electron-store"
 import menu from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
 import { WINDOW_CLOSE_EVENT } from '../constants';
@@ -36,6 +37,9 @@ if (!process.env.VITE_DEV_SERVER_URL && !app.requestSingleInstanceLock()) {
 // Set custom application menu
 Menu.setApplicationMenu(menu)
 
+const CONFIG = new Store()
+
+
 // Remove electron security warnings
 // This warning only shows in development mode
 // Read more on https://www.electronjs.org/docs/latest/tutorial/security
@@ -51,8 +55,15 @@ let contentSaved = false
 
 
 async function createWindow() {
-    win = new BrowserWindow({
-        title: 'Main window',
+    let windowConfig = {
+        width: 900,
+        height: 680,
+        isMaximized: false,
+    }
+    Object.assign(windowConfig, CONFIG.get("windowConfig"))
+
+    win = new BrowserWindow(Object.assign({
+        title: 'heynote',
         icon: join(process.env.PUBLIC, 'favicon.ico'),
         backgroundColor: nativeTheme.shouldUseDarkColors ? '#262B37' : '#FFFFFF',
         //titleBarStyle: 'customButtonsOnHover',
@@ -65,15 +76,26 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: true,
         },
-    })
+
+    }, windowConfig))
+    if (windowConfig.isMaximized) {
+        win.maximize()
+    }
+    console.log("bounds:", win.getBounds())
 
     win.on("close", (event) => {
         // Prevent the window from closing, and send a message to the renderer which will in turn
         // send a message to the main process to save the current buffer and close the window.
         if (!contentSaved) {
             event.preventDefault()
+            win?.webContents.send(WINDOW_CLOSE_EVENT)
+        } else {
+            // save window config
+            Object.assign(windowConfig, {
+                isMaximized: win.isMaximized()
+            }, win.getNormalBounds())
+            CONFIG.set("windowConfig", windowConfig)
         }
-        win?.webContents.send(WINDOW_CLOSE_EVENT)
     })
 
     //nativeTheme.themeSource = "light"
