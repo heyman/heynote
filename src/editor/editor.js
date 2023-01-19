@@ -13,6 +13,8 @@ import { heynoteKeymap } from "./keymap.js"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 
+export const LANGUAGE_SELECTOR_EVENT = "openLanguageSelector"
+
 
 export class HeynoteEditor {
     constructor({element, content, focus=true, theme="light", saveFunction=null}) {
@@ -74,7 +76,7 @@ export class HeynoteEditor {
     }
 
     openLanguageSelector() {
-        this.element.dispatchEvent(new Event("open-language-selector"))
+        this.element.dispatchEvent(new Event(LANGUAGE_SELECTOR_EVENT))
     }
 
     setCurrentLanguage(lang, auto=false) {

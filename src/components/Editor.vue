@@ -1,5 +1,5 @@
 <script>
-    import { HeynoteEditor } from '../editor/editor.js'
+    import { HeynoteEditor, LANGUAGE_SELECTOR_EVENT } from '../editor/editor.js'
     import { syntaxTree } from "@codemirror/language"
 
     export default {
@@ -25,7 +25,7 @@
                 })
             })
 
-            this.$refs.editor.addEventListener("openLanguageSelector", (e) => {
+            this.$refs.editor.addEventListener(LANGUAGE_SELECTOR_EVENT, (e) => {
                 this.$emit("openLanguageSelector")
             })
 
