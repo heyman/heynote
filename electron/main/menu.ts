@@ -1,4 +1,5 @@
 const { app, Menu } = require('electron')
+import { WINDOW_CLOSE_EVENT, KEYMAP_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from '../constants';
 
 const isMac = process.platform === 'darwin'
 
@@ -8,6 +9,14 @@ const template = [
         label: app.name,
         submenu: [
             { role: 'about' },
+            { type: 'separator' },
+            {
+                label: 'Preferences',
+                click: (menuItem, window, event) => {
+                    window?.webContents.send(OPEN_SETTINGS_EVENT)
+                },
+                accelerator: isMac ? 'Command+,': null,
+            },
             { type: 'separator' },
             { role: 'services' },
             { type: 'separator' },

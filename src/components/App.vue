@@ -2,12 +2,14 @@
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
     import LanguageSelector from './LanguageSelector.vue'
+    import Settings from './settings/Settings.vue'
 
     export default {
         components: {
             Editor,
             StatusBar,
             LanguageSelector,
+            Settings,
         },
 
         data() {
@@ -21,6 +23,8 @@
                 systemTheme: 'system',
                 development: window.location.href.indexOf("dev=1") !== -1,
                 showLanguageSelector: false,
+                showSettings: false,
+                keymap: window.heynote.keymap.initial,
             }
         },
 
@@ -32,6 +36,12 @@
             window.darkMode.onChange((theme) => {
                 this.theme = theme
             })
+            window.heynote.keymap.onKeymapChange((keymap) => {
+                this.keymap = keymap
+            })
+            window.heynote.onOpenSettings(() => {
+                this.showSettings = true
+            })
         },
 
         beforeUnmount() {
@@ -39,6 +49,14 @@
         },
 
         methods: {
+            openSettings() {
+                this.showSettings = true
+            },
+            closeSettings() {
+                this.showSettings = false
+                this.$refs.editor.focus()
+            },
+
             toggleTheme() {
                 let newTheme
                 // when the "system" theme is used, make sure that the first click always results in amn actual theme change
@@ -85,6 +103,7 @@
             :theme="theme"
             :development="development"
             :debugSyntaxTree="false"
+            :keymap="keymap"
             class="editor"
             ref="editor"
             @openLanguageSelector="openLanguageSelector"
@@ -105,6 +124,11 @@
                 v-if="showLanguageSelector" 
                 @selectLanguage="onSelectLanguage"
                 @close="closeLanguageSelector"
+            />
+            <Settings 
+                v-if="showSettings"
+                :keymap="keymap"
+                @closeSettings="closeSettings"
             />
         </div>
     </div>

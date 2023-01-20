@@ -1,11 +1,13 @@
-import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme, globalShortcut } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
 import * as jetpack from "fs-jetpack";
-import Store from "electron-store"
 import menu from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
-import { WINDOW_CLOSE_EVENT } from '../constants';
+import { WINDOW_CLOSE_EVENT, KEYMAP_CHANGE_EVENT } from '../constants';
+import CONFIG from "../config"
+import { onBeforeInputEvent } from "../keymap"
+import { isMac } from '../detect-platform';
 
 // The built directory structure
 //
@@ -37,8 +39,6 @@ if (!process.env.VITE_DEV_SERVER_URL && !app.requestSingleInstanceLock()) {
 // Set custom application menu
 Menu.setApplicationMenu(menu)
 
-const CONFIG = new Store()
-
 
 // Remove electron security warnings
 // This warning only shows in development mode
@@ -51,6 +51,8 @@ const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 const isDev = !!process.env.VITE_DEV_SERVER_URL
+
+let currentKeymap = CONFIG.get("keymap", "default")
 let contentSaved = false
 
 
@@ -114,6 +116,11 @@ async function createWindow() {
         win.loadFile(indexHtml)
         //win.webContents.openDevTools()
     }
+    
+    // custom keyboard shortcuts for Emacs keybindings
+    win.webContents.on("before-input-event", function (event, input) {
+        onBeforeInputEvent({event, input, win, currentKeymap})
+    })
 
     // Test actively push message to the Electron-Renderer
     win.webContents.on('did-finish-load', () => {
@@ -182,4 +189,10 @@ ipcMain.handle('buffer-content:saveAndQuit', async (event, content) => {
     await save(content)
     contentSaved = true
     app.quit()
+})
+
+ipcMain.handle('keymap:set', (event, keymap) =>  {
+    currentKeymap = keymap
+    win?.webContents.send(KEYMAP_CHANGE_EVENT, keymap)
+    CONFIG.set("keymap", keymap)
 })

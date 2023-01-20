@@ -2,7 +2,8 @@ const { contextBridge } = require('electron')
 import darkMode from "./theme-mode"
 import { isMac, isWindows, isLinux } from "../detect-platform"
 import { ipcRenderer } from "electron"
-import { WINDOW_CLOSE_EVENT } from "../constants"
+import { WINDOW_CLOSE_EVENT, KEYMAP_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "../constants"
+import CONFIG from "../config"
 
 contextBridge.exposeInMainWorld("platform", {
     isMac,
@@ -21,6 +22,10 @@ contextBridge.exposeInMainWorld("heynote", {
         ipcRenderer.on(WINDOW_CLOSE_EVENT, callback)
     },
 
+    onOpenSettings(callback) {
+        ipcRenderer.on(OPEN_SETTINGS_EVENT, callback)
+    },
+
     buffer: {
         async load() {
             return await ipcRenderer.invoke("buffer-content:load")
@@ -33,7 +38,17 @@ contextBridge.exposeInMainWorld("heynote", {
         async saveAndQuit(content) {
             return await ipcRenderer.invoke("buffer-content:saveAndQuit", content)
         },
-    }
+    },
+
+    keymap: {
+        set(keymap) {
+            ipcRenderer.invoke("keymap:set", keymap);
+        },
+        initial: CONFIG.get("keymap", "default"),
+        onKeymapChange(callback) {
+            ipcRenderer.on(KEYMAP_CHANGE_EVENT, (event, keymap) => callback(keymap))
+        },
+    },
 })
 
 

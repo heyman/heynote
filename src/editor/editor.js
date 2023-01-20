@@ -9,27 +9,39 @@ import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension } from "./block/block.js"
 import { changeCurrentBlockLanguage } from "./block/commands.js"
-import { heynoteKeymap } from "./keymap.js"
+import { heynoteKeymap, emacsKeymap } from "./keymap.js"
+import { heynoteCopyPaste } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 
 export const LANGUAGE_SELECTOR_EVENT = "openLanguageSelector"
 
+function getKeymapExtensions(editor, keymap) {
+    if (keymap === "emacs") {
+        return emacsKeymap(editor)
+    } else {
+        return heynoteKeymap(editor)
+    }
+}
+
 
 export class HeynoteEditor {
-    constructor({element, content, focus=true, theme="light", saveFunction=null}) {
+    constructor({element, content, focus=true, theme="light", saveFunction=null, keymap="default"}) {
         this.element = element
-        this.theme = new Compartment
+        this.themeCompartment = new Compartment
+        this.keymapCompartment = new Compartment
+        this.deselectOnCopy = keymap === "emacs"
 
         const state = EditorState.create({
             doc: content || "",
             extensions: [
-                heynoteKeymap(this),
+                this.keymapCompartment.of(getKeymapExtensions(this, keymap)),
+                heynoteCopyPaste(this),
 
                 //minimalSetup,
                 customSetup, 
                 
-                this.theme.of(theme === "dark" ? heynoteDark : heynoteLight),
+                this.themeCompartment.of(theme === "dark" ? heynoteDark : heynoteLight),
                 heynoteBase,
                 indentUnit.of("    "),
                 EditorView.scrollMargins.of(f => {
@@ -71,7 +83,14 @@ export class HeynoteEditor {
 
     setTheme(theme) {
         this.view.dispatch({
-            effects: this.theme.reconfigure(theme === "dark" ? heynoteDark : heynoteLight),
+            effects: this.themeCompartment.reconfigure(theme === "dark" ? heynoteDark : heynoteLight),
+        })
+    }
+
+    setKeymap(keymap) {
+        this.deselectOnCopy = keymap === "emacs"
+        this.view.dispatch({
+            effects: this.keymapCompartment.reconfigure(getKeymapExtensions(this, keymap)),
         })
     }
 

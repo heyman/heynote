@@ -3,11 +3,15 @@
     import { syntaxTree } from "@codemirror/language"
 
     export default {
-        props: [
-            "theme",
-            "development",
-            "debugSyntaxTree",
-        ],
+        props: {
+            theme: String,
+            development: Boolean,
+            debugSyntaxTree: Boolean,
+            keymap: {
+                type: String,
+                default: "default",
+            },
+        },
 
         data() {
             return {
@@ -38,6 +42,7 @@
                     saveFunction: (content) => {
                         window.heynote.buffer.save(content)
                     },
+                    keymap: this.keymap,
                 })
             })
             // set up window close handler that will save the buffer and quit
@@ -69,6 +74,10 @@
             theme(newTheme) {
                 this.editor.setTheme(newTheme)
             },
+
+            keymap(keymap) {
+                this.editor.setKeymap(keymap)
+            }
         },
 
         methods: {
