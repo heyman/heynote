@@ -1,7 +1,7 @@
 import { EditorView, keymap } from "@codemirror/view"
 import { EditorSelection } from "@codemirror/state"
 import { indentWithTab, insertTab, indentLess, indentMore, undo, redo } from "@codemirror/commands"
-import { insertNewBlockAtCursor, addNewBlockAfterCurrent, moveLineUp, selectAll, gotoPreviousBlock, gotoNextBlock } from "./block/commands.js";
+import { insertNewBlockAtCursor, addNewBlockAfterCurrent, moveLineUp, selectAll, gotoPreviousBlock, gotoNextBlock, gotoPreviousParagraph, gotoNextParagraph } from "./block/commands.js";
 
 export function heynoteKeymap(editor) {
     return keymap.of([
@@ -13,6 +13,8 @@ export function heynoteKeymap(editor) {
         ["Alt-ArrowUp", moveLineUp],
         ["Mod-ArrowUp", gotoPreviousBlock],
         ["Mod-ArrowDown", gotoNextBlock],
+        ["Ctrl-ArrowUp", gotoPreviousParagraph],
+        ["Ctrl-ArrowDown", gotoNextParagraph],
         ["Mod-l", () => editor.openLanguageSelector()],
     ].map(([key, run]) => {
         return {

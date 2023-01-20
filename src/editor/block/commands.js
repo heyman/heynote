@@ -138,3 +138,76 @@ export function gotoNextBlock({state, dispatch}) {
     return true
 }
 
+export function gotoPreviousParagraph({state, dispatch}) {
+    const blocks = state.facet(blockState)
+    const newSelection = EditorSelection.create(state.selection.ranges.map(sel => {
+        let block = getNoteBlockFromPos(state, sel.head)
+        const blockIndex = blocks.indexOf(block)
+
+        let seenContentLine = false
+        let pos
+        // if we're on the first row of a block, and it's not the first block, we start from the end of the previous block
+        if (state.doc.lineAt(sel.head).from === block.content.from && blockIndex > 0) {
+            block = blocks[blockIndex - 1]
+            pos = state.doc.lineAt(block.content.to).from
+        } else {
+            pos = state.doc.lineAt(sel.head).from
+        }
+
+        while (pos > block.content.from) {
+            const line = state.doc.lineAt(pos)
+            if (line.text.replace(/\s/g, '').length == 0) {
+                if (seenContentLine) {
+                    return EditorSelection.cursor(line.from)
+                }
+            } else {
+                seenContentLine = true
+            }
+            // set position to beginning go previous line
+            pos = state.doc.lineAt(line.from - 1).from
+        }
+        return EditorSelection.cursor(block.content.from)
+    }), state.selection.mainIndex)
+    dispatch(state.update({
+        selection: newSelection,
+        scrollIntoView: true,
+    }))
+    return true
+}
+
+export function gotoNextParagraph({state, dispatch}) {
+    const blocks = state.facet(blockState)
+    const newSelection = EditorSelection.create(state.selection.ranges.map(sel => {
+        let block = getNoteBlockFromPos(state, sel.head)
+        const blockIndex = blocks.indexOf(block)
+
+        let seenContentLine = false
+        let pos
+        // if we're at the last line of a block, and it's not the last block, we start from the beginning of the next block
+        if (state.doc.lineAt(sel.head).to === block.content.to && blockIndex < blocks.length - 1) {
+            block = blocks[blockIndex + 1]
+            pos = state.doc.lineAt(block.content.from).to
+        } else {
+            pos = state.doc.lineAt(sel.head).to
+        }
+
+        while (pos < block.content.to) {
+            const line = state.doc.lineAt(pos)
+            if (line.text.replace(/\s/g, '').length == 0) {
+                if (seenContentLine) {
+                    return EditorSelection.cursor(line.from)
+                }
+            } else {
+                seenContentLine = true
+            }
+            // set position to beginning go previous line
+            pos = state.doc.lineAt(line.to + 1).to
+        }
+        return EditorSelection.cursor(block.content.to)
+    }), state.selection.mainIndex)
+    dispatch(state.update({
+        selection: newSelection,
+        scrollIntoView: true,
+    }))
+    return true
+}
