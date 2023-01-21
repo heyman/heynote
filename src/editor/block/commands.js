@@ -7,6 +7,9 @@ import {
 import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
 import { levenshtein_distance } from "../language-detection/levenshtein"
+import { moveLineDown, moveLineUp } from "./move-lines.js";
+
+export { moveLineDown, moveLineUp }
 
 
 export const insertNewBlockAtCursor = ({ state, dispatch }) => {
@@ -58,21 +61,6 @@ export const selectAll = ({ state, dispatch }) => {
     }))
 
     return true
-}
-
-/**
- * Prevent moveLineUp from executing if any cursor is on the first line of the first note
- */
-export function moveLineUp({ state, dispatch }) {
-    if (state.readOnly)
-        return false
-    if (state.selection.ranges.some(range => {
-        let startLine = state.doc.lineAt(range.from)
-        return startLine.from <= state.facet(blockState)[0].content.from
-    })) {
-        return true;
-    }
-    return defaultMoveLineUp({state, dispatch})
 }
 
 
