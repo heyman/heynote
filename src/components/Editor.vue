@@ -52,7 +52,7 @@
 
             // if debugSyntaxTree prop is set, display syntax tree for debugging
             if (this.debugSyntaxTree) {
-                setTimeout(() => {
+                setInterval(() => {
                     function render(tree) {
                         let lists = ''
                         tree.iterate({
