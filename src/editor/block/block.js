@@ -285,7 +285,7 @@ const emitCursorChange = (editor) => ViewPlugin.fromClass(
             if (update.selectionSet || langChange) {
                 const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
                 const block = getActiveNoteBlock(update.state)
-                if (block) {
+                if (block && cursorLine) {
                     editor.element.dispatchEvent(new SelectionChangeEvent({
                         cursorLine,
                         language: block.language.name,
