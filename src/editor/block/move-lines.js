@@ -1,5 +1,9 @@
 import { EditorSelection } from "@codemirror/state"
 import { blockState } from "./block"
+import { LANGUAGES } from '../languages.js';
+
+const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
+const tokenRegEx = new RegExp(`^∞∞∞(${languageTokensMatcher})(-a)?$`, "g")
 
 
 function selectedLineBlocks(state) {
@@ -29,16 +33,38 @@ function moveLine(state, dispatch, forward) {
         if (forward ? block.to == state.doc.length : block.from == 0)
             continue;
         let nextLine = state.doc.lineAt(forward ? block.to + 1 : block.from - 1);
+        let previousLine
+        if (!forward ? block.to == state.doc.length : block.from == 0) {
+            previousLine = null
+        } else {
+            previousLine = state.doc.lineAt(forward ? block.from - 1 : block.to + 1)
+        }
+        // if the whole selection is a block (surrounded by separators) we need to add an extra line break between the separators that'll
+        // get stacked on top of each other, since we'll otherwise create two separators with only a single line break between them which 
+        // the syntax parser won't be able to parse (since a valid separator needs one line break on each side)
+        let blockSurroundedBySeparators = previousLine !== null && previousLine.text.match(tokenRegEx) && nextLine.text.match(tokenRegEx)
         let size = nextLine.length + 1;
         if (forward) {
-            changes.push({ from: block.to, to: nextLine.to }, { from: block.from, insert: nextLine.text + state.lineBreak });
+            if (blockSurroundedBySeparators) {
+                size += 1
+                changes.push({ from: block.to, to: nextLine.to }, { from: block.from, insert: state.lineBreak + nextLine.text + state.lineBreak });
+            } else {
+                changes.push({ from: block.to, to: nextLine.to }, { from: block.from, insert: nextLine.text + state.lineBreak });
+            }
             for (let r of block.ranges)
                 ranges.push(EditorSelection.range(Math.min(state.doc.length, r.anchor + size), Math.min(state.doc.length, r.head + size)));
         }
         else {
-            changes.push({ from: nextLine.from, to: block.from }, { from: block.to, insert: state.lineBreak + nextLine.text });
-            for (let r of block.ranges)
-                ranges.push(EditorSelection.range(r.anchor - size, r.head - size));
+            if (blockSurroundedBySeparators) {
+                //size += 1
+                changes.push({ from: nextLine.from, to: block.from }, { from: block.to, insert: state.lineBreak + nextLine.text + state.lineBreak});
+                for (let r of block.ranges)
+                    ranges.push(EditorSelection.range(r.anchor - size, r.head - size));
+            } else {
+                changes.push({ from: nextLine.from, to: block.from }, { from: block.to, insert: state.lineBreak + nextLine.text });
+                for (let r of block.ranges)
+                    ranges.push(EditorSelection.range(r.anchor - size, r.head - size));
+            }
         }
     }
     if (!changes.length)
