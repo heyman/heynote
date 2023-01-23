@@ -15,8 +15,14 @@ export { moveLineDown, moveLineUp }
 export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
-
-    const delimText = "\n∞∞∞text-a\n"
+    
+    const currentBlock = getActiveNoteBlock(state)
+    let delimText;
+    if (currentBlock) {
+        delimText = `\n∞∞∞${currentBlock.language.name}${currentBlock.language.auto ? "-a" : ""}\n`
+    } else {
+        delimText = "\n∞∞∞text-a\n"
+    }
     dispatch(state.replaceSelection(delimText), 
         {
             scrollIntoView: true, 
