@@ -26,8 +26,18 @@ const template = [
             { type: 'separator' },
             { role: 'quit' }
         ]
-    }] : []),
-    // { role: 'fileMenu' }
+    }] : [{
+        role: 'fileMenu',
+        submenu: [
+            {
+                label: 'Preferences',
+                click: (menuItem, window, event) => {
+                    window?.webContents.send(OPEN_SETTINGS_EVENT)
+                },
+            },
+            { role: 'about' },
+        ],
+    }]),
     /*{
         label: 'File',
         submenu: [
