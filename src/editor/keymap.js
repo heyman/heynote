@@ -1,6 +1,10 @@
 import { EditorView, keymap } from "@codemirror/view"
 import { EditorSelection } from "@codemirror/state"
-import { indentWithTab, insertTab, indentLess, indentMore, undo, redo } from "@codemirror/commands"
+import {
+    indentWithTab, insertTab, indentLess, indentMore, 
+    undo, redo, 
+    cursorGroupLeft, cursorGroupRight, selectGroupLeft, selectGroupRight,
+} from "@codemirror/commands"
 import { 
     insertNewBlockAtCursor, 
     addNewBlockAfterCurrent, 
@@ -12,8 +16,24 @@ import {
     selectNextParagraph, selectPreviousParagraph,
 } from "./block/commands.js";
 
+
+function keymapFromSpec(specs) {
+    return keymap.of(specs.map((spec) => {
+        if (spec.run) {
+            return {...spec, preventDefault: true}
+        } else {
+            const [key, run] = spec
+            return {
+                key,
+                run,
+                preventDefault: true,
+            }
+        }
+    }))
+}
+
 export function heynoteKeymap(editor) {
-    return keymap.of([
+    return keymapFromSpec([
         ["Tab", indentMore],
         ["Shift-Tab", indentLess],
         ["Mod-Enter", addNewBlockAfterCurrent],
@@ -21,36 +41,22 @@ export function heynoteKeymap(editor) {
         ["Mod-a", selectAll],
         ["Alt-ArrowUp", moveLineUp],
         ["Alt-ArrowDown", moveLineDown],
-        ["Mod-ArrowUp", gotoPreviousBlock],
-        ["Mod-ArrowDown", gotoNextBlock],
-        ["Mod-Shift-ArrowUp", selectPreviousBlock],
-        ["Mod-Shift-ArrowDown", selectNextBlock],
-        ["Ctrl-ArrowUp", gotoPreviousParagraph],
-        ["Ctrl-ArrowDown", gotoNextParagraph],
-        ["Ctrl-Shift-ArrowUp", selectPreviousParagraph],
-        ["Ctrl-Shift-ArrowDown", selectNextParagraph],
         ["Mod-l", () => editor.openLanguageSelector()],
-    ].map(([key, run]) => {
-        return {
-            key,
-            run,
-            preventDefault: true,
-        }
-    }))
+        {key:"Mod-ArrowUp", run:gotoPreviousBlock, shift:selectPreviousBlock},
+        {key:"Mod-ArrowDown", run:gotoNextBlock, shift:selectNextBlock},
+        {key:"Ctrl-ArrowUp", run:gotoPreviousParagraph, shift:selectPreviousParagraph},
+        {key:"Ctrl-ArrowDown", run:gotoNextParagraph, shift:selectNextParagraph},
+    ])
 }
 
 export function emacsKeymap(editor) {
     return [
         heynoteKeymap(editor),
-        keymap.of([
+        keymapFromSpec([
             ["Ctrl-Shift--", undo],
             ["Ctrl-.", redo],
-        ].map(([key, run]) => {
-            return {
-                key,
-                run,
-                preventDefault: true,
-            }
-        })),
+            {key:"Ctrl-ArrowLeft", run:cursorGroupLeft, shift:selectGroupLeft},
+            {key:"Ctrl-ArrowRight", run:cursorGroupRight, shift:selectGroupRight},
+        ]),
     ]
 }
