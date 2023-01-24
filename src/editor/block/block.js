@@ -38,6 +38,10 @@ function getBlocks(state) {
                             from: type.from,
                             to: type.to,
                         },
+                        range: {
+                            from: type.node.from,
+                            to: contentNode.to,
+                        },
                     })
                     return false;
                 }
@@ -69,11 +73,11 @@ export const blockState = StateField.define({
 export function getActiveNoteBlock(state) {
     // find which block the cursor is in
     const range = state.selection.asSingle().ranges[0]
-    return state.facet(blockState).find(block => block.content.from <= range.from && block.content.to >= range.from)
+    return state.facet(blockState).find(block => block.range.from <= range.from && block.range.to >= range.from)
 }
 
 export function getNoteBlockFromPos(state, pos) {
-    return state.facet(blockState).find(block => block.content.from <= pos && block.content.to >= pos)
+    return state.facet(blockState).find(block => block.range.from <= pos && block.range.to >= pos)
 }
 
 
