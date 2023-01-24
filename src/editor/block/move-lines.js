@@ -42,7 +42,8 @@ function moveLine(state, dispatch, forward) {
         // if the whole selection is a block (surrounded by separators) we need to add an extra line break between the separators that'll
         // get stacked on top of each other, since we'll otherwise create two separators with only a single line break between them which 
         // the syntax parser won't be able to parse (since a valid separator needs one line break on each side)
-        let blockSurroundedBySeparators = previousLine !== null && previousLine.text.match(tokenRegEx) && nextLine.text.match(tokenRegEx)
+        let nextLineIsSeparator = nextLine.text.match(tokenRegEx)
+        let blockSurroundedBySeparators = previousLine !== null && previousLine.text.match(tokenRegEx) && nextLineIsSeparator
         let size = nextLine.length + 1;
         if (forward) {
             if (blockSurroundedBySeparators) {
@@ -55,7 +56,7 @@ function moveLine(state, dispatch, forward) {
                 ranges.push(EditorSelection.range(Math.min(state.doc.length, r.anchor + size), Math.min(state.doc.length, r.head + size)));
         }
         else {
-            if (blockSurroundedBySeparators) {
+            if (blockSurroundedBySeparators || (previousLine === null && nextLineIsSeparator)) {
                 //size += 1
                 changes.push({ from: nextLine.from, to: block.from }, { from: block.to, insert: state.lineBreak + nextLine.text + state.lineBreak});
                 for (let r of block.ranges)
