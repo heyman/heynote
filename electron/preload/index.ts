@@ -5,14 +5,16 @@ import { ipcRenderer } from "electron"
 import { WINDOW_CLOSE_EVENT, KEYMAP_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "../constants"
 import CONFIG from "../config"
 
-contextBridge.exposeInMainWorld("platform", {
-    isMac,
-    isWindows,
-    isLinux,
-})
+//contextBridge.exposeInMainWorld("platform", )
 contextBridge.exposeInMainWorld('darkMode', darkMode)
 
 contextBridge.exposeInMainWorld("heynote", {
+    platform: {
+        isMac,
+        isWindows,
+        isLinux,
+    },
+
     quit() {
         console.log("quitting")
         //ipcRenderer.invoke("app_quit")
@@ -30,7 +32,7 @@ contextBridge.exposeInMainWorld("heynote", {
         async load() {
             return await ipcRenderer.invoke("buffer-content:load")
         },
-    
+
         async save(content) {
             return await ipcRenderer.invoke("buffer-content:save", content)
         },
@@ -44,7 +46,11 @@ contextBridge.exposeInMainWorld("heynote", {
         set(keymap) {
             ipcRenderer.invoke("keymap:set", keymap);
         },
+        setEmacsMetaKey(key) {
+            CONFIG.set("emacsMetaKey", key)
+        },
         initial: CONFIG.get("keymap", "default"),
+        getEmacsMetaKey: () => CONFIG.get("emacsMetaKey", isMac ? "meta" : "alt"),
         onKeymapChange(callback) {
             ipcRenderer.on(KEYMAP_CHANGE_EVENT, (event, keymap) => callback(keymap))
         },

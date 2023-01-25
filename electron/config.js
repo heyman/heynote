@@ -16,6 +16,7 @@ const schema = {
         additionalProperties: false,
     },
     keymap: { "enum": ["default", "emacs"] },
+    emacsMetaKey: { "enum": [null, "alt", "meta"] },
 }
 
 export default new Store({schema})

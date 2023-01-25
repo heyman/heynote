@@ -1,7 +1,19 @@
 <script>
     export default {
         props: {
-            keymap: String,
+            initialKeymap: String,
+        },
+
+        data() {
+            return {
+                keymaps: [
+                    { name: "Default", value: "default" },
+                    { name: "Emacs", value: "emacs" },
+                ],
+                keymap: this.initialKeymap,
+                metaKey: window.heynote.keymap.getEmacsMetaKey(),
+                isMac: window.heynote.platform.isMac,
+            }
         },
 
         mounted() {
@@ -12,11 +24,17 @@
             window.removeEventListener("keydown", this.onKeyDown);
         },
 
-        methods: {
-            onKeymapChange(event) {
-                window.heynote.keymap.set(event.target.value)
+        watch: {
+            keymap(value) {
+                window.heynote.keymap.set(value)
             },
 
+            metaKey(value) {
+                window.heynote.keymap.setEmacsMetaKey(value)
+            }
+        },
+
+        methods: {
             onKeyDown(event) {
                 if (event.key === "Escape") {
                     this.$emit("closeSettings")
@@ -31,12 +49,22 @@
         <div class="dialog">
             <div>
                 <h1>Settings</h1>
-                <div class="entry">
-                    <h2>Keymap:</h2>
-                    <select ref="keymapSelector" @change="onKeymapChange">
-                        <option :selected="keymap==='default'" value="default">Default</option>
-                        <option :selected="keymap==='emacs'" value="emacs">Emacs</option>
-                    </select>
+                <div class="row">
+                    <div class="entry">
+                        <h2>Keymap</h2>
+                        <select ref="keymapSelector" v-model="keymap">
+                            <template v-for="km in keymaps" :key="km.value">
+                                <option :selected="km.value === keymap" :value="km.value">{{ km.name }}</option>
+                            </template>
+                        </select>
+                    </div>
+                    <div class="entry" v-if="keymap === 'emacs' && isMac">
+                        <h2>Meta Key</h2>
+                        <select v-model="metaKey">
+                            <option :selected="metaKey === 'meta'" value="meta">Command</option>
+                            <option :selected="metaKey === 'alt'" value="alt">Option</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <button 
@@ -95,15 +123,18 @@
                 font-weight: 600
                 margin-bottom: 20px
             
-            .entry
-                margin-bottom: 20px
-                h2
-                    font-weight: 600
-                    margin-bottom: 10px
-                select
-                    width: 200px
-                    &:focus
-                        outline: none
+            .row
+                display: flex
+                .entry
+                    margin-bottom: 20px
+                    margin-right: 20px
+                    h2
+                        font-weight: 600
+                        margin-bottom: 10px
+                    select
+                        width: 200px
+                        &:focus
+                            outline: none
 
             .close
                 height: 32px

@@ -127,7 +127,7 @@
             />
             <Settings 
                 v-if="showSettings"
-                :keymap="keymap"
+                :initialKeymap="keymap"
                 @closeSettings="closeSettings"
             />
         </div>
