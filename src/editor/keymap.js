@@ -3,8 +3,20 @@ import { EditorSelection } from "@codemirror/state"
 import {
     indentWithTab, insertTab, indentLess, indentMore, 
     undo, redo, 
-    cursorGroupLeft, cursorGroupRight, selectGroupLeft, selectGroupRight,
-} from "@codemirror/commands"
+    cursorGroupLeft, cursorGroupRight, selectGroupLeft, selectGroupRight, 
+    simplifySelection,
+    deleteCharForward, deleteCharBackward, deleteToLineEnd,
+    splitLine,
+    transposeChars,
+    cursorPageDown,
+    cursorCharLeft, selectCharLeft,
+    cursorCharRight, selectCharRight,
+    cursorLineUp, selectLineUp,
+    cursorLineDown, selectLineDown,
+    cursorLineStart, selectLineStart,
+    cursorLineEnd, selectLineEnd,
+}from "@codemirror/commands"
+
 import { 
     insertNewBlockAtCursor, 
     addNewBlockAfterCurrent, 
@@ -55,8 +67,23 @@ export function emacsKeymap(editor) {
         keymapFromSpec([
             ["Ctrl-Shift--", undo],
             ["Ctrl-.", redo],
+            ["Ctrl-g", simplifySelection],
             {key:"Ctrl-ArrowLeft", run:cursorGroupLeft, shift:selectGroupLeft},
             {key:"Ctrl-ArrowRight", run:cursorGroupRight, shift:selectGroupRight},
+            
+            ["Ctrl-d", deleteCharForward],
+            ["Ctrl-h", deleteCharBackward],
+            ["Ctrl-k", deleteToLineEnd],
+            ["Ctrl-o", splitLine],
+            ["Ctrl-t", transposeChars],
+            ["Ctrl-v", cursorPageDown],
+
+            { key: "Ctrl-b", run: cursorCharLeft, shift: selectCharLeft, preventDefault: true },
+            { key: "Ctrl-f", run: cursorCharRight, shift: selectCharRight },
+            { key: "Ctrl-p", run: cursorLineUp, shift: selectLineUp },
+            { key: "Ctrl-n", run: cursorLineDown, shift: selectLineDown },
+            { key: "Ctrl-a", run: cursorLineStart, shift: selectLineStart },
+            { key: "Ctrl-e", run: cursorLineEnd, shift: selectLineEnd },
         ]),
     ]
 }
