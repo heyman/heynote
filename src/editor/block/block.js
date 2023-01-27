@@ -268,7 +268,7 @@ export function getBlockLineFromPos(state, pos) {
     return null
 }
 
-const blockLineNumbers = lineNumbers({
+export const blockLineNumbers = lineNumbers({
     formatNumber(lineNo, state) {
         if (state.doc.lines >= lineNo) {
             const lineInfo = getBlockLineFromPos(state, state.doc.line(lineNo).from)
@@ -309,7 +309,6 @@ export const noteBlockExtension = (editor) => {
         blockLayer,
         preventFirstBlockFromBeingDeleted,
         preventSelectionBeforeFirstBlock,
-        blockLineNumbers,
         emitCursorChange(editor),
     ]
 }

@@ -1,5 +1,5 @@
 const { app, Menu } = require('electron')
-import { WINDOW_CLOSE_EVENT, KEYMAP_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from '../constants';
+import { OPEN_SETTINGS_EVENT } from '../constants';
 
 const isMac = process.platform === 'darwin'
 

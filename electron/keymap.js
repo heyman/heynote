@@ -6,7 +6,7 @@ export function onBeforeInputEvent({win, event, input, currentKeymap}) {
     //console.log("keyboard event", input)
     let metaKey = "alt"
     if (isMac) {
-        metaKey = CONFIG.get("emacsMetaKey", "meta")
+        metaKey = CONFIG.get("settings.emacsMetaKey", "meta")
     }
     if (currentKeymap === "emacs") {
         /**

@@ -47,11 +47,11 @@ and an array literal), copy it into your own code, and adjust it
 as desired.
 */
 const customSetup = /*@__PURE__*/(() => [
-    lineNumbers(),
+    //lineNumbers(),
     highlightActiveLineGutter(),
     highlightSpecialChars(),
     history(),
-    foldGutter(),
+    //foldGutter(),
     drawSelection(),
     dropCursor(),
     EditorState.allowMultipleSelections.of(true),

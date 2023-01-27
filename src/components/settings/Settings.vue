@@ -2,6 +2,7 @@
     export default {
         props: {
             initialKeymap: String,
+            initialSettings: Object,
         },
 
         data() {
@@ -10,9 +11,11 @@
                     { name: "Default", value: "default" },
                     { name: "Emacs", value: "emacs" },
                 ],
-                keymap: this.initialKeymap,
-                metaKey: window.heynote.keymap.getEmacsMetaKey(),
+                keymap: this.initialSettings.keymap,
+                metaKey: this.initialSettings.emacsMetaKey,
                 isMac: window.heynote.platform.isMac,
+                showLineNumberGutter: this.initialSettings.showLineNumberGutter,
+                showFoldGutter: this.initialSettings.showFoldGutter,
             }
         },
 
@@ -24,22 +27,21 @@
             window.removeEventListener("keydown", this.onKeyDown);
         },
 
-        watch: {
-            keymap(value) {
-                window.heynote.keymap.set(value)
-            },
-
-            metaKey(value) {
-                window.heynote.keymap.setEmacsMetaKey(value)
-            }
-        },
-
         methods: {
             onKeyDown(event) {
                 if (event.key === "Escape") {
                     this.$emit("closeSettings")
                 }
             },
+
+            updateSettings() {
+                window.heynote.setSettings({
+                    showLineNumberGutter: this.showLineNumberGutter,
+                    showFoldGutter: this.showFoldGutter,
+                    keymap: this.keymap,
+                    emacsMetaKey: this.metaKey,
+                })
+            }
         }
     }
 </script>
@@ -52,7 +54,7 @@
                 <div class="row">
                     <div class="entry">
                         <h2>Keymap</h2>
-                        <select ref="keymapSelector" v-model="keymap">
+                        <select ref="keymapSelector" v-model="keymap" @change="updateSettings">
                             <template v-for="km in keymaps" :key="km.value">
                                 <option :selected="km.value === keymap" :value="km.value">{{ km.name }}</option>
                             </template>
@@ -60,10 +62,33 @@
                     </div>
                     <div class="entry" v-if="keymap === 'emacs' && isMac">
                         <h2>Meta Key</h2>
-                        <select v-model="metaKey">
+                        <select v-model="metaKey" @change="updateSettings">
                             <option :selected="metaKey === 'meta'" value="meta">Command</option>
                             <option :selected="metaKey === 'alt'" value="alt">Option</option>
                         </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="entry">
+                        <h2>Gutters</h2>
+                        <div class="checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="showLineNumbers"
+                                v-model="showLineNumberGutter" 
+                                @change="updateSettings"
+                            />
+                            <label for="showLineNumbers">Show line numbers</label>
+                        </div>
+                        <div class="checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="showFoldGutter"
+                                v-model="showFoldGutter" 
+                                @change="updateSettings"
+                            />
+                            <label for="showFoldGutter">Show fold gutter</label>
+                        </div>
                     </div>
                 </div>
             </div>

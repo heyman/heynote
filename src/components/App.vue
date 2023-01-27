@@ -24,7 +24,7 @@
                 development: window.location.href.indexOf("dev=1") !== -1,
                 showLanguageSelector: false,
                 showSettings: false,
-                keymap: window.heynote.keymap.initial,
+                settings: window.heynote.settings,
             }
         },
 
@@ -36,8 +36,8 @@
             window.darkMode.onChange((theme) => {
                 this.theme = theme
             })
-            window.heynote.keymap.onKeymapChange((keymap) => {
-                this.keymap = keymap
+            window.heynote.onSettingsChange((settings) => {
+                this.settings = settings
             })
             window.heynote.onOpenSettings(() => {
                 this.showSettings = true
@@ -103,7 +103,9 @@
             :theme="theme"
             :development="development"
             :debugSyntaxTree="false"
-            :keymap="keymap"
+            :keymap="settings.keymap"
+            :showLineNumberGutter="settings.showLineNumberGutter"
+            :showFoldGutter="settings.showFoldGutter"
             class="editor"
             ref="editor"
             @openLanguageSelector="openLanguageSelector"
@@ -127,7 +129,7 @@
             />
             <Settings 
                 v-if="showSettings"
-                :initialKeymap="keymap"
+                :initialSettings="settings"
                 @closeSettings="closeSettings"
             />
         </div>

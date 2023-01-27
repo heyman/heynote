@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import * as jetpack from "fs-jetpack";
 import menu from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
-import { WINDOW_CLOSE_EVENT, KEYMAP_CHANGE_EVENT } from '../constants';
+import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
 import { isMac } from '../detect-platform';
@@ -191,8 +191,10 @@ ipcMain.handle('buffer-content:saveAndQuit', async (event, content) => {
     app.quit()
 })
 
-ipcMain.handle('keymap:set', (event, keymap) =>  {
-    currentKeymap = keymap
-    win?.webContents.send(KEYMAP_CHANGE_EVENT, keymap)
-    CONFIG.set("keymap", keymap)
+ipcMain.handle('settings:set', (event, settings) =>  {
+    if (settings.keymap !== CONFIG.get("keymap")) {
+        currentKeymap = settings.keymap
+    }
+    CONFIG.set("settings", settings)
+    win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
 })

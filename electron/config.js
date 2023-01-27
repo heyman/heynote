@@ -15,8 +15,25 @@ const schema = {
         },
         additionalProperties: false,
     },
-    keymap: { "enum": ["default", "emacs"] },
-    emacsMetaKey: { "enum": [null, "alt", "meta"] },
+    
+    settings: {
+        type: "object",
+        properties: {
+            "keymap": { "enum": ["default", "emacs"], default:"default" },
+            "emacsMetaKey": { "enum": [null, "alt", "meta"], default: null },
+            "showLineNumberGutter": {type: "boolean", default:true},
+            "showFoldGutter": {type: "boolean", default:true},
+        },
+    }
 }
 
-export default new Store({schema})
+const defaults = {
+    settings: {
+        keymap: "default",
+        emacsMetaKey: "meta",
+        showLineNumberGutter: true,
+        showFoldGutter: true,
+    }
+}
+
+export default new Store({schema, defaults})

@@ -2,7 +2,7 @@ const { contextBridge } = require('electron')
 import darkMode from "./theme-mode"
 import { isMac, isWindows, isLinux } from "../detect-platform"
 import { ipcRenderer } from "electron"
-import { WINDOW_CLOSE_EVENT, KEYMAP_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "../constants"
+import { WINDOW_CLOSE_EVENT, OPEN_SETTINGS_EVENT, SETTINGS_CHANGE_EVENT } from "../constants"
 import CONFIG from "../config"
 
 //contextBridge.exposeInMainWorld("platform", )
@@ -42,18 +42,14 @@ contextBridge.exposeInMainWorld("heynote", {
         },
     },
 
-    keymap: {
-        set(keymap) {
-            ipcRenderer.invoke("keymap:set", keymap);
-        },
-        setEmacsMetaKey(key) {
-            CONFIG.set("emacsMetaKey", key)
-        },
-        initial: CONFIG.get("keymap", "default"),
-        getEmacsMetaKey: () => CONFIG.get("emacsMetaKey", isMac ? "meta" : "alt"),
-        onKeymapChange(callback) {
-            ipcRenderer.on(KEYMAP_CHANGE_EVENT, (event, keymap) => callback(keymap))
-        },
+    settings: CONFIG.get("settings"),
+    
+    setSettings(settings) {
+        ipcRenderer.invoke("settings:set", settings)
+    },
+
+    onSettingsChange(callback) {
+        ipcRenderer.on(SETTINGS_CHANGE_EVENT, (event, settings) => callback(settings))
     },
 })
 

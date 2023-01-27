@@ -11,6 +11,14 @@
                 type: String,
                 default: "default",
             },
+            showLineNumberGutter: {
+                type: Boolean,
+                default: true,
+            },
+            showFoldGutter: {
+                type: Boolean,
+                default: true,
+            },
         },
 
         data() {
@@ -43,6 +51,8 @@
                         window.heynote.buffer.save(content)
                     },
                     keymap: this.keymap,
+                    showLineNumberGutter: this.showLineNumberGutter,
+                    showFoldGutter: this.showFoldGutter,
                 })
             })
             // set up window close handler that will save the buffer and quit
@@ -77,7 +87,15 @@
 
             keymap(keymap) {
                 this.editor.setKeymap(keymap)
-            }
+            },
+
+            showLineNumberGutter(show) {
+                this.editor.setLineNumberGutter(show)
+            },
+
+            showFoldGutter(show) {
+                this.editor.setFoldGutter(show)
+            },
         },
 
         methods: {

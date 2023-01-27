@@ -1,13 +1,13 @@
 import { Annotation, EditorState, Compartment } from "@codemirror/state"
-import { EditorView, keymap, drawSelection, ViewPlugin } from "@codemirror/view"
-import { indentUnit, forceParsing } from "@codemirror/language"
+import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
+import { indentUnit, forceParsing, foldGutter } from "@codemirror/language"
 
 import { heynoteLight } from "./theme/light.js"
 import { heynoteDark } from "./theme/dark.js"
 import { heynoteBase } from "./theme/base.js"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
-import { noteBlockExtension } from "./block/block.js"
+import { noteBlockExtension, blockLineNumbers } from "./block/block.js"
 import { changeCurrentBlockLanguage } from "./block/commands.js"
 import { heynoteKeymap, emacsKeymap } from "./keymap.js"
 import { heynoteCopyPaste } from "./copy-paste"
@@ -26,10 +26,22 @@ function getKeymapExtensions(editor, keymap) {
 
 
 export class HeynoteEditor {
-    constructor({element, content, focus=true, theme="light", saveFunction=null, keymap="default"}) {
+    constructor({
+        element, 
+        content, 
+        focus=true, 
+        theme="light", 
+        saveFunction=null, 
+        keymap="default", 
+        showLineNumberGutter=true, 
+        showFoldGutter=true,
+    }) {
         this.element = element
         this.themeCompartment = new Compartment
         this.keymapCompartment = new Compartment
+        this.lineNumberCompartmentPre = new Compartment
+        this.lineNumberCompartment = new Compartment
+        this.foldGutterCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
 
         const state = EditorState.create({
@@ -39,7 +51,9 @@ export class HeynoteEditor {
                 heynoteCopyPaste(this),
 
                 //minimalSetup,
+                this.lineNumberCompartment.of(showLineNumberGutter ? [lineNumbers(), blockLineNumbers] : []),
                 customSetup, 
+                this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
                 
                 this.themeCompartment.of(theme === "dark" ? heynoteDark : heynoteLight),
                 heynoteBase,
@@ -77,6 +91,10 @@ export class HeynoteEditor {
         }
     }
 
+    getContent() {
+        return this.view.state.sliceDoc()
+    }
+
     focus() {
         this.view.focus()
     }
@@ -102,8 +120,16 @@ export class HeynoteEditor {
         changeCurrentBlockLanguage(this.view.state, this.view.dispatch, lang, auto)
     }
 
-    getContent() {
-        return this.view.state.sliceDoc()
+    setLineNumberGutter(show) {
+        this.view.dispatch({
+            effects: this.lineNumberCompartment.reconfigure(show ? [lineNumbers(), blockLineNumbers] : []),
+        })
+    }
+
+    setFoldGutter(show) {
+        this.view.dispatch({
+            effects: this.foldGutterCompartment.reconfigure(show ? [foldGutter()] : []),
+        })
     }
 }
 
