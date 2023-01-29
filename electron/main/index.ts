@@ -52,7 +52,7 @@ const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 const isDev = !!process.env.VITE_DEV_SERVER_URL
 
-let currentKeymap = CONFIG.get("keymap", "default")
+let currentKeymap = CONFIG.get("settings.keymap")
 let contentSaved = false
 
 
