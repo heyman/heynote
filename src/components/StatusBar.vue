@@ -75,7 +75,9 @@
             flex-grow: 1
         
         .status-block
-            padding: 2px 10px
+            box-sizing: border-box
+            height: 22px
+            padding: 4px 10px
             cursor: default
             &:first-child
                 padding-left: 12px
