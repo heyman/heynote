@@ -57,7 +57,7 @@ export default defineConfig({
 		]),
 		// Use Node.js API in the Renderer-process
 		renderer({
-			nodeIntegration: false,
+			nodeIntegration: false, // turning this on will break Math.js
 		}),
 	],
 	server: !!process.env.VSCODE_DEBUG ? (() => {
