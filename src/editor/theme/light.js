@@ -1,6 +1,9 @@
 import { EditorView } from "@codemirror/view";
+import { HighlightStyle, syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
+import { tags } from '@lezer/highlight';
 
-export const heynoteLight = EditorView.theme({
+
+const lightTheme = EditorView.theme({
     "&": {
         backgroundColor: "#fff",
     },
@@ -37,4 +40,16 @@ export const heynoteLight = EditorView.theme({
     },
 })
 
+const highlightStyle = HighlightStyle.define([
+    ...defaultHighlightStyle.specs,
 
+    // override heading style, in order to remove the ugly underline
+    { tag: tags.heading, fontWeight: 'bold'},
+])
+
+const heynoteLight = [
+    lightTheme,
+    syntaxHighlighting(highlightStyle),
+];
+
+export { heynoteLight };
