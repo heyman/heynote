@@ -49,7 +49,11 @@ function mathDeco(view) {
 
                 // if we got a result from math.js, add the result decoration
                 if (result !== undefined) {
-                    builder.add(line.to, line.to, Decoration.widget({widget: new MathResult(math.format(result, 8)), side: 1}))
+                    builder.add(line.to, line.to, Decoration.widget({widget: new MathResult(math.format(result, {
+                        precision: 8,
+                        upperExp: 8,
+                        lowerExp: -6,
+                    })), side: 1}))
                 }
             }
             pos = line.to + 1
