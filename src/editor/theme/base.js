@@ -43,4 +43,11 @@ export const heynoteBase = EditorView.theme({
     '.heynote-block-start.first': {
         height: '0px',
     },
+    '.heynote-math-result': {
+        background: '#48b57e',
+        color: '#fff',
+        padding: '0px 4px',
+        borderRadius: '2px',
+        marginLeft: '12px',
+    },
 })

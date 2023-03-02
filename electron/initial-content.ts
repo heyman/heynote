@@ -13,6 +13,19 @@ Welcome to Heynote!
 [${modChar} + Up]             Goto previous block
 [${modChar} + A]              Select all text in a note block. Press again to select the whole scratchpad
 [${modChar} + ⌥ + Up/Down]    Add additional cursor above/below
+∞∞∞math
+This is a Math block. Here, rows are evaluated as math expressions. 
+
+length = 10
+radius = 5
+volume = length * radius^2 * PI
+sqrt(9)
+
+It also supports some basic unit conversions:
+
+13 inches in cm
+time = 3900 seconds to minutes
+time * 2
 ∞∞∞text-a
 `
 
@@ -27,6 +40,20 @@ Welcome to Heynote!
 [${modChar} + Up]             Goto previous block
 [${modChar} + A]              Select all text in a note block. Press again to select the whole scratchpad
 [${modChar} + ⌥ + Up/Down]    Add additional cursor above/below
+∞∞∞math
+This is a Math block. Here, rows are evaluated as math expressions. 
+
+length = 10
+radius = 5
+volume = length * radius^2 * PI
+sqrt(9)
+
+It also supports some basic unit conversions:
+
+13 inches in cm
+time = 3900 seconds to minutes
+time * 2
+∞∞∞text-a
 
 ∞∞∞python-a
 # hmm

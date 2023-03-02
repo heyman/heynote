@@ -24,6 +24,7 @@ class Language {
 
 export const LANGUAGES = [
     new Language("text", "Plain Text", null, "plaintext"),
+    new Language("math", "Math", null, null),
     new Language("javascript", "JavaScript", javascriptLanguage.parser, "javascript"),
     new Language("json", "JSON", jsonLanguage.parser, "json"),
     new Language("python", "Python", pythonLanguage.parser, "python"),

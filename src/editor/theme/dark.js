@@ -111,6 +111,10 @@ const darkTheme = EditorView.theme({
         background: "#213644",
         borderTop: "1px solid #1e222a",
     },
+    ".heynote-math-result": {
+        background: "#0e1217",
+        color: "#7fcba9",
+    },
 }, { dark: true });
 
 /**

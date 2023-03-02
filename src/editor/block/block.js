@@ -7,6 +7,7 @@ import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
 import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { SelectionChangeEvent } from "../event.js"
+import { mathBlock } from "./math.js"
 
 
 // tracks the size of the first delimiter
@@ -310,5 +311,6 @@ export const noteBlockExtension = (editor) => {
         preventFirstBlockFromBeingDeleted,
         preventSelectionBeforeFirstBlock,
         emitCursorChange(editor),
+        mathBlock,
     ]
 }
