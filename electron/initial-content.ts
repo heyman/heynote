@@ -13,6 +13,7 @@ Welcome to Heynote!
 [${modChar} + Up]             Goto previous block
 [${modChar} + A]              Select all text in a note block. Press again to select the whole scratchpad
 [${modChar} + ⌥ + Up/Down]    Add additional cursor above/below
+[${modChar} + B]              Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
 ∞∞∞math
 This is a Math block. Here, rows are evaluated as math expressions. 
 
@@ -40,6 +41,7 @@ Welcome to Heynote!
 [${modChar} + Up]             Goto previous block
 [${modChar} + A]              Select all text in a note block. Press again to select the whole scratchpad
 [${modChar} + ⌥ + Up/Down]    Add additional cursor above/below
+[${modChar} + B]              Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
 ∞∞∞math
 This is a Math block. Here, rows are evaluated as math expressions. 
 

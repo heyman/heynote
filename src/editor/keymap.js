@@ -26,7 +26,9 @@ import {
     selectNextBlock, selectPreviousBlock,
     gotoPreviousParagraph, gotoNextParagraph, 
     selectNextParagraph, selectPreviousParagraph,
-} from "./block/commands.js";
+} from "./block/commands.js"
+
+import { formatBlockContent } from "./block/format-code.js"
 
 
 function keymapFromSpec(specs) {
@@ -54,6 +56,7 @@ export function heynoteKeymap(editor) {
         ["Alt-ArrowUp", moveLineUp],
         ["Alt-ArrowDown", moveLineDown],
         ["Mod-l", () => editor.openLanguageSelector()],
+        ["Mod-b", formatBlockContent],
         {key:"Mod-ArrowUp", run:gotoPreviousBlock, shift:selectPreviousBlock},
         {key:"Mod-ArrowDown", run:gotoNextBlock, shift:selectNextBlock},
         {key:"Ctrl-ArrowUp", run:gotoPreviousParagraph, shift:selectPreviousParagraph},
