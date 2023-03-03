@@ -42,9 +42,29 @@ const darkTheme = EditorView.theme({
     },
     '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection },
-    '.cm-panels': { backgroundColor: darkBackground, color: base03 },
+    '.cm-panels': {
+        backgroundColor: "#474747", 
+        color: "#9c9c9c",
+    },
+    ".cm-panels .cm-panel": {
+        boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+    },
+    '.cm-panels .cm-textfield': {
+        backgroundColor: "#3b3b3b",
+        border: "1px solid #5a5a5a",
+        color: "#fff",
+    },
+    '.cm-panels .cm-textfield:focus': {
+        border: "1px solid #48b57e",
+        outline: "1px solid #48b57e",
+    },
+    '.cm-panels .cm-button': {
+        background: "#5f5f5f",
+        color: "rgba(255,255,255, 0.6)",
+        border: "none",
+    },
     '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
-    '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
+    
     '.cm-searchMatch': {
         backgroundColor: 'transparent',
         outline: `1px solid ${base07}`

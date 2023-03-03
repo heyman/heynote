@@ -2,6 +2,56 @@ import { EditorView } from '@codemirror/view';
 
 
 export const heynoteBase = EditorView.theme({
+    ".cm-panels": {
+        fontSize: "12px",
+    },
+    ".cm-panels .cm-panel": {
+        boxShadow: "0 0 10px rgba(0,0,0,0.15)",
+        padding: "8px 12px",
+    },
+    '.cm-panels .cm-textfield': {
+        fontSize: "1em",
+        borderRadius: "2px",
+    },
+    '.cm-panels .cm-button': {
+        border: "none",
+        borderRadius: "2px",
+        fontSize: "1em",
+        cursor: "pointer",
+        padding: "2px 12px",
+    },
+    '.cm-panels .cm-button:focus': {
+        border: "none",
+        outline: "2px solid #48b57e",
+        outlineOffset: "1px",
+    },
+    ".cm-panel.cm-search label": {
+        fontSize: "1em",
+    },
+    ".cm-panel.cm-search input[type=checkbox]": {
+        position: "relative",
+        top: "2px",
+    },
+    ".cm-panel.cm-search input[type=checkbox]:focus-visible": {
+        outline: "2px auto #48b57e",
+        outlineOffset: "2px",
+        //borderRadius: "3px",
+    },
+    ".cm-panel.cm-search [name=close]" : {
+        fontSize: "18px",
+        right: "4px",
+        top: "4px",
+        width: "22px",
+        height: "22px",
+        border: "2px solid transparent",
+        borderRadius: "2px",
+        cursor: "pointer",
+    },
+    ".cm-panel.cm-search [name=close]:focus-visible" : {
+        border: "2px solid #48b57e",
+        outline: "none",
+    },
+
     "&.cm-editor.cm-focused": {
         outline: "none",
     },

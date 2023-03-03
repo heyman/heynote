@@ -7,6 +7,20 @@ const lightTheme = EditorView.theme({
     "&": {
         backgroundColor: "#fff",
     },
+    '.cm-panels .cm-button': {
+        background: "#959b98",//"#48b57e",
+        color: "#fff",
+    },
+    '.cm-panels .cm-button:focus': {
+        background: "#8b928e"
+    },
+    '.cm-panels .cm-button:hover': {
+        background: "#8b928e"
+    },
+    '.cm-panels .cm-textfield:focus': {
+        border: "1px solid #48b57e",
+        outline: "1px solid #48b57e",
+    },
     ".cm-cursor, .cm-dropCursor": {
         borderLeftColor: "#000",
     },
