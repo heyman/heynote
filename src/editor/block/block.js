@@ -229,8 +229,21 @@ const blockLayer = layer({
 
 
 const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
+    //console.log("change filter!", tr)
+    const protect = []
     if (!tr.annotations.some(a => a.type === heynoteEvent) && firstBlockDelimiterSize) {
-        return [0, firstBlockDelimiterSize]
+        protect.push(0, firstBlockDelimiterSize)
+    }
+    // if the transaction is a search and replace, we want to protect all block delimiters
+    if (tr.annotations.some(a => a.value === "input.replace" || a.value === "input.replace.all")) {
+        const blocks = tr.startState.facet(blockState)
+        blocks.forEach(block => {
+            protect.push(block.delimiter.from, block.delimiter.to)
+        })
+        //console.log("protected ranges:", protect)
+    }
+    if (protect.length > 0) {
+        return protect
     }
 })
 
