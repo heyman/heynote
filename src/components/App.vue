@@ -91,6 +91,10 @@
                 this.showLanguageSelector = false
                 this.$refs.editor.setLanguage(language)
             },
+
+            formatCurrentBlock() {
+                this.$refs.editor.formatCurrentBlock()
+            },
         },
     }
 
@@ -119,6 +123,7 @@
             :systemTheme="systemTheme"
             @toggleTheme="toggleTheme"
             @openLanguageSelector="openLanguageSelector"
+            @formatCurrentBlock="formatCurrentBlock"
             class="status" 
         />
         <div class="overlay">

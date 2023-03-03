@@ -9,6 +9,7 @@ import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension, blockLineNumbers } from "./block/block.js"
 import { changeCurrentBlockLanguage } from "./block/commands.js"
+import { formatBlockContent } from "./block/format-code.js"
 import { heynoteKeymap, emacsKeymap } from "./keymap.js"
 import { heynoteCopyPaste } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
@@ -129,6 +130,13 @@ export class HeynoteEditor {
     setFoldGutter(show) {
         this.view.dispatch({
             effects: this.foldGutterCompartment.reconfigure(show ? [foldGutter()] : []),
+        })
+    }
+
+    formatCurrentBlock() {
+        formatBlockContent({
+            state: this.view.state, 
+            dispatch: this.view.dispatch,
         })
     }
 }

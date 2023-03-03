@@ -14,27 +14,28 @@ import { rustLanguage } from "@codemirror/lang-rust"
 
 
 class Language {
-    constructor(token, name, parser, highlightjs) {
+    constructor(token, name, parser, highlightjs, supportsFormat=false) {
         this.token = token
         this.name = name
         this.parser = parser
         this.highlightjs = highlightjs
+        this.supportsFormat = supportsFormat
     }
 }
 
 export const LANGUAGES = [
     new Language("text", "Plain Text", null, "plaintext"),
     new Language("math", "Math", null, null),
-    new Language("javascript", "JavaScript", javascriptLanguage.parser, "javascript"),
-    new Language("json", "JSON", jsonLanguage.parser, "json"),
+    new Language("javascript", "JavaScript", javascriptLanguage.parser, "javascript", true),
+    new Language("json", "JSON", jsonLanguage.parser, "json", true),
     new Language("python", "Python", pythonLanguage.parser, "python"),
-    new Language("html", "HTML", htmlLanguage.parser, "html"),
+    new Language("html", "HTML", htmlLanguage.parser, "html", true),
     new Language("sql", "SQL", StandardSQL.language.parser, "sql"),
-    new Language("markdown", "Markdown", markdownLanguage.parser, "markdown"),
+    new Language("markdown", "Markdown", markdownLanguage.parser, "markdown", true),
     new Language("java", "Java", javaLanguage.parser, "java"),
     //new Language("lezer", "Lezer", lezerLanguage.parser, "lezer"),
     new Language("php", "PHP", phpLanguage.parser, "php"),
-    new Language("css", "CSS", cssLanguage.parser, "css"),
+    new Language("css", "CSS", cssLanguage.parser, "css", true),
     new Language("xml", "XML", xmlLanguage.parser, "xml"),
     new Language("cpp", "C++", cppLanguage.parser, "cpp"),
     new Language("rust", "Rust", rustLanguage.parser, "rust"),

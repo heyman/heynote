@@ -108,6 +108,11 @@
                 this.editor.focus()
             },
 
+            formatCurrentBlock() {
+                this.editor.formatCurrentBlock()
+                this.editor.focus()
+            },
+
             focus() {
                 this.editor.focus()
             },

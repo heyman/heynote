@@ -49,6 +49,7 @@ export const formatBlockContent = ({ state, dispatch }) => {
         selection: EditorSelection.cursor(block.content.from + formattedContent.cursorOffset)
     }, {
         userEvent: "input",
+        scrollIntoView: true,
     }))
     return true;
 }

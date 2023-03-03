@@ -1,5 +1,6 @@
 <script>
     import { LANGUAGES } from '../editor/languages.js'
+    const LANGUAGE_MAP = Object.fromEntries(LANGUAGES.map(l => [l.token, l]))
     const LANGUAGE_NAMES = Object.fromEntries(LANGUAGES.map(l => [l.token, l.name]))
 
     export default {
@@ -24,6 +25,11 @@
             className() {
                 return `status`
             },
+
+            supportsFormat() {
+                const lang = LANGUAGE_MAP[this.language]
+                return !!lang ? lang.supportsFormat : false
+            },
         },
     }
 </script>
@@ -41,6 +47,14 @@
         >
             {{ languageName }} 
             <span v-if="languageAuto" class="auto">(auto)</span>
+        </div>
+        <div 
+            v-if="supportsFormat"
+            @click="$emit('formatCurrentBlock')"
+            class="status-block format clickable"
+            title="Format Block Content"
+        >
+            <span class="icon icon-format"></span>
         </div>
         <div class="status-block theme clickable" @click="$emit('toggleTheme')">
             <span :class="'icon ' + systemTheme"></span>
@@ -117,5 +131,19 @@
                     background-image: url("icons/light-mode.png")
                 &.system
                     background-image: url("icons/both-mode.png")
+        
+        .format
+            padding-top: 0
+            padding-bottom: 0
+            .icon
+                display: block
+                width: 14px
+                height: 22px
+                +dark-mode
+                    opacity: 0.9
+                background-size: 16px
+                background-repeat: no-repeat
+                background-position: center center
+                background-image: url("icons/format.svg")
 
 </style>
