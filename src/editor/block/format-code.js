@@ -33,12 +33,20 @@ export const formatBlockContent = ({ state, dispatch }) => {
     const content = state.sliceDoc(block.content.from, block.content.to)
 
     //console.log("prettier supports:", getSupportInfo())
-    const formattedContent = formatWithCursor(content, {
-        cursorOffset: cursorPos - block.content.from,
-        parser: PARSER_MAP[langName].parser,
-        plugins: PARSER_MAP[langName].plugins,
-        tabWidth: state.tabSize,
-    })
+
+    let formattedContent
+    try {
+        formattedContent = formatWithCursor(content, {
+            cursorOffset: cursorPos - block.content.from,
+            parser: PARSER_MAP[langName].parser,
+            plugins: PARSER_MAP[langName].plugins,
+            tabWidth: state.tabSize,
+        })
+    } catch (e) {
+        const hyphens = "----------------------------------------------------------------------------"
+        console.log(`Error when trying to format block:\n${hyphens}\n${e.message}\n${hyphens}`)
+        return false
+    }
     
     dispatch(state.update({
         changes: {
