@@ -55,6 +55,7 @@ const customSetup = /*@__PURE__*/(() => [
     drawSelection(),
     dropCursor(),
     EditorState.allowMultipleSelections.of(true),
+    EditorView.clickAddsSelectionRange.of(e => e.altKey),
     indentOnInput(),
     syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
     bracketMatching(),
