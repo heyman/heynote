@@ -137,6 +137,10 @@ const darkTheme = EditorView.theme({
     ".heynote-math-result": {
         background: "#0e1217",
         color: "#a0e7c7",
+        boxShadow: '0 0 3px rgba(0,0,0, 0.3)',
+    },
+    '.heynote-math-result-copied': {
+        color: "rgba(220,240,230, 1.0)",
     },
 }, { dark: true });
 

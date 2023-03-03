@@ -18,6 +18,19 @@ class MathResult extends WidgetType {
         let wrap = document.createElement("span")
         wrap.className = "heynote-math-result"
         wrap.innerHTML = this.result
+        wrap.addEventListener("click", (e) => {
+            e.preventDefault()
+            navigator.clipboard.writeText(this.result)
+            const copyElement = document.createElement("i")
+            copyElement.className = "heynote-math-result-copied"
+            copyElement.innerHTML = "Copied!"
+            wrap.appendChild(copyElement)
+            copyElement.offsetWidth // trigger reflow so that the animation is shown
+            copyElement.className = "heynote-math-result-copied fade-out"
+            setTimeout(() => {
+                copyElement.remove()
+            }, 1700)
+        })
         return wrap
     }
     ignoreEvent() { return false }

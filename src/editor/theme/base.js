@@ -99,5 +99,22 @@ export const heynoteBase = EditorView.theme({
         padding: '0px 4px',
         borderRadius: '2px',
         marginLeft: '12px',
+        boxShadow: '0 0 3px rgba(0,0,0, 0.1)',
+        cursor: 'pointer',
+        position: "relative",
+        whiteSpace: "nowrap",
+    },
+    '.heynote-math-result-copied': {
+        position: "absolute",
+        top: "0px",
+        left: "0px",
+        marginLeft: "calc(100% + 10px)",
+        width: "60px",
+        transition: "opacity 500ms",
+        transitionDelay: "1000ms",
+        color: "rgba(0,0,0, 0.8)",
+    },
+    '.heynote-math-result-copied.fade-out': {
+        opacity: 0,
     },
 })
