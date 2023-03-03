@@ -56,7 +56,7 @@ export function heynoteKeymap(editor) {
         ["Alt-ArrowUp", moveLineUp],
         ["Alt-ArrowDown", moveLineDown],
         ["Mod-l", () => editor.openLanguageSelector()],
-        ["Mod-b", formatBlockContent],
+        ["Alt-Shift-f", formatBlockContent],
         {key:"Mod-ArrowUp", run:gotoPreviousBlock, shift:selectPreviousBlock},
         {key:"Mod-ArrowDown", run:gotoNextBlock, shift:selectNextBlock},
         {key:"Ctrl-ArrowUp", run:gotoPreviousParagraph, shift:selectPreviousParagraph},
