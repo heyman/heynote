@@ -108,6 +108,7 @@
         box-shadow: 0 0 10px rgba(0,0,0,0.3)
         +dark-mode
             background: #151516
+            box-shadow: 0 0 10px rgba(0,0,0,0.5)
         input
             background: #fff
             padding: 4px 5px
