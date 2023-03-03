@@ -21,6 +21,10 @@ const lightTheme = EditorView.theme({
         border: "1px solid #48b57e",
         outline: "1px solid #48b57e",
     },
+    ".cm-panel.cm-search [name=close]" : {
+        color: "rgba(0,0,0, 0.8)",
+    },
+
     ".cm-cursor, .cm-dropCursor": {
         borderLeftColor: "#000",
     },
