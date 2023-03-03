@@ -56,6 +56,19 @@ export const selectAll = ({ state, dispatch }) => {
     const range = state.selection.asSingle().ranges[0]
     const block = getActiveNoteBlock(state)
 
+    // handle empty blocks separately
+    if (block.content.from === block.content.to) {
+        // check if C-a has already been pressed
+        if (range.from === block.content.from-1 && range.to === block.content.to) {
+            return defaultSelectAll({state, dispatch})
+        }
+        dispatch(state.update({
+            selection: {anchor: block.content.from-1, head: block.content.to}, 
+            userEvent: "select"
+        }))
+        return true
+    }
+
     // check if all the text of the note is already selected, in which case we want to select all the text of the whole document
     if (range.from === block.content.from && range.to === block.content.to) {
         return defaultSelectAll({state, dispatch})
