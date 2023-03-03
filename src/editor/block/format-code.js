@@ -28,7 +28,7 @@ export const formatBlockContent = ({ state, dispatch }) => {
         return false
     
     // get current cursor position
-    const cursorPos = state.selection.asSingle().ranges[0].to
+    const cursorPos = state.selection.asSingle().ranges[0].head
     // get block content
     const content = state.sliceDoc(block.content.from, block.content.to)
 

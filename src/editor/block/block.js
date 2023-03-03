@@ -74,7 +74,7 @@ export const blockState = StateField.define({
 export function getActiveNoteBlock(state) {
     // find which block the cursor is in
     const range = state.selection.asSingle().ranges[0]
-    return state.facet(blockState).find(block => block.range.from <= range.from && block.range.to >= range.from)
+    return state.facet(blockState).find(block => block.range.from <= range.head && block.range.to >= range.head)
 }
 
 export function getNoteBlockFromPos(state, pos) {
