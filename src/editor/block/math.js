@@ -7,20 +7,21 @@ import { getNoteBlockFromPos } from "./block"
 
 
 class MathResult extends WidgetType {
-    constructor(result) {
+    constructor(displayResult, copyResult) {
         super()
-        this.result = result
+        this.displayResult = displayResult
+        this.copyResult = copyResult
     }
 
-    eq(other) { return other.result == this.result }
+    eq(other) { return other.displayResult == this.displayResult }
 
     toDOM() {
         let wrap = document.createElement("span")
         wrap.className = "heynote-math-result"
-        wrap.innerHTML = this.result
+        wrap.innerHTML = this.displayResult
         wrap.addEventListener("click", (e) => {
             e.preventDefault()
-            navigator.clipboard.writeText(this.result)
+            navigator.clipboard.writeText(this.copyResult)
             const copyElement = document.createElement("i")
             copyElement.className = "heynote-math-result-copied"
             copyElement.innerHTML = "Copied!"
@@ -62,11 +63,18 @@ function mathDeco(view) {
 
                 // if we got a result from math.js, add the result decoration
                 if (result !== undefined) {
-                    builder.add(line.to, line.to, Decoration.widget({widget: new MathResult(math.format(result, {
-                        precision: 8,
-                        upperExp: 8,
-                        lowerExp: -6,
-                    })), side: 1}))
+                    builder.add(line.to, line.to, Decoration.widget({
+                        widget: new MathResult(
+                            math.format(result, {
+                                precision: 8,
+                                upperExp: 8,
+                                lowerExp: -6,
+                            }),
+                            math.format(result, {
+                                notation: "fixed",
+                            }),
+                        ), side: 1},
+                    ))
                 }
             }
             pos = line.to + 1
