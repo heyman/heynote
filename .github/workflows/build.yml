@@ -3,9 +3,11 @@ name: Build/release
 on: push
 
 jobs:
-  release:
+  publish:
     runs-on: ${{ matrix.os }}
     if: ${{ contains(github.event.head_commit.message, '#build') }}
+    permissions:
+      contents: write
 
     strategy:
       matrix:
@@ -47,24 +49,10 @@ jobs:
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+          release: true
+          #release: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
           # macOS notarization API key
           API_KEY_ID: ${{ secrets.apple_api_key_id }}
           API_KEY_ISSUER_ID: ${{ secrets.apple_api_key_issuer_id }}
-      
-      - name: Upload Mac artifact
-        if: ${{ matrix.os == 'macos-latest' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: heynote-macos-${{ github.sha }}
-          path: release/*/Heynote_[0-9].[0-9].[0-9]*.zip
-          retention-days: 1
-      
-      - name: Upload Windows artifact
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: heynote-windows-${{ github.sha }}
-          path: release/*/Heynote_[0-9].[0-9].[0-9]*.exe
-          retention-days: 1
+
