@@ -1,6 +1,6 @@
 {
   "name": "Heynote",
-  "version": "1.0.0-dev",
+  "version": "1.0.0",
   "main": "dist-electron/main/index.js",
   "description": "A dedicated scratch pad",
   "author": "Jonatan Heyman (https://heyman.info)",
@@ -23,7 +23,8 @@
     "build": "vue-tsc --noEmit && vite build && electron-builder -c electron-builder.json5",
     "prebuild": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js"
+    "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",
+    "publish": "set -a && source .env && electron-builder -c electron-builder.json5 --publish always"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.1.2",
@@ -49,7 +50,7 @@
     "codemirror": "^6.0.1",
     "debounce": "^1.2.1",
     "electron": "^22.0.2",
-    "electron-builder": "^23.6.0",
+    "electron-builder": "^24.0.0",
     "electron-store": "^8.1.0",
     "fs-jetpack": "^5.1.0",
     "prettier": "^2.8.4",

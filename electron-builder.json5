@@ -24,6 +24,8 @@
         ]
       }
     ],
+    "publish": ["github"],
+    "category": "public.app-category.productivity",
   },
   "win": {
     "target": [
