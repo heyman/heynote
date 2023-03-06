@@ -9,6 +9,7 @@ import {
     UPDATE_ERROR,
     UPDATE_START_DOWNLOAD,
     UPDATE_INSTALL_AND_RESTART,
+    UPDATE_CHECK_FOR_UPDATES,
  } from '../constants'
 
 
@@ -60,6 +61,10 @@ ipcMain.handle(UPDATE_START_DOWNLOAD, () => {
 
 ipcMain.handle(UPDATE_INSTALL_AND_RESTART, () => {
     setImmediate(() => autoUpdater.quitAndInstall(true, true))
+})
+
+ipcMain.handle(UPDATE_CHECK_FOR_UPDATES, () => {
+    autoUpdater.checkForUpdates()
 })
 
 export function checkForUpdates(win) {

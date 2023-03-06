@@ -13,6 +13,7 @@ import {
     UPDATE_START_DOWNLOAD,
     UPDATE_INSTALL_AND_RESTART,
     UPDATE_DOWNLOADED,
+    UPDATE_CHECK_FOR_UPDATES,
 } from "../constants"
 import CONFIG from "../config"
 
@@ -77,6 +78,9 @@ contextBridge.exposeInMainWorld("heynote", {
         },
         installAndRestart() {
             ipcRenderer.invoke(UPDATE_INSTALL_AND_RESTART)
+        },
+        checkForUpdates() {
+            ipcRenderer.invoke(UPDATE_CHECK_FOR_UPDATES)
         },
     },
 })

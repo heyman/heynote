@@ -10,3 +10,4 @@ export const UPDATE_DOWNLOAD_PROGRESS = "update-download-progress"
 
 export const UPDATE_START_DOWNLOAD = "auto-update:startDownload"
 export const UPDATE_INSTALL_AND_RESTART = "auto-update:installAndRestart"
+export const UPDATE_CHECK_FOR_UPDATES = "auto-update:checkForUpdates"

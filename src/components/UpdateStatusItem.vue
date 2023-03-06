@@ -10,7 +10,9 @@
                     transferred: 0.0,
                     total: 0.0,
                     bytesPerSecond: 0.0,
-                }
+                },
+
+                checkForUpdateIntervalId: null,
             }
         },
 
@@ -39,7 +41,17 @@
                     this.downloading = true
                     this.updateProgress = progress
                 }
-            })    
+            })
+
+            setInterval(() => {
+                this.checkForUpdateIntervalId = window.heynote.autoUpdate.checkForUpdates()
+            }, 1000 * 3600 * 24)
+        },
+
+        beforeUnmount() {
+            if (this.checkForUpdateIntervalId) {
+                clearInterval(this.checkForUpdateIntervalId)
+            }
         },
 
         computed: {
