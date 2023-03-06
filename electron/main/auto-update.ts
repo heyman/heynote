@@ -59,7 +59,7 @@ ipcMain.handle(UPDATE_START_DOWNLOAD, () => {
 })
 
 ipcMain.handle(UPDATE_INSTALL_AND_RESTART, () => {
-    setImmediate(() => autoUpdater.quitAndInstall())
+    setImmediate(() => autoUpdater.quitAndInstall(true, true))
 })
 
 export function checkForUpdates(win) {
