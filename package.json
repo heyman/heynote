@@ -26,7 +26,7 @@
     "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js"
   },
   "devDependencies": {
-    "@codemirror/commands": "^6.1.2",
+    "@codemirror/commands": "^6.2.1",
     "@codemirror/lang-cpp": "^6.0.2",
     "@codemirror/lang-html": "^6.4.0",
     "@codemirror/lang-java": "^6.0.1",
