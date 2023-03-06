@@ -2,12 +2,15 @@ import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme, globalShortcut }
 import { release } from 'node:os'
 import { join } from 'node:path'
 import * as jetpack from "fs-jetpack";
+
 import menu from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
 import { isMac } from '../detect-platform';
+import { checkForUpdates } from './auto-update';
+
 
 // The built directory structure
 //
@@ -134,7 +137,9 @@ async function createWindow() {
     })
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(createWindow).then(async () => {
+    checkForUpdates(win)
+})
 
 app.on('window-all-closed', () => {
     win = null

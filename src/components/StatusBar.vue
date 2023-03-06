@@ -1,5 +1,7 @@
 <script>
+    import UpdateStatusItem from './UpdateStatusItem.vue'
     import { LANGUAGES } from '../editor/languages.js'
+    
     const LANGUAGE_MAP = Object.fromEntries(LANGUAGES.map(l => [l.token, l]))
     const LANGUAGE_NAMES = Object.fromEntries(LANGUAGES.map(l => [l.token, l.name]))
 
@@ -12,6 +14,10 @@
             "theme",
             "systemTheme",
         ],
+
+        components: {
+            UpdateStatusItem,
+        },
 
         mounted() {
             
@@ -40,6 +46,7 @@
             Ln <span class="num">{{ line }}</span>
             Col <span class="num">{{ column }}</span>
         </div>
+        <UpdateStatusItem />
         <div class="spacer"></div>
         <div 
             @click="$emit('openLanguageSelector')"

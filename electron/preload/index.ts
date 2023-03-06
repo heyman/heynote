@@ -2,7 +2,18 @@ const { contextBridge } = require('electron')
 import darkMode from "./theme-mode"
 import { isMac, isWindows, isLinux } from "../detect-platform"
 import { ipcRenderer } from "electron"
-import { WINDOW_CLOSE_EVENT, OPEN_SETTINGS_EVENT, SETTINGS_CHANGE_EVENT } from "../constants"
+import { 
+    WINDOW_CLOSE_EVENT, 
+    OPEN_SETTINGS_EVENT, 
+    SETTINGS_CHANGE_EVENT, 
+    UPDATE_AVAILABLE_EVENT, 
+    UPDATE_ERROR, 
+    UPDATE_DOWNLOAD_PROGRESS, 
+    UPDATE_NOT_AVAILABLE_EVENT,
+    UPDATE_START_DOWNLOAD,
+    UPDATE_INSTALL_AND_RESTART,
+    UPDATE_DOWNLOADED,
+} from "../constants"
 import CONFIG from "../config"
 
 //contextBridge.exposeInMainWorld("platform", )
@@ -50,6 +61,23 @@ contextBridge.exposeInMainWorld("heynote", {
 
     onSettingsChange(callback) {
         ipcRenderer.on(SETTINGS_CHANGE_EVENT, (event, settings) => callback(settings))
+    },
+
+    autoUpdate: {
+        callbacks(callbacks) {
+            ipcRenderer.on(UPDATE_AVAILABLE_EVENT, (event, info) => callbacks?.updateAvailable(info))
+            ipcRenderer.on(UPDATE_NOT_AVAILABLE_EVENT, (event) => callbacks?.updateNotAvailable())
+            ipcRenderer.on(UPDATE_DOWNLOADED, (event) => callbacks?.updateDownloaded())
+            ipcRenderer.on(UPDATE_ERROR, (event, error) => callbacks?.updateError(error))
+            ipcRenderer.on(UPDATE_DOWNLOAD_PROGRESS, (event, progress) => callbacks?.updateDownloadProgress(progress))
+        },
+
+        startDownload() {
+            ipcRenderer.invoke(UPDATE_START_DOWNLOAD)
+        },
+        installAndRestart() {
+            ipcRenderer.invoke(UPDATE_INSTALL_AND_RESTART)
+        },
     },
 })
 
