@@ -23,8 +23,7 @@
     "build": "vue-tsc --noEmit && vite build && electron-builder -c electron-builder.json5",
     "prebuild": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",
-    "publish": "set -a && source .env && electron-builder -c electron-builder.json5 --publish always"
+    "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.1.2",
