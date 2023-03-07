@@ -1,6 +1,7 @@
 import { Annotation, EditorState, Compartment } from "@codemirror/state"
 import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
 import { indentUnit, forceParsing, foldGutter } from "@codemirror/language"
+import { markdown } from "@codemirror/lang-markdown"
 
 import { heynoteLight } from "./theme/light.js"
 import { heynoteDark } from "./theme/dark.js"
@@ -14,6 +15,7 @@ import { heynoteKeymap, emacsKeymap } from "./keymap.js"
 import { heynoteCopyPaste } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
+import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 
 export const LANGUAGE_SELECTOR_EVENT = "openLanguageSelector"
 
@@ -75,6 +77,9 @@ export class HeynoteEditor {
                 }),
 
                 saveFunction ? autoSaveContent(saveFunction, 2000) : [],
+
+                todoCheckboxPlugin,
+                markdown(),
             ],
         })
 
