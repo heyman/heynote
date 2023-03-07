@@ -26,7 +26,7 @@ export function languageDetection(getView) {
         const newLang = HIGHLIGHTJS_TO_TOKEN[event.data.highlightjs.language]
         if (block.language.auto === true && block.language.name !== newLang) {
             console.log("New auto detected language:", newLang, "Relevance:", event.data.highlightjs.relevance)
-            if (event.data.highlightjs.relevance >= 5) {
+            if (event.data.highlightjs.relevance >= 7) {
                 let content = state.doc.sliceString(block.content.from, block.content.to)
                 const threshold = content.length * 0.1
                 if (levenshtein_distance(content, event.data.content) <= threshold) {
