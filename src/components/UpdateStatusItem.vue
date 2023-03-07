@@ -167,6 +167,11 @@
             background-repeat: no-repeat
             background-position: center center
             background-image: url("icons/update.svg")
+            animation-name: spin
+            animation-duration: 2000ms
+            animation-iteration-count: infinite
+            animation-timing-function: linear
+            animation-play-state: paused
             &.icon-download
                 background-image: url("icons/download.svg")
                 width: 16px
@@ -174,8 +179,6 @@
                 background-size: 16px
                 top: 3px
             &.spinning
-                animation-name: spin
-                animation-duration: 2000ms
-                animation-iteration-count: infinite
-                animation-timing-function: linear
+                animation-play-state: running
+                
 </style>
