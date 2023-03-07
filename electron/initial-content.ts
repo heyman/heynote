@@ -7,7 +7,7 @@ export const initialContent = `
 ∞∞∞text
 Welcome to Heynote!
 
-[${modChar} + Enter]          Add new block and move cursor to it
+[${modChar} + Enter]          Add new block below the current block
 [${modChar} + Shift + Enter]  Split the current block at cursor position
 [${modChar} + L]              Change block language
 [${modChar} + Down]           Goto next block
@@ -18,9 +18,8 @@ Welcome to Heynote!
 ∞∞∞math
 This is a Math block. Here, rows are evaluated as math expressions. 
 
-length = 10
 radius = 5
-volume = length * radius^2 * PI
+volume = radius^2 * PI
 sqrt(9)
 
 It also supports some basic unit conversions:
@@ -28,6 +27,11 @@ It also supports some basic unit conversions:
 13 inches in cm
 time = 3900 seconds to minutes
 time * 2
+∞∞∞markdown
+In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
+
+- [x] Download Heynote
+- [ ] Try out Heynote
 ∞∞∞text-a
 `
 
