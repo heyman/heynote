@@ -5,13 +5,14 @@
                 updateAvailable: false,
                 updateDownloaded: false,
                 downloading: false,
+                checkingForUpdate: false,
                 updateProgress: {
                     percent: 0.0,
                     transferred: 0.0,
                     total: 0.0,
                     bytesPerSecond: 0.0,
                 },
-
+                
                 checkForUpdateIntervalId: null,
             }
         },
@@ -20,12 +21,14 @@
             window.heynote.autoUpdate.callbacks({
                 updateAvailable: (info) => {
                     //console.log("updateAvailable", info)
+                    this.checkingForUpdate = false
                     this.updateAvailable = true
                     this.currentVersion = info.currentVersion
                     this.version = info.version
                 },
                 updateNotAvailable: () => {
                     //console.log("updateNotAvailable")
+                    this.checkingForUpdate = false
                 },
                 updateDownloaded: () => {
                     //console.log("updateDownloaded")
@@ -42,10 +45,14 @@
                     this.updateProgress = progress
                 }
             })
+            
+            // check for update now
+            this.checkForUpdate()
 
-            setInterval(() => {
-                this.checkForUpdateIntervalId = window.heynote.autoUpdate.checkForUpdates()
-            }, 1000 * 3600 * 24)
+            // check for updates every 8 hours
+            this.checkForUpdateIntervalId = setInterval(() => {
+                this.checkForUpdate()
+            }, 1000 * 3600 * 8)
         },
 
         beforeUnmount() {
@@ -55,45 +62,78 @@
         },
 
         computed: {
-            updateAvailableTitle() {
-                return "Update to version " + this.version + " (current version: " + this.currentVersion + ")"
+            statusText() {
+                if (this.downloading) {
+                    return "Downloading update… " + this.updateProgress.percent.toFixed(0) + "%"
+                } else if (this.updateDownloaded) {
+                    return "Update & Restart"
+                } else if (this.updateAvailable) {
+                    return "New version available!"
+                } else {
+                    return ""
+                }
             },
 
-            restartTitle() {
-                return "Click to restart and update Heynote "
+            statusTitle() {
+                if (this.downloading) {
+                    return ""
+                } else if (this.updateDownloaded) {
+                    return "Click to restart and update Heynote"
+                } else if (this.updateAvailable) {
+                    return "Update to version " + this.version + " (current version: " + this.currentVersion + ")"
+                } else {
+                    return "Check for updates"
+                }
             },
 
-            updateProgressPercent() {
-                return this.updateProgress.percent.toFixed(0)
-            }
+            className() {
+                return "status-block update-status-block" + 
+                    (!this.downloading ? " clickable" : "") +
+                    (this.statusText === "" ? " empty" : "")
+            },
+
+            iconClassName() {
+                if (this.checkingForUpdate) {
+                    return "icon-update spinning"
+                } else if (this.downloading) {
+                    return "icon-update spinning"
+                } else if (this.updateDownloaded) {
+                    return "icon-update icon-download "
+                } else if (this.updateAvailable) {
+                    return "icon-update icon-download"
+                } else {
+                    return "icon-update"
+                }
+            },
         },
 
         methods: {
-            startDownload() {
-                window.heynote.autoUpdate.startDownload()
-                this.downloading = true
+            onClick() {
+                if (this.downloading || this.checkingForUpdate) {
+                    return
+                } else if (this.updateDownloaded) {
+                    window.heynote.autoUpdate.installAndRestart()
+                } else if (this.updateAvailable) {
+                    this.downloading = true
+                    window.heynote.autoUpdate.startDownload()
+                } else {
+                    this.checkForUpdate()
+                }
             },
 
-            installAndRestart() {
-                window.heynote.autoUpdate.installAndRestart()
-            },
+            checkForUpdate() {
+                this.checkingForUpdate = true
+                window.heynote.autoUpdate.checkForUpdates()
+            }
         },
         
     }
 </script>
 
 <template>
-    <div v-if="downloading" class="status-block clickable update-status-block">
-        <span class="icon-update"></span>
-        Downloading update… {{ updateProgressPercent }}%
-    </div>
-    <div v-else-if="updateDownloaded" class="status-block clickable update-status-block" @click="installAndRestart" :title="restartTitle">
-        <span class="icon-update"></span>
-        Update &amp; Restart
-    </div>
-    <div v-else-if="updateAvailable" class="status-block clickable update-status-block" :title="updateAvailableTitle" @click="startDownload">
-        <span class="icon-update"></span>
-        New version available!
+    <div :class="className" @click="onClick" :title="statusTitle">
+        <span :class="iconClassName"></span>
+        {{  statusText }}
     </div>
 </template>
 
@@ -102,21 +142,40 @@
         @media (prefers-color-scheme: dark)
             @content
     
+    @keyframes spin
+        from
+            transform: rotate(0deg)
+        to
+            transform: rotate(360deg)
+    
     .status .status-block.update-status-block
         position: relative
-        padding-left: 30px
+        padding-left: 28px
+        &.empty
+            padding-left: 24px
 
         .icon-update
             display: block
             position: absolute
             left: 10px
-            top: 0
-            width: 16px
-            height: 22px
+            top: 4px
+            width: 14px
+            height: 14px
             +dark-mode
                 opacity: 0.9
-            background-size: 16px
+            background-size: 14px
             background-repeat: no-repeat
             background-position: center center
             background-image: url("icons/update.svg")
+            &.icon-download
+                background-image: url("icons/download.svg")
+                width: 16px
+                height: 16px
+                background-size: 16px
+                top: 3px
+            &.spinning
+                animation-name: spin
+                animation-duration: 2000ms
+                animation-iteration-count: infinite
+                animation-timing-function: linear
 </style>

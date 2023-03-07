@@ -20,7 +20,7 @@
         },
 
         mounted() {
-            
+
         },
 
         computed: {
@@ -46,11 +46,11 @@
             Ln <span class="num">{{ line }}</span>
             Col <span class="num">{{ column }}</span>
         </div>
-        <UpdateStatusItem />
         <div class="spacer"></div>
         <div 
             @click="$emit('openLanguageSelector')"
             class="status-block lang clickable"
+            title="Change language for current block"
         >
             {{ languageName }} 
             <span v-if="languageAuto" class="auto">(auto)</span>
@@ -63,7 +63,8 @@
         >
             <span class="icon icon-format"></span>
         </div>
-        <div class="status-block theme clickable" @click="$emit('toggleTheme')">
+        <UpdateStatusItem />
+        <div class="status-block theme clickable" @click="$emit('toggleTheme')" title="Toggle dark/light mode">
             <span :class="'icon ' + systemTheme"></span>
         </div>
     </div>

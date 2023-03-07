@@ -9,7 +9,7 @@ import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
 import { isMac } from '../detect-platform';
-import { checkForUpdates } from './auto-update';
+import { initializeAutoUpdate } from './auto-update';
 
 
 // The built directory structure
@@ -138,7 +138,7 @@ async function createWindow() {
 }
 
 app.whenReady().then(createWindow).then(async () => {
-    checkForUpdates(win)
+    initializeAutoUpdate(win)
 })
 
 app.on('window-all-closed', () => {

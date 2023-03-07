@@ -65,11 +65,12 @@ ipcMain.handle(UPDATE_INSTALL_AND_RESTART, () => {
 
 ipcMain.handle(UPDATE_CHECK_FOR_UPDATES, () => {
     autoUpdater.checkForUpdates()
+    // for development, the autoUpdater will not work, so we need to trigger the event manually
+    if (process.env.NODE_ENV === "development") {
+        window?.webContents.send(UPDATE_NOT_AVAILABLE_EVENT)
+    }
 })
 
-export function checkForUpdates(win) {
+export function initializeAutoUpdate(win) {
     window = win
-    
-    // check for updates
-    autoUpdater.checkForUpdates()
 }
