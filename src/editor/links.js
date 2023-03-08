@@ -3,6 +3,7 @@ import { MatchDecorator, WidgetType } from "@codemirror/view"
 
 
 const modChar = window.heynote.platform.isMac ? "⌘" : "Ctrl"
+const eventKeyModAttribute = window.heynote.platform.isMac ? "metaKey" : "ctrlKey"
 
 const linkMatcher = new MatchDecorator({
     regexp: /https?:\/\/[^\s]+/gi,
@@ -28,7 +29,7 @@ export const links = ViewPlugin.fromClass(class {
     eventHandlers: {
         click: (e, view) => {
             let target = e.target
-            if (target.classList.contains("heynote-link") && e.metaKey) {
+            if (target.classList.contains("heynote-link") && e[eventKeyModAttribute]) {
                 let linkEl = document.createElement("a")
                 linkEl.href = target.textContent
                 linkEl.target = "_blank"
