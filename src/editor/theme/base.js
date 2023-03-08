@@ -117,4 +117,7 @@ export const heynoteBase = EditorView.theme({
     '.heynote-math-result-copied.fade-out': {
         opacity: 0,
     },
+    '.heynote-link': {
+        textDecoration: "underline",
+    }
 })

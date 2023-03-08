@@ -16,6 +16,7 @@ import { heynoteCopyPaste } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
+import { links } from "./links.js"
 
 export const LANGUAGE_SELECTOR_EVENT = "openLanguageSelector"
 
@@ -80,6 +81,7 @@ export class HeynoteEditor {
 
                 todoCheckboxPlugin,
                 markdown(),
+                links,
             ],
         })
 
