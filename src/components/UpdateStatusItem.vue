@@ -37,6 +37,7 @@
                 },
                 updateError: (error) => {
                     console.log("Update error", error)
+                    this.checkForUpdate = false
                     this.downloading = false
                 },
                 updateDownloadProgress: (progress) => {
@@ -178,6 +179,7 @@
                 height: 16px
                 background-size: 16px
                 top: 3px
+                animation: none
             &.spinning
                 animation-play-state: running
                 
