@@ -24,7 +24,9 @@ const schema = {
             "showLineNumberGutter": {type: "boolean", default:true},
             "showFoldGutter": {type: "boolean", default:true},
         },
-    }
+    },
+
+    theme: {type: "string", default: "system"},
 }
 
 const defaults = {
@@ -33,7 +35,8 @@ const defaults = {
         emacsMetaKey: "meta",
         showLineNumberGutter: true,
         showFoldGutter: true,
-    }
+    },
+    theme: "system",
 }
 
 export default new Store({schema, defaults})

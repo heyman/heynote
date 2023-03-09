@@ -109,7 +109,7 @@ async function createWindow() {
         }
     })
 
-    //nativeTheme.themeSource = "light"
+    nativeTheme.themeSource = CONFIG.get("theme")
 
     if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
         win.loadURL(url + '?dev=1')
@@ -166,6 +166,7 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('dark-mode:set', (event, mode) => {
+    CONFIG.set("theme", mode)
     nativeTheme.themeSource = mode
 })
 
