@@ -37,7 +37,7 @@
                 },
                 updateError: (error) => {
                     console.log("Update error", error)
-                    this.checkForUpdate = false
+                    this.checkingForUpdate = false
                     this.downloading = false
                 },
                 updateDownloadProgress: (progress) => {
