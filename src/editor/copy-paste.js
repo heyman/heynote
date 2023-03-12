@@ -2,6 +2,7 @@ import { EditorState, EditorSelection } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"
 
 import { LANGUAGES } from './languages.js';
+import { setEmacsMarkMode } from "./emacs.js"
 
 
 const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
@@ -38,6 +39,10 @@ export const heynoteCopyPaste = (editor) => {
                 userEvent: "delete.cut"
             })
         }
+        
+        // if we're in Emacs mode, we want to exit mark mode in case we're in it
+        setEmacsMarkMode(false)
+
         // if Editor.deselectOnCopy is set (e.g. we're in Emacs mode), we want to remove the selection after we've copied the text
         if (editor.deselectOnCopy && event.type == "copy") {
             const newSelection = EditorSelection.create(
