@@ -245,3 +245,35 @@ export function gotoPreviousParagraph({state, dispatch}) {
 export function selectPreviousParagraph({state, dispatch}) {
     return extendSel(state, dispatch, range => previousParagraph(state, range))
 }
+
+
+function newCursor(view, below) {
+    const sel = view.state.selection
+    const ranges = sel.ranges
+
+    const newRanges = [...ranges]
+    for (let i = 0; i < ranges.length; i++) {
+        let range = ranges[i]
+        let newRange = view.moveVertically(range, below)
+        let exists = false
+        for (let j=0; j < ranges.length; j++) {
+            if (newRange.eq(ranges[j])) {
+                exists = true
+                break
+            }
+        }
+        if (!exists) {
+            newRanges.push(newRange)
+        }
+    }
+    const newSelection = EditorSelection.create(newRanges, sel.mainIndex)
+    view.dispatch({selection: newSelection})
+}
+
+export function newCursorBelow(view) {
+    newCursor(view, true)
+}
+
+export function newCursorAbove(view) {
+    newCursor(view, false)
+}

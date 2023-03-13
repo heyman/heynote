@@ -13,6 +13,7 @@ import {
     selectNextBlock, selectPreviousBlock,
     gotoPreviousParagraph, gotoNextParagraph, 
     selectNextParagraph, selectPreviousParagraph,
+    newCursorBelow, newCursorAbove,
 } from "./block/commands.js"
 
 import { formatBlockContent } from "./block/format-code.js"
@@ -44,6 +45,8 @@ export function heynoteKeymap(editor) {
         ["Alt-ArrowDown", moveLineDown],
         ["Mod-l", () => editor.openLanguageSelector()],
         ["Alt-Shift-f", formatBlockContent],
+        ["Mod-Alt-ArrowDown", newCursorBelow],
+        ["Mod-Alt-ArrowUp", newCursorAbove],
         {key:"Mod-ArrowUp", run:gotoPreviousBlock, shift:selectPreviousBlock},
         {key:"Mod-ArrowDown", run:gotoNextBlock, shift:selectNextBlock},
         {key:"Ctrl-ArrowUp", run:gotoPreviousParagraph, shift:selectPreviousParagraph},
