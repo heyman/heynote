@@ -4,7 +4,7 @@
   "main": "dist-electron/main/index.js",
   "description": "A dedicated scratch pad",
   "author": "Jonatan Heyman (https://heyman.info)",
-  "license": "",
+  "license": "Commons Clause MIT",
   "private": true,
   "keywords": [],
   "debug": {
