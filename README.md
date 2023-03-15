@@ -47,7 +47,7 @@ To develop Heynote, you should (hopefully) just need to check out the code and t
 
 ### Contributions
 
-I'm happy to merge contributions that fit my vision for the app. Bug fixes are always welcome. By submitting a pull-request you assign me unrestricted republishing rights for the contribution.
+I'm happy to merge contributions that fit my vision for the app. Bug fixes are always welcome. 
 
 Heynote is built upon [CodeMirror](https://codemirror.net/), [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/) and other great open-source projects.
 
