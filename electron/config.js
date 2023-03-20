@@ -27,6 +27,14 @@ const schema = {
     },
 
     theme: {type: "string", default: "system"},
+
+    currency: {
+        type: "object",
+        properties: {
+            data: {type: "object"},
+            timeFetched: {type: "number"},
+        },
+    },
 }
 
 const defaults = {

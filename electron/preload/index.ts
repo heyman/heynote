@@ -16,9 +16,10 @@ import {
     UPDATE_CHECK_FOR_UPDATES,
 } from "../constants"
 import CONFIG from "../config"
+import getCurrencyData from "./currency"
 
 //contextBridge.exposeInMainWorld("platform", )
-contextBridge.exposeInMainWorld('darkMode', darkMode)
+contextBridge.exposeInMainWorld("darkMode", darkMode)
 
 contextBridge.exposeInMainWorld("heynote", {
     platform: {
@@ -58,6 +59,10 @@ contextBridge.exposeInMainWorld("heynote", {
     
     setSettings(settings) {
         ipcRenderer.invoke("settings:set", settings)
+    },
+
+    async getCurrencyData() {
+        return await getCurrencyData()
     },
 
     onSettingsChange(callback) {

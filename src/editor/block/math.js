@@ -49,7 +49,7 @@ function mathDeco(view) {
                 // get math.js parser and cache it for this block
                 let parser = mathParsers.get(block)
                 if (!parser) {
-                    parser = math.parser()
+                    parser = window.math.parser()
                     mathParsers.set(block, parser)
                 }
                 

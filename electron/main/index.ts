@@ -10,6 +10,7 @@ import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
 import { isMac } from '../detect-platform';
 import { initializeAutoUpdate } from './auto-update';
+import { fixElectronCors } from './cors';
 
 
 // The built directory structure
@@ -137,6 +138,8 @@ async function createWindow() {
         }
         return { action: 'deny' }
     })
+
+    fixElectronCors(win)
 }
 
 app.whenReady().then(createWindow).then(async () => {
