@@ -1,6 +1,6 @@
 import CONFIG from "../config"
 
-const STALE_TIME = 1000 * 3600 * 24
+const STALE_TIME = 1000 * 3600 * 12
 
 export default async function getCurrencyData() {
     const currency = CONFIG.get("currency")
