@@ -54,6 +54,7 @@
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                 })
+                window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
             })
             // set up window close handler that will save the buffer and quit
             window.heynote.onWindowClose(() => {
@@ -78,6 +79,10 @@
                     this.syntaxTreeDebugContent = render(syntaxTree(this.editor.view.state))
                 }, 1000)
             }
+        },
+
+        beforeUnmount() {
+            window.document.removeEventListener("currenciesLoaded", this.onCurrenciesLoaded)
         },
 
         watch: {
@@ -111,6 +116,10 @@
             formatCurrentBlock() {
                 this.editor.formatCurrentBlock()
                 this.editor.focus()
+            },
+
+            onCurrenciesLoaded() {
+                this.editor.currenciesLoaded()
             },
 
             focus() {

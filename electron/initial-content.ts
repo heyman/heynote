@@ -22,11 +22,13 @@ radius = 5
 volume = radius^2 * PI
 sqrt(9)
 
-It also supports some basic unit conversions:
+It also supports some basic unit conversions, including currencies:
 
 13 inches in cm
 time = 3900 seconds to minutes
 time * 2
+
+1 EUR in USD
 ∞∞∞markdown
 In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
 
@@ -120,3 +122,4 @@ Shopping list:
 - Eggs
 - Bread
 - Cheese`
+

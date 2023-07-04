@@ -4,7 +4,7 @@ import {
     selectAll as defaultSelectAll, 
     moveLineUp as defaultMoveLineUp,
 } from "@codemirror/commands"
-import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
+import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
 import { levenshtein_distance } from "../language-detection/levenshtein"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
@@ -276,4 +276,13 @@ export function newCursorBelow(view) {
 
 export function newCursorAbove(view) {
     newCursor(view, false)
+}
+
+export function triggerCurrenciesLoaded(state, dispatch) {
+    // Trigger empty change transaction that is annotated with CURRENCIES_LOADED
+    // This will make Math blocks re-render so that currency conversions are applied
+    dispatch(state.update({
+        changes:{from: 0, to: 0, insert:""},
+        annotations: [heynoteEvent.of(CURRENCIES_LOADED)],
+    }))
 }

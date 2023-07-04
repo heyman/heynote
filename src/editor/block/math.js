@@ -4,6 +4,7 @@ import { RangeSetBuilder } from "@codemirror/state"
 import { WidgetType } from "@codemirror/view"
 
 import { getNoteBlockFromPos } from "./block"
+import { CURRENCIES_LOADED } from "../annotation"
 
 
 class MathResult extends WidgetType {
@@ -84,6 +85,11 @@ function mathDeco(view) {
 }
 
 
+// This function checks if any of the transactions has the given annotation
+const transactionsHasAnnotation = (transactions, annotation) => {
+    return transactions.some(tr => tr.annotations.some(a => a.value === annotation))
+}
+
 export const mathBlock = ViewPlugin.fromClass(class {
     decorations
 
@@ -92,7 +98,10 @@ export const mathBlock = ViewPlugin.fromClass(class {
     }
 
     update(update) {
-        if (update.docChanged || update.viewportChanged) {
+        // If the document changed, the viewport changed, or the transaction was annotated with the CURRENCIES_LOADED annotation, 
+        // update the decorations. The reason we need to check for CURRENCIES_LOADED annotations is because the currency rates are 
+        // updated asynchronously
+        if (update.docChanged || update.viewportChanged || transactionsHasAnnotation(update.transactions, CURRENCIES_LOADED)) {
             this.decorations = mathDeco(update.view)
         }
     }

@@ -14,4 +14,5 @@ export async function loadCurrencies() {
             }, {override: currenciesLoaded})
         })
     currenciesLoaded = true
+    window.document.dispatchEvent(new Event("currenciesLoaded"))
 }

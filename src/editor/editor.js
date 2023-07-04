@@ -9,7 +9,7 @@ import { heynoteBase } from "./theme/base.js"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension, blockLineNumbers } from "./block/block.js"
-import { changeCurrentBlockLanguage } from "./block/commands.js"
+import { changeCurrentBlockLanguage, triggerCurrenciesLoaded } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
 import { heynoteKeymap } from "./keymap.js"
 import { emacsKeymap } from "./emacs.js"
@@ -146,6 +146,10 @@ export class HeynoteEditor {
             state: this.view.state, 
             dispatch: this.view.dispatch,
         })
+    }
+
+    currenciesLoaded() {
+        triggerCurrenciesLoaded(this.view.state, this.view.dispatch)
     }
 }
 

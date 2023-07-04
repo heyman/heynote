@@ -27,6 +27,7 @@ Available for Mac and Windows. Linux support coming soon (hopefully).
 -   Language auto-detection
 -   Auto-formatting
 -   Math/Calculator mode
+-   Currency conversion
 -   Multi-cursor editing
 -   Dark & Light themes
 -   Default or Emacs-like key bindings
