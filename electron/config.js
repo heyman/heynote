@@ -1,5 +1,7 @@
 import Store from "electron-store"
 
+const isDev = !!process.env.VITE_DEV_SERVER_URL
+
 const schema = {
     additionalProperties: false,
 
@@ -47,4 +49,4 @@ const defaults = {
     theme: "system",
 }
 
-export default new Store({schema, defaults})
+export default new Store({schema, defaults, name: isDev ? "config-dev" : "config"})
