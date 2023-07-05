@@ -5,14 +5,15 @@ on: push
 jobs:
   publish:
     runs-on: ${{ matrix.os }}
-    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    #if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     permissions:
       contents: write
 
     strategy:
       matrix:
         #os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [macos-latest, windows-latest]
+        #os: [macos-latest, windows-latest]
+        os: [macos-latest]
 
     steps:
       - name: Check out Git repository
@@ -31,6 +32,7 @@ jobs:
           echo '${{ secrets.apple_api_key }}' > ~/private_keys/AuthKey_${{ secrets.apple_api_key_id }}.p8
 
       - name: Build/release Electron app
+        continue-on-error: true
         uses: samuelmeuli/action-electron-builder@v1
         with:
           # Specify electron-builder config file
@@ -55,4 +57,7 @@ jobs:
           # macOS notarization API key
           API_KEY_ID: ${{ secrets.apple_api_key_id }}
           API_KEY_ISSUER_ID: ${{ secrets.apple_api_key_issuer_id }}
+      
+      - name: Print notarization-error.log
+        run: cat notarization-error.log
 
