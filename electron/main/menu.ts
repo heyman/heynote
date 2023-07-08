@@ -1,14 +1,21 @@
-const { app, Menu } = require('electron')
-import { OPEN_SETTINGS_EVENT } from '../constants';
+const { app, Menu } = require("electron")
+import { OPEN_SETTINGS_EVENT } from "../constants";
+import { openAboutWindow } from "./about";
 
-const isMac = process.platform === 'darwin'
+const isMac = process.platform === "darwin"
 
 const template = [
     // { role: 'appMenu' }
     ...(isMac ? [{
         label: app.name,
         submenu: [
-            { role: 'about' },
+            {
+                label: 'About', 
+                click:(menuItem, window, event) => {
+                    // open about window
+                    openAboutWindow()
+                },
+            },
             { type: 'separator' },
             {
                 label: 'Preferences',

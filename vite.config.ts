@@ -53,6 +53,24 @@ export default defineConfig({
 						},
 					},
 				},
+			},
+			{
+				entry: 'electron/preload/about-preload.js',
+				onstart(options) {
+					// Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete, 
+					// instead of restarting the entire Electron App.
+					options.reload()
+				},
+				vite: {
+					build: {
+						sourcemap: isDevelopment,
+						minify: isProduction,
+						outDir: 'dist-electron/preload',
+						rollupOptions: {
+							external: Object.keys("dependencies" in pkg ? pkg.dependencies : {}),
+						},
+					},
+				},
 			}
 		]),
 		// Use Node.js API in the Renderer-process
