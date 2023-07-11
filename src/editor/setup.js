@@ -60,7 +60,7 @@ const customSetup = /*@__PURE__*/(() => [
     syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
     bracketMatching(),
     //closeBrackets(),
-    autocompletion(),
+    //autocompletion(),
     rectangularSelection(),
     crosshairCursor(),
     highlightActiveLine(),
@@ -73,8 +73,8 @@ const customSetup = /*@__PURE__*/(() => [
         ...searchKeymap,
         ...historyKeymap,
         ...foldKeymap,
-        ...completionKeymap,
-        ...lintKeymap
+        //...completionKeymap,
+        //...lintKeymap
     ])
 ])();
 /**
