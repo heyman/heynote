@@ -11,7 +11,7 @@ const template = [
         submenu: [
             {
                 label: 'About', 
-                click:(menuItem, window, event) => {
+                click: (menuItem, window, event) => {
                     // open about window
                     openAboutWindow()
                 },
@@ -42,7 +42,13 @@ const template = [
                     window?.webContents.send(OPEN_SETTINGS_EVENT)
                 },
             },
-            { role: 'about' },
+            {
+                label: 'About', 
+                click: (menuItem, window, event) => {
+                    // open about window
+                    openAboutWindow()
+                },
+            },
         ],
     }]),
     /*{
