@@ -3,18 +3,18 @@ import { isMac } from "./detect-platform.js"
 const modChar = isMac ? "⌘" : "Ctrl"
 const altChar = isMac ? "⌥" : "Alt "
 
-export const initialContent = `
+export const initialContent = `
 ∞∞∞text
-Welcome to Heynote!
+Welcome to Heynote! 👋
 
-[${modChar} + Enter]          Add new block below the current block
-[${modChar} + Shift + Enter]  Split the current block at cursor position
-[${modChar} + L]              Change block language
-[${modChar} + Down]           Goto next block
-[${modChar} + Up]             Goto previous block
-[${modChar} + A]              Select all text in a note block. Press again to select the whole scratchpad
-[${modChar} + ⌥ + Up/Down]    Add additional cursor above/below
-[${altChar} + Shift + F]      Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
+${modChar} + Enter           Add new block below the current block
+${modChar} + Shift + Enter   Split the current block at cursor position
+${modChar} + L               Change block language
+${modChar} + Down            Goto next block
+${modChar} + Up              Goto previous block
+${modChar} + A               Select all text in a note block. Press again to select the whole buffer
+${modChar} + ⌥ + Up/Down     Add additional cursor above/below
+${altChar} + Shift + F       Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
 ∞∞∞math
 This is a Math block. Here, rows are evaluated as math expressions. 
 
