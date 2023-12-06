@@ -7,7 +7,7 @@ import { LANGUAGES } from "../languages";
 import { changeLanguageTo } from "../block/commands";
 import { LANGUAGE_CHANGE } from "../annotation";
 
-const HIGHLIGHTJS_TO_TOKEN = Object.fromEntries(LANGUAGES.map(l => [l.highlightjs,l.token]))
+const GUESSLANG_TO_TOKEN = Object.fromEntries(LANGUAGES.map(l => [l.guesslang,l.token]))
 
 
 export function languageDetection(getView) {
@@ -17,29 +17,27 @@ export function languageDetection(getView) {
     const detectionWorker = new Worker('langdetect-worker.js?worker');
     detectionWorker.onmessage = (event) => {
         //console.log("event:", event.data)
-        if (!event.data.highlightjs.language) {
+        if (!event.data.guesslang.language) {
             return
         }
         const view = getView()
         const state = view.state
         const block = getActiveNoteBlock(state)
-        const newLang = HIGHLIGHTJS_TO_TOKEN[event.data.highlightjs.language]
+        const newLang = GUESSLANG_TO_TOKEN[event.data.guesslang.language]
         if (block.language.auto === true && block.language.name !== newLang) {
-            console.log("New auto detected language:", newLang, "Relevance:", event.data.highlightjs.relevance)
-            if (event.data.highlightjs.relevance >= 7) {
-                let content = state.doc.sliceString(block.content.from, block.content.to)
-                const threshold = content.length * 0.1
-                if (levenshtein_distance(content, event.data.content) <= threshold) {
-                    // the content has not changed significantly so it's safe to change the language
-                    if (redoDepth(state) === 0) {
-                        console.log("Changing language to", newLang)
-                        changeLanguageTo(state, view.dispatch, block, newLang, true)
-                    } else {
-                        console.log("Not changing language because the user has undo:ed and has redo history")
-                    }
+            console.log("New auto detected language:", newLang, "Confidence:", event.data.guesslang.confidence)
+            let content = state.doc.sliceString(block.content.from, block.content.to)
+            const threshold = content.length * 0.1
+            if (levenshtein_distance(content, event.data.content) <= threshold) {
+                // the content has not changed significantly so it's safe to change the language
+                if (redoDepth(state) === 0) {
+                    console.log("Changing language to", newLang)
+                    changeLanguageTo(state, view.dispatch, block, newLang, true)
                 } else {
-                    console.log("Content has changed significantly, not setting new language")
+                    console.log("Not changing language because the user has undo:ed and has redo history")
                 }
+            } else {
+                console.log("Content has changed significantly, not setting new language")
             }
         }
     }

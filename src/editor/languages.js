@@ -14,24 +14,24 @@ import { rustLanguage } from "@codemirror/lang-rust"
 
 
 class Language {
-    constructor(token, name, parser, highlightjs, supportsFormat=false) {
+    constructor(token, name, parser, guesslang, supportsFormat=false) {
         this.token = token
         this.name = name
         this.parser = parser
-        this.highlightjs = highlightjs
+        this.guesslang = guesslang
         this.supportsFormat = supportsFormat
     }
 }
 
 export const LANGUAGES = [
-    new Language("text", "Plain Text", null, "plaintext"),
+    new Language("text", "Plain Text", null, null),
     new Language("math", "Math", null, null),
-    new Language("javascript", "JavaScript", javascriptLanguage.parser, "javascript", true),
+    new Language("javascript", "JavaScript", javascriptLanguage.parser, "js", true),
     new Language("json", "JSON", jsonLanguage.parser, "json", true),
-    new Language("python", "Python", pythonLanguage.parser, "python"),
+    new Language("python", "Python", pythonLanguage.parser, "py"),
     new Language("html", "HTML", htmlLanguage.parser, "html", true),
     new Language("sql", "SQL", StandardSQL.language.parser, "sql"),
-    new Language("markdown", "Markdown", markdownLanguage.parser, "markdown", true),
+    new Language("markdown", "Markdown", markdownLanguage.parser, "md", true),
     new Language("java", "Java", javaLanguage.parser, "java"),
     //new Language("lezer", "Lezer", lezerLanguage.parser, "lezer"),
     new Language("php", "PHP", phpLanguage.parser, "php"),
