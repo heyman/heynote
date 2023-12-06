@@ -62,7 +62,7 @@ let contentSaved = false
 // if this version is a beta version, set the release channel to beta
 const isBetaVersion = app.getVersion().includes("beta")
 if (isBetaVersion) {
-    CONFIG.set("settings.releaseChannel", "beta")
+    CONFIG.set("settings.allowBetaVersions", true)
 }
 
 
@@ -212,13 +212,6 @@ ipcMain.handle('settings:set', (event, settings) =>  {
     if (settings.keymap !== CONFIG.get("settings.keymap")) {
         currentKeymap = settings.keymap
     }
-    const releaseChannelChanged = settings.releaseChannel !== CONFIG.get("settings.releaseChannel")
-
     CONFIG.set("settings", settings)
-
-    if (releaseChannelChanged) {
-        // release channel changed, check for updates
-        checkForUpdates()
-    }
     win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
 })

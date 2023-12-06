@@ -16,11 +16,7 @@
                 isMac: window.heynote.platform.isMac,
                 showLineNumberGutter: this.initialSettings.showLineNumberGutter,
                 showFoldGutter: this.initialSettings.showFoldGutter,
-                releaseChannels: [
-                    { name: "Stable", value: null },
-                    { name: "Beta", value: "beta" },
-                ],
-                releaseChannel: this.initialSettings.releaseChannel,
+                allowBetaVersions: this.initialSettings.allowBetaVersions,
             }
         },
 
@@ -45,7 +41,7 @@
                     showFoldGutter: this.showFoldGutter,
                     keymap: this.keymap,
                     emacsMetaKey: this.metaKey,
-                    releaseChannel: this.releaseChannel,
+                    allowBetaVersions: this.allowBetaVersions,
                 })
             }
         }
@@ -99,12 +95,16 @@
                 </div>
                 <div class="row">
                     <div class="entry">
-                        <h2>Release Channel</h2>
-                        <select ref="releaseChannelSelector" v-model="releaseChannel" @change="updateSettings">
-                            <template v-for="rc in releaseChannels" :key="rc.value">
-                                <option :selected="rc.value === releaseChannel" :value="rc.value">{{ rc.name }}</option>
-                            </template>
-                        </select>
+                        <h2>Beta Versions</h2>
+                        <div class="checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="allowBetaVersions"
+                                v-model="allowBetaVersions" 
+                                @change="updateSettings"
+                            />
+                            <label for="allowBetaVersions">Use beta versions of Heynote</label>
+                        </div>
                     </div>
                 </div>
             </div>
