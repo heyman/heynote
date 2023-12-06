@@ -1,5 +1,9 @@
 <script>
     export default {
+        props: [
+            "allowBetaVersions",
+        ],
+        
         data() {
             return {
                 updateAvailable: false,
@@ -59,6 +63,14 @@
         beforeUnmount() {
             if (this.checkForUpdateIntervalId) {
                 clearInterval(this.checkForUpdateIntervalId)
+            }
+        },
+
+        watch: {
+            allowBetaVersions: {
+                handler: function (newValue) {
+                    this.checkForUpdate()
+                },
             }
         },
 
@@ -123,6 +135,7 @@
             },
 
             checkForUpdate() {
+                this.updateAvailable = false
                 this.checkingForUpdate = true
                 window.heynote.autoUpdate.checkForUpdates()
             }
