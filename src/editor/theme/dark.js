@@ -30,6 +30,7 @@ const lineNumberColor = 'rgba(255,255,255, 0.15)';
 const commentColor = '#888d97';
 const matchingBracket = 'rgba(255,255,255,0.1)';
 const selection = "#0865a9";
+const selectionBlur = "#225377";
 
 
 const darkTheme = EditorView.theme({
@@ -41,7 +42,12 @@ const darkTheme = EditorView.theme({
         caretColor: cursor,
     },
     '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor },
-    '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection },
+    '.cm-selectionBackground': {
+        backgroundColor: selectionBlur,
+    },
+    '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground': {
+        backgroundColor: selection,
+    },
     '.cm-panels': {
         backgroundColor: "#474747", 
         color: "#9c9c9c",

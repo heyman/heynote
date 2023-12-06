@@ -71,8 +71,8 @@ export function emacsKeymap(editor) {
             ["ArrowRight", emacsMoveCommand(cursorCharRight, selectCharRight)],
             ["ArrowUp", emacsMoveCommand(cursorLineUp, selectLineUp)],
             ["ArrowDown", emacsMoveCommand(cursorLineDown, selectLineDown)],
-            ["Ctrl-ArrowLeft", emacsMoveCommand(cursorGroupLeft, selectGroupLeft)],
-            ["Ctrl-ArrowRight", emacsMoveCommand(cursorGroupRight, selectGroupRight)],
+            {key: "Ctrl-ArrowLeft", run: emacsMoveCommand(cursorGroupLeft, selectGroupLeft), shift: selectGroupLeft},
+            {key: "Ctrl-ArrowRight", run: emacsMoveCommand(cursorGroupRight, selectGroupRight), shift: selectGroupRight},
             
             ["Ctrl-d", deleteCharForward],
             ["Ctrl-h", deleteCharBackward],

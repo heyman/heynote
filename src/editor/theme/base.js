@@ -80,6 +80,9 @@ export const heynoteBase = EditorView.theme({
         height:'19px !important', 
         marginTop:'-2px !important'
     },
+    '.heynote-blocks-layer': {
+        width: '100%',
+    },
     '.heynote-blocks-layer .block-even, .heynote-blocks-layer .block-odd': {
         width: '100%',
         boxSizing: 'content-box',

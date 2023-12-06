@@ -2,6 +2,8 @@ import { EditorView } from "@codemirror/view";
 import { HighlightStyle, syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
 import { tags } from '@lezer/highlight';
 
+const selection = "#77baff8c"
+const selectionBlur = "#b2c2ca85"
 
 const lightTheme = EditorView.theme({
     "&": {
@@ -42,10 +44,10 @@ const lightTheme = EditorView.theme({
         backgroundColor: "rgba(0,0,0, 0.04)",
     },
     ".cm-selectionBackground": {
-        background: "#b2c2ca85",
+        background: selectionBlur,
     },
-    "&.cm-focused .cm-selectionBackground": {
-        background: "#77baff8c",
+    "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground": {
+        background: selection,
     },
 
     ".heynote-blocks-layer .block-even": {
