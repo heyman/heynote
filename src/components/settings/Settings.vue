@@ -16,6 +16,11 @@
                 isMac: window.heynote.platform.isMac,
                 showLineNumberGutter: this.initialSettings.showLineNumberGutter,
                 showFoldGutter: this.initialSettings.showFoldGutter,
+                releaseChannels: [
+                    { name: "Stable", value: null },
+                    { name: "Beta", value: "beta" },
+                ],
+                releaseChannel: this.initialSettings.releaseChannel,
             }
         },
 
@@ -40,6 +45,7 @@
                     showFoldGutter: this.showFoldGutter,
                     keymap: this.keymap,
                     emacsMetaKey: this.metaKey,
+                    releaseChannel: this.releaseChannel,
                 })
             }
         }
@@ -89,6 +95,16 @@
                             />
                             <label for="showFoldGutter">Show fold gutter</label>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="entry">
+                        <h2>Release Channel</h2>
+                        <select ref="releaseChannelSelector" v-model="releaseChannel" @change="updateSettings">
+                            <template v-for="rc in releaseChannels" :key="rc.value">
+                                <option :selected="rc.value === releaseChannel" :value="rc.value">{{ rc.name }}</option>
+                            </template>
+                        </select>
                     </div>
                 </div>
             </div>
