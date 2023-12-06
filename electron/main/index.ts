@@ -203,7 +203,7 @@ ipcMain.handle('buffer-content:saveAndQuit', async (event, content) => {
 })
 
 ipcMain.handle('settings:set', (event, settings) =>  {
-    if (settings.keymap !== CONFIG.get("keymap")) {
+    if (settings.keymap !== CONFIG.get("settings.keymap")) {
         currentKeymap = settings.keymap
     }
     CONFIG.set("settings", settings)
