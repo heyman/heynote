@@ -8,6 +8,7 @@ import { IterMode } from "@lezer/common";
 import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { SelectionChangeEvent } from "../event.js"
 import { mathBlock } from "./math.js"
+import { emptyBlockSelected } from "./select-all.js";
 
 
 // tracks the size of the first delimiter
@@ -325,5 +326,6 @@ export const noteBlockExtension = (editor) => {
         preventSelectionBeforeFirstBlock,
         emitCursorChange(editor),
         mathBlock,
+        emptyBlockSelected,
     ]
 }

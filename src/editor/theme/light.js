@@ -49,6 +49,9 @@ const lightTheme = EditorView.theme({
     "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground": {
         background: selection,
     },
+    '.cm-activeLine.heynote-empty-block-selected': {
+        "background-color": selection,
+    },
 
     ".heynote-blocks-layer .block-even": {
         background: "#ffffff",

@@ -122,5 +122,5 @@ export const heynoteBase = EditorView.theme({
     },
     '.heynote-link': {
         textDecoration: "underline",
-    }
+    },
 })

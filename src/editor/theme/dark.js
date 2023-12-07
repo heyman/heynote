@@ -29,8 +29,8 @@ const highlightBackground = 'rgba(255,255,255,0.04)';
 const lineNumberColor = 'rgba(255,255,255, 0.15)';
 const commentColor = '#888d97';
 const matchingBracket = 'rgba(255,255,255,0.1)';
-const selection = "#0865a9";
-const selectionBlur = "#225377";
+const selection = "#0865a9aa";
+const selectionBlur = "#225377aa";
 
 
 const darkTheme = EditorView.theme({
@@ -47,6 +47,9 @@ const darkTheme = EditorView.theme({
     },
     '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground': {
         backgroundColor: selection,
+    },
+    '.cm-activeLine.heynote-empty-block-selected': {
+        "background-color": selection,
     },
     '.cm-panels': {
         backgroundColor: "#474747", 

@@ -1,13 +1,10 @@
 import { EditorSelection } from "@codemirror/state"
-import { 
-    selectAll as defaultSelectAll, 
-    moveLineUp as defaultMoveLineUp,
-} from "@codemirror/commands"
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
+import { selectAll } from "./select-all.js";
 
-export { moveLineDown, moveLineUp }
+export { moveLineDown, moveLineUp, selectAll }
 
 
 export const insertNewBlockAtCursor = ({ state, dispatch }) => {
@@ -49,37 +46,6 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     }))
     return true;
 }
-
-export const selectAll = ({ state, dispatch }) => {
-    const range = state.selection.asSingle().ranges[0]
-    const block = getActiveNoteBlock(state)
-
-    // handle empty blocks separately
-    if (block.content.from === block.content.to) {
-        // check if C-a has already been pressed
-        if (range.from === block.content.from-1 && range.to === block.content.to) {
-            return defaultSelectAll({state, dispatch})
-        }
-        dispatch(state.update({
-            selection: {anchor: block.content.from-1, head: block.content.to}, 
-            userEvent: "select"
-        }))
-        return true
-    }
-
-    // check if all the text of the note is already selected, in which case we want to select all the text of the whole document
-    if (range.from === block.content.from && range.to === block.content.to) {
-        return defaultSelectAll({state, dispatch})
-    }
-
-    dispatch(state.update({
-        selection: {anchor: block.content.from, head: block.content.to}, 
-        userEvent: "select"
-    }))
-
-    return true
-}
-
 
 export function changeLanguageTo(state, dispatch, block, language, auto) {
     if (state.readOnly)
