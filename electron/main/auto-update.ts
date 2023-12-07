@@ -24,6 +24,7 @@ autoUpdater.logger = log
 autoUpdater.logger.transports.file.level = "info"
 
 autoUpdater.autoDownload = false
+autoUpdater.allowDowngrade = true
 
 autoUpdater.on('error', (error) => {
     window?.webContents.send(UPDATE_ERROR, error == null ? "unknown" : (error.stack || error).toString())
