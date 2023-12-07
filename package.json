@@ -45,6 +45,7 @@
     "@codemirror/search": "^6.5.5",
     "@electron/asar": "^3.2.2",
     "@lezer/generator": "^1.5.1",
+    "@lezer/markdown": "^1.1.2",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "codemirror": "^6.0.1",
