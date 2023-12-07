@@ -52,5 +52,7 @@ To develop Heynote you need Node.js and you should (hopefully) just need to chec
 
 I'm happy to merge contributions that fit my vision for the app. Bug fixes are always welcome. 
 
-Heynote is built upon [CodeMirror](https://codemirror.net/), [Vue](https://vuejs.org/), [Electron](https://www.electronjs.org/) [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/) and other great open-source projects.
+## Thanks!
+
+Heynote is built upon [CodeMirror](https://codemirror.net/), [Vue](https://vuejs.org/), [Electron](https://www.electronjs.org/), [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/) and other great open-source projects.
 
