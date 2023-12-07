@@ -16,6 +16,7 @@
             return {
                 line: 1,
                 column: 1,
+                selectionSize: 0,
                 language: "plaintext",
                 languageAuto: true,
                 theme: window.darkMode.initial,
@@ -71,9 +72,9 @@
             },
 
             onCursorChange(e) {
-                //console.log("onCursorChange:", e)
                 this.line = e.cursorLine.line
                 this.column = e.cursorLine.col
+                this.selectionSize = e.selectionSize
                 this.language = e.language
                 this.languageAuto = e.languageAuto
             },
@@ -117,6 +118,7 @@
         <StatusBar 
             :line="line" 
             :column="column" 
+            :selectionSize="selectionSize"
             :language="language" 
             :languageAuto="languageAuto"
             :theme="theme"

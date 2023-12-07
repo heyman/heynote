@@ -295,6 +295,20 @@ export const blockLineNumbers = lineNumbers({
     }
 })
 
+
+function getSelectionSize(state, sel) {
+    let count = 0
+    let numBlocks = 0
+    for (const block of state.facet(blockState)) {
+        if (sel.from <= block.range.to && sel.to > block.range.from) {
+            count += Math.min(sel.to, block.content.to) - Math.max(sel.from, block.content.from)
+            numBlocks++
+        }
+    }
+    count += (numBlocks - 1) * 2 // add 2 for each block separator
+    return count
+}
+
 const emitCursorChange = (editor) => ViewPlugin.fromClass(
     class {
         update(update) {
@@ -303,10 +317,16 @@ const emitCursorChange = (editor) => ViewPlugin.fromClass(
             const langChange = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE))
             if (update.selectionSet || langChange) {
                 const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
+                
+                const selectionSize = update.state.selection.ranges.map(
+                    (sel) => getSelectionSize(update.state, sel)
+                ).reduce((a, b) => a + b, 0)
+
                 const block = getActiveNoteBlock(update.state)
                 if (block && cursorLine) {
                     editor.element.dispatchEvent(new SelectionChangeEvent({
                         cursorLine,
+                        selectionSize,
                         language: block.language.name,
                         languageAuto: block.language.auto,
                     }))

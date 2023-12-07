@@ -32,6 +32,7 @@
                 //console.log("selectionChange:", e)
                 this.$emit("cursorChange", {
                     cursorLine: e.cursorLine,
+                    selectionSize: e.selectionSize,
                     language: e.language,
                     languageAuto: e.languageAuto,
                 })
