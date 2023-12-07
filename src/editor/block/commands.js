@@ -1,4 +1,3 @@
-import { EditorView } from "@codemirror/view"
 import { EditorSelection } from "@codemirror/state"
 import { 
     selectAll as defaultSelectAll, 
@@ -6,7 +5,6 @@ import {
 } from "@codemirror/commands"
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
-import { levenshtein_distance } from "../language-detection/levenshtein"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 
 export { moveLineDown, moveLineUp }
