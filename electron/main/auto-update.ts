@@ -1,5 +1,6 @@
 import { autoUpdater } from "electron-updater"
 import { app, dialog, ipcMain } from "electron"
+import CONFIG from "../config"
 
 import { 
     UPDATE_AVAILABLE_EVENT, 
@@ -10,7 +11,7 @@ import {
     UPDATE_START_DOWNLOAD,
     UPDATE_INSTALL_AND_RESTART,
     UPDATE_CHECK_FOR_UPDATES,
- } from '../constants'
+} from '../constants'
 
 
 // will reference the main window
@@ -23,6 +24,7 @@ autoUpdater.logger = log
 autoUpdater.logger.transports.file.level = "info"
 
 autoUpdater.autoDownload = false
+autoUpdater.allowDowngrade = true
 
 autoUpdater.on('error', (error) => {
     window?.webContents.send(UPDATE_ERROR, error == null ? "unknown" : (error.stack || error).toString())
@@ -63,14 +65,33 @@ ipcMain.handle(UPDATE_INSTALL_AND_RESTART, () => {
     setImmediate(() => autoUpdater.quitAndInstall(true, true))
 })
 
-ipcMain.handle(UPDATE_CHECK_FOR_UPDATES, () => {
+
+export function checkForUpdates() {
+    autoUpdater.allowPrerelease = CONFIG.get("settings.allowBetaVersions")
     autoUpdater.checkForUpdates()
     // for development, the autoUpdater will not work, so we need to trigger the event manually
     if (process.env.NODE_ENV === "development") {
         window?.webContents.send(UPDATE_NOT_AVAILABLE_EVENT)
     }
+}
+
+ipcMain.handle(UPDATE_CHECK_FOR_UPDATES, () => {
+    checkForUpdates()
 })
 
 export function initializeAutoUpdate(win) {
     window = win
+
+    /**
+     * To debug auto updates (actually downloading an update won't work), 
+     * uncomment the lines below, and create a dev-app-update.yml with the content:
+     * 
+     * owner: heyman
+     * repo: heynote
+     * provider: github
+     */
+    // Useful for some dev/debugging tasks, but download can
+    // not be validated becuase dev app is not signed
+    //autoUpdater.updateConfigPath = "/Users/heyman/projects/heynote/dev-app-update.yml" //path.join(__dirname, 'dev-app-update.yml');
+    //autoUpdater.forceDevUpdateConfig = true;
 }

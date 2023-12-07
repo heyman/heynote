@@ -9,7 +9,7 @@ import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
 import { isMac } from '../detect-platform';
-import { initializeAutoUpdate } from './auto-update';
+import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
 
 
@@ -58,6 +58,12 @@ const isDev = !!process.env.VITE_DEV_SERVER_URL
 
 let currentKeymap = CONFIG.get("settings.keymap")
 let contentSaved = false
+
+// if this version is a beta version, set the release channel to beta
+const isBetaVersion = app.getVersion().includes("beta")
+if (isBetaVersion) {
+    CONFIG.set("settings.allowBetaVersions", true)
+}
 
 
 async function createWindow() {
@@ -203,7 +209,7 @@ ipcMain.handle('buffer-content:saveAndQuit', async (event, content) => {
 })
 
 ipcMain.handle('settings:set', (event, settings) =>  {
-    if (settings.keymap !== CONFIG.get("keymap")) {
+    if (settings.keymap !== CONFIG.get("settings.keymap")) {
         currentKeymap = settings.keymap
     }
     CONFIG.set("settings", settings)

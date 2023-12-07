@@ -13,6 +13,7 @@
             "languageAuto",
             "theme",
             "systemTheme",
+            "allowBetaVersions",
         ],
 
         components: {
@@ -63,7 +64,7 @@
         >
             <span class="icon icon-format"></span>
         </div>
-        <UpdateStatusItem />
+        <UpdateStatusItem :allowBetaVersions="allowBetaVersions" />
         <div class="status-block theme clickable" @click="$emit('toggleTheme')" title="Toggle dark/light mode">
             <span :class="'icon ' + systemTheme"></span>
         </div>

@@ -121,6 +121,7 @@
             :languageAuto="languageAuto"
             :theme="theme"
             :systemTheme="systemTheme"
+            :allowBetaVersions="settings.allowBetaVersions"
             @toggleTheme="toggleTheme"
             @openLanguageSelector="openLanguageSelector"
             @formatCurrentBlock="formatCurrentBlock"

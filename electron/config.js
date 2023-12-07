@@ -25,6 +25,7 @@ const schema = {
             "emacsMetaKey": { "enum": [null, "alt", "meta"], default: null },
             "showLineNumberGutter": {type: "boolean", default:true},
             "showFoldGutter": {type: "boolean", default:true},
+            "allowBetaVersions": {type: "boolean", default: false},
         },
     },
 
@@ -45,6 +46,7 @@ const defaults = {
         emacsMetaKey: "meta",
         showLineNumberGutter: true,
         showFoldGutter: true,
+        allowBetaVersions: false,
     },
     theme: "system",
 }

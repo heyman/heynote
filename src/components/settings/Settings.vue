@@ -16,6 +16,7 @@
                 isMac: window.heynote.platform.isMac,
                 showLineNumberGutter: this.initialSettings.showLineNumberGutter,
                 showFoldGutter: this.initialSettings.showFoldGutter,
+                allowBetaVersions: this.initialSettings.allowBetaVersions,
             }
         },
 
@@ -40,6 +41,7 @@
                     showFoldGutter: this.showFoldGutter,
                     keymap: this.keymap,
                     emacsMetaKey: this.metaKey,
+                    allowBetaVersions: this.allowBetaVersions,
                 })
             }
         }
@@ -88,6 +90,20 @@
                                 @change="updateSettings"
                             />
                             <label for="showFoldGutter">Show fold gutter</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="entry">
+                        <h2>Beta Versions</h2>
+                        <div class="checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="allowBetaVersions"
+                                v-model="allowBetaVersions" 
+                                @change="updateSettings"
+                            />
+                            <label for="allowBetaVersions">Use beta versions of Heynote</label>
                         </div>
                     </div>
                 </div>
