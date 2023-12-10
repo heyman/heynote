@@ -148,8 +148,22 @@ async function createWindow() {
     fixElectronCors(win)
 }
 
+function registerGlobalHotkey() {
+    globalShortcut.unregisterAll()
+    if (CONFIG.get("settings.enableGlobalHotkey")) {
+        try {
+            const ret = globalShortcut.register(CONFIG.get("settings.globalHotkey"), () => {
+                app.focus({steal: true})
+            })
+        } catch (error) {
+            console.log("Could not register global hotkey:", error)
+        }
+    }
+}
+
 app.whenReady().then(createWindow).then(async () => {
     initializeAutoUpdate(win)
+    registerGlobalHotkey()
 })
 
 app.on('window-all-closed', () => {
@@ -212,6 +226,13 @@ ipcMain.handle('settings:set', (event, settings) =>  {
     if (settings.keymap !== CONFIG.get("settings.keymap")) {
         currentKeymap = settings.keymap
     }
+    let globalHotkeyChanged = settings.enableGlobalHotkey !== CONFIG.get("settings.enableGlobalHotkey") || settings.globalHotkey !== CONFIG.get("settings.globalHotkey")
+    
     CONFIG.set("settings", settings)
+
     win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
+    
+    if (globalHotkeyChanged) {
+        registerGlobalHotkey()
+    }
 })

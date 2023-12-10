@@ -1,8 +1,13 @@
 <script>
+    import KeyboardHotkey from "./KeyboardHotkey.vue"
+
     export default {
         props: {
             initialKeymap: String,
             initialSettings: Object,
+        },
+        components: {
+            KeyboardHotkey,
         },
 
         data() {
@@ -17,6 +22,8 @@
                 showLineNumberGutter: this.initialSettings.showLineNumberGutter,
                 showFoldGutter: this.initialSettings.showFoldGutter,
                 allowBetaVersions: this.initialSettings.allowBetaVersions,
+                enableGlobalHotkey: this.initialSettings.enableGlobalHotkey,
+                globalHotkey: this.initialSettings.globalHotkey,
             }
         },
 
@@ -42,6 +49,8 @@
                     keymap: this.keymap,
                     emacsMetaKey: this.metaKey,
                     allowBetaVersions: this.allowBetaVersions,
+                    enableGlobalHotkey: this.enableGlobalHotkey,
+                    globalHotkey: this.globalHotkey,
                 })
             }
         }
@@ -73,38 +82,55 @@
                 <div class="row">
                     <div class="entry">
                         <h2>Gutters</h2>
-                        <div class="checkbox">
+                        <label>
                             <input 
                                 type="checkbox" 
-                                id="showLineNumbers"
                                 v-model="showLineNumberGutter" 
                                 @change="updateSettings"
                             />
-                            <label for="showLineNumbers">Show line numbers</label>
-                        </div>
-                        <div class="checkbox">
+                            Show line numbers
+                        </label>
+                        
+                        <label>
                             <input 
                                 type="checkbox" 
-                                id="showFoldGutter"
                                 v-model="showFoldGutter" 
                                 @change="updateSettings"
                             />
-                            <label for="showFoldGutter">Show fold gutter</label>
-                        </div>
+                            Show fold gutter
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="entry">
+                        <h2>Global Keyboard Shortcut</h2>
+                        <label class="keyboard-shortcut-label">
+                            <input 
+                                type="checkbox" 
+                                v-model="enableGlobalHotkey" 
+                                @change="updateSettings"
+                            />
+                            Enable Global Hotkey
+                        </label>
+                        
+                        <KeyboardHotkey 
+                            :disabled="!enableGlobalHotkey"
+                            v-model="globalHotkey"
+                            @change="updateSettings"
+                        />
                     </div>
                 </div>
                 <div class="row">
                     <div class="entry">
                         <h2>Beta Versions</h2>
-                        <div class="checkbox">
+                        <label>
                             <input 
                                 type="checkbox" 
-                                id="allowBetaVersions"
                                 v-model="allowBetaVersions" 
                                 @change="updateSettings"
                             />
-                            <label for="allowBetaVersions">Use beta versions of Heynote</label>
-                        </div>
+                            Use beta versions of Heynote
+                        </label>
                     </div>
                 </div>
             </div>
@@ -117,7 +143,7 @@
     </div>
 </template>
 
-<style lang="sass">
+<style lang="sass" scoped>
     .settings
         position: fixed
         top: 0
@@ -163,15 +189,25 @@
             .row
                 display: flex
                 .entry
-                    margin-bottom: 20px
+                    margin-bottom: 24px
                     margin-right: 20px
                     h2
                         font-weight: 600
                         margin-bottom: 10px
+                        font-size: 14px
                     select
                         width: 200px
                         &:focus
                             outline: none
+                    label
+                        display: block
+                        user-select: none
+                        &.keyboard-shortcut-label
+                            margin-bottom: 14px
+                        > input[type=checkbox]
+                            position: relative
+                            top: 2px
+                            left: -3px
 
             .close
                 height: 32px

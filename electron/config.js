@@ -26,6 +26,8 @@ const schema = {
             "showLineNumberGutter": {type: "boolean", default:true},
             "showFoldGutter": {type: "boolean", default:true},
             "allowBetaVersions": {type: "boolean", default: false},
+            "enableGlobalHotkey": {type: "boolean", default: false},
+            "globalHotkey": {type: "string", default: "CmdOrCtrl+Alt+H"},
         },
     },
 
@@ -47,6 +49,8 @@ const defaults = {
         showLineNumberGutter: true,
         showFoldGutter: true,
         allowBetaVersions: false,
+        enableGlobalHotkey: false,
+        globalHotkey: "CmdOrCtrl+Alt+H",
     },
     theme: "system",
 }
