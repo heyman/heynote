@@ -153,9 +153,16 @@ function registerGlobalHotkey() {
     if (CONFIG.get("settings.enableGlobalHotkey")) {
         try {
             const ret = globalShortcut.register(CONFIG.get("settings.globalHotkey"), () => {
-                app.focus({steal: true})
-                if (win?.isMinimized()) {
-                    win?.restore()
+                if (!win) {
+                    return
+                }
+                if (win.isFocused()) {
+                    app.hide()
+                } else {
+                    app.focus({steal: true})
+                    if (win.isMinimized()) {
+                        win.restore()
+                    }
                 }
             })
         } catch (error) {
