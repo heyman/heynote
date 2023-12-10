@@ -157,7 +157,12 @@ function registerGlobalHotkey() {
                     return
                 }
                 if (win.isFocused()) {
-                    app.hide()
+                    if (!!app.hide) {
+                        // app.hide() only available on macOS
+                        app?.hide()
+                    } else {
+                        win.blur()
+                    }
                 } else {
                     app.focus({steal: true})
                     if (win.isMinimized()) {
