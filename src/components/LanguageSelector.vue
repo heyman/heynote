@@ -90,11 +90,7 @@
     </form>
 </template>
 
-<style scoped lang="sass">
-    =dark-mode()
-        @media (prefers-color-scheme: dark)
-            @content
-    
+<style scoped lang="sass">    
     .language-selector
         font-size: 13px
         padding: 10px

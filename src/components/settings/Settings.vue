@@ -118,10 +118,6 @@
 </template>
 
 <style lang="sass">
-    =dark-mode()
-        @media (prefers-color-scheme: dark)
-            @content
-    
     .settings
         position: fixed
         top: 0

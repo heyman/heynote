@@ -76,9 +76,6 @@
 </template>
 
 <style scoped lang="sass">
-    =dark-mode()
-        @media (prefers-color-scheme: dark)
-            @content
     .status
         box-sizing: border-box
         height: 22px

@@ -87,6 +87,15 @@ export default defineConfig({
 		  },
 		})
 	],
+	css: {
+		preprocessorOptions: {
+			sass: {
+				additionalData: `
+    @import "./src/css/include.sass"
+`
+			}
+		}
+	},
 	server: !!process.env.VSCODE_DEBUG ? (() => {
 		const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
 		return {

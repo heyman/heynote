@@ -152,10 +152,6 @@
 </template>
 
 <style scoped lang="sass">
-    =dark-mode()
-        @media (prefers-color-scheme: dark)
-            @content
-    
     @keyframes spin
         from
             transform: rotate(0deg)
