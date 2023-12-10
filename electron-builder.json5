@@ -13,6 +13,7 @@
     "dist-electron",
     "dist"
   ],
+  "afterSign": "electron-builder-notarize",
   "mac": {
     "artifactName": "${productName}_${version}_${arch}.${ext}",
     "target": [
@@ -25,9 +26,6 @@
         ]
       }
     ],
-    "notarize": {
-      teamId: "VY5Y3H438S"
-    },
     "publish": ["github"],
     "category": "public.app-category.productivity",
   },
