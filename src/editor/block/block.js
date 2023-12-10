@@ -1,7 +1,6 @@
 import { ViewPlugin, EditorView, Decoration, WidgetType, lineNumbers } from "@codemirror/view"
 import { layer, RectangleMarker } from "@codemirror/view"
-import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect} from "@codemirror/state";
-import { RangeSet } from "@codemirror/rangeset";
+import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet} from "@codemirror/state";
 import { syntaxTree, ensureSyntaxTree } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
@@ -317,7 +316,7 @@ const emitCursorChange = (editor) => ViewPlugin.fromClass(
             const langChange = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE))
             if (update.selectionSet || langChange) {
                 const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
-                
+
                 const selectionSize = update.state.selection.ranges.map(
                     (sel) => getSelectionSize(update.state, sel)
                 ).reduce((a, b) => a + b, 0)

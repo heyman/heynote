@@ -1,5 +1,5 @@
 import { EditorState } from "@codemirror/state";
-import { EditorView } from "codemirror";
+import { EditorView } from "@codemirror/view";
 import { redoDepth } from "@codemirror/commands";
 import { getActiveNoteBlock, blockState } from "../block/block";
 import { levenshtein_distance } from "./levenshtein";
