@@ -27,7 +27,7 @@ const schema = {
             "showFoldGutter": {type: "boolean", default:true},
             "allowBetaVersions": {type: "boolean", default: false},
             "enableGlobalHotkey": {type: "boolean", default: false},
-            "globalHotkey": {type: "string", default: "CmdOrCtrl+Alt+H"},
+            "globalHotkey": {type: "string", default: "CmdOrCtrl+Shift+H"},
         },
     },
 
@@ -50,7 +50,7 @@ const defaults = {
         showFoldGutter: true,
         allowBetaVersions: false,
         enableGlobalHotkey: false,
-        globalHotkey: "CmdOrCtrl+Alt+H",
+        globalHotkey: "CmdOrCtrl+Shift+H",
     },
     theme: "system",
 }
