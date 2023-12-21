@@ -1,8 +1,8 @@
-import { isMac, isWindows } from "./detect-platform.js"
+import { isLinux, isMac, isWindows } from "./detect-platform.js"
 
 const modChar = isMac ? "⌘" : "Ctrl"
 const altChar = isMac ? "⌥" : "Alt "
-const windowsShowMenu = isWindows ? `\n${altChar}                   Show menu` : ""
+const showMenuHelp = (isWindows || isLinux)  ? `\n${altChar}                   Show menu` : ""
 
 export const initialContent = `
 ∞∞∞text
@@ -15,7 +15,7 @@ ${modChar} + Down            Goto next block
 ${modChar} + Up              Goto previous block
 ${modChar} + A               Select all text in a note block. Press again to select the whole buffer
 ${modChar} + ⌥ + Up/Down     Add additional cursor above/below
-${altChar} + Shift + F       Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)${windowsShowMenu}
+${altChar} + Shift + F       Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)${showMenuHelp}
 ∞∞∞math
 This is a Math block. Here, rows are evaluated as math expressions. 
 
