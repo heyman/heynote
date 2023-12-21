@@ -55,4 +55,8 @@
   appImage: {
     artifactName: "${productName}_${version}_${arch}.${ext}",
   },
+  snap: {
+    artifactName: "${productName}_${version}_${arch}.${ext}",
+    publish: ["github"],
+  }
 }
