@@ -46,5 +46,13 @@
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
     "deleteAppDataOnUninstall": false
-  }
+  },
+
+  linux: {
+    synopsis: "A dedicated scratchpad for developers",
+    category: "Utility",
+  },
+  appImage: {
+    artifactName: "${productName}_${version}_${arch}.${ext}",
+  },
 }
