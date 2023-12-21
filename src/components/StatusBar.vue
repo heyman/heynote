@@ -38,6 +38,18 @@
                 const lang = LANGUAGE_MAP[this.language]
                 return !!lang ? lang.supportsFormat : false
             },
+
+            cmdKey() {
+                return window.heynote.platform.isMac ? "⌘" : "Ctrl"
+            },
+
+            formatBlockTitle() {
+                return `Format Block Content (Alt + Shift + F)`
+            },
+
+            changeLanguageTitle() {
+                return `Change language for current block (${this.cmdKey} + L)`
+            },
         },
     }
 </script>
@@ -55,7 +67,7 @@
         <div 
             @click="$emit('openLanguageSelector')"
             class="status-block lang clickable"
-            title="Change language for current block"
+            :title="changeLanguageTitle"
         >
             {{ languageName }} 
             <span v-if="languageAuto" class="auto">(auto)</span>
@@ -64,7 +76,7 @@
             v-if="supportsFormat"
             @click="$emit('formatCurrentBlock')"
             class="status-block format clickable"
-            title="Format Block Content"
+            :title="formatBlockTitle"
         >
             <span class="icon icon-format"></span>
         </div>
