@@ -5,6 +5,8 @@
     export default {
         props: {
             theme: String,
+            fontSize: String,
+            fontFamily: String,
             development: Boolean,
             debugSyntaxTree: Boolean,
             keymap: {
@@ -55,6 +57,9 @@
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                 })
+                this.editor.setFontFamily(this.fontFamily)
+                this.editor.setFontSize(this.fontSize)
+
                 window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
             })
             // set up window close handler that will save the buffer and quit
@@ -102,6 +107,12 @@
             showFoldGutter(show) {
                 this.editor.setFoldGutter(show)
             },
+            fontFamily(fontFamily) {
+                this.editor.setFontFamily(fontFamily)
+            },
+            fontSize(fontSize) {
+                this.editor.setFontSize(fontSize)
+            }
         },
 
         methods: {

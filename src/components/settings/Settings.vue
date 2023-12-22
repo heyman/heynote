@@ -19,6 +19,8 @@
                 keymap: this.initialSettings.keymap,
                 metaKey: this.initialSettings.emacsMetaKey,
                 isMac: window.heynote.platform.isMac,
+                fontFamily: this.initialSettings.fontFamily,
+                fontSize: this.initialSettings.fontSize,
                 showLineNumberGutter: this.initialSettings.showLineNumberGutter,
                 showFoldGutter: this.initialSettings.showFoldGutter,
                 allowBetaVersions: this.initialSettings.allowBetaVersions,
@@ -48,6 +50,8 @@
                     showFoldGutter: this.showFoldGutter,
                     keymap: this.keymap,
                     emacsMetaKey: this.metaKey,
+                    fontFamily: this.fontFamily,
+                    fontSize: this.fontSize,
                     allowBetaVersions: this.allowBetaVersions,
                     enableGlobalHotkey: this.enableGlobalHotkey,
                     globalHotkey: this.globalHotkey,
@@ -77,6 +81,27 @@
                             <option :selected="metaKey === 'meta'" value="meta">Command</option>
                             <option :selected="metaKey === 'alt'" value="alt">Option</option>
                         </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="entry">
+                        <h2>Font</h2>
+                        <div class="setting">
+                            <label for="fontFamily">Font family</label>
+                            <input 
+                                v-model="fontFamily" 
+                                @change="updateSettings" 
+                                type="text" 
+                                name="fontFamily">
+                        </div>
+                        <div class="setting">
+                            <label for="fontSize">Font size</label>
+                            <input 
+                                v-model="fontSize" 
+                                @change="updateSettings" 
+                                type="text" 
+                                name="fontSize">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -167,10 +192,7 @@
             left: 50%
             top: 50%
             transform: translate(-50%, -50%)
-            width: 100%
-            height: 100%
-            max-width: 700px
-            max-height: 500px
+            min-width: 750px
             border-radius: 5px
             padding: 40px
             background: #fff
@@ -199,6 +221,10 @@
                         width: 200px
                         &:focus
                             outline: none
+                    .setting
+                        margin-bottom: .5em
+                        label
+                            margin-bottom: .25em
                     label
                         display: block
                         user-select: none

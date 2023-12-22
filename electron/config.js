@@ -23,8 +23,10 @@ const schema = {
         properties: {
             "keymap": { "enum": ["default", "emacs"], default:"default" },
             "emacsMetaKey": { "enum": [null, "alt", "meta"], default: null },
-            "showLineNumberGutter": {type: "boolean", default:true},
-            "showFoldGutter": {type: "boolean", default:true},
+            "fontFamily": {type: "string", default: ""},
+            "fontSize": {type: "string", default: ""},
+            "showLineNumberGutter": {type: "boolean", default: true},
+            "showFoldGutter": {type: "boolean", default: true},
             "allowBetaVersions": {type: "boolean", default: false},
             "enableGlobalHotkey": {type: "boolean", default: false},
             "globalHotkey": {type: "string", default: "CmdOrCtrl+Shift+H"},
@@ -46,6 +48,8 @@ const defaults = {
     settings: {
         keymap: "default",
         emacsMetaKey: "meta",
+        fontFamily: "",
+        fontSize: "",
         showLineNumberGutter: true,
         showFoldGutter: true,
         allowBetaVersions: false,

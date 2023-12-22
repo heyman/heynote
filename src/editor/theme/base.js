@@ -59,7 +59,7 @@ export const heynoteBase = EditorView.theme({
         paddingTop: 4,
     },
     '.cm-scroller': {
-        fontFamily: "Hack, Menlo, Monaco, 'Courier New', monospace",
+        fontFamily: "inherit",
     },
     '.cm-gutters': {
         padding: '0 2px 0 4px',

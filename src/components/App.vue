@@ -111,6 +111,8 @@
             :keymap="settings.keymap"
             :showLineNumberGutter="settings.showLineNumberGutter"
             :showFoldGutter="settings.showFoldGutter"
+            :fontFamily="settings.fontFamily"
+            :fontSize="settings.fontSize"
             class="editor"
             ref="editor"
             @openLanguageSelector="openLanguageSelector"

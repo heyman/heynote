@@ -121,6 +121,14 @@ export class HeynoteEditor {
         })
     }
 
+    setFontFamily(fontFamily) {
+        fontFamily ? this.view.dom.style.fontFamily = fontFamily : this.view.dom.style.fontFamily = "Hack, Menlo, Monaco, 'Courier New', monospace"
+    }
+
+    setFontSize(fontSize) {
+        fontSize ? this.view.dom.style.fontSize = fontSize : this.view.dom.style.fontSize = "12px"
+    }
+
     openLanguageSelector() {
         this.element.dispatchEvent(new Event(LANGUAGE_SELECTOR_EVENT))
     }
