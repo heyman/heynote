@@ -32,6 +32,7 @@ Available for Mac and Windows. Linux support coming soon (hopefully).
 -   Currency conversion
 -   Multi-cursor editing
 -   Dark & Light themes
+-   Option to set a global hotkey to show/hide the app
 -   Default or Emacs-like key bindings
 
 
