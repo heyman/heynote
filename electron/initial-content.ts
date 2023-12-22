@@ -10,7 +10,7 @@ Welcome to Heynote! 👋
 
 ${modChar} + Enter           Add new block below the current block
 ${modChar} + Shift + Enter   Split the current block at cursor position
-${modChar} + L               Change block language
+${modChar} + L               Change block language (Math, Markdown, etc.)
 ${modChar} + Down            Goto next block
 ${modChar} + Up              Goto previous block
 ${modChar} + A               Select all text in a note block. Press again to select the whole buffer
