@@ -37,7 +37,7 @@ Available for Mac and Windows. Linux support coming soon (hopefully).
 
 ## Installation
 
-Download the appropriate (ARM Mac, Intel Mac, or Windows) version from the latest Github release. The Windows build is not signed, so you might have to approve some warning (I could not justify paying a yearly fee for a certificate just to get rid of that).
+Download the appropriate (Mac, Windows or Linux) version from the latest Github release (or from [heynote.com](https://heynote.com)). The Windows build is not signed, so you might see some scary warning (I can not justify paying a yearly fee for a certificate just to get rid of that).
 
 ## Development
 
