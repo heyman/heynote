@@ -36,7 +36,7 @@ const selectionBlur = "#225377aa";
 const darkTheme = EditorView.theme({
     '&': {
         color: base04,
-        backgroundColor: background
+        backgroundColor: background,
     },
     '.cm-content': {
         caretColor: cursor,

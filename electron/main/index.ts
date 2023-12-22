@@ -152,7 +152,7 @@ function registerGlobalHotkey() {
     globalShortcut.unregisterAll()
     if (CONFIG.get("settings.enableGlobalHotkey")) {
         try {
-            const ret = globalShortcut.register(CONFIG.get("settings.globalHotkey"), () => {
+            globalShortcut.register(CONFIG.get("settings.globalHotkey"), () => {
                 if (!win) {
                     return
                 }
