@@ -7,7 +7,7 @@ Heynote is a dedicated scratchpad for developers. It functions as a large persis
 
 The Heynote buffer is divided into blocks, and each block can have its own Language set (e.g. JavaScript, JSON, Markdown, etc.). This gives you syntax highlighting and lets you auto-format that JSON response.
 
-Available for Mac and Windows. Linux support coming soon (hopefully).
+Available for Mac and Windows, and Linux.
 
 ## Features
 
