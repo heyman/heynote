@@ -6,6 +6,7 @@ const altChar = isMac ? "⌥" : "Alt"
 const keyHelp = [
     [`${modChar} + Enter`, "Add new block below the current block"],
     [`${modChar} + Shift + Enter`, "Split the current block at cursor position"],
+    [`${modChar} + ${altChar} + Enter`, "Add new block at top of buffer"],
     [`${modChar} + L`, "Change block language"],
     [`${modChar} + Down`, "Goto next block"],
     [`${modChar} + Up`, "Goto previous block"],

@@ -47,6 +47,25 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     return true;
 }
 
+export const addNewBlockUpTop = ({ state, dispatch }) => {
+    if (state.readOnly)
+        return false
+    const block = state.facet(blockState)[0]
+    const delimText = "\n∞∞∞text-a\n"
+
+    dispatch(state.update({
+        changes: {
+            from: block.content.from,
+            insert: delimText,
+        },
+        selection: EditorSelection.cursor(block.content.from - delimText.length)
+    }, {
+        scrollIntoView: true,
+        userEvent: "input",
+    }))
+    return true;
+}
+
 export function changeLanguageTo(state, dispatch, block, language, auto) {
     if (state.readOnly)
         return false
