@@ -223,10 +223,10 @@ const realpathSync = (path) => {
 };
 
 const getBufferPath = () => {
-  let bufferPath = realpathSync(CONFIG.get("settings.bufferPath"));
-  if (!bufferPath.length) {
-    bufferPath = app.getPath("userData")
-  }
+  let defaultPath = app.getPath("userData")
+  let configPath = CONFIG.get("settings.bufferPath")
+  let bufferPath = realpathSync(configPath.length ? configPath : defaultPath);
+  console.log(`bufferPath ${bufferPath}`)
   return join(bufferPath, isDev ? "buffer-dev.txt": "buffer.txt")
 }
 
