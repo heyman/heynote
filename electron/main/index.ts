@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme, globalShortcut }
 import { release } from 'node:os'
 import { join } from 'node:path'
 import * as jetpack from "fs-jetpack";
+import * as fs from  "fs";
 
 import menu from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
@@ -210,9 +211,27 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
-const bufferPath = isDev ? join(app.getPath("userData"), "buffer-dev.txt") : join(app.getPath("userData"), "buffer.txt")
+const realpathSync = (path) => {
+  try {
+    return fs.realpathSync(path);
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      throw err;
+    }
+  }
+  return "";
+};
 
-ipcMain.handle('buffer-content:load', async () =>  {
+const getBufferPath = () => {
+  let bufferPath = realpathSync(CONFIG.get("settings.bufferPath"));
+  if (!bufferPath.length) {
+    bufferPath = app.getPath("userData")
+  }
+  return join(bufferPath, isDev ? "buffer-dev.txt": "buffer.txt")
+}
+
+ipcMain.handle('buffer-content:load', async () => {
+    let bufferPath = getBufferPath()
     if (jetpack.exists(bufferPath) === "file") {
         return await jetpack.read(bufferPath, 'utf8')
     } else {
@@ -221,7 +240,7 @@ ipcMain.handle('buffer-content:load', async () =>  {
 });
 
 async function save(content) {
-    return await jetpack.write(bufferPath, content, {
+    return await jetpack.write(getBufferPath(), content, {
         atomic: true,
         mode: '600',
     })
