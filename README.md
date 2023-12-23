@@ -53,6 +53,22 @@ To develop Heynote you need Node.js and you should (hopefully) just need to chec
 
 I'm happy to merge contributions that fit my vision for the app. Bug fixes are always welcome. 
 
+## FAQ
+
+### Where is the buffer data stored?
+
+The default paths for the buffer data for the respective OS are:
+
+-   Mac: `~/Library/Application Support/Heynote/buffer.txt`
+-   Windows: `%APPDATA%\Heynote\buffer.txt`
+-   Linux: `~/.config/Heynote/buffer.txt`
+
+From version >=1.5.0, symlinks will be supported and you'll be able to configure the path where `buffer.txt` is stored.
+
+### Can you make a mobile app?
+
+No, at the moment this is out of scope, sorry.
+
 ## Thanks!
 
 Heynote is built upon [CodeMirror](https://codemirror.net/), [Vue](https://vuejs.org/), [Electron](https://www.electronjs.org/), [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/) and other great open-source projects.
