@@ -12,6 +12,7 @@ import { noteBlockExtension, blockLineNumbers } from "./block/block.js"
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
 import { heynoteKeymap } from "./keymap.js"
+import { vimKeymap } from "./keymap.js"
 import { emacsKeymap } from "./emacs.js"
 import { heynoteCopyPaste } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
@@ -24,6 +25,8 @@ export const LANGUAGE_SELECTOR_EVENT = "openLanguageSelector"
 function getKeymapExtensions(editor, keymap) {
     if (keymap === "emacs") {
         return emacsKeymap(editor)
+    } else if (keymap === "vim") {
+        return vimKeymap(editor)
     } else {
         return heynoteKeymap(editor)
     }

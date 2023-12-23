@@ -21,7 +21,7 @@ const schema = {
     settings: {
         type: "object",
         properties: {
-            "keymap": { "enum": ["default", "emacs"], default:"default" },
+            "keymap": { "enum": ["default", "emacs", "vim"], default:"default" },
             "emacsMetaKey": { "enum": [null, "alt", "meta"], default: null },
             "showLineNumberGutter": {type: "boolean", default:true},
             "showFoldGutter": {type: "boolean", default:true},
