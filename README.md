@@ -79,6 +79,12 @@ From version >=1.5.0, symlinks will be supported and you'll be able to configure
 
 No, at the moment this is out of scope, sorry.
 
+### Could you add a feature for naming blocks and/or adding tags? (#44)
+
+Currently, I'm not planning on adding this. The main reason is that it goes against the scratchpadness of the program.
+
+I can totally see the usefulness of such a feature, and it's definitely something that I would expect from a more traditional Notes app. However a large part of Heynote's appeal is it's simplicity, and if that is to remain so, I'm going to have to say no to a lot of actually useful features.
+
 ## Thanks!
 
 Heynote is built upon [CodeMirror](https://codemirror.net/), [Vue](https://vuejs.org/), [Electron](https://www.electronjs.org/), [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/) and other great open-source projects.
