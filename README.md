@@ -42,7 +42,7 @@ Download the appropriate (Mac, Windows or Linux) version from the latest Github 
 
 ### Notes on Linux installation
 
-It's been reported (#48) that ChromeOS's Debian VM need the following packages installed to run the Heynote AppImage:
+It's been reported [(#48)](https://github.com/heyman/heynote/issues/48) that ChromeOS's Debian VM need the following packages installed to run the Heynote AppImage:
 
 ```
 libfuse2
@@ -79,7 +79,7 @@ From version >=1.5.0, symlinks will be supported and you'll be able to configure
 
 No, at the moment this is out of scope, sorry.
 
-### Could you add a feature for naming blocks and/or adding tags? (#44)
+### Could you add a feature for naming blocks and/or adding tags? [(#44)](https://github.com/heyman/heynote/issues/44)
 
 Currently, I'm not planning on adding this. The main reason is that it goes against the scratchpadness of the program.
 
