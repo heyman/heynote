@@ -3,14 +3,14 @@ import {LRParser} from "@lezer/lr"
 import {noteContent} from "./external-tokens.js"
 export const parser = LRParser.deserialize({
   version: 14,
-  states: "!jQQOPOOOVOPO'#C`O[OQO'#C_OOOO'#Cc'#CcQQOPOOOaOPO,58zOOOO,58y,58yOOOO-E6a-E6aOfOPO1G.fOOOQ7+$Q7+$QOnOPO7+$QOOOQ<<Gl<<Gl",
-  stateData: "s~OXPO~OYTO~OPUO~OTWO~OUYOXXO~OXZO~O",
-  goto: "gWPPPX]PPaTROSTQOSQSORVS",
-  nodeNames: "⚠ NoteContent Document Note NoteDelimiter NoteLanguage Auto",
-  maxTerm: 10,
+  states: "$OQQOPOOOVOPO'#C`O[OQO'#C_OOOO'#Ce'#CeQQOPOOOaOPO,58zOOOO,58y,58yOOOO-E6c-E6cOfOPO1G.fOtOPO'#CcOyOPO'#CdOOOQ7+$Q7+$QO!OOPO7+$QO!TOPO7+$QO!]OPO7+$QOOOO,58},58}OOOO,59O,59OOOOQ<<Gl<<GlO!hOPO<<GlO!mOPO<<GlOOOQAN=WAN=WO!uOPOAN=WOOOQG22rG22r",
+  stateData: "!z~OZPO~O[TO~OPUO~OTWO~OU^OZZO]XO_YO~O^_O~O^`O~OZaO~OZaO_YO~OZaO]XO_YO~OZdO~OZdO_YO~OZfO~O",
+  goto: "yYPPPZ_PPcisTROSTQOSQ]WRc^Q[WSb]^RecQSORVS",
+  nodeNames: "⚠ NoteContent Document Note NoteDelimiter NoteLanguage Auto NoteCreated NoteUpdated",
+  maxTerm: 15,
   skippedNodes: [0],
   repeatNodeCount: 1,
-  tokenData: ",Z~RaYZ!W}!O!]#V#W!h#X#Y$U#Z#[$t#[#]$z#^#_%^#_#`&z#`#a'd#a#b'|#d#e({#f#g)h#g#h)}#h#i*s#l#m%Q#m#n+r%&x%&y+x~!]OX~~!`P#T#U!c~!hOU~~!kR#`#a!t#d#e#i#g#h#o~!wP#c#d!z~!}P#^#_#Q~#TP#i#j#W~#ZP#f#g#^~#aP#X#Y#d~#iOT~~#lP#d#e#d~#rQ#[#]#x#g#h#d~#{P#T#U$O~$RP#f#g#i~$XP#f#g$[~$_P#`#a$b~$eP#T#U$h~$kP#b#c$n~$qP#Z#[#d~$wP#c#d$[~$}P#h#i%Q~%TP#a#b%W~%ZP#`#a#d~%aQ#T#U%g#g#h&k~%jP#j#k%m~%pP#T#U%s~%xPT~#g#h%{~&OP#V#W&R~&UP#f#g&X~&[P#]#^&_~&bP#d#e&e~&hP#h#i#d~&nQ#c#d&t#l#m#d~&wP#b#c#d~&}P#c#d'Q~'TP#h#i'W~'ZP#`#a'^~'aP#]#^&t~'gP#X#Y'j~'mP#n#o'p~'sP#X#Y'v~'yP#f#g#d~(PP#T#U(S~(VQ#f#g(]#h#i(u~(`P#_#`(c~(fP#W#X(i~(lP#c#d(o~(rP#k#l&t~(xP#[#]#d~)OQ#[#]#i#m#n)U~)XP#h#i)[~)_P#[#])b~)eP#c#d&t~)kP#i#j)n~)qQ#U#V)w#g#h&e~)zP#m#n#d~*QR#[#]*Z#e#f%W#k#l*g~*^P#X#Y*a~*dP#`#a%W~*jP#]#^*m~*pP#Y#Z&e~*vS#X#Y+S#c#d%Q#g#h+Y#m#n+`~+VP#l#m&e~+]P#l#m#d~+cP#d#e+f~+iP#X#Y+l~+oP#g#h%{~+uP#T#U%Q~+{P%&x%&y,O~,RP%&x%&y,U~,ZOY~",
+  tokenData: "/Z~RbYZ!Z}!O!`!Q![!{#V#W%h#X#Y'U#Z#['t#[#]'z#^#_(^#_#`)z#`#a*d#a#b*|#d#e+{#f#g,h#g#h,}#h#i-s#l#m(Q#m#n.r%&x%&y.x~!`OZ~~!cR#T#U!l#V#W!q#i#j!v~!qOU~~!vO]~~!{O_~~#OP!Q![#R~#UP!Q![#X~#[P!Q![#_~#bP}!O#e~#hP!Q![#k~#nP!Q![#q~#tP}!O#w~#zP!Q![#}~$QP!Q![$T~$WP!v!w$Z~$^P!Q![$a~$dP!Q![$g~$jP![!]$m~$pP!Q![$s~$vP!Q![$y~$|P![!]%P~%SP!Q![%V~%YP!Q![%]~%`P!|!}%c~%hO^~~%kR#`#a%t#d#e&i#g#h&o~%wP#c#d%z~%}P#^#_&Q~&TP#i#j&W~&ZP#f#g&^~&aP#X#Y&d~&iOT~~&lP#d#e&d~&rQ#[#]&x#g#h&d~&{P#T#U'O~'RP#f#g&i~'XP#f#g'[~'_P#`#a'b~'eP#T#U'h~'kP#b#c'n~'qP#Z#[&d~'wP#c#d'[~'}P#h#i(Q~(TP#a#b(W~(ZP#`#a&d~(aQ#T#U(g#g#h)k~(jP#j#k(m~(pP#T#U(s~(xPT~#g#h({~)OP#V#W)R~)UP#f#g)X~)[P#]#^)_~)bP#d#e)e~)hP#h#i&d~)nQ#c#d)t#l#m&d~)wP#b#c&d~)}P#c#d*Q~*TP#h#i*W~*ZP#`#a*^~*aP#]#^)t~*gP#X#Y*j~*mP#n#o*p~*sP#X#Y*v~*yP#f#g&d~+PP#T#U+S~+VQ#f#g+]#h#i+u~+`P#_#`+c~+fP#W#X+i~+lP#c#d+o~+rP#k#l)t~+xP#[#]&d~,OQ#[#]&i#m#n,U~,XP#h#i,[~,_P#[#],b~,eP#c#d)t~,kP#i#j,n~,qQ#U#V,w#g#h)e~,zP#m#n&d~-QR#[#]-Z#e#f(W#k#l-g~-^P#X#Y-a~-dP#`#a(W~-jP#]#^-m~-pP#Y#Z)e~-vS#X#Y.S#c#d(Q#g#h.Y#m#n.`~.VP#l#m)e~.]P#l#m&d~.cP#d#e.f~.iP#X#Y.l~.oP#g#h({~.uP#T#U(Q~.{P%&x%&y/O~/RP%&x%&y/U~/ZO[~",
   tokenizers: [0, noteContent],
   topRules: {"Document":[0,2]},
   tokenPrec: 0

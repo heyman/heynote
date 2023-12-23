@@ -5,4 +5,6 @@ export const
   Note = 3,
   NoteDelimiter = 4,
   NoteLanguage = 5,
-  Auto = 6
+  Auto = 6,
+  NoteCreated = 7,
+  NoteUpdated = 8

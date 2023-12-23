@@ -25,11 +25,18 @@ function getBlocks(state, timeout=50) {
                     const langNode = type.node.getChild("NoteLanguage")
                     const language = state.doc.sliceString(langNode.from, langNode.to)
                     const isAuto = !!type.node.getChild("Auto")
+                    const createdAtNode = type.node.getChild("NoteCreated")
+                    const updatedAtNode = type.node.getChild("NoteUpdated")
                     const contentNode = type.node.nextSibling
+
                     blocks.push({
                         language: {
                             name: language,
                             auto: isAuto,
+                        },
+                        time: {
+                            created: createdAtNode ? state.doc.sliceString(createdAtNode.from + 2, createdAtNode.to) : null,
+                            updated: updatedAtNode ? state.doc.sliceString(updatedAtNode.from + 2, updatedAtNode.to) : null,
                         },
                         content: {
                             from: contentNode.from,
