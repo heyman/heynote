@@ -28,6 +28,7 @@ const schema = {
             "allowBetaVersions": {type: "boolean", default: false},
             "enableGlobalHotkey": {type: "boolean", default: false},
             "globalHotkey": {type: "string", default: "CmdOrCtrl+Shift+H"},
+            "bufferPath" : {type: "string", default: ""},
         },
     },
 
@@ -51,6 +52,7 @@ const defaults = {
         allowBetaVersions: false,
         enableGlobalHotkey: false,
         globalHotkey: "CmdOrCtrl+Shift+H",
+        bufferPath: "",
     },
     theme: "system",
 }
