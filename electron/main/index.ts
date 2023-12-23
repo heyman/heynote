@@ -2,16 +2,16 @@ import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme, globalShortcut }
 import { release } from 'node:os'
 import { join } from 'node:path'
 import * as jetpack from "fs-jetpack";
-import * as fs from  "fs";
 
 import menu from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
-import { isMac } from '../detect-platform';
+import { isDev } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
+import { getBufferFilePath } from './buffer';
 
 
 // The built directory structure
@@ -55,7 +55,6 @@ export let win: BrowserWindow | null = null
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
-const isDev = !!process.env.VITE_DEV_SERVER_URL
 
 let currentKeymap = CONFIG.get("settings.keymap")
 let contentSaved = false
@@ -211,27 +210,8 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
-const realpathSync = (path) => {
-  try {
-    return fs.realpathSync(path);
-  } catch (err) {
-    if (err.code !== "ENOENT") {
-      throw err;
-    }
-  }
-  return "";
-};
-
-const getBufferPath = () => {
-  let defaultPath = app.getPath("userData")
-  let configPath = CONFIG.get("settings.bufferPath")
-  let bufferPath = realpathSync(configPath.length ? configPath : defaultPath);
-  console.log(`bufferPath ${bufferPath}`)
-  return join(bufferPath, isDev ? "buffer-dev.txt": "buffer.txt")
-}
-
 ipcMain.handle('buffer-content:load', async () => {
-    let bufferPath = getBufferPath()
+    let bufferPath = getBufferFilePath()
     if (jetpack.exists(bufferPath) === "file") {
         return await jetpack.read(bufferPath, 'utf8')
     } else {
@@ -240,7 +220,7 @@ ipcMain.handle('buffer-content:load', async () => {
 });
 
 async function save(content) {
-    return await jetpack.write(getBufferPath(), content, {
+    return await jetpack.write(getBufferFilePath(), content, {
         atomic: true,
         mode: '600',
     })
