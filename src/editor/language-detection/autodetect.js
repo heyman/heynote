@@ -79,6 +79,7 @@ export function languageDetection(getView) {
                     if (block.language.name !== "text") {
                         changeLanguageTo(view.state, view.dispatch, block, "text", true)
                     }
+                    delete previousBlockContent[idx]
                 }
                 if (content.length <= 8) {
                     return
