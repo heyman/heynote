@@ -1,3 +1,4 @@
+import fs from "fs"
 import { join } from "path"
 import { app } from "electron"
 import CONFIG from "../config"
@@ -11,6 +12,17 @@ const untildify = (pathWithTilde) => {
       ? pathWithTilde.replace(/^~(?=$|\/|\\)/, homeDirectory)
       : pathWithTilde;
 }
+
+const realpathSync = (path) => {
+  try {
+    return fs.realpathSync(path);
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      throw err;
+    }
+  }
+  return "";
+};
 
 export function getBufferFilePath(path) {
     let defaultPath = app.getPath("userData")
