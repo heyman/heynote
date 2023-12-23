@@ -60,7 +60,7 @@
 <template>
     <div class="settings">
         <div class="dialog">
-            <div>
+            <div class="dialog-content">
                 <h1>Settings</h1>
                 <div class="row">
                     <div class="entry">
@@ -134,10 +134,13 @@
                     </div>
                 </div>
             </div>
-            <button 
-                @click="$emit('closeSettings')"
-                class="close"
-            >Close</button>
+            
+            <div class="bottom-bar">
+                <button 
+                    @click="$emit('closeSettings')"
+                    class="close"
+                >Close</button>
+            </div>
         </div>
         <div class="shader"></div>
     </div>
@@ -167,51 +170,59 @@
             left: 50%
             top: 50%
             transform: translate(-50%, -50%)
-            width: 100%
-            height: 100%
-            max-width: 700px
-            max-height: 500px
+            width: 700px
+            height: 560px
+            max-width: 100%
+            max-height: 100%
+            display: flex
+            flex-direction: column
             border-radius: 5px
-            padding: 40px
             background: #fff
             color: #333
+            overflow-y: auto
             &:active, &:selected, &:focus, &:focus-visible
                 border: none
                 outline: none
             +dark-mode
                 background: #333
                 color: #eee
-            h1
-                font-size: 20px
-                font-weight: 600
-                margin-bottom: 20px
-            
-            .row
-                display: flex
-                .entry
-                    margin-bottom: 24px
-                    margin-right: 20px
-                    h2
-                        font-weight: 600
-                        margin-bottom: 10px
-                        font-size: 14px
-                    select
-                        width: 200px
-                        &:focus
-                            outline: none
-                    label
-                        display: block
-                        user-select: none
-                        &.keyboard-shortcut-label
-                            margin-bottom: 14px
-                        > input[type=checkbox]
-                            position: relative
-                            top: 2px
-                            left: -3px
-
-            .close
-                height: 32px
-                position: absolute
-                bottom: 30px
-                right: 30px
+            .dialog-content
+                flex-grow: 1
+                padding: 40px
+                h1
+                    font-size: 20px
+                    font-weight: 600
+                    margin-bottom: 20px
+                
+                .row
+                    display: flex
+                    .entry
+                        margin-bottom: 24px
+                        margin-right: 20px
+                        h2
+                            font-weight: 600
+                            margin-bottom: 10px
+                            font-size: 14px
+                        select
+                            width: 200px
+                            &:focus
+                                outline: none
+                        label
+                            display: block
+                            user-select: none
+                            &.keyboard-shortcut-label
+                                margin-bottom: 14px
+                            > input[type=checkbox]
+                                position: relative
+                                top: 2px
+                                left: -3px
+            .bottom-bar
+                border-radius: 0 0 5px 5px
+                background: #eee
+                text-align: right
+                padding: 10px 20px
+                +dark-mode
+                    background: #222
+                .close
+                    height: 28px
 </style>
