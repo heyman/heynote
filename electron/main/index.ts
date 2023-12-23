@@ -210,9 +210,10 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
-const bufferPath = isDev ? join(app.getPath("userData"), "buffer-dev.txt") : join(app.getPath("userData"), "buffer.txt")
+const bufferPathBase = isDev ? join(app.getPath("userData"), "buffer-dev") : join(app.getPath("userData"), "buffer")
 
-ipcMain.handle('buffer-content:load', async () =>  {
+ipcMain.handle('buffer-content:load', async () => {
+    let bufferPath=bufferPathBase+CONFIG.get("settings.bufferSuffix")
     if (jetpack.exists(bufferPath) === "file") {
         return await jetpack.read(bufferPath, 'utf8')
     } else {
@@ -221,6 +222,7 @@ ipcMain.handle('buffer-content:load', async () =>  {
 });
 
 async function save(content) {
+    let bufferPath=bufferPathBase+CONFIG.get("settings.bufferSuffix")
     return await jetpack.write(bufferPath, content, {
         atomic: true,
         mode: '600',
