@@ -24,6 +24,7 @@
                 allowBetaVersions: this.initialSettings.allowBetaVersions,
                 enableGlobalHotkey: this.initialSettings.enableGlobalHotkey,
                 globalHotkey: this.initialSettings.globalHotkey,
+                bufferPath: this.initialSettings.bufferPath,
             }
         },
 
@@ -51,6 +52,7 @@
                     allowBetaVersions: this.allowBetaVersions,
                     enableGlobalHotkey: this.enableGlobalHotkey,
                     globalHotkey: this.globalHotkey,
+                    bufferPath: this.bufferPath,
                 })
             }
         }
@@ -119,6 +121,15 @@
                             @change="updateSettings"
                         />
                     </div>
+                </div>
+                <div class="row">
+                  <div class="entry">
+                    <h2>Buffer Path</h2>
+                    <div class="setting">
+                      <input v-model="bufferPath" @change="updateSettings" type="text" :placeholder="bufferPath"
+                        name="bufferPath" />
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                     <div class="entry">

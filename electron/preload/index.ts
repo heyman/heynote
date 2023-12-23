@@ -42,8 +42,8 @@ contextBridge.exposeInMainWorld("heynote", {
     },
 
     buffer: {
-        async load() {
-            return await ipcRenderer.invoke("buffer-content:load")
+        async load(path) {
+            return await ipcRenderer.invoke("buffer-content:load", path)
         },
 
         async save(content) {

@@ -37,6 +37,7 @@ export class HeynoteEditor {
         focus=true, 
         theme="light", 
         saveFunction=null, 
+        loadFunction=null,
         keymap="default", 
         showLineNumberGutter=true, 
         showFoldGutter=true,
@@ -48,6 +49,7 @@ export class HeynoteEditor {
         this.lineNumberCompartment = new Compartment
         this.foldGutterCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
+        this.loadFunction = loadFunction
 
         const state = EditorState.create({
             doc: content || "",
@@ -141,6 +143,26 @@ export class HeynoteEditor {
         })
     }
 
+    setBufferPath(path) {
+      if (this.loadFunction) {
+        this.loadFunction(path).then((content) => {
+          this.view.dispatch(
+            this.view.state.update(
+              {
+                changes: {
+                  from: 0,
+                  to: this.view.state.doc.length,
+                  insert: content
+                }
+              }, {
+              userEvent: "input",
+              scrollIntoView: true,
+            }
+          ))
+        });
+      }
+    }
+
     formatCurrentBlock() {
         formatBlockContent({
             state: this.view.state, 
@@ -166,4 +188,3 @@ editor.update([
         annotations: heynoteEvent.of(INITIAL_DATA),
     })
 ])*/
-

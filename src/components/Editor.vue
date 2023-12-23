@@ -5,6 +5,7 @@
     export default {
         props: {
             theme: String,
+            bufferPath: String,
             development: Boolean,
             debugSyntaxTree: Boolean,
             keymap: {
@@ -50,6 +51,9 @@
                     theme: this.theme,
                     saveFunction: (content) => {
                         window.heynote.buffer.save(content)
+                    },
+                    loadFunction: async (content, path) => {
+                        return await window.heynote.buffer.load(content, path)
                     },
                     keymap: this.keymap,
                     showLineNumberGutter: this.showLineNumberGutter,
@@ -102,6 +106,10 @@
             showFoldGutter(show) {
                 this.editor.setFoldGutter(show)
             },
+
+            bufferPath(path) {
+                this.editor.setBufferPath(path)
+            },
         },
 
         methods: {
@@ -125,6 +133,10 @@
 
             focus() {
                 this.editor.focus()
+            },
+
+            setBufferPath(path) {
+                this.editor.setBufferPath(path)
             },
         },
     }

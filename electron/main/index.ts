@@ -210,19 +210,19 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
-ipcMain.handle('buffer-content:load', async () => {
-    let bufferPath = getBufferFilePath()
-    if (jetpack.exists(bufferPath) === "file") {
+ipcMain.handle('buffer-content:load', async (event, path) => {
+  let bufferPath = getBufferFilePath(path)
+  if (jetpack.exists(bufferPath) === "file") {
         return await jetpack.read(bufferPath, 'utf8')
     } else {
-        return isDev? initialDevContent : initialContent
+        return isDev ? initialDevContent : initialContent
     }
 });
 
 async function save(content) {
     return await jetpack.write(getBufferFilePath(), content, {
-        atomic: true,
-        mode: '600',
+      atomic: true,
+      mode: "600",
     })
 }
 
