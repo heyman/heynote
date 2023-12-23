@@ -1,4 +1,5 @@
 import { keymap } from "@codemirror/view"
+import { Vim, vim } from "@replit/codemirror-vim"
 //import { EditorSelection, EditorState } from "@codemirror/state"
 import {
     indentLess, indentMore, 
@@ -52,4 +53,13 @@ export function heynoteKeymap(editor) {
         {key:"Ctrl-ArrowUp", run:gotoPreviousParagraph, shift:selectPreviousParagraph},
         {key:"Ctrl-ArrowDown", run:gotoNextParagraph, shift:selectNextParagraph},
     ])
+}
+
+export function vimKeymap(editor) {
+    //Vim.defineEx("DeleteLineFix", (editor) => {
+       //editor.view.cm.execCommand("deleteLine")
+    //})
+
+  //Vim.map("\\\\", ":DeleteLineFix", "normal")
+    return [heynoteKeymap(editor), vim()]
 }
