@@ -40,6 +40,16 @@ Available for Mac, Windows, and Linux.
 
 Download the appropriate (Mac, Windows or Linux) version from the latest Github release (or from [heynote.com](https://heynote.com)). The Windows build is not signed, so you might see some scary warning (I can not justify paying a yearly fee for a certificate just to get rid of that).
 
+## Notes on Linux installation
+
+It's been reported (#48) that ChromeOS's Debian VM need the following packages installed to run the Heynote AppImage:
+
+```
+libfuse2
+libnss3
+libnspr4
+```
+
 ## Development
 
 To develop Heynote you need Node.js and you should (hopefully) just need to check out the code and then run:
