@@ -29,6 +29,7 @@ const middleware = () => {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    publicDir: "../public",
     plugins: [
         vue(), 
         //directoryPlugin({ baseDir: __dirname }),
@@ -40,11 +41,6 @@ export default defineConfig({
     @import "../src/css/include.sass"
     `
             },
-        },
-    },
-    resolve: {
-        alias: {
-            '~': path.resolve(__dirname),
         },
     },
 })
