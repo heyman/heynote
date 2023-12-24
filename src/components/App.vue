@@ -34,9 +34,16 @@
                 this.theme = mode.computed
                 this.systemTheme = mode.theme
             })
-            window.heynote.themeMode.onChange((theme) => {
+            const onChangeCallback = (theme) => {
                 this.theme = theme
-            })
+                if (theme === "system") {
+                    document.body.setAttribute("theme", window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+                } else {
+                    document.body.setAttribute("theme", theme)
+                }
+            }
+            onChangeCallback(window.heynote.themeMode.initial)
+            window.heynote.themeMode.onChange(onChangeCallback)
             window.heynote.onSettingsChange((settings) => {
                 this.settings = settings
             })
