@@ -24,7 +24,8 @@
     "build": "vue-tsc --noEmit && vite build && electron-builder -c electron-builder.json5",
     "prebuild": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js"
+    "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",
+    "webapp_dev": "vite webapp"
   },
   "devDependencies": {
     "@codemirror/autocomplete": "^6.11.1",
