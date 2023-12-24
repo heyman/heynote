@@ -11,10 +11,10 @@ import { cssLanguage } from "@codemirror/lang-css"
 import { cppLanguage } from "@codemirror/lang-cpp"
 import { xmlLanguage } from "@codemirror/lang-xml"
 import { rustLanguage } from "@codemirror/lang-rust"
-
+import { csharpLanguage } from "@replit/codemirror-lang-csharp"
 
 class Language {
-    constructor(token, name, parser, guesslang, supportsFormat=false) {
+    constructor(token, name, parser, guesslang, supportsFormat = false) {
         this.token = token
         this.name = name
         this.parser = parser
@@ -39,5 +39,5 @@ export const LANGUAGES = [
     new Language("xml", "XML", xmlLanguage.parser, "xml"),
     new Language("cpp", "C++", cppLanguage.parser, "cpp"),
     new Language("rust", "Rust", rustLanguage.parser, "rust"),
+    new Language("csharp", "C#", csharpLanguage.parser, "cs"),
 ]
-

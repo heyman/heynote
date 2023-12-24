@@ -15,6 +15,7 @@ Available for Mac, Windows, and Linux.
 -   Block-based
 -   Syntax highlighting
     -   C++
+    -   C#
     -   CSS
     -   HTML
     -   Java
