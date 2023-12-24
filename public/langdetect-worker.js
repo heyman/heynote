@@ -1,91 +1,88 @@
-importScripts("guesslang.min.js");
+importScripts("guesslang.min.js")
 
 GUESSLANG_LANGUAGES = [
-  "json",
-  "py",
-  "js",
-  "html",
-  "sql",
-  "java",
-  "cpp",
-  "php",
-  "css",
-  "xml",
-  "rs",
-  "md",
-  "csharp",
-];
+    "json",
+    "py",
+    "js",
+    "html",
+    "sql",
+    "java",
+    "cpp",
+    "php",
+    "css",
+    "xml",
+    "rs",
+    "md",
+    "csharp"
+]
 
-const guessLang = new self.GuessLang();
+const guessLang = new self.GuessLang()
 
 onmessage = (event) => {
-  //console.log("worker received message:", event.data)
-  //importScripts("../../lib/highlight.min.js")
+    //console.log("worker received message:", event.data)
+    //importScripts("../../lib/highlight.min.js")
 
-  const content = event.data.content;
+    const content = event.data.content
 
-  // we first check some custom heuristic rules to determine if the language is JSON
-  const trimmedContent = content.trim();
-  if (
-    (trimmedContent.startsWith("{") && trimmedContent.endsWith("}")) ||
-    (trimmedContent.startsWith("[") && trimmedContent.endsWith("]"))
-  ) {
-    try {
-      if (typeof JSON.parse(trimmedContent) === "object") {
-        postMessage({
-          guesslang: {
-            language: "json",
-            confidence: 1.0,
-          },
-          content: content,
-          idx: event.data.idx,
-        });
-        return;
-      }
-    } catch (e) {
-      // JSON could not be parsed, do nothing
+    // we first check some custom heuristic rules to determine if the language is JSON
+    const trimmedContent = content.trim()
+    if ((
+        trimmedContent.startsWith("{") &&
+        trimmedContent.endsWith("}")
+    ) || (
+            trimmedContent.startsWith("[") &&
+            trimmedContent.endsWith("]")
+        )) {
+        try {
+            if (typeof JSON.parse(trimmedContent) === "object") {
+                postMessage({
+                    guesslang: {
+                        language: "json",
+                        confidence: 1.0,
+                    },
+                    content: content,
+                    idx: event.data.idx,
+                })
+                return
+            }
+        } catch (e) {
+            // JSON could not be parsed, do nothing
+        }
     }
-  }
 
-  //let startTime = performance.now()
-  guessLang.runModel(content).then((result) => {
-    //const duration = performance.now() - startTime
-    //console.log("Guessing language done:", result, result[0]?.languageId, result[0]?.confidence)
-    //console.log("Guessing language took", duration, "ms")
+    //let startTime = performance.now()
+    guessLang.runModel(content).then((result) => {
+        //const duration = performance.now() - startTime
+        //console.log("Guessing language done:", result, result[0]?.languageId, result[0]?.confidence)
+        //console.log("Guessing language took", duration, "ms")
 
-    if (result.length > 0) {
-      // for the language that is most likely according to GuessLang we have a lower threshold (0.15)
-      const lang = result[0];
-      if (
-        GUESSLANG_LANGUAGES.includes(lang.languageId) &&
-        lang.confidence > 0.15
-      ) {
-        postMessage({
-          guesslang: {
-            language: lang.languageId,
-            confidence: lang.confidence,
-          },
-          content: content,
-          idx: event.data.idx,
-        });
-        return;
-      }
-    }
-    for (let lang of result) {
-      if (
-        GUESSLANG_LANGUAGES.includes(lang.languageId) &&
-        lang.confidence > 0.5
-      ) {
-        postMessage({
-          guesslang: {
-            language: lang.languageId,
-            confidence: lang.confidence,
-          },
-          content: content,
-          idx: event.data.idx,
-        });
-        return;
-      }
-    }
-  });
-};
+        if (result.length > 0) {
+            // for the language that is most likely according to GuessLang we have a lower threshold (0.15)
+            const lang = result[0]
+            if (GUESSLANG_LANGUAGES.includes(lang.languageId) && lang.confidence > 0.15) {
+                postMessage({
+                    guesslang: {
+                        language: lang.languageId,
+                        confidence: lang.confidence,
+                    },
+                    content: content,
+                    idx: event.data.idx,
+                })
+                return
+            }
+        }
+        for (let lang of result) {
+            if (GUESSLANG_LANGUAGES.includes(lang.languageId) && lang.confidence > 0.5) {
+                postMessage({
+                    guesslang: {
+                        language: lang.languageId,
+                        confidence: lang.confidence,
+                    },
+                    content: content,
+                    idx: event.data.idx,
+                })
+                return
+            }
+        }
+    })
+}

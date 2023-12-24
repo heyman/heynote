@@ -11,7 +11,7 @@ NoteDelimiter {
 
 @tokens {
     noteDelimiterMark { "∞∞∞" }
-    NoteLanguage { "text" | "math" | "javascript" | "json" | "python" | "html" | "sql" | "markdown" | "java" | "php" | "css" | "xml" | "cpp" | "rust" | "csharp" }
+    NoteLanguage { "text" | "math" | "javascript" | "json" | "python" | "html" | "sql" | "markdown" | "java" | "php" | "css" | "xml" | "cpp" | "rust", "csharp" }
     Auto { "-a" }
     noteDelimiterEnter { "\n" }
     //NoteContent { String }
@@ -19,3 +19,4 @@ NoteDelimiter {
 }
 
 @external tokens noteContent from "./external-tokens.js" { NoteContent }
+
