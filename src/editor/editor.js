@@ -86,6 +86,13 @@ export class HeynoteEditor {
             ],
         })
 
+        // make sure saveFunction is called when page is unloaded
+        if (saveFunction) {
+            window.addEventListener("beforeunload", () => {
+                saveFunction(this.getContent())
+            })
+        }
+
         this.view = new EditorView({
             state: state,
             parent: element,
