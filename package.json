@@ -63,7 +63,7 @@
     "rollup-plugin-license": "^3.0.1",
     "sass": "^1.57.1",
     "typescript": "^4.9.4",
-    "vite": "^4.0.5",
+    "vite": "^4.5.1",
     "vite-plugin-electron": "^0.11.1",
     "vite-plugin-electron-renderer": "^0.11.4",
     "vue": "^3.2.45",
