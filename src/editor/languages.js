@@ -39,5 +39,5 @@ export const LANGUAGES = [
     new Language("xml", "XML", xmlLanguage.parser, "xml"),
     new Language("cpp", "C++", cppLanguage.parser, "cpp"),
     new Language("rust", "Rust", rustLanguage.parser, "rust"),
-    new Language("csharp", "C#", csharpLanguage.parser, "csharp"),
+    new Language("csharp", "C#", csharpLanguage.parser, "cs"),
 ]
