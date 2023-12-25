@@ -24,7 +24,9 @@
     "build": "vue-tsc --noEmit && vite build && electron-builder -c electron-builder.json5",
     "prebuild": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js"
+    "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",
+    "webapp:dev": "vite webapp",
+    "webapp:build": "vite build webapp"
   },
   "devDependencies": {
     "@codemirror/autocomplete": "^6.11.1",
@@ -63,7 +65,7 @@
     "rollup-plugin-license": "^3.0.1",
     "sass": "^1.57.1",
     "typescript": "^4.9.4",
-    "vite": "^4.0.5",
+    "vite": "^4.5.1",
     "vite-plugin-electron": "^0.11.1",
     "vite-plugin-electron-renderer": "^0.11.4",
     "vue": "^3.2.45",
