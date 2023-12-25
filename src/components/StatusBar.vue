@@ -152,11 +152,11 @@
                 +dark-mode
                     opacity: 0.9
                 &.dark
-                    background-image: url("icons/dark-mode.png")
+                    background-image: url("@/assets/icons/dark-mode.png")
                 &.light
-                    background-image: url("icons/light-mode.png")
+                    background-image: url("@/assets/icons/light-mode.png")
                 &.system
-                    background-image: url("icons/both-mode.png")
+                    background-image: url("@/assets/icons/both-mode.png")
         
         .format
             padding-top: 0
@@ -170,6 +170,6 @@
                 background-size: 16px
                 background-repeat: no-repeat
                 background-position: center center
-                background-image: url("icons/format.svg")
+                background-image: url("@/assets/icons/format.svg")
 
 </style>

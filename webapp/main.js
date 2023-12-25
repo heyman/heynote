@@ -4,9 +4,9 @@ import { createApp } from 'vue'
 import App from '../src/components/App.vue'
 import { loadCurrencies } from '../src/currency'
 
-
 const app = createApp(App)
 app.mount('#app')
+//console.log("test:", app.hej.test)
 
 // load math.js currencies
 loadCurrencies()
