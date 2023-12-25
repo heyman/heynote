@@ -20,7 +20,9 @@ Available for Mac, Windows, and Linux.
     -   HTML
     -   Java
     -   JavaScript
+    -   JSX
     -   TypeScript
+    -   TSX
     -   JSON
     -   Markdown
     -   PHP
