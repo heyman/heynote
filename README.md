@@ -1,7 +1,7 @@
 # Heynote
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/heyman/heynote)](https://github.com/heyman/heynote/releases)
-[![Build Status](https://github.com/locustio/locust/workflows/Tests/badge.svg)](https://github.com/locustio/locust/actions?query=workflow%3ATests)
+[![Build Status](https://github.com/heyman/heynote/workflows/Tests/badge.svg)](https://github.com/heyman/heynote/actions?query=workflow%3ATests)
 
 
 Heynote is a dedicated scratchpad for developers. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
@@ -17,7 +17,10 @@ Available for Mac, Windows, and Linux.
 -   Syntax highlighting
     -   C++
     -   C#
+    -   Clojure
     -   CSS
+    -   Erlang
+    -   Go
     -   HTML
     -   Java
     -   JavaScript
@@ -25,12 +28,16 @@ Available for Mac, Windows, and Linux.
     -   TypeScript
     -   TSX
     -   JSON
+    -   Lezer
     -   Markdown
     -   PHP
     -   Python
+    -   Ruby
     -   Rust
+    -   Shell
     -   SQL
     -   XML
+    -   YAML
 -   Language auto-detection
 -   Auto-formatting
 -   Math/Calculator mode

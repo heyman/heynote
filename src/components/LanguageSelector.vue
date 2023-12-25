@@ -37,9 +37,20 @@
                 if (event.key === "ArrowDown") {
                     this.selected = Math.min(this.selected + 1, this.filteredItems.length - 1)
                     event.preventDefault()
+                    if (this.selected === this.filteredItems.length - 1) {
+                        this.$refs.container.scrollIntoView({block: "end"})
+                    } else {
+                        this.$refs.item[this.selected].scrollIntoView({block: "nearest"})
+                    }
+                    
                 } else if (event.key === "ArrowUp") {
                     this.selected = Math.max(this.selected - 1, 0)
                     event.preventDefault()
+                    if (this.selected === 0) {
+                        this.$refs.container.scrollIntoView({block: "start"})
+                    } else {
+                        this.$refs.item[this.selected].scrollIntoView({block: "nearest"})
+                    }
                 } else if (event.key === "Enter") {
                     this.selectItem(this.filteredItems[this.selected].token)
                     event.preventDefault()
@@ -69,28 +80,38 @@
 </script>
 
 <template>
-    <form class="language-selector" tabindex="-1" @focusout="onFocusOut" ref="container">
-        <input 
-            type="text" 
-            ref="input"
-            @keydown="onKeydown"
-            @input="onInput"
-            v-model="filter"
-        />
-        <ul class="items">
-            <li
-                v-for="item, idx in filteredItems"
-                :key="item.token"
-                :class="idx === selected ? 'selected' : ''"
-                @click="selectItem(item.token)"
-            >
-                {{ item.name }}
-            </li>
-        </ul>
-    </form>
+    <div class="scroller">
+        <form class="language-selector" tabindex="-1" @focusout="onFocusOut" ref="container">
+            <input 
+                type="text" 
+                ref="input"
+                @keydown="onKeydown"
+                @input="onInput"
+                v-model="filter"
+            />
+            <ul class="items">
+                <li
+                    v-for="item, idx in filteredItems"
+                    :key="item.token"
+                    :class="idx === selected ? 'selected' : ''"
+                    @click="selectItem(item.token)"
+                    ref="item"
+                >
+                    {{ item.name }}
+                </li>
+            </ul>
+        </form>
+    </div>
 </template>
 
 <style scoped lang="sass">    
+    .scroller
+        overflow: auto
+        position: fixed
+        top: 0
+        left: 0
+        bottom: 0
+        right: 0
     .language-selector
         font-size: 13px
         padding: 10px
