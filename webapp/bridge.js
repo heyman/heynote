@@ -19,7 +19,6 @@ export default {
         },
 
         async save(content) {
-            console.log("saving buffer")
             localStorage.setItem("buffer", content)
         },
 
