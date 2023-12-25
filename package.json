@@ -26,7 +26,9 @@
     "preview": "vite preview",
     "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",
     "webapp:dev": "vite webapp",
-    "webapp:build": "vite build webapp"
+    "webapp:build": "vite build webapp",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "devDependencies": {
     "@codemirror/autocomplete": "^6.11.1",
