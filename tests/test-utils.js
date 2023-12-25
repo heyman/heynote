@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-
 export function pageErrorGetter(page) {
     let messages = [];
     page.on('pageerror', (error) => {
@@ -14,6 +13,7 @@ export class HeynotePage {
     constructor(page) {
         this.page = page
         this.getErrors = pageErrorGetter(page)
+        this.isMac = process.platform === "darwin"
     }
 
     async goto() {
