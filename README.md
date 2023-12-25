@@ -20,6 +20,7 @@ Available for Mac, Windows, and Linux.
     -   HTML
     -   Java
     -   JavaScript
+    -   TypeScript
     -   JSON
     -   Markdown
     -   PHP
