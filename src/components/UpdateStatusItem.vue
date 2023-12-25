@@ -176,14 +176,14 @@
             background-size: 14px
             background-repeat: no-repeat
             background-position: center center
-            background-image: url("icons/update.svg")
+            background-image: url("@/assets/icons/update.svg")
             animation-name: spin
             animation-duration: 2000ms
             animation-iteration-count: infinite
             animation-timing-function: linear
             animation-play-state: paused
             &.icon-download
-                background-image: url("icons/download.svg")
+                background-image: url("@/assets/icons/download.svg")
                 width: 16px
                 height: 16px
                 background-size: 16px

@@ -13,7 +13,7 @@ import { emptyBlockSelected } from "./select-all.js";
 // tracks the size of the first delimiter
 let firstBlockDelimiterSize
 
-function getBlocks(state) {
+export function getBlocks(state) {
     const blocks = [];  
     const tree = ensureSyntaxTree(state, state.doc.length)
     if (tree) {

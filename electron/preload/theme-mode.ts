@@ -2,7 +2,7 @@ const { ipcRenderer } = require('electron')
 
 const getComputedTheme = () => window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"
 const mediaMatch = window.matchMedia('(prefers-color-scheme: dark)')
-let darkModeChangeListener = null
+let themeModeChangeListener = null
 
 export default {
     set: (mode) => ipcRenderer.invoke('dark-mode:set', mode),
@@ -14,14 +14,14 @@ export default {
         }
     },
     onChange: (callback) => {
-        darkModeChangeListener = (event) => {
+        themeModeChangeListener = (event) => {
             callback(event.matches ? "dark" : "light")
         }
-        mediaMatch.addEventListener('change', darkModeChangeListener)
+        mediaMatch.addEventListener('change', themeModeChangeListener)
         return mediaMatch
     },
     removeListener() {
-        mediaMatch.removeEventListener('change', darkModeChangeListener)
+        mediaMatch.removeEventListener('change', themeModeChangeListener)
     },
     initial: getComputedTheme(),
 }

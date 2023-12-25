@@ -19,8 +19,8 @@
                 selectionSize: 0,
                 language: "plaintext",
                 languageAuto: true,
-                theme: window.darkMode.initial,
-                initialTheme: window.darkMode.initial,
+                theme: window.heynote.themeMode.initial,
+                initialTheme: window.heynote.themeMode.initial,
                 systemTheme: 'system',
                 development: window.location.href.indexOf("dev=1") !== -1,
                 showLanguageSelector: false,
@@ -30,13 +30,20 @@
         },
 
         mounted() {
-            window.darkMode.get().then((mode) => {
+            window.heynote.themeMode.get().then((mode) => {
                 this.theme = mode.computed
                 this.systemTheme = mode.theme
             })
-            window.darkMode.onChange((theme) => {
+            const onChangeCallback = (theme) => {
                 this.theme = theme
-            })
+                if (theme === "system") {
+                    document.body.setAttribute("theme", window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+                } else {
+                    document.body.setAttribute("theme", theme)
+                }
+            }
+            onChangeCallback(window.heynote.themeMode.initial)
+            window.heynote.themeMode.onChange(onChangeCallback)
             window.heynote.onSettingsChange((settings) => {
                 this.settings = settings
             })
@@ -46,7 +53,7 @@
         },
 
         beforeUnmount() {
-            window.darkMode.removeListener()
+            window.heynote.themeMode.removeListener()
         },
 
         methods: {
@@ -66,7 +73,7 @@
                 } else {
                     newTheme = this.systemTheme === "system" ? "light" : (this.systemTheme === "light" ? "dark" : "system")
                 }
-                window.darkMode.set(newTheme)
+                window.heynote.themeMode.set(newTheme)
                 this.systemTheme = newTheme
                 this.$refs.editor.focus()
             },

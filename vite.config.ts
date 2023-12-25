@@ -6,6 +6,7 @@ import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 import license from 'rollup-plugin-license'
 import pkg from './package.json'
+import path from 'path'
 
 rmSync('dist-electron', { recursive: true, force: true })
 
@@ -14,6 +15,12 @@ const isProduction = process.env.NODE_ENV === "production"
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	resolve: {
+        alias: {
+            '@': path.resolve(__dirname),
+        },
+    },
+
 	plugins: [
 		vue(),
 		electron([
