@@ -4,3 +4,7 @@ dist
 dist-electron
 release
 .env
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

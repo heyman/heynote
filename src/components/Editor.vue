@@ -55,6 +55,7 @@
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                 })
+                window._heynote_editor = this.editor
                 window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
             })
             // set up window close handler that will save the buffer and quit
