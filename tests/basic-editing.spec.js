@@ -14,7 +14,7 @@ test('load heynote', async ({ page }) => {
     await page.locator("body").press("Enter")
     //await page.waitForTimeout(100);
     await page.locator("body").press("Meta+Enter")
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(500);
 
     expect((await heynotePage.getBlocks()).length).toBe(2)
     
