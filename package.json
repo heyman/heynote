@@ -25,7 +25,8 @@
     "prebuild": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",
-    "webapp_dev": "vite webapp"
+    "webapp:dev": "vite webapp",
+    "webapp:build": "vite build webapp"
   },
   "devDependencies": {
     "@codemirror/autocomplete": "^6.11.1",
