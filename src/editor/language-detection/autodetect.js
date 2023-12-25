@@ -9,6 +9,21 @@ import { LANGUAGE_CHANGE } from "../annotation";
 
 const GUESSLANG_TO_TOKEN = Object.fromEntries(LANGUAGES.map(l => [l.guesslang,l.token]))
 
+function requestIdleCallbackCompat(cb) {
+    if (window.requestIdleCallback) {
+        return window.requestIdleCallback(cb)
+    } else {
+        return setTimeout(cb, 0)
+    }
+}
+
+function cancelIdleCallbackCompat(id) {
+    if (window.cancelIdleCallback) {
+        window.cancelIdleCallback(id)
+    } else {
+        clearTimeout(id)
+    }
+}
 
 export function languageDetection(getView) {
     const previousBlockContent = {}
@@ -45,11 +60,11 @@ export function languageDetection(getView) {
     const plugin = EditorView.updateListener.of(update => {
         if (update.docChanged) {
             if (idleCallbackId !== null) {
-                cancelIdleCallback(idleCallbackId)
+                cancelIdleCallbackCompat(idleCallbackId)
                 idleCallbackId = null
             }
 
-            idleCallbackId = requestIdleCallback(() => {
+            idleCallbackId = requestIdleCallbackCompat(() => {
                 idleCallbackId = null
                 
                 const range = update.state.selection.asSingle().ranges[0]
