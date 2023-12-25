@@ -11,11 +11,11 @@ test.beforeEach(async ({ page }) => {
 
 
 test("test valid JSON detection", async ({ page }) => {
-    page.locator("body").pressSequentially(`
+    await page.locator("body").pressSequentially(`
         {"test": 1, "key2": "hey!"}
     `)
-    await page.waitForTimeout(200);
-    expect(await page.locator("css=.status .status-block.lang")).toHaveText("JSON (auto)")
+    await page.waitForTimeout(1000);
+    await expect(page.locator("css=.status .status-block.lang")).toHaveText("JSON (auto)")
     const block = (await heynotePage.getBlocks())[0]
     expect(block.language.name).toBe("json")
     expect(block.language.auto).toBeTruthy()
@@ -23,7 +23,7 @@ test("test valid JSON detection", async ({ page }) => {
 
 
 test("python detection", async ({ page }) => {
-    page.locator("body").pressSequentially(`
+    await page.locator("body").pressSequentially(`
 # import complex math module
 import cmath
 
@@ -36,6 +36,6 @@ sol2 = (-b+cmath.sqrt(d))/(2*a)
 
 print('The solution are {0} and {1}'.format(sol1,sol2))
     `)
-    await page.waitForTimeout(1000);
-    expect(await page.locator("css=.status .status-block.lang")).toHaveText("Python (auto)")
+    await page.waitForTimeout(3000);
+    await expect(page.locator("css=.status .status-block.lang")).toHaveText("Python (auto)")
 })
