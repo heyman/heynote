@@ -13,6 +13,15 @@ import { xmlLanguage } from "@codemirror/lang-xml"
 import { rustLanguage } from "@codemirror/lang-rust"
 import { csharpLanguage } from "@replit/codemirror-lang-csharp"
 
+import { StreamLanguage } from "@codemirror/language"
+import { ruby } from "@codemirror/legacy-modes/mode/ruby"
+import { shell } from "@codemirror/legacy-modes/mode/shell"
+import { yaml } from "@codemirror/legacy-modes/mode/yaml"
+import { go } from "@codemirror/legacy-modes/mode/go"
+import { clojure } from "@codemirror/legacy-modes/mode/clojure"
+import { erlang } from "@codemirror/legacy-modes/mode/erlang"
+
+
 class Language {
     constructor(token, name, parser, guesslang, supportsFormat = false) {
         this.token = token
@@ -33,11 +42,17 @@ export const LANGUAGES = [
     new Language("sql", "SQL", StandardSQL.language.parser, "sql"),
     new Language("markdown", "Markdown", markdownLanguage.parser, "md", true),
     new Language("java", "Java", javaLanguage.parser, "java"),
-    //new Language("lezer", "Lezer", lezerLanguage.parser, "lezer"),
+    new Language("lezer", "Lezer", lezerLanguage.parser, null),
     new Language("php", "PHP", phpLanguage.parser, "php"),
     new Language("css", "CSS", cssLanguage.parser, "css", true),
     new Language("xml", "XML", xmlLanguage.parser, "xml"),
     new Language("cpp", "C++", cppLanguage.parser, "cpp"),
     new Language("rust", "Rust", rustLanguage.parser, "rust"),
     new Language("csharp", "C#", csharpLanguage.parser, "cs"),
+    new Language("ruby", "Ruby", StreamLanguage.define(ruby).parser, "rb"),
+    new Language("shell", "Shell", StreamLanguage.define(shell).parser, "sh"),
+    new Language("yaml", "YAML", StreamLanguage.define(yaml).parser, "yaml"),
+    new Language("golang", "Go", StreamLanguage.define(go).parser, "go"),
+    new Language("clojure", "Clojure", StreamLanguage.define(clojure).parser, "clj"),
+    new Language("erlang", "Erlang", StreamLanguage.define(erlang).parser, "erl"),
 ]
