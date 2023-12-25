@@ -196,14 +196,14 @@ export const LANGUAGES = [
         parser: jsxLanguage.parser,
         guesslang: null,
         prettier: {parser:"babel", plugins: [babelPrettierPlugin, prettierPluginEstree]},
-    },
+    }),
     new Language({
         token: "typescript",
         name: "TypeScript",
         parser: typescriptLanguage.parser,
         guesslang: "ts",
         prettier: {parser:"typescript", plugins: [typescriptPlugin, prettierPluginEstree]},
-    },
+    }),
     new Language({
         token: "tsx",
         name: "TSX",
