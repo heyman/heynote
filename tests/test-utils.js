@@ -29,7 +29,7 @@ export class HeynotePage {
     async getContent() {
         return await this.page.evaluate(() => window._heynote_editor.getContent())
     }
-    
+
     async setContent(content) {
         await this.page.evaluate((content) => window._heynote_editor.setContent(content), content)
     }

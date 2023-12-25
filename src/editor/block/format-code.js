@@ -40,8 +40,8 @@ export const formatBlockContent = async ({ state, dispatch }) => {
                     plugins: language.prettier.plugins,
                     tabWidth: state.tabSize,
                 }),
-                cursorOffset: cursorPos == block.content.from ? 0 : content.length,
             }
+            formattedContent.cursorOffset = cursorPos == block.content.from ? 0 : formattedContent.formatted.length
         } else {
             formattedContent = await prettier.formatWithCursor(content, {
                 cursorOffset: cursorPos - block.content.from,
@@ -62,7 +62,7 @@ export const formatBlockContent = async ({ state, dispatch }) => {
             to: block.content.to,
             insert: formattedContent.formatted,
         },
-        selection: EditorSelection.cursor(block.content.from + formattedContent.cursorOffset),
+        selection: EditorSelection.cursor(block.content.from + Math.min(formattedContent.cursorOffset, formattedContent.formatted.length)),
     }, {
         userEvent: "input",
         scrollIntoView: true,
