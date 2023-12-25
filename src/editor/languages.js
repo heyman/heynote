@@ -26,7 +26,6 @@ import htmlPrettierPlugin from "prettier/esm/parser-html.mjs"
 import cssPrettierPlugin from "prettier/esm/parser-postcss.mjs"
 import markdownPrettierPlugin from "prettier/esm/parser-markdown.mjs"
 import yamlPrettierPlugin from "prettier/plugins/yaml.mjs"
-import rustPrettierPlugin from "prettier-plugin-rust"
 import * as prettierPluginEstree from "prettier/plugins/estree.mjs";
 
 
