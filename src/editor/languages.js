@@ -1,6 +1,6 @@
 import { jsonLanguage } from "@codemirror/lang-json"
 import { pythonLanguage } from "@codemirror/lang-python"
-import { javascriptLanguage } from "@codemirror/lang-javascript"
+import { javascriptLanguage, typescriptLanguage } from "@codemirror/lang-javascript"
 import { htmlLanguage } from "@codemirror/lang-html"
 import { StandardSQL } from "@codemirror/lang-sql"
 import { markdownLanguage } from "@codemirror/lang-markdown"
@@ -27,6 +27,7 @@ export const LANGUAGES = [
     new Language("text", "Plain Text", null, null),
     new Language("math", "Math", null, null),
     new Language("javascript", "JavaScript", javascriptLanguage.parser, "js", true),
+    new Language("typescript", "TypeScript", typescriptLanguage.parser, "ts", true),
     new Language("json", "JSON", jsonLanguage.parser, "json", true),
     new Language("python", "Python", pythonLanguage.parser, "py"),
     new Language("html", "HTML", htmlLanguage.parser, "html", true),
