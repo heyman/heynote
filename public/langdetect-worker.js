@@ -4,6 +4,7 @@ GUESSLANG_LANGUAGES = [
     "json",
     "py",
     "js",
+    "ts",
     "html",
     "sql",
     "java",

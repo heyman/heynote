@@ -1,6 +1,6 @@
 import { jsonLanguage } from "@codemirror/lang-json"
 import { pythonLanguage } from "@codemirror/lang-python"
-import { javascriptLanguage } from "@codemirror/lang-javascript"
+import { javascriptLanguage, jsxLanguage, tsxLanguage, typescriptLanguage } from "@codemirror/lang-javascript"
 import { htmlLanguage } from "@codemirror/lang-html"
 import { StandardSQL } from "@codemirror/lang-sql"
 import { markdownLanguage } from "@codemirror/lang-markdown"
@@ -21,6 +21,7 @@ import { go } from "@codemirror/legacy-modes/mode/go"
 import { clojure } from "@codemirror/legacy-modes/mode/clojure"
 import { erlang } from "@codemirror/legacy-modes/mode/erlang"
 
+import typescriptPlugin from "prettier/plugins/typescript.mjs"
 import babelPrettierPlugin from "prettier/plugins/babel.mjs"
 import htmlPrettierPlugin from "prettier/esm/parser-html.mjs"
 import cssPrettierPlugin from "prettier/esm/parser-postcss.mjs"
@@ -188,6 +189,27 @@ export const LANGUAGES = [
         parser: javascriptLanguage.parser,
         guesslang: "js",
         prettier: {parser:"babel", plugins: [babelPrettierPlugin, prettierPluginEstree]},
+    }),
+    new Language({
+        token: "jsx",
+        name: "JSX",
+        parser: jsxLanguage.parser,
+        guesslang: null,
+        prettier: {parser:"babel", plugins: [babelPrettierPlugin, prettierPluginEstree]},
+    }),
+    new Language({
+        token: "typescript",
+        name: "TypeScript",
+        parser: typescriptLanguage.parser,
+        guesslang: "ts",
+        prettier: {parser:"typescript", plugins: [typescriptPlugin, prettierPluginEstree]},
+    }),
+    new Language({
+        token: "tsx",
+        name: "TSX",
+        parser: tsxLanguage.parser,
+        guesslang: null,
+        prettier: {parser:"typescript", plugins: [typescriptPlugin, prettierPluginEstree]},
     }),
 ]
 
