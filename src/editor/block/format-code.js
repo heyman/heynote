@@ -1,22 +1,8 @@
 import { EditorSelection } from "@codemirror/state"
 
 import * as prettier from "prettier/standalone"
-import babelParser from "prettier/plugins/babel.mjs"
-import htmlParser from "prettier/esm/parser-html.mjs"
-import cssParser from "prettier/esm/parser-postcss.mjs"
-import markdownParser from "prettier/esm/parser-markdown.mjs"
-import * as prettierPluginEstree from "prettier/plugins/estree.mjs";
-
 import { getActiveNoteBlock } from "./block.js"
-
-
-const PARSER_MAP = {
-    "json": {parser:"json-stringify", plugins: [babelParser, prettierPluginEstree]},
-    "javascript": {parser:"babel", plugins: [babelParser, prettierPluginEstree]},
-    "html": {parser:"html", plugins: [htmlParser]},
-    "css": {parser:"css", plugins: [cssParser]},
-    "markdown": {parser:"markdown", plugins: [markdownParser]},
-}
+import { getLanguage } from "../languages.js"
 
 
 export const formatBlockContent = async ({ state, dispatch }) => {
@@ -24,9 +10,10 @@ export const formatBlockContent = async ({ state, dispatch }) => {
         return false
     const block = getActiveNoteBlock(state)
 
-    const langName = block.language.name
-    if (!(langName in PARSER_MAP))
+    const language = getLanguage(block.language.name)
+    if (!language.prettier) {
         return false
+    }
     
     // get current cursor position
     const cursorPos = state.selection.asSingle().ranges[0].head
@@ -49,17 +36,17 @@ export const formatBlockContent = async ({ state, dispatch }) => {
         if (useFormat) {
             formattedContent = {
                 formatted: await prettier.format(content, {
-                    parser: PARSER_MAP[langName].parser,
-                    plugins: PARSER_MAP[langName].plugins,
+                    parser: language.prettier.parser,
+                    plugins: language.prettier.plugins,
                     tabWidth: state.tabSize,
                 }),
-                cursorOffset: cursorPos == block.content.from ? 0 : content.length,
             }
+            formattedContent.cursorOffset = cursorPos == block.content.from ? 0 : formattedContent.formatted.length
         } else {
             formattedContent = await prettier.formatWithCursor(content, {
                 cursorOffset: cursorPos - block.content.from,
-                parser: PARSER_MAP[langName].parser,
-                plugins: PARSER_MAP[langName].plugins,
+                parser: language.prettier.parser,
+                plugins: language.prettier.plugins,
                 tabWidth: state.tabSize,
             })
         }
@@ -75,7 +62,7 @@ export const formatBlockContent = async ({ state, dispatch }) => {
             to: block.content.to,
             insert: formattedContent.formatted,
         },
-        selection: EditorSelection.cursor(block.content.from + formattedContent.cursorOffset),
+        selection: EditorSelection.cursor(block.content.from + Math.min(formattedContent.cursorOffset, formattedContent.formatted.length)),
     }, {
         userEvent: "input",
         scrollIntoView: true,

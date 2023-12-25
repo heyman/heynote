@@ -14,6 +14,12 @@ GUESSLANG_LANGUAGES = [
     "rs",
     "md",
     "cs",
+    "rb",
+    "sh",
+    "yaml",
+    "go",
+    "clj",
+    "erl",
 ]
 
 const guessLang = new self.GuessLang()
