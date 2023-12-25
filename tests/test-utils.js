@@ -25,4 +25,20 @@ export class HeynotePage {
     async getBlocks() {
         return await this.page.evaluate(() => window._heynote_editor.getBlocks())
     }
+
+    async getContent() {
+        return await this.page.evaluate(() => window._heynote_editor.getContent())
+    }
+    
+    async setContent(content) {
+        await this.page.evaluate((content) => window._heynote_editor.setContent(content), content)
+    }
+
+    async getBlockContent(blockIndex) {
+        const blocks = await this.getBlocks()
+        const content = await this.getContent()
+        expect(blocks.length).toBeGreaterThan(blockIndex)
+        const block = blocks[blockIndex]
+        return content.slice(block.content.from, block.content.to)
+    }
 }
