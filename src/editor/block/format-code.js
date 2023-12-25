@@ -15,6 +15,8 @@ const PARSER_MAP = {
     "json": {parser:"json-stringify", plugins: [babelParser, prettierPluginEstree]},
     "javascript": {parser:"babel", plugins: [babelParser, prettierPluginEstree]},
     "typescript": {parser:"typescript", plugins: [typescriptParser, prettierPluginEstree]},
+    "jsx": {parser:"babel", plugins: [babelParser, prettierPluginEstree]},
+    "tsx": {parser:"typescript", plugins: [typescriptParser, prettierPluginEstree]},
     "html": {parser:"html", plugins: [htmlParser]},
     "css": {parser:"css", plugins: [cssParser]},
     "markdown": {parser:"markdown", plugins: [markdownParser]},
