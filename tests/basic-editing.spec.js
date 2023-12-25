@@ -13,7 +13,7 @@ test('load heynote', async ({ page }) => {
     await page.locator('body').pressSequentially('Hello World!')
     await page.locator("body").press("Enter")
     //await page.waitForTimeout(100);
-    await page.locator("body").press(heynotePage.isMac ? "Meta+Enter" : "Ctrl+Enter")
+    await page.locator("body").press(heynotePage.isMac ? "Meta+Enter" : "Control+Enter")
     await page.waitForTimeout(100);
 
     expect((await heynotePage.getBlocks()).length).toBe(2)
