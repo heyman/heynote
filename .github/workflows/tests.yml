@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Run Playwright tests
+    name: Run Playwright Tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
