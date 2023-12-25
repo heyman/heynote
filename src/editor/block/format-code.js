@@ -2,6 +2,7 @@ import { EditorSelection } from "@codemirror/state"
 
 import * as prettier from "prettier/standalone"
 import babelParser from "prettier/plugins/babel.mjs"
+import typescriptParser from "prettier/plugins/typescript.mjs"
 import htmlParser from "prettier/esm/parser-html.mjs"
 import cssParser from "prettier/esm/parser-postcss.mjs"
 import markdownParser from "prettier/esm/parser-markdown.mjs"
@@ -13,6 +14,7 @@ import { getActiveNoteBlock } from "./block.js"
 const PARSER_MAP = {
     "json": {parser:"json-stringify", plugins: [babelParser, prettierPluginEstree]},
     "javascript": {parser:"babel", plugins: [babelParser, prettierPluginEstree]},
+    "typescript": {parser:"typescript", plugins: [typescriptParser, prettierPluginEstree]},
     "html": {parser:"html", plugins: [htmlParser]},
     "css": {parser:"css", plugins: [cssParser]},
     "markdown": {parser:"markdown", plugins: [markdownParser]},
