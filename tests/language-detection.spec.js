@@ -14,7 +14,6 @@ test("test valid JSON detection", async ({ page }) => {
     await page.locator("body").pressSequentially(`
         {"test": 1, "key2": "hey!"}
     `)
-    await page.waitForTimeout(1000);
     await expect(page.locator("css=.status .status-block.lang")).toHaveText("JSON (auto)")
     const block = (await heynotePage.getBlocks())[0]
     expect(block.language.name).toBe("json")
@@ -36,6 +35,5 @@ sol2 = (-b+cmath.sqrt(d))/(2*a)
 
 print('The solution are {0} and {1}'.format(sol1,sol2))
     `)
-    await page.waitForTimeout(3000);
     await expect(page.locator("css=.status .status-block.lang")).toHaveText("Python (auto)")
 })
