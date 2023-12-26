@@ -179,6 +179,7 @@
             border-radius: 5px
             background: #fff
             color: #333
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.2)
             overflow-y: auto
             &:active, &:selected, &:focus, &:focus-visible
                 border: none
@@ -186,6 +187,7 @@
             +dark-mode
                 background: #333
                 color: #eee
+                box-shadow: 0 0 25px rgba(0, 0, 0, 0.3)
             .dialog-content
                 flex-grow: 1
                 padding: 40px
