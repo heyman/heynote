@@ -1,9 +1,10 @@
 import { EditorSelection } from "@codemirror/state"
 import { blockState } from "./block"
 import { LANGUAGES } from '../languages.js';
+import { timeMatcher } from '../time.js';
 
 const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
-const tokenRegEx = new RegExp(`^∞∞∞(${languageTokensMatcher})(-a)?$`, "g")
+const tokenRegEx = new RegExp(`^∞∞∞(${languageTokensMatcher})(-a)?(-c${timeMatcher})?(-u${timeMatcher})?$`, "g")
 
 
 function selectedLineBlocks(state) {

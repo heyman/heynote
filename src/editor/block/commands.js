@@ -1,8 +1,9 @@
 import { EditorSelection } from "@codemirror/state"
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED } from "../annotation.js";
-import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
+import { blockState, getActiveNoteBlock, getNoteBlockFromPos} from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
+import { newCreatedUpdatedTime, newUpdatedTime, getCreatedTime, getUpdatedTime } from "../time.js";
 
 export { moveLineDown, moveLineUp, selectAll }
 
@@ -14,9 +15,9 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     const currentBlock = getActiveNoteBlock(state)
     let delimText;
     if (currentBlock) {
-        delimText = `\n∞∞∞${currentBlock.language.name}${currentBlock.language.auto ? "-a" : ""}\n`
+        delimText = `\n∞∞∞${currentBlock.language.name}${currentBlock.language.auto ? "-a" : ""}${newCreatedUpdatedTime()}\n`
     } else {
-        delimText = "\n∞∞∞text-a\n"
+        delimText = `\n∞∞∞text-a${newCreatedUpdatedTime()}\n`
     }
     dispatch(state.replaceSelection(delimText), 
         {
@@ -32,7 +33,7 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
     const block = getActiveNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = `\n∞∞∞text-a${newCreatedUpdatedTime()}\n`
 
     dispatch(state.update({
         changes: {
