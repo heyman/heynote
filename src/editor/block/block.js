@@ -333,7 +333,8 @@ const emitCursorChange = (editor) => ViewPlugin.fromClass(
                         selectionSize,
                         language: block.language.name,
                         languageAuto: block.language.auto,
-                        createdTime: displayTime(block.time.created)
+                        createdTime: displayTime(block.time.created),
+                        updatedTime: displayTime(block.time.updated),
                     }))
                 }
             }

@@ -38,6 +38,7 @@
                     language: e.language,
                     languageAuto: e.languageAuto,
                     createdTime: e.createdTime,
+                    updatedTime: e.updatedTime,
                 })
             })
 
