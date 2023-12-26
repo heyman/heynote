@@ -98,6 +98,35 @@ Currently, I'm not planning on adding this. The main reason is that it goes agai
 
 I can totally see the usefulness of such a feature, and it's definitely something that I would expect from a more traditional Notes app. However a large part of Heynote's appeal is it's simplicity, and if that is to remain so, I'm going to have to say no to a lot of actually useful features.
 
+### What are the default keyboard shortcuts?
+
+**On Mac**
+
+```
+⌘ + Enter           Add new block below the current block
+⌘ + Shift + Enter   Split the current block at cursor position
+⌘ + L               Change block language
+⌘ + Down            Goto next block
+⌘ + Up              Goto previous block
+⌘ + A               Select all text in a note block. Press again to select the whole buffer
+⌘ + ⌥ + Up/Down     Add additional cursor above/below
+⌥ + Shift + F       Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
+```
+
+**On Windows and Linux**
+
+```
+Ctrl + Enter           Add new block below the current block
+Ctrl + Shift + Enter   Split the current block at cursor position
+Ctrl + L               Change block language
+Ctrl + Down            Goto next block
+Ctrl + Up              Goto previous block
+Ctrl + A               Select all text in a note block. Press again to select the whole buffer
+Ctrl + Alt + Up/Down   Add additional cursor above/below
+Alt + Shift + F        Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
+Alt                    Show menu
+```
+
 ## Thanks!
 
 Heynote is built upon [CodeMirror](https://codemirror.net/), [Vue](https://vuejs.org/), [Electron](https://www.electronjs.org/), [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/) and other great open-source projects.
