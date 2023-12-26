@@ -8,7 +8,7 @@ import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { SelectionChangeEvent } from "../event.js"
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
-
+import { displayTime } from "../time.js";
 
 // tracks the size of the first delimiter
 let firstBlockDelimiterSize
@@ -333,6 +333,7 @@ const emitCursorChange = (editor) => ViewPlugin.fromClass(
                         selectionSize,
                         language: block.language.name,
                         languageAuto: block.language.auto,
+                        createdTime: displayTime(block.time.created)
                     }))
                 }
             }

@@ -26,6 +26,7 @@
                 showLanguageSelector: false,
                 showSettings: false,
                 settings: window.heynote.settings,
+                createdTime: ""
             }
         },
 
@@ -84,6 +85,7 @@
                 this.selectionSize = e.selectionSize
                 this.language = e.language
                 this.languageAuto = e.languageAuto
+                this.createdTime = e.createdTime
             },
 
             openLanguageSelector() {
@@ -132,6 +134,7 @@
             :themeSetting="themeSetting"
             :autoUpdate="settings.autoUpdate"
             :allowBetaVersions="settings.allowBetaVersions"
+            :createdTime="createdTime"
             @toggleTheme="toggleTheme"
             @openLanguageSelector="openLanguageSelector"
             @formatCurrentBlock="formatCurrentBlock"

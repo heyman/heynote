@@ -16,6 +16,7 @@
             "themeSetting",
             "autoUpdate",
             "allowBetaVersions",
+            "createdTime"
         ],
 
         components: {
@@ -67,6 +68,9 @@
             <template v-if="selectionSize > 0">
                 Sel <span class="num">{{ selectionSize }}</span>
             </template>
+        </div>
+        <div class="status-block created-time">
+            {{ createdTime }}
         </div>
         <div class="spacer"></div>
         <div 
@@ -140,6 +144,10 @@
                 color: rgba(255, 255, 255, 0.55)
                 .num
                     color: rgba(255, 255, 255, 0.75)
+        .created-time
+            color: rgba(255, 255, 255, 0.7)
+            +dark-mode
+                color: rgba(255, 255, 255, 0.55)
         .lang .auto
             color: rgba(255, 255, 255, 0.7)
             +dark-mode
