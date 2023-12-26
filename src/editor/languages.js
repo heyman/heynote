@@ -20,6 +20,7 @@ import { yaml } from "@codemirror/legacy-modes/mode/yaml"
 import { go } from "@codemirror/legacy-modes/mode/go"
 import { clojure } from "@codemirror/legacy-modes/mode/clojure"
 import { erlang } from "@codemirror/legacy-modes/mode/erlang"
+import { toml } from "@codemirror/legacy-modes/mode/toml"
 
 import typescriptPlugin from "prettier/plugins/typescript.mjs"
 import babelPrettierPlugin from "prettier/plugins/babel.mjs"
@@ -164,6 +165,12 @@ export const LANGUAGES = [
         parser: StreamLanguage.define(yaml).parser,
         guesslang: "yaml",
         prettier: {parser:"yaml", plugins: [yamlPrettierPlugin]},
+    }),
+    new Language({
+        token: "toml",
+        name: "TOML",
+        parser: StreamLanguage.define(toml).parser,
+        guesslang: "toml",
     }),
     new Language({
         token: "golang",

@@ -26,6 +26,7 @@ Available for Mac, Windows, and Linux.
     -   JavaScript
     -   JSX
     -   TypeScript
+    -   TOML
     -   TSX
     -   JSON
     -   Lezer
