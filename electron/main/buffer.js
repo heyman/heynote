@@ -66,14 +66,13 @@ export class Buffer {
                     if (filename !== basename(this.filePath)) {
                         return
                     }
-                    //console.log("Buffer watcher event:", eventType, filename)
-
+                    
                     // read the file content and compare it to the last saved content
                     // (if the content is the same, then we can ignore the event)
                     const content = await jetpack.read(this.filePath, 'utf8')
+
                     if (this._lastSavedContent !== content) {
                         // file has changed on disk, trigger onChange
-                        //console.log("real change detected")
                         this.onChange({filename, eventType, content})
                     }
                 }
