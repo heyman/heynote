@@ -25,6 +25,10 @@ export default {
         async saveAndQuit(content) {
             
         },
+
+        onChangeCallback(callback) {
+            
+        },
     },
 
     onWindowClose(callback) {
