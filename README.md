@@ -51,6 +51,21 @@ To develop Heynote you need Node.js and you should (hopefully) just need to chec
 > npm run dev
 ```
 
+### Run Tests
+
+To run the tests:
+
+```
+> npm run test
+```
+
+To run the tests in the Playwright UI:
+
+```
+> npm run test:ui
+```
+
+
 ### Contributions
 
 I'm happy to merge contributions that fit my vision for the app. Bug fixes are always welcome. 
