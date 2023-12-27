@@ -15,30 +15,9 @@ Available for Mac, Windows, and Linux.
 -   Persistent text buffer
 -   Block-based
 -   Syntax highlighting
-    -   C++
-    -   C#
-    -   Clojure
-    -   CSS
-    -   Erlang
-    -   Go
-    -   HTML
-    -   Java
-    -   JavaScript
-    -   JSX
-    -   TypeScript
-    -   TOML
-    -   TSX
-    -   JSON
-    -   Lezer
-    -   Markdown
-    -   PHP
-    -   Python
-    -   Ruby
-    -   Rust
-    -   Shell
-    -   SQL
-    -   XML
-    -   YAML
+    ```
+    C++, C#, Clojure, CSS, Erlang, Go, HTML, Java, JavaScript, JSX, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, XML, YAML
+    ```
 -   Language auto-detection
 -   Auto-formatting
 -   Math/Calculator mode
