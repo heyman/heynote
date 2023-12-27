@@ -53,6 +53,10 @@ contextBridge.exposeInMainWorld("heynote", {
         async saveAndQuit(content) {
             return await ipcRenderer.invoke("buffer-content:saveAndQuit", content)
         },
+
+        onChangeCallback(callback) {
+            ipcRenderer.on("buffer-content:change", callback)
+        },
     },
 
     settings: CONFIG.get("settings"),

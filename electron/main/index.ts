@@ -11,7 +11,7 @@ import { onBeforeInputEvent } from "../keymap"
 import { isDev } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
-import { getBufferFilePath } from './buffer';
+import { getBufferFilePath, Buffer } from './buffer';
 
 
 // The built directory structure
@@ -210,20 +210,24 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
+
+const buffer = new Buffer({
+    filePath: getBufferFilePath(), 
+    onChange: (eventData) => {
+        win?.webContents.send("buffer-content:change", eventData)
+    },
+})
+
 ipcMain.handle('buffer-content:load', async () => {
-    let bufferPath = getBufferFilePath()
-    if (jetpack.exists(bufferPath) === "file") {
-        return await jetpack.read(bufferPath, 'utf8')
+    if (buffer.exists()) {
+        return await buffer.load()
     } else {
         return isDev? initialDevContent : initialContent
     }
 });
 
 async function save(content) {
-    return await jetpack.write(getBufferFilePath(), content, {
-        atomic: true,
-        mode: '600',
-    })
+    return await buffer.save(content)
 }
 
 ipcMain.handle('buffer-content:save', async (event, content) =>  {
