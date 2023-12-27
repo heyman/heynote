@@ -59,7 +59,7 @@ const customSetup = /*@__PURE__*/(() => [
     indentOnInput(),
     syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
     bracketMatching(),
-    //closeBrackets(),
+    closeBrackets(),
     //autocompletion(),
     rectangularSelection(),
     crosshairCursor(),
