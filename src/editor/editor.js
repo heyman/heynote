@@ -8,7 +8,7 @@ import { heynoteDark } from "./theme/dark.js"
 import { heynoteBase } from "./theme/base.js"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
-import { noteBlockExtension, blockLineNumbers, getBlocks } from "./block/block.js"
+import { noteBlockExtension, blockLineNumbers, blockState } from "./block/block.js"
 import { heynoteEvent, SET_CONTENT } from "./annotation.js";
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
@@ -128,7 +128,7 @@ export class HeynoteEditor {
     }
 
     getBlocks() {
-        return getBlocks(this.view.state)
+        return this.view.state.facet(blockState)
     }
 
     focus() {
