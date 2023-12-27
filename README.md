@@ -127,6 +127,11 @@ Alt + Shift + F        Format block content (works for JSON, JavaScript, HTML, C
 Alt                    Show menu
 ```
 
+### Can Math blocks do X?
+
+Heynote's Math blocks are powered by [Math.js](https://mathjs.org/). Checkout their [documentation](https://mathjs.org/docs/reference/index.html) to see what [functions](https://mathjs.org/docs/reference/functions.html) and [constants](https://mathjs.org/docs/reference/constants.html) are available.
+
+
 ## Thanks!
 
 Heynote is built upon [CodeMirror](https://codemirror.net/), [Vue](https://vuejs.org/), [Electron](https://www.electronjs.org/), [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/) and other great open-source projects.
