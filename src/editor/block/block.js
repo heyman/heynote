@@ -13,9 +13,9 @@ import { emptyBlockSelected } from "./select-all.js";
 // tracks the size of the first delimiter
 let firstBlockDelimiterSize
 
-export function getBlocks(state) {
+export function getBlocks(state, timeout=50) {
     const blocks = [];  
-    const tree = ensureSyntaxTree(state, state.doc.length)
+    const tree = ensureSyntaxTree(state, state.doc.length, timeout)
     if (tree) {
         tree.iterate({
             enter: (type) => {
@@ -57,7 +57,7 @@ export function getBlocks(state) {
 
 export const blockState = StateField.define({
     create(state) {
-        return getBlocks(state);
+        return getBlocks(state, 1000);
     },
     update(blocks, transaction) {
         // if blocks are empty it likely means we didn't get a parsed syntax tree, and then we want to update
