@@ -13,7 +13,7 @@ import {
     selectNextBlock, selectPreviousBlock,
     gotoPreviousParagraph, gotoNextParagraph, 
     selectNextParagraph, selectPreviousParagraph,
-    newCursorBelow, newCursorAbove,
+    newCursorBelow, newCursorAbove, addNewBlockAfterLast,
 } from "./block/commands.js"
 
 import { formatBlockContent } from "./block/format-code.js"
@@ -40,6 +40,7 @@ export function heynoteKeymap(editor) {
         ["Shift-Tab", indentLess],
         ["Mod-Enter", addNewBlockAfterCurrent],
         ["Mod-Shift-Enter", insertNewBlockAtCursor],
+        ["Alt-Enter", addNewBlockAfterLast],
         ["Mod-a", selectAll],
         ["Alt-ArrowUp", moveLineUp],
         ["Alt-ArrowDown", moveLineDown],

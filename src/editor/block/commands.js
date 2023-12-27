@@ -1,6 +1,6 @@
 import { EditorSelection } from "@codemirror/state"
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED } from "../annotation.js";
-import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
+import {blockState, getActiveNoteBlock, getLastNoteBlock, getNoteBlockFromPos} from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
 
@@ -32,6 +32,25 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
     const block = getActiveNoteBlock(state)
+    const delimText = "\n∞∞∞text-a\n"
+
+    dispatch(state.update({
+        changes: {
+            from: block.content.to,
+            insert: delimText,
+        },
+        selection: EditorSelection.cursor(block.content.to + delimText.length)
+    }, {
+        scrollIntoView: true,
+        userEvent: "input",
+    }))
+    return true;
+}
+
+export const addNewBlockAfterLast = ({ state, dispatch }) => {
+    if (state.readOnly)
+        return false
+    const block = getLastNoteBlock(state)
     const delimText = "\n∞∞∞text-a\n"
 
     dispatch(state.update({
