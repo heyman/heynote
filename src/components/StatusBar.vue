@@ -72,7 +72,7 @@
         </div>
         <div class="status-block" v-if="updatedTime !== ''">
             <span class="updated-time">{{ updatedTime }}</span>
-            <span class="created-time">&nbsp;&nbsp;({{ createdTime }})</span>
+            <span class="created-time" v-if="createdTime !== updatedTime">&nbsp;&nbsp;({{ createdTime }})</span>
         </div>
         <div class="spacer"></div>
         <div 
