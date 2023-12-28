@@ -24,6 +24,8 @@
                 allowBetaVersions: this.initialSettings.allowBetaVersions,
                 enableGlobalHotkey: this.initialSettings.enableGlobalHotkey,
                 globalHotkey: this.initialSettings.globalHotkey,
+                showInDock: this.initialSettings.showInDock,
+                showInMenu: this.initialSettings.showInMenu,
             }
         },
 
@@ -51,6 +53,8 @@
                     allowBetaVersions: this.allowBetaVersions,
                     enableGlobalHotkey: this.enableGlobalHotkey,
                     globalHotkey: this.globalHotkey,
+                    showInDock: this.showInDock,
+                    showInMenu: this.showInMenu || !this.showInDock,
                 })
             }
         }
@@ -119,6 +123,28 @@
                             @change="updateSettings"
                         />
                     </div>
+                </div>
+                <div class="row">
+                    <div class="entry">
+                        <h2>Show In</h2>
+                        <label>
+                            <input 
+                                type="checkbox" 
+                                v-model="showInDock" 
+                                @change="updateSettings"
+                            />
+                            Show in dock
+                        </label>
+                        <label>
+                            <input 
+                                type="checkbox"
+                                :disabled="!showInDock"
+                                v-model="showInMenu" 
+                                @change="updateSettings"
+                            />
+                            Show system tray
+                        </label>
+                    </div>  
                 </div>
                 <div class="row">
                     <div class="entry">

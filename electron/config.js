@@ -29,6 +29,8 @@ const schema = {
             "enableGlobalHotkey": {type: "boolean", default: false},
             "globalHotkey": {type: "string", default: "CmdOrCtrl+Shift+H"},
             "bufferPath" : {type: "string", default: ""},
+            "showInDock": {type: "boolean", default: true},
+            "showInMenu": {type: "boolean", default: false},
         },
     },
 
@@ -53,6 +55,8 @@ const defaults = {
         enableGlobalHotkey: false,
         globalHotkey: "CmdOrCtrl+Shift+H",
         bufferPath: "",
+        showInDock: true,
+        showInMenu: false,
     },
     theme: "system",
 }

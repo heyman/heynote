@@ -1,11 +1,11 @@
-import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme, globalShortcut } from 'electron'
+import { app, BrowserWindow, Tray, shell, ipcMain, Menu, nativeTheme, globalShortcut, nativeImage } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
 import * as jetpack from "fs-jetpack";
 
 import menu from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
-import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
+import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
 import { isDev } from '../detect-platform';
@@ -51,6 +51,7 @@ Menu.setApplicationMenu(menu)
 // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 export let win: BrowserWindow | null = null
+let tray: Tray | null = null;
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
@@ -148,6 +149,13 @@ async function createWindow() {
     fixElectronCors(win)
 }
 
+function createTray() {
+    const image = nativeImage.createFromPath(join(process.env.PUBLIC, 'icon.png'));
+    tray = new Tray(image.resize({ width: 16, height: 16 }));
+    tray.setToolTip("Heynote");
+    tray.setContextMenu(menu);
+}
+
 function registerGlobalHotkey() {
     globalShortcut.unregisterAll()
     if (CONFIG.get("settings.enableGlobalHotkey")) {
@@ -176,9 +184,27 @@ function registerGlobalHotkey() {
     }
 }
 
+function registerShowInDock() {
+    if (CONFIG.get("settings.showInDock")) {
+        app.dock.show()
+    } else {
+        app.dock.hide()
+    }
+}
+
+function registerShowInMenu() {
+    if (CONFIG.get("settings.showInMenu")) {
+        createTray()
+    } else {
+        tray?.destroy()
+    }
+}
+
 app.whenReady().then(createWindow).then(async () => {
     initializeAutoUpdate(win)
     registerGlobalHotkey()
+    registerShowInDock()
+    registerShowInMenu()
 })
 
 app.on('window-all-closed', () => {
@@ -241,12 +267,19 @@ ipcMain.handle('settings:set', (event, settings) =>  {
         currentKeymap = settings.keymap
     }
     let globalHotkeyChanged = settings.enableGlobalHotkey !== CONFIG.get("settings.enableGlobalHotkey") || settings.globalHotkey !== CONFIG.get("settings.globalHotkey")
-    
+    let showInDockChanged = settings.showInDock !== CONFIG.get("settings.showInDock");
+    let showInMenuChanged = settings.showInMenu !== CONFIG.get("settings.showInMenu");
     CONFIG.set("settings", settings)
 
     win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
     
     if (globalHotkeyChanged) {
         registerGlobalHotkey()
+    }
+    if (showInDockChanged) {
+        registerShowInDock()
+    }
+    if (showInMenuChanged) {
+        registerShowInMenu()
     }
 })
