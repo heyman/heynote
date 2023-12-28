@@ -1,6 +1,7 @@
 <script>
     export default {
         props: [
+            "autoUpdate",
             "allowBetaVersions",
         ],
         
@@ -16,7 +17,6 @@
                     total: 0.0,
                     bytesPerSecond: 0.0,
                 },
-                
                 checkForUpdateIntervalId: null,
             }
         },
@@ -50,14 +50,6 @@
                     this.updateProgress = progress
                 }
             })
-            
-            // check for update now
-            this.checkForUpdate()
-
-            // check for updates every 8 hours
-            this.checkForUpdateIntervalId = setInterval(() => {
-                this.checkForUpdate()
-            }, 1000 * 3600 * 8)
         },
 
         beforeUnmount() {
@@ -67,11 +59,27 @@
         },
 
         watch: {
-            allowBetaVersions: {
-                handler: function (newValue) {
-                    this.checkForUpdate()
+            autoUpdate: {
+                immediate: true,
+                handler(autoUpdate) {
+                    if (this.checkForUpdateIntervalId) {
+                        clearInterval(this.checkForUpdateIntervalId)
+                    }
+                    if (autoUpdate) {
+                        // check for update now
+                        this.checkForUpdate()
+                        
+                        // check for updates every 8 hours
+                        this.checkForUpdateIntervalId = setInterval(() => {
+                            this.checkForUpdate()
+                        }, 1000 * 3600 * 8)
+                    }
                 },
-            }
+            },
+
+            allowBetaVersions(newValue) {
+                this.checkForUpdate()
+            },
         },
 
         computed: {
