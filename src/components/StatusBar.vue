@@ -70,9 +70,10 @@
                 Sel <span class="num">{{ selectionSize }}</span>
             </template>
         </div>
-        <div class="status-block" v-if="updatedTime !== ''">
-            <span class="updated-time">{{ updatedTime }}</span>
-            <span class="created-time" v-if="createdTime !== updatedTime">&nbsp;&nbsp;({{ createdTime }})</span>
+        <div class="status-block line-number" v-if="updatedTime !== ''">
+            Updated <span class="num">{{ updatedTime }}</span>
+            <!-- Show the created time as well -- too verbose -->
+            <!-- <span v-if="createdTime !== updatedTime">&nbsp;&nbsp;(Created {{ createdTime }})</span> -->
         </div>
         <div class="spacer"></div>
         <div 
@@ -146,10 +147,6 @@
                 color: rgba(255, 255, 255, 0.55)
                 .num
                     color: rgba(255, 255, 255, 0.75)
-        .created-time
-            color: rgba(255, 255, 255, 0.7)
-            +dark-mode
-                color: rgba(255, 255, 255, 0.55)
         .lang .auto
             color: rgba(255, 255, 255, 0.7)
             +dark-mode
