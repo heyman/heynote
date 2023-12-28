@@ -9,12 +9,30 @@ mediaMatch.addEventListener("change", async (event) => {
 let autoUpdateCallbacks = null
 let currencyData = null
 
-const Heynote = {
-    platform: {
+let platform
+const uaPlatform = window.navigator?.userAgentData?.platform || window.navigator.platform
+if (uaPlatform.indexOf("Win") !== -1) {
+    platform = {
+        isMac: false,
+        isWindows: true,
+        isLinux: false,
+    }
+}  else if (uaPlatform.indexOf("Linux") !== -1) {
+    platform = {
+        isMac: false,
+        isWindows: false,
+        isLinux: true,
+    }
+} else {
+    platform = {
         isMac: true,
         isWindows: false,
         isLinux: false,
-    },
+    }
+}
+
+const Heynote = {
+    platform: platform,
 
     buffer: {
         async load() {
