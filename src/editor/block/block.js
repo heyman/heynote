@@ -350,9 +350,12 @@ const updateTimeOnChange = EditorState.transactionFilter.of((tr) => {
 
     const state = tr.startState
     const block = getActiveNoteBlock(state)
-    const updatedTime = newUpdatedTime()
+
+    // Block updates to time when deleting the last content in a block
+    if ((block.content.from === block.content.to) && !tr.changes.inserted.length) return tr
 
     // this adds a slight debounce so the delimiter is only updated every second
+    const updatedTime = newUpdatedTime()
     if (block.time.updated === updatedTime) return tr
 
     const language = block.language.name
