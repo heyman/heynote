@@ -13,7 +13,7 @@
             "language", 
             "languageAuto",
             "theme",
-            "systemTheme",
+            "themeSetting",
             "autoUpdate",
             "allowBetaVersions",
         ],
@@ -91,7 +91,7 @@
             :allowBetaVersions="allowBetaVersions"
         />
         <div class="status-block theme clickable" @click="$emit('toggleTheme')" title="Toggle dark/light mode">
-            <span :class="'icon ' + systemTheme"></span>
+            <span :class="'icon ' + themeSetting"></span>
         </div>
     </div>
 </template>

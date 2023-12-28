@@ -21,7 +21,7 @@
                 languageAuto: true,
                 theme: window.heynote.themeMode.initial,
                 initialTheme: window.heynote.themeMode.initial,
-                systemTheme: 'system',
+                themeSetting: 'system',
                 development: window.location.href.indexOf("dev=1") !== -1,
                 showLanguageSelector: false,
                 showSettings: false,
@@ -32,7 +32,7 @@
         mounted() {
             window.heynote.themeMode.get().then((mode) => {
                 this.theme = mode.computed
-                this.systemTheme = mode.theme
+                this.themeSetting = mode.theme
             })
             const onThemeChange = (theme) => {
                 this.theme = theme
@@ -69,12 +69,12 @@
                 let newTheme
                 // when the "system" theme is used, make sure that the first click always results in amn actual theme change
                 if (this.initialTheme === "light") {
-                    newTheme = this.systemTheme === "system" ? "dark" : (this.systemTheme === "dark" ? "light" : "system")
+                    newTheme = this.themeSetting === "system" ? "dark" : (this.themeSetting === "dark" ? "light" : "system")
                 } else {
-                    newTheme = this.systemTheme === "system" ? "light" : (this.systemTheme === "light" ? "dark" : "system")
+                    newTheme = this.themeSetting === "system" ? "light" : (this.themeSetting === "light" ? "dark" : "system")
                 }
                 window.heynote.themeMode.set(newTheme)
-                this.systemTheme = newTheme
+                this.themeSetting = newTheme
                 this.$refs.editor.focus()
             },
 
@@ -129,7 +129,7 @@
             :language="language" 
             :languageAuto="languageAuto"
             :theme="theme"
-            :systemTheme="systemTheme"
+            :themeSetting="themeSetting"
             :autoUpdate="settings.autoUpdate"
             :allowBetaVersions="settings.allowBetaVersions"
             @toggleTheme="toggleTheme"
