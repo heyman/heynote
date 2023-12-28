@@ -35,8 +35,8 @@ function getBlocks(state, timeout=50) {
                             auto: isAuto,
                         },
                         time: {
-                            created: createdAtNode ? state.doc.sliceString(createdAtNode.from + 2, createdAtNode.to) : null,
-                            updated: updatedAtNode ? state.doc.sliceString(updatedAtNode.from + 2, updatedAtNode.to) : null,
+                            created: createdAtNode ? state.doc.sliceString(createdAtNode.from, createdAtNode.to) : null,
+                            updated: updatedAtNode ? state.doc.sliceString(updatedAtNode.from, updatedAtNode.to) : null,
                         },
                         content: {
                             from: contentNode.from,

@@ -19,19 +19,13 @@ export const newCreatedUpdatedTime = () => {
     return `${newCreatedTime()}${newUpdatedTime()}`
 }
 
-export const getCreatedTime = () => {
-}
-
-export const getUpdatedTime = () => {
-}
-
 export const timeMatcher = '\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)'
 
 export const displayTime = (t) => {
     if (!t) return ""
 
-    // create Date object from ISO string
-    const dt = new Date(t)
+    // create Date object from delimiter time string
+    const dt = new Date(t.slice(2,))
 
     // Present year if its not equal to this one
     if (dt.getFullYear() !== THIS_YEAR) {
