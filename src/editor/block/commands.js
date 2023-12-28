@@ -1,6 +1,6 @@
 import { EditorSelection } from "@codemirror/state"
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED } from "../annotation.js";
-import {blockState, getActiveNoteBlock, getLastNoteBlock, getNoteBlockFromPos} from "./block"
+import {blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos} from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
 
@@ -10,7 +10,7 @@ export { moveLineDown, moveLineUp, selectAll }
 export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
-    
+
     const currentBlock = getActiveNoteBlock(state)
     let delimText;
     if (currentBlock) {
@@ -18,13 +18,33 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     } else {
         delimText = "\n∞∞∞text-a\n"
     }
-    dispatch(state.replaceSelection(delimText), 
+    dispatch(state.replaceSelection(delimText),
         {
-            scrollIntoView: true, 
+            scrollIntoView: true,
             userEvent: "input",
         }
     )
 
+    return true;
+}
+
+export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
+    console.log("addNewBlockBeforeCurrent")
+    if (state.readOnly)
+        return false
+    const block = getActiveNoteBlock(state)
+    const delimText = "\n∞∞∞text-a\n"
+
+    dispatch(state.update({
+        changes: {
+            from: block.delimiter.from,
+            insert: delimText,
+        },
+        selection: EditorSelection.cursor(block.delimiter.from + delimText.length)
+    }, {
+        scrollIntoView: true,
+        userEvent: "input",
+    }))
     return true;
 }
 
@@ -47,6 +67,25 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     return true;
 }
 
+export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
+    if (state.readOnly)
+        return false
+    const block = getFirstNoteBlock(state)
+    const delimText = "\n∞∞∞text-a\n"
+
+    dispatch(state.update({
+        changes: {
+            from: block.delimiter.from,
+            insert: delimText,
+        },
+        selection: EditorSelection.cursor(delimText.length) // TODO: fix jump. See first char of file when saving
+    }, {
+        scrollIntoView: true,
+        userEvent: "input",
+    }))
+    return true;
+}
+
 export const addNewBlockAfterLast = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
@@ -60,7 +99,7 @@ export const addNewBlockAfterLast = ({ state, dispatch }) => {
         },
         selection: EditorSelection.cursor(block.content.to + delimText.length)
     }, {
-        scrollIntoView: true, 
+        scrollIntoView: true,
         userEvent: "input",
     }))
     return true;

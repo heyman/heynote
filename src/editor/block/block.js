@@ -75,6 +75,10 @@ export function getActiveNoteBlock(state) {
     return state.facet(blockState).find(block => block.range.from <= range.head && block.range.to >= range.head)
 }
 
+export function getFirstNoteBlock(state) {
+    return state.facet(blockState)[0]
+}
+
 export function getLastNoteBlock(state) {
     return state.facet(blockState)[state.facet(blockState).length - 1]
 }
