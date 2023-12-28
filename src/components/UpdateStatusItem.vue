@@ -62,7 +62,6 @@
             autoUpdate: {
                 immediate: true,
                 handler(autoUpdate) {
-                    console.log("autoUpdate changed", autoUpdate)
                     if (this.checkForUpdateIntervalId) {
                         clearInterval(this.checkForUpdateIntervalId)
                     }
