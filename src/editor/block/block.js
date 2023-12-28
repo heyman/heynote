@@ -8,7 +8,10 @@ import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { SelectionChangeEvent } from "../event.js"
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
-import { displayTime } from "../time.js";
+import { newUpdatedTime, displayTime, timeMatcher } from "../time.js";
+import { LANGUAGES } from '../languages.js';
+
+const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
 
 // tracks the size of the first delimiter
 let firstBlockDelimiterSize
@@ -342,6 +345,32 @@ const emitCursorChange = (editor) => ViewPlugin.fromClass(
     }
 )
 
+const updateTimeOnChange = EditorState.transactionFilter.of((tr) => {
+    if (!tr.docChanged) return tr
+
+    const state = tr.startState
+    const block = getActiveNoteBlock(state)
+    const updatedTime = newUpdatedTime()
+
+    // this adds a slight debounce so the delimiter is only updated every second
+    if (block.time.updated === updatedTime) return tr
+
+    const language = block.language.name
+    const auto = block.language.auto
+    const createdTimeStr = block.time.created || ""
+    const updatedTimeStr = block.time.updated ? updatedTime : ""
+
+    // return original transaction, with additional transaction to update time in delimiter
+    return [tr, {
+        changes: {
+            from: block.delimiter.from,
+            to: block.delimiter.to,
+            insert: `\n∞∞∞${language}${auto ? '-a' : ''}${createdTimeStr}${updatedTimeStr}\n`,
+        },
+        filter: false
+    }]
+})
+
 export const noteBlockExtension = (editor) => {
     return [
         blockState,
@@ -353,5 +382,8 @@ export const noteBlockExtension = (editor) => {
         emitCursorChange(editor),
         mathBlock,
         emptyBlockSelected,
+        updateTimeOnChange,
     ]
 }
+
+
