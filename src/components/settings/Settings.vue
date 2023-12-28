@@ -1,5 +1,7 @@
 <script>
     import KeyboardHotkey from "./KeyboardHotkey.vue"
+    import TabListItem from "./TabListItem.vue"
+    import TabContent from "./TabContent.vue"
 
     export default {
         props: {
@@ -8,6 +10,8 @@
         },
         components: {
             KeyboardHotkey,
+            TabListItem,
+            TabContent,
         },
 
         data() {
@@ -24,6 +28,9 @@
                 allowBetaVersions: this.initialSettings.allowBetaVersions,
                 enableGlobalHotkey: this.initialSettings.enableGlobalHotkey,
                 globalHotkey: this.initialSettings.globalHotkey,
+                autoUpdate: this.initialSettings.autoUpdate,
+
+                activeTab: "general",
             }
         },
 
@@ -51,8 +58,9 @@
                     allowBetaVersions: this.allowBetaVersions,
                     enableGlobalHotkey: this.enableGlobalHotkey,
                     globalHotkey: this.globalHotkey,
+                    autoUpdate: this.autoUpdate,
                 })
-            }
+            },
         }
     }
 </script>
@@ -61,77 +69,122 @@
     <div class="settings">
         <div class="dialog">
             <div class="dialog-content">
-                <h1>Settings</h1>
-                <div class="row">
-                    <div class="entry">
-                        <h2>Keymap</h2>
-                        <select ref="keymapSelector" v-model="keymap" @change="updateSettings">
-                            <template v-for="km in keymaps" :key="km.value">
-                                <option :selected="km.value === keymap" :value="km.value">{{ km.name }}</option>
-                            </template>
-                        </select>
-                    </div>
-                    <div class="entry" v-if="keymap === 'emacs' && isMac">
-                        <h2>Meta Key</h2>
-                        <select v-model="metaKey" @change="updateSettings">
-                            <option :selected="metaKey === 'meta'" value="meta">Command</option>
-                            <option :selected="metaKey === 'alt'" value="alt">Option</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="entry">
-                        <h2>Gutters</h2>
-                        <label>
-                            <input 
-                                type="checkbox" 
-                                v-model="showLineNumberGutter" 
-                                @change="updateSettings"
-                            />
-                            Show line numbers
-                        </label>
-                        
-                        <label>
-                            <input 
-                                type="checkbox" 
-                                v-model="showFoldGutter" 
-                                @change="updateSettings"
-                            />
-                            Show fold gutter
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="entry">
-                        <h2>Global Keyboard Shortcut</h2>
-                        <label class="keyboard-shortcut-label">
-                            <input 
-                                type="checkbox" 
-                                v-model="enableGlobalHotkey" 
-                                @change="updateSettings"
-                            />
-                            Enable Global Hotkey
-                        </label>
-                        
-                        <KeyboardHotkey 
-                            :disabled="!enableGlobalHotkey"
-                            v-model="globalHotkey"
-                            @change="updateSettings"
+                <nav class="sidebar">
+                    <h1>Settings</h1>
+                    <ul>
+                        <TabListItem 
+                            name="General" 
+                            tab="general" 
+                            :activeTab="activeTab" 
+                            @click="activeTab = 'general'"
                         />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="entry">
-                        <h2>Beta Versions</h2>
-                        <label>
-                            <input 
-                                type="checkbox" 
-                                v-model="allowBetaVersions" 
-                                @change="updateSettings"
-                            />
-                            Use beta versions of Heynote
-                        </label>
-                    </div>
+                        <TabListItem 
+                            name="Appearance" 
+                            tab="appearance"
+                            :activeTab="activeTab" 
+                            @click="activeTab = 'appearance'"
+                        />
+                        <TabListItem 
+                            name="Updates" 
+                            tab="updates" 
+                            :activeTab="activeTab" 
+                            @click="activeTab = 'updates'"
+                        />
+                    </ul>
+                </nav>
+                <div class="settings-content">
+                    <TabContent tab="general" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Keymap</h2>
+                                <select ref="keymapSelector" v-model="keymap" @change="updateSettings">
+                                    <template v-for="km in keymaps" :key="km.value">
+                                        <option :selected="km.value === keymap" :value="km.value">{{ km.name }}</option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="entry" v-if="keymap === 'emacs' && isMac">
+                                <h2>Meta Key</h2>
+                                <select v-model="metaKey" @change="updateSettings">
+                                    <option :selected="metaKey === 'meta'" value="meta">Command</option>
+                                    <option :selected="metaKey === 'alt'" value="alt">Option</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Global Keyboard Shortcut</h2>
+                                <label class="keyboard-shortcut-label">
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="enableGlobalHotkey" 
+                                        @change="updateSettings"
+                                    />
+                                    Enable Global Hotkey
+                                </label>
+                                
+                                <KeyboardHotkey 
+                                    :disabled="!enableGlobalHotkey"
+                                    v-model="globalHotkey"
+                                    @change="updateSettings"
+                                />
+                            </div>
+                        </div>
+                    </TabContent>
+
+                    <TabContent tab="appearance" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Gutters</h2>
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="showLineNumberGutter" 
+                                        @change="updateSettings"
+                                    />
+                                    Show line numbers
+                                </label>
+                                
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="showFoldGutter" 
+                                        @change="updateSettings"
+                                    />
+                                    Show fold gutter
+                                </label>
+                            </div>
+                        </div>
+                    </TabContent>
+                    
+                    <TabContent tab="updates" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Auto Update</h2>
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="autoUpdate" 
+                                        @change="updateSettings"
+                                    />
+                                    Periodically check for new updates
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Beta Versions</h2>
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="allowBetaVersions" 
+                                        @change="updateSettings"
+                                    />
+                                    Use beta versions of Heynote
+                                </label>
+                            </div>
+                        </div>
+                    </TabContent>
                 </div>
             </div>
             
@@ -190,34 +243,46 @@
                 box-shadow: 0 0 25px rgba(0, 0, 0, 0.3)
             .dialog-content
                 flex-grow: 1
-                padding: 40px
-                h1
-                    font-size: 20px
-                    font-weight: 600
-                    margin-bottom: 20px
-                
-                .row
-                    display: flex
-                    .entry
-                        margin-bottom: 24px
-                        margin-right: 20px
-                        h2
-                            font-weight: 600
-                            margin-bottom: 10px
-                            font-size: 14px
-                        select
-                            width: 200px
-                            &:focus
-                                outline: none
-                        label
-                            display: block
-                            user-select: none
-                            &.keyboard-shortcut-label
-                                margin-bottom: 14px
-                            > input[type=checkbox]
-                                position: relative
-                                top: 2px
-                                left: -3px
+                display: flex
+                .sidebar
+                    box-sizing: border-box
+                    width: 140px
+                    border-right: 1px solid #eee
+                    padding-top: 20px
+                    +dark-mode
+                        border-right: 1px solid #222
+                    h1
+                        font-size: 16px
+                        font-weight: 700
+                        margin-bottom: 20px
+                        padding: 0 20px
+                        margin-bottom: 20px
+                .settings-content
+                    flex-grow: 1
+                    padding: 40px
+                    overflow-y: auto
+                    .row
+                        display: flex
+                        .entry
+                            margin-bottom: 24px
+                            margin-right: 20px
+                            h2
+                                font-weight: 600
+                                margin-bottom: 10px
+                                font-size: 14px
+                            select
+                                width: 200px
+                                &:focus
+                                    outline: none
+                            label
+                                display: block
+                                user-select: none
+                                &.keyboard-shortcut-label
+                                    margin-bottom: 14px
+                                > input[type=checkbox]
+                                    position: relative
+                                    top: 2px
+                                    left: -3px
             .bottom-bar
                 border-radius: 0 0 5px 5px
                 background: #eee

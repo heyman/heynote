@@ -1,11 +1,15 @@
 const mediaMatch = window.matchMedia('(prefers-color-scheme: dark)')
-let themeModeChangeListener = null
-let autoUpdateCallbacks = null
 let themeCallback = null
+mediaMatch.addEventListener("change", async (event) => {
+    if (themeCallback) {
+        themeCallback((await Heynote.themeMode.get()).computed)
+    }
+})
 
+let autoUpdateCallbacks = null
 let currencyData = null
 
-export default {
+const Heynote = {
     platform: {
         isMac: true,
         isWindows: false,
@@ -41,27 +45,25 @@ export default {
 
     themeMode: {
         set: (mode) => {
+            localStorage.setItem("theme", mode)
             themeCallback(mode)
-            document.body.setAttribute("theme", mode === "dark" ? "dark" : "light")
+            console.log("set theme to", mode)
         },
         get: async () => {
+            const theme = localStorage.getItem("theme") || "system"
+            const systemTheme = mediaMatch.matches ? "dark" : "light"
             return {
-                theme: "light",
-                computed: "light",
+                theme: theme,
+                computed: theme === "system" ? systemTheme : theme,
             }
         },
         onChange: (callback) => {
             themeCallback = callback
-            themeModeChangeListener = (event) => {
-                callback(event.matches ? "dark" : "light")
-            }
-            mediaMatch.addEventListener('change', themeModeChangeListener)
-            return mediaMatch
         },
         removeListener() {
-            mediaMatch.removeEventListener('change', themeModeChangeListener)
+            themeCallback = null
         },
-        initial: "light",
+        initial: localStorage.getItem("theme") || "system",
     },
 
     settings: {
@@ -77,3 +79,5 @@ export default {
         return currencyData
     },
 }
+
+export default Heynote
