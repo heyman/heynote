@@ -130,6 +130,7 @@
             :languageAuto="languageAuto"
             :theme="theme"
             :systemTheme="systemTheme"
+            :autoUpdate="settings.autoUpdate"
             :allowBetaVersions="settings.allowBetaVersions"
             @toggleTheme="toggleTheme"
             @openLanguageSelector="openLanguageSelector"

@@ -28,6 +28,7 @@
                 allowBetaVersions: this.initialSettings.allowBetaVersions,
                 enableGlobalHotkey: this.initialSettings.enableGlobalHotkey,
                 globalHotkey: this.initialSettings.globalHotkey,
+                autoUpdate: this.initialSettings.autoUpdate,
 
                 activeTab: "general",
             }
@@ -57,6 +58,7 @@
                     allowBetaVersions: this.allowBetaVersions,
                     enableGlobalHotkey: this.enableGlobalHotkey,
                     globalHotkey: this.globalHotkey,
+                    autoUpdate: this.autoUpdate,
                 })
             },
         }
@@ -156,6 +158,19 @@
                     </TabContent>
                     
                     <TabContent tab="updates" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Auto Update</h2>
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="autoUpdate" 
+                                        @change="updateSettings"
+                                    />
+                                    Periodically check for new updates
+                                </label>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="entry">
                                 <h2>Beta Versions</h2>
