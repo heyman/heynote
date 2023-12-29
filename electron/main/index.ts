@@ -8,7 +8,7 @@ import { initialContent, initialDevContent } from '../initial-content'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
-import { isDev } from '../detect-platform';
+import { isDev, isMac } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
 import { getBufferFilePath } from './buffer';
@@ -150,8 +150,13 @@ async function createWindow() {
 }
 
 function createTray() {
-    const image = nativeImage.createFromPath(join(process.env.PUBLIC, 'icon.png'));
-    tray = new Tray(image.resize({ width: 16, height: 16 }));
+    let img
+    if (isMac) {
+        img = nativeImage.createFromPath(join(process.env.PUBLIC, "iconTemplate.png"))
+    } else {
+        img = nativeImage.createFromPath(join(process.env.PUBLIC, 'icon.png')).resize({ width: 16, height: 16 });
+    }
+    tray = new Tray(img);
     tray.setToolTip("Heynote");
     tray.setContextMenu(getTrayMenu(win));
 }
