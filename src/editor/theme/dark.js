@@ -143,7 +143,7 @@ const darkTheme = EditorView.theme({
         background: "#213644",
         borderTop: "1px solid #1e222a",
     },
-    ".heynote-math-result": {
+    ".heynote-math-result .inner": {
         background: "#0e1217",
         color: "#a0e7c7",
         boxShadow: '0 0 3px rgba(0,0,0, 0.3)',

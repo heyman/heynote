@@ -97,14 +97,16 @@ export const heynoteBase = EditorView.theme({
         height: '0px',
     },
     '.heynote-math-result': {
+        paddingLeft: "12px",
+        position: "relative",
+    },
+    '.heynote-math-result .inner': {
         background: '#48b57e',
         color: '#fff',
         padding: '0px 4px',
         borderRadius: '2px',
-        marginLeft: '12px',
         boxShadow: '0 0 3px rgba(0,0,0, 0.1)',
         cursor: 'pointer',
-        position: "relative",
         whiteSpace: "nowrap",
     },
     '.heynote-math-result-copied': {
