@@ -185,11 +185,16 @@ function registerGlobalHotkey() {
 }
 
 function registerShowInDock() {
+  // dock is only available on macOS
+  if (process.platform === "darwin") {
     if (CONFIG.get("settings.showInDock")) {
-        app.dock.show()
+      app.dock.show().catch((error) => {
+        console.log("Could not show app in dock: ", error);
+      });
     } else {
-        app.dock.hide()
+      app.dock.hide();
     }
+  }
 }
 
 function registerShowInMenu() {

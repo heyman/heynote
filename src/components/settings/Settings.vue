@@ -137,7 +137,7 @@
                         <div class="row">
                             <div class="entry">
                                 <h2>Show In</h2>
-                                <label>
+                                <label v-if="isMac">
                                     <input 
                                         type="checkbox" 
                                         v-model="showInDock" 
