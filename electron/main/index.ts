@@ -8,7 +8,7 @@ import { initialContent, initialDevContent } from '../initial-content'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
-import { isDev, isMac } from '../detect-platform';
+import { isDev, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
 import { getBufferFilePath } from './buffer';
@@ -34,7 +34,7 @@ process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
 // Set application name for Windows 10+ notifications
-if (process.platform === 'win32') app.setAppUserModelId(app.getName())
+if (isWindows) app.setAppUserModelId(app.getName())
 
 if (!process.env.VITE_DEV_SERVER_URL && !app.requestSingleInstanceLock()) {
     app.quit()
@@ -191,7 +191,7 @@ function registerGlobalHotkey() {
 
 function registerShowInDock() {
   // dock is only available on macOS
-  if (process.platform === "darwin") {
+  if (isMac) {
     if (CONFIG.get("settings.showInDock")) {
       app.dock.show().catch((error) => {
         console.log("Could not show app in dock: ", error);
@@ -219,7 +219,7 @@ app.whenReady().then(createWindow).then(async () => {
 
 app.on('window-all-closed', () => {
     win = null
-    if (process.platform !== 'darwin') app.quit()
+    if (!isMac) app.quit()
 })
 
 app.on('second-instance', () => {
