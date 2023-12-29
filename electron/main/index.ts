@@ -3,7 +3,7 @@ import { release } from 'node:os'
 import { join } from 'node:path'
 import * as jetpack from "fs-jetpack";
 
-import menu from './menu'
+import { menu, getTrayMenu } from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from '../constants';
 import CONFIG from "../config"
@@ -153,7 +153,7 @@ function createTray() {
     const image = nativeImage.createFromPath(join(process.env.PUBLIC, 'icon.png'));
     tray = new Tray(image.resize({ width: 16, height: 16 }));
     tray.setToolTip("Heynote");
-    tray.setContextMenu(menu);
+    tray.setContextMenu(getTrayMenu(win));
 }
 
 function registerGlobalHotkey() {
