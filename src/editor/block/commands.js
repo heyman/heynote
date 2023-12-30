@@ -10,7 +10,7 @@ export { moveLineDown, moveLineUp, selectAll }
 export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
-    
+
     const currentBlock = getActiveNoteBlock(state)
     let delimText;
     if (currentBlock) {
@@ -18,9 +18,9 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     } else {
         delimText = "\n∞∞∞text-a\n"
     }
-    dispatch(state.replaceSelection(delimText), 
+    dispatch(state.replaceSelection(delimText),
         {
-            scrollIntoView: true, 
+            scrollIntoView: true,
             userEvent: "input",
         }
     )
@@ -41,7 +41,7 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
         },
         selection: EditorSelection.cursor(block.content.to + delimText.length)
     }, {
-        scrollIntoView: true, 
+        scrollIntoView: true,
         userEvent: "input",
     }))
     return true;
@@ -119,16 +119,16 @@ function nextBlock(state, range) {
     }
 }
 
-export function gotoNextBlock({state, dispatch}) {
+export function gotoNextBlock({ state, dispatch }) {
     return moveSel(state, dispatch, range => nextBlock(state, range))
 }
-export function selectNextBlock({state, dispatch}) {
+export function selectNextBlock({ state, dispatch }) {
     return extendSel(state, dispatch, range => nextBlock(state, range))
 }
-export function gotoPreviousBlock({state, dispatch}) {
+export function gotoPreviousBlock({ state, dispatch }) {
     return moveSel(state, dispatch, range => previousBlock(state, range))
 }
-export function selectPreviousBlock({state, dispatch}) {
+export function selectPreviousBlock({ state, dispatch }) {
     return extendSel(state, dispatch, range => previousBlock(state, range))
 }
 
@@ -194,19 +194,19 @@ function nextParagraph(state, range) {
     return EditorSelection.cursor(block.content.to)
 }
 
-export function gotoNextParagraph({state, dispatch}) {
+export function gotoNextParagraph({ state, dispatch }) {
     return moveSel(state, dispatch, range => nextParagraph(state, range))
 }
 
-export function selectNextParagraph({state, dispatch}) {
+export function selectNextParagraph({ state, dispatch }) {
     return extendSel(state, dispatch, range => nextParagraph(state, range))
 }
 
-export function gotoPreviousParagraph({state, dispatch}) {
+export function gotoPreviousParagraph({ state, dispatch }) {
     return moveSel(state, dispatch, range => previousParagraph(state, range))
 }
 
-export function selectPreviousParagraph({state, dispatch}) {
+export function selectPreviousParagraph({ state, dispatch }) {
     return extendSel(state, dispatch, range => previousParagraph(state, range))
 }
 
@@ -220,7 +220,7 @@ function newCursor(view, below) {
         let range = ranges[i]
         let newRange = view.moveVertically(range, below)
         let exists = false
-        for (let j=0; j < ranges.length; j++) {
+        for (let j = 0; j < ranges.length; j++) {
             if (newRange.eq(ranges[j])) {
                 exists = true
                 break
@@ -231,7 +231,7 @@ function newCursor(view, below) {
         }
     }
     const newSelection = EditorSelection.create(newRanges, sel.mainIndex)
-    view.dispatch({selection: newSelection})
+    view.dispatch({ selection: newSelection })
 }
 
 export function newCursorBelow(view) {
@@ -246,7 +246,26 @@ export function triggerCurrenciesLoaded(state, dispatch) {
     // Trigger empty change transaction that is annotated with CURRENCIES_LOADED
     // This will make Math blocks re-render so that currency conversions are applied
     dispatch(state.update({
-        changes:{from: 0, to: 0, insert:""},
+        changes: { from: 0, to: 0, insert: "" },
         annotations: [heynoteEvent.of(CURRENCIES_LOADED)],
     }))
+}
+
+export const insertDate = ({ state, dispatch }) => {
+    if (state.readOnly)
+        return false
+
+    const currentBlock = getActiveNoteBlock(state)
+    let dateText;
+    if (currentBlock) {
+        dateText = new Date().toLocaleDateString();
+    }
+    dispatch(state.replaceSelection(dateText),
+        {
+            scrollIntoView: true,
+            userEvent: "input",
+        }
+    )
+
+    return true;
 }
