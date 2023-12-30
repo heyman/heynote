@@ -20,13 +20,23 @@ if (isWindows || isLinux) {
 const keyMaxLength = keyHelp.map(([key, help]) => key.length).reduce((a, b) => Math.max(a, b))
 const keyHelpStr = keyHelp.map(([key, help]) => `${key.padEnd(keyMaxLength)}   ${help}`).join("\n")
 
+// see src/editor/time.js for templates
+const getTime = () => {
+    // Return time in ISO8601 string YYYY-MM-DDTHH:mm:ssZ
+    return (new Date()).toISOString().replace(/\.\d+Z/,'Z')
+}
+
+export const newCreatedUpdatedTime = () => {
+    return `-c${getTime()}-u${getTime()}`
+}
+
 
 export const initialContent = `
-∞∞∞text
+∞∞∞text${newCreatedUpdatedTime()}
 Welcome to Heynote! 👋
 
 ${keyHelpStr}
-∞∞∞math
+∞∞∞math${newCreatedUpdatedTime()}
 This is a Math block. Here, rows are evaluated as math expressions. 
 
 radius = 5
@@ -40,16 +50,16 @@ time = 3900 seconds to minutes
 time * 2
 
 1 EUR in USD
-∞∞∞markdown
+∞∞∞markdown${newCreatedUpdatedTime()}
 In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
 
 - [x] Download Heynote
 - [ ] Try out Heynote
-∞∞∞text-a
+∞∞∞text-a${newCreatedUpdatedTime()}
 `
 
 export const initialDevContent = initialContent + `
-∞∞∞python-a
+∞∞∞python-a${newCreatedUpdatedTime()}
 # hmm
 def my_func():
   print("hejsan")
@@ -60,7 +70,7 @@ import {EditorView, keymap} from "@codemirror/view"
 import {javascript} from "@codemirror/lang-javascript"
 import {indentWithTab, insertTab, indentLess, indentMore} from "@codemirror/commands"
 import {nord} from "./nord.mjs"
-∞∞∞javascript-a
+∞∞∞javascript-a${newCreatedUpdatedTime()}
 let editor = new EditorView({
   //extensions: [basicSetup, javascript()],
   extensions: [
@@ -84,7 +94,7 @@ let editor = new EditorView({
   ],
   parent: document.getElementById("editor"),
 })
-∞∞∞json
+∞∞∞json${newCreatedUpdatedTime()}
 {
     "name": "heynote-codemirror",
     "type": "module",
@@ -112,7 +122,7 @@ let editor = new EditorView({
         "typescript": "^4.9.4"
     }
 }
-∞∞∞html
+∞∞∞html${newCreatedUpdatedTime()}
 <html>
     <head>
         <title>Test</title>
@@ -124,9 +134,9 @@ let editor = new EditorView({
         </script>
     </body>
 </html>
-∞∞∞sql
+∞∞∞sql${newCreatedUpdatedTime()}
 SELECT * FROM table WHERE id = 1;
-∞∞∞text
+∞∞∞text${newCreatedUpdatedTime()}
 Shopping list:
 
 - Milk
