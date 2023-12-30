@@ -22,6 +22,7 @@ import { clojure } from "@codemirror/legacy-modes/mode/clojure"
 import { erlang } from "@codemirror/legacy-modes/mode/erlang"
 import { toml } from "@codemirror/legacy-modes/mode/toml"
 import { swift } from "@codemirror/legacy-modes/mode/swift"
+import { kotlin } from "@codemirror/legacy-modes/mode/clike"
 
 import typescriptPlugin from "prettier/plugins/typescript.mjs"
 import babelPrettierPlugin from "prettier/plugins/babel.mjs"
@@ -224,6 +225,12 @@ export const LANGUAGES = [
         name: "Swift",
         parser: StreamLanguage.define(swift).parser,
         guesslang: "swift",
+    }),
+    new Language({
+        token: "kotlin",
+        name: "Kotlin",
+        parser: StreamLanguage.define(kotlin).parser,
+        guesslang: "kt",
     }),
 ]
 
