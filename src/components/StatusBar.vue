@@ -70,8 +70,8 @@
                 Sel <span class="num">{{ selectionSize }}</span>
             </template>
         </div>
-        <div class="status-block line-number" v-if="updatedTime !== ''">
-            Updated <span class="num">{{ updatedTime }}</span>
+        <div class="status-block updated-time" v-if="updatedTime !== ''">
+            Updated <span class="time">{{ updatedTime }}</span>
             <!-- Show the created time as well -- too verbose -->
             <!-- <span v-if="createdTime !== updatedTime">&nbsp;&nbsp;(Created {{ createdTime }})</span> -->
         </div>
@@ -146,6 +146,14 @@
             +dark-mode
                 color: rgba(255, 255, 255, 0.55)
                 .num
+                    color: rgba(255, 255, 255, 0.75)
+        .updated-time
+            color: rgba(255, 255, 255, 0.7)
+            .time
+                color: rgba(255, 255, 255, 1.0)
+            +dark-mode
+                color: rgba(255, 255, 255, 0.55)
+                .time
                     color: rgba(255, 255, 255, 0.75)
         .lang .auto
             color: rgba(255, 255, 255, 0.7)
