@@ -21,6 +21,7 @@ import { go } from "@codemirror/legacy-modes/mode/go"
 import { clojure } from "@codemirror/legacy-modes/mode/clojure"
 import { erlang } from "@codemirror/legacy-modes/mode/erlang"
 import { toml } from "@codemirror/legacy-modes/mode/toml"
+import { swift } from "@codemirror/legacy-modes/mode/swift"
 
 import typescriptPlugin from "prettier/plugins/typescript.mjs"
 import babelPrettierPlugin from "prettier/plugins/babel.mjs"
@@ -217,6 +218,12 @@ export const LANGUAGES = [
         parser: tsxLanguage.parser,
         guesslang: null,
         prettier: {parser:"typescript", plugins: [typescriptPlugin, prettierPluginEstree]},
+    }),
+    new Language({
+        token: "swift",
+        name: "Swift",
+        parser: StreamLanguage.define(swift).parser,
+        guesslang: "swift",
     }),
 ]
 

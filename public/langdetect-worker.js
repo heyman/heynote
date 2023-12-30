@@ -22,6 +22,7 @@ GUESSLANG_LANGUAGES = [
     "clj",
     "erl",
     "toml",
+    "swift",
 ]
 
 const guessLang = new self.GuessLang()
