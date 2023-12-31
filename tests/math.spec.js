@@ -24,3 +24,13 @@ format(1/3, 3)
 `)
         await expect(page.locator("css=.heynote-math-result")).toHaveText("0.333")
 })
+
+test("custom format function", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞math
+_format = format
+format(x) = _format(x, {notation:"exponential"})
+42
+`)
+    await expect(page.locator("css=.heynote-math-result").last()).toHaveText("4.2e+1")
+})
