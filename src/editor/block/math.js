@@ -67,10 +67,19 @@ function mathDeco(view) {
 
                 // if we got a result from math.js, add the result decoration
                 if (result !== undefined) {
+                    let format = parser.get("format")
+
                     let resultWidget
                     if (typeof(result) === "string") {
                         resultWidget = new MathResult(result, result)
-                    } else {
+                    } else if (format !== undefined && typeof(format) === "function") {
+                        try {
+                            resultWidget = new MathResult(format(result), format(result))
+                        } catch (e) {
+                            // suppress any errors
+                        }
+                    }
+                    if (resultWidget === undefined) {
                         resultWidget = new MathResult(
                             math.format(result, {
                                 precision: 8,
