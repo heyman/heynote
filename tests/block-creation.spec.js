@@ -16,11 +16,12 @@ Block A
 Block B
 ∞∞∞text
 Block C`)
+    await page.waitForTimeout(100);
     // check that blocks are created
     expect((await heynotePage.getBlocks()).length).toBe(3)
 
     // check that visual block layers are created
-    expect(await page.locator("css=.heynote-blocks-layer > div").count()).toBe(3)
+    expect(await page.locator("css=.heynote-blocks-layer > div")).toHaveCount(3)
 
     // select the second block
     await page.locator("body").press("ArrowUp")
@@ -56,5 +57,8 @@ const runTest = async (page, key, expectedBlocks) => {
         const index = expectedBlocks.indexOf(expectedBlock);
         expect(await heynotePage.getBlockContent(index)).toBe(`Block ${expectedBlock}`)
     }
+
+    // check that only one block delimiter widget has the class first
+    expect(await page.locator("css=.heynote-block-start.first")).toHaveCount(1)
 }
 

@@ -94,8 +94,7 @@ class NoteBlockStart extends WidgetType {
         this.isFirst = isFirst
     }
     eq(other) {
-        //return other.checked == this.checked
-        return true
+        return this.isFirst === other.isFirst
     }
     toDOM() {
         let wrap = document.createElement("div")
