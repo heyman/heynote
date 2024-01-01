@@ -1,6 +1,6 @@
 import { EditorSelection } from "@codemirror/state"
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK } from "../annotation.js";
-import {blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos} from "./block"
+import { blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos } from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
 
@@ -32,6 +32,7 @@ export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
     console.log("addNewBlockBeforeCurrent")
     if (state.readOnly)
         return false
+
     const block = getActiveNoteBlock(state)
     const delimText = "\n∞∞∞text-a\n"
 
@@ -52,6 +53,7 @@ export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
 export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
+
     const block = getActiveNoteBlock(state)
     const delimText = "\n∞∞∞text-a\n"
 
@@ -71,6 +73,7 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
 export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
+
     const block = getFirstNoteBlock(state)
     const delimText = "\n∞∞∞text-a\n"
 
@@ -110,7 +113,7 @@ export const addNewBlockAfterLast = ({ state, dispatch }) => {
 export function changeLanguageTo(state, dispatch, block, language, auto) {
     if (state.readOnly)
         return false
-    const delimRegex = /^\n∞∞∞[a-z]{0,16}(-a)?\n/g
+    const delimRegex = /^\n∞∞∞[a-z]+?(-a)?\n/g
     if (state.doc.sliceString(block.delimiter.from, block.delimiter.to).match(delimRegex)) {
         //console.log("changing language to", language)
         dispatch(state.update({
