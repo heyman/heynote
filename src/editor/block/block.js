@@ -256,7 +256,7 @@ const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
  * Transaction filter to prevent the selection from being before the first block
   */
 const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) => {
-    if (!firstBlockDelimiterSize) {
+    if (!firstBlockDelimiterSize || tr.annotations.some(a => a.type === heynoteEvent)) {
         return tr
     }
     tr?.selection?.ranges.forEach(range => {

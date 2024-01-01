@@ -21,7 +21,7 @@ Block C`)
     expect((await heynotePage.getBlocks()).length).toBe(3)
 
     // check that visual block layers are created
-    expect(await page.locator("css=.heynote-blocks-layer > div")).toHaveCount(3)
+    await expect(page.locator("css=.heynote-blocks-layer > div")).toHaveCount(3)
 
     // select the second block
     await page.locator("body").press("ArrowUp")
@@ -43,6 +43,30 @@ test("create block after last", async ({ page }) => {
     await runTest(page, heynotePage.isMac ? "Meta+Shift+Enter" : "Control+Shift+Enter",['A', 'B', 'C', 'D'])
 })
 
+test("create block before Markdown block", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞markdown
+# Markdown!
+`)
+    await page.locator("body").press("Alt+Enter")
+    await page.waitForTimeout(100);
+    expect(await heynotePage.getCursorPosition()).toBe(11)
+})
+
+test("create block before first Markdown block", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞markdown
+# Markdown!
+∞∞∞text
+`)
+    for (let i=0; i<5; i++) {
+        await page.locator("body").press("ArrowDown")
+    }
+    await page.locator("body").press("Alt+Shift+Enter")
+    await page.waitForTimeout(100);
+    expect(await heynotePage.getCursorPosition()).toBe(11)
+})
+
 const runTest = async (page, key, expectedBlocks) => {
     // create a new block
     await page.locator("body").press(key)
@@ -59,6 +83,6 @@ const runTest = async (page, key, expectedBlocks) => {
     }
 
     // check that only one block delimiter widget has the class first
-    expect(await page.locator("css=.heynote-block-start.first")).toHaveCount(1)
+    await expect(await page.locator("css=.heynote-block-start.first")).toHaveCount(1)
 }
 

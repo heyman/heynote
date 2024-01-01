@@ -134,6 +134,10 @@ export class HeynoteEditor {
         return this.view.state.facet(blockState)
     }
 
+    getCursorPosition() {
+        return this.view.state.selection.main.head
+    }
+
     focus() {
         this.view.focus()
     }

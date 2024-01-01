@@ -1,5 +1,5 @@
 import { EditorSelection } from "@codemirror/state"
-import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED } from "../annotation.js";
+import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK } from "../annotation.js";
 import {blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos} from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
@@ -40,7 +40,8 @@ export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
             from: block.delimiter.from,
             insert: delimText,
         },
-        selection: EditorSelection.cursor(block.delimiter.from + delimText.length)
+        selection: EditorSelection.cursor(block.delimiter.from + delimText.length),
+        annotations: [heynoteEvent.of(ADD_NEW_BLOCK)],
     }, {
         scrollIntoView: true,
         userEvent: "input",
@@ -78,7 +79,8 @@ export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
             from: block.delimiter.from,
             insert: delimText,
         },
-        selection: EditorSelection.cursor(delimText.length) // TODO: fix jump. See first char of file when saving
+        selection: EditorSelection.cursor(delimText.length),
+        annotations: [heynoteEvent.of(ADD_NEW_BLOCK)],
     }, {
         scrollIntoView: true,
         userEvent: "input",
