@@ -3,7 +3,7 @@ import {HeynotePage} from "./test-utils.js";
 
 let heynotePage
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({page}) => {
     console.log("beforeEach")
     heynotePage = new HeynotePage(page)
     await heynotePage.goto()
@@ -22,28 +22,57 @@ Block C`)
 
     // check that visual block layers are created
     await expect(page.locator("css=.heynote-blocks-layer > div")).toHaveCount(3)
-
-    // select the second block
-    await page.locator("body").press("ArrowUp")
 });
 
-test("create block before current", async ({ page }) => {
+/* from A */
+test("create block before current (A)", async ({page}) => {
+    // select the first block
+    await page.locator("body").press("ArrowUp")
+    await page.locator("body").press("ArrowUp")
+    await runTest(page, "Alt+Enter", ['D', 'A', 'B', 'C'])
+})
+
+test("create block after current (A)", async ({page}) => {
+    // select the first block
+    await page.locator("body").press("ArrowUp")
+    await page.locator("body").press("ArrowUp")
+    await runTest(page, "Mod+Enter", ['A', 'D', 'B', 'C'])
+})
+
+/* from B */
+test("create block before current (B)", async ({page}) => {
+    // select the second block
+    await page.locator("body").press("ArrowUp")
     await runTest(page, "Alt+Enter", ['A', 'D', 'B', 'C'])
 })
 
-test("create block after current", async ({ page }) => {
-    await runTest(page, heynotePage.isMac ? "Meta+Enter" : "Control+Enter",['A', 'B', 'D', 'C'])
+test("create block after current (B)", async ({page}) => {
+    // select the second block
+    await page.locator("body").press("ArrowUp")
+    await runTest(page, "Mod+Enter", ['A', 'B', 'D', 'C'])
 })
 
-test("create block before first", async ({ page }) => {
-    await runTest(page, "Alt+Shift+Enter",['D', 'A', 'B', 'C'])
+/* from C */
+test("create block before current (C)", async ({page}) => {
+    await runTest(page, "Alt+Enter", ['A', 'B', 'D', 'C'])
 })
 
-test("create block after last", async ({ page }) => {
-    await runTest(page, heynotePage.isMac ? "Meta+Shift+Enter" : "Control+Shift+Enter",['A', 'B', 'C', 'D'])
+test("create block after current (C)", async ({page}) => {
+    await runTest(page, "Mod+Enter", ['A', 'B', 'C', 'D'])
 })
 
-test("create block before Markdown block", async ({ page }) => {
+test("create block before first", async ({page}) => {
+    await runTest(page, "Alt+Shift+Enter", ['D', 'A', 'B', 'C'])
+})
+
+test("create block after last", async ({page}) => {
+    for (let i = 0; i < 3; i++) {
+        await page.locator("body").press("ArrowUp")
+    }
+    await runTest(page, "Mod+Shift+Enter", ['A', 'B', 'C', 'D'])
+})
+
+test("create block before Markdown block", async ({page}) => {
     await heynotePage.setContent(`
 ∞∞∞markdown
 # Markdown!
@@ -53,13 +82,13 @@ test("create block before Markdown block", async ({ page }) => {
     expect(await heynotePage.getCursorPosition()).toBe(11)
 })
 
-test("create block before first Markdown block", async ({ page }) => {
+test("create block before first Markdown block", async ({page}) => {
     await heynotePage.setContent(`
 ∞∞∞markdown
 # Markdown!
 ∞∞∞text
 `)
-    for (let i=0; i<5; i++) {
+    for (let i = 0; i < 5; i++) {
         await page.locator("body").press("ArrowDown")
     }
     await page.locator("body").press("Alt+Shift+Enter")
@@ -69,7 +98,7 @@ test("create block before first Markdown block", async ({ page }) => {
 
 const runTest = async (page, key, expectedBlocks) => {
     // create a new block
-    await page.locator("body").press(key)
+    await page.locator("body").press(key.replace("Mod", page.isMac ? "Meta" : "Control"))
     await page.waitForTimeout(100);
     await page.locator("body").pressSequentially("Block D")
 
