@@ -1,14 +1,14 @@
-import { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme, globalShortcut } from 'electron'
+import { app, BrowserWindow, Tray, shell, ipcMain, Menu, nativeTheme, globalShortcut, nativeImage } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
 import * as jetpack from "fs-jetpack";
 
-import menu from './menu'
+import { menu, getTrayMenu } from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
-import { isDev } from '../detect-platform';
+import { isDev, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
 import { getBufferFilePath, Buffer } from './buffer';
@@ -34,7 +34,7 @@ process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
 // Set application name for Windows 10+ notifications
-if (process.platform === 'win32') app.setAppUserModelId(app.getName())
+if (isWindows) app.setAppUserModelId(app.getName())
 
 if (!process.env.VITE_DEV_SERVER_URL && !app.requestSingleInstanceLock()) {
     app.quit()
@@ -51,6 +51,7 @@ Menu.setApplicationMenu(menu)
 // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 export let win: BrowserWindow | null = null
+let tray: Tray | null = null;
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
@@ -148,6 +149,23 @@ async function createWindow() {
     fixElectronCors(win)
 }
 
+function createTray() {
+    let img
+    if (isMac) {
+        img = nativeImage.createFromPath(join(process.env.PUBLIC, "iconTemplate.png"))
+    } else {
+        img = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon.ico'));
+    }
+    tray = new Tray(img);
+    tray.setToolTip("Heynote");
+    tray.setContextMenu(getTrayMenu(win));
+    tray.addListener("click", () => {
+        if (!isMac) {
+            win?.show()
+        }
+    })
+}
+
 function registerGlobalHotkey() {
     globalShortcut.unregisterAll()
     if (CONFIG.get("settings.enableGlobalHotkey")) {
@@ -176,14 +194,37 @@ function registerGlobalHotkey() {
     }
 }
 
+function registerShowInDock() {
+    // dock is only available on macOS
+    if (isMac) {
+        if (CONFIG.get("settings.showInDock")) {
+            app.dock.show().catch((error) => {
+                console.log("Could not show app in dock: ", error);
+            });
+        } else {
+            app.dock.hide();
+        }
+    }
+}
+
+function registerShowInMenu() {
+    if (CONFIG.get("settings.showInMenu")) {
+        createTray()
+    } else {
+        tray?.destroy()
+    }
+}
+
 app.whenReady().then(createWindow).then(async () => {
     initializeAutoUpdate(win)
     registerGlobalHotkey()
+    registerShowInDock()
+    registerShowInMenu()
 })
 
 app.on('window-all-closed', () => {
     win = null
-    if (process.platform !== 'darwin') app.quit()
+    if (!isMac) app.quit()
 })
 
 app.on('second-instance', () => {
@@ -245,12 +286,19 @@ ipcMain.handle('settings:set', (event, settings) =>  {
         currentKeymap = settings.keymap
     }
     let globalHotkeyChanged = settings.enableGlobalHotkey !== CONFIG.get("settings.enableGlobalHotkey") || settings.globalHotkey !== CONFIG.get("settings.globalHotkey")
-    
+    let showInDockChanged = settings.showInDock !== CONFIG.get("settings.showInDock");
+    let showInMenuChanged = settings.showInMenu !== CONFIG.get("settings.showInMenu");
     CONFIG.set("settings", settings)
 
     win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
     
     if (globalHotkeyChanged) {
         registerGlobalHotkey()
+    }
+    if (showInDockChanged) {
+        registerShowInDock()
+    }
+    if (showInMenuChanged) {
+        registerShowInMenu()
     }
 })
