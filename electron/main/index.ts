@@ -195,16 +195,16 @@ function registerGlobalHotkey() {
 }
 
 function registerShowInDock() {
-  // dock is only available on macOS
-  if (isMac) {
-    if (CONFIG.get("settings.showInDock")) {
-      app.dock.show().catch((error) => {
-        console.log("Could not show app in dock: ", error);
-      });
-    } else {
-      app.dock.hide();
+    // dock is only available on macOS
+    if (isMac) {
+        if (CONFIG.get("settings.showInDock")) {
+            app.dock.show().catch((error) => {
+                console.log("Could not show app in dock: ", error);
+            });
+        } else {
+            app.dock.hide();
+        }
     }
-  }
 }
 
 function registerShowInMenu() {
