@@ -21,6 +21,8 @@
             },
         },
 
+        components: {},
+
         data() {
             return {
                 syntaxTreeDebugContent: null,
@@ -44,11 +46,16 @@
 
             // load buffer content and create editor
             window.heynote.buffer.load().then((content) => {
+                let diskContent = content
                 this.editor = new HeynoteEditor({
                     element: this.$refs.editor,
                     content: content,
                     theme: this.theme,
                     saveFunction: (content) => {
+                        if (content === diskContent) {
+                            return
+                        }
+                        diskContent = content
                         window.heynote.buffer.save(content)
                     },
                     keymap: this.keymap,
@@ -57,6 +64,12 @@
                 })
                 window._heynote_editor = this.editor
                 window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
+
+                // set up buffer change listener
+                window.heynote.buffer.onChangeCallback((event, {filename, content, eventType}) => {
+                    diskContent = content
+                    this.editor.setContent(content)
+                })
             })
             // set up window close handler that will save the buffer and quit
             window.heynote.onWindowClose(() => {
@@ -142,7 +155,7 @@
     </div>
 </template>
 
-<style lang="sass">
+<style lang="sass" scoped>
     .debug-syntax-tree
         position: absolute
         top: 0
