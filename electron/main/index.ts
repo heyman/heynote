@@ -154,7 +154,7 @@ function createTray() {
     if (isMac) {
         img = nativeImage.createFromPath(join(process.env.PUBLIC, "iconTemplate.png"))
     } else {
-        img = nativeImage.createFromPath(join(process.env.PUBLIC, 'icon.png')).resize({ width: 16, height: 16 });
+        img = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon.ico'));
     }
     tray = new Tray(img);
     tray.setToolTip("Heynote");
