@@ -8,10 +8,34 @@ import license from 'rollup-plugin-license'
 import pkg from './package.json'
 import path from 'path'
 
+import { keyHelpStr } from "./shared-utils/key-helper";
+
 rmSync('dist-electron', { recursive: true, force: true })
 
 const isDevelopment = process.env.NODE_ENV === "development" || !!process.env.VSCODE_DEBUG
 const isProduction = process.env.NODE_ENV === "production"
+
+const updateReadmeKeybinds = async () => {
+	const fs = require('fs')
+	const path = require('path')
+	const readmePath = path.resolve(__dirname, 'README.md')
+	let readme = fs.readFileSync(readmePath, 'utf-8')
+	const keybindsRegex = /^(### What are the default keyboard shortcuts\?\s*).*?^(```\s+#)/gms
+	const shortcuts = `$1**On Mac**
+
+\`\`\`
+${keyHelpStr('darwin')}
+\`\`\`
+
+**On Windows and Linux**
+
+\`\`\`
+${keyHelpStr('win32')}
+$2`
+
+	readme = readme.replace(keybindsRegex, shortcuts)
+	fs.writeFileSync(readmePath, readme)
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,6 +47,7 @@ export default defineConfig({
 
 	plugins: [
 		vue(),
+		updateReadmeKeybinds(),
 		electron([
 			{
 				// Main-Process entry file of the Electron App.
