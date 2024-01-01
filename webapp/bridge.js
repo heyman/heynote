@@ -47,6 +47,10 @@ const Heynote = {
         async saveAndQuit(content) {
             
         },
+
+        onChangeCallback(callback) {
+            
+        },
     },
 
     onWindowClose(callback) {

@@ -48,6 +48,7 @@ export class HeynoteEditor {
         this.lineNumberCompartmentPre = new Compartment
         this.lineNumberCompartment = new Compartment
         this.foldGutterCompartment = new Compartment
+        this.readOnlyCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
 
         const state = EditorState.create({
@@ -60,6 +61,8 @@ export class HeynoteEditor {
                 this.lineNumberCompartment.of(showLineNumberGutter ? [lineNumbers(), blockLineNumbers] : []),
                 customSetup, 
                 this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
+
+                this.readOnlyCompartment.of([]),
                 
                 this.themeCompartment.of(theme === "dark" ? heynoteDark : heynoteLight),
                 heynoteBase,
@@ -133,6 +136,12 @@ export class HeynoteEditor {
 
     focus() {
         this.view.focus()
+    }
+
+    setReadOnly(readOnly) {
+        this.view.dispatch({
+            effects: this.readOnlyCompartment.reconfigure(readOnly ? [EditorState.readOnly.of(true)] : []),
+        })
     }
 
     setTheme(theme) {

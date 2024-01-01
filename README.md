@@ -16,7 +16,7 @@ Available for Mac, Windows, and Linux.
 -   Block-based
 -   Syntax highlighting:
 
-    C++, C#, Clojure, CSS, Erlang, Go, HTML, Java, JavaScript, JSX, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, XML, YAML
+    C++, C#, Clojure, CSS, Erlang, Go, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, Swift, XML, YAML
     
 -   Language auto-detection
 -   Auto-formatting
