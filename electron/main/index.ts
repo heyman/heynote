@@ -159,9 +159,11 @@ function createTray() {
     tray = new Tray(img);
     tray.setToolTip("Heynote");
     tray.setContextMenu(getTrayMenu(win));
-    tray.addListener("double-click", () => {
-        win?.show();
-    });
+    tray.addListener("click", () => {
+        if (!isMac) {
+            win?.show()
+        }
+    })
 }
 
 function registerGlobalHotkey() {
