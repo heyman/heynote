@@ -98,13 +98,15 @@ I can totally see the usefulness of such a feature, and it's definitely somethin
 
 ```
 ⌘ + Enter           Add new block below the current block
-⌘ + Shift + Enter   Split the current block at cursor position
-⌥ + Enter           Add new block after the last block
+⌘ + Shift + Enter   Add new block at the start of the buffer
+⌥ + Enter           Add new block below the current block
+⌥ + Shift + Enter   Add new block at the top of the buffer
+⌘ + ⌥ + Enter       Split the current block at cursor position
 ⌘ + L               Change block language
 ⌘ + Down            Goto next block
 ⌘ + Up              Goto previous block
 ⌘ + A               Select all text in a note block. Press again to select the whole buffer
-⌘ + ⌥ + Up/Down    Add additional cursor above/below
+⌘ + ⌥ + Up/Down     Add additional cursor above/below
 ⌥ + Shift + F       Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
 ```
 
@@ -112,8 +114,10 @@ I can totally see the usefulness of such a feature, and it's definitely somethin
 
 ```
 Ctrl + Enter           Add new block below the current block
-Ctrl + Shift + Enter   Split the current block at cursor position
-Alt + Enter            Add new block after the last block
+Ctrl + Shift + Enter   Add new block at the start of the buffer
+Alt + Enter            Add new block below the current block
+Alt + Shift + Enter    Add new block at the top of the buffer
+Ctrl + Alt + Enter     Split the current block at cursor position
 Ctrl + L               Change block language
 Ctrl + Down            Goto next block
 Ctrl + Up              Goto previous block
