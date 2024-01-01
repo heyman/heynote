@@ -5,7 +5,7 @@ import * as jetpack from "fs-jetpack";
 
 import { menu, getTrayMenu } from './menu'
 import { initialContent, initialDevContent } from '../initial-content'
-import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from '../constants';
+import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
 import { isDev, isMac, isWindows } from '../detect-platform';
