@@ -14,31 +14,10 @@ Available for Mac, Windows, and Linux.
 
 -   Persistent text buffer
 -   Block-based
--   Syntax highlighting
-    -   C++
-    -   C#
-    -   Clojure
-    -   CSS
-    -   Erlang
-    -   Go
-    -   HTML
-    -   Java
-    -   JavaScript
-    -   JSX
-    -   TypeScript
-    -   TOML
-    -   TSX
-    -   JSON
-    -   Lezer
-    -   Markdown
-    -   PHP
-    -   Python
-    -   Ruby
-    -   Rust
-    -   Shell
-    -   SQL
-    -   XML
-    -   YAML
+-   Syntax highlighting:
+
+    C++, C#, Clojure, CSS, Erlang, Go, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, Swift, XML, YAML
+    
 -   Language auto-detection
 -   Auto-formatting
 -   Math/Calculator mode
@@ -71,6 +50,21 @@ To develop Heynote you need Node.js and you should (hopefully) just need to chec
 > npm install
 > npm run dev
 ```
+
+### Run Tests
+
+To run the tests:
+
+```
+> npm run test
+```
+
+To run the tests in the Playwright UI:
+
+```
+> npm run test:ui
+```
+
 
 ### Contributions
 

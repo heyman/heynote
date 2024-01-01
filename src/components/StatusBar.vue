@@ -13,7 +13,8 @@
             "language", 
             "languageAuto",
             "theme",
-            "systemTheme",
+            "themeSetting",
+            "autoUpdate",
             "allowBetaVersions",
         ],
 
@@ -84,9 +85,13 @@
         >
             <span class="icon icon-format"></span>
         </div>
-        <UpdateStatusItem v-if="updatesEnabled" :allowBetaVersions="allowBetaVersions" />
+        <UpdateStatusItem 
+            v-if="updatesEnabled" 
+            :autoUpdate="autoUpdate"
+            :allowBetaVersions="allowBetaVersions"
+        />
         <div class="status-block theme clickable" @click="$emit('toggleTheme')" title="Toggle dark/light mode">
-            <span :class="'icon ' + systemTheme"></span>
+            <span :class="'icon ' + themeSetting"></span>
         </div>
     </div>
 </template>
