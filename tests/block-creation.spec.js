@@ -98,7 +98,7 @@ test("create block before first Markdown block", async ({page}) => {
 
 const runTest = async (page, key, expectedBlocks) => {
     // create a new block
-    await page.locator("body").press(key.replace("Mod", page.isMac ? "Meta" : "Control"))
+    await page.locator("body").press(key.replace("Mod", heynotePage.isMac ? "Meta" : "Control"))
     await page.waitForTimeout(100);
     await page.locator("body").pressSequentially("Block D")
 
