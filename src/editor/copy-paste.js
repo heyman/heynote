@@ -2,11 +2,12 @@ import { EditorState, EditorSelection } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"
 
 import { LANGUAGES } from './languages.js';
+import { timeMatcher } from './time.js';
 import { setEmacsMarkMode } from "./emacs.js"
 
 
 const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
-const blockSeparatorRegex = new RegExp(`\\n∞∞∞(${languageTokensMatcher})(-a)?\\n`, "g")
+const blockSeparatorRegex = new RegExp(`\\n∞∞∞(${languageTokensMatcher})(-a)?(-c${timeMatcher})?(-u${timeMatcher})?\\n`, "g")
 
 
 function copiedRange(state) {

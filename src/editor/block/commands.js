@@ -1,11 +1,14 @@
 import { EditorSelection } from "@codemirror/state"
+import { LANGUAGES } from '../languages.js';
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED } from "../annotation.js";
-import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
+import { blockState, getActiveNoteBlock, getNoteBlockFromPos} from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
+import { newCreatedUpdatedTime, newUpdatedTime, timeMatcher } from "../time.js";
+
+const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
 
 export { moveLineDown, moveLineUp, selectAll }
-
 
 export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     if (state.readOnly)
@@ -14,9 +17,9 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     const currentBlock = getActiveNoteBlock(state)
     let delimText;
     if (currentBlock) {
-        delimText = `\n∞∞∞${currentBlock.language.name}${currentBlock.language.auto ? "-a" : ""}\n`
+        delimText = `\n∞∞∞${currentBlock.language.name}${currentBlock.language.auto ? "-a" : ""}${newCreatedUpdatedTime()}\n`
     } else {
-        delimText = "\n∞∞∞text-a\n"
+        delimText = `\n∞∞∞text-a${newCreatedUpdatedTime()}\n`
     }
     dispatch(state.replaceSelection(delimText), 
         {
@@ -32,7 +35,7 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
     const block = getActiveNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = `\n∞∞∞text-a${newCreatedUpdatedTime()}\n`
 
     dispatch(state.update({
         changes: {
@@ -50,14 +53,16 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
 export function changeLanguageTo(state, dispatch, block, language, auto) {
     if (state.readOnly)
         return false
-    const delimRegex = /^\n∞∞∞[a-z]{0,16}(-a)?\n/g
+    const delimRegex = new RegExp(`\\n∞∞∞(${languageTokensMatcher})(-a)?(-c${timeMatcher})?(-u${timeMatcher})?\\n`, "g")
     if (state.doc.sliceString(block.delimiter.from, block.delimiter.to).match(delimRegex)) {
-        //console.log("changing language to", language)
+        const createdTimeStr = block.time.created || ""
+        const updatedTimeStr = block.time.updated ? newUpdatedTime() : ""
+        // console.log("changing language to", language)
         dispatch(state.update({
             changes: {
                 from: block.delimiter.from,
                 to: block.delimiter.to,
-                insert: `\n∞∞∞${language}${auto ? '-a' : ''}\n`,
+                insert: `\n∞∞∞${language}${auto ? '-a' : ''}${createdTimeStr}${updatedTimeStr}\n`,
             },
             annotations: [heynoteEvent.of(LANGUAGE_CHANGE)],
         }))

@@ -8,7 +8,10 @@ import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { SelectionChangeEvent } from "../event.js"
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
+import { newUpdatedTime, displayTime, timeMatcher } from "../time.js";
+import { LANGUAGES } from '../languages.js';
 
+const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
 
 // tracks the size of the first delimiter
 let firstBlockDelimiterSize
@@ -25,11 +28,18 @@ function getBlocks(state, timeout=50) {
                     const langNode = type.node.getChild("NoteLanguage")
                     const language = state.doc.sliceString(langNode.from, langNode.to)
                     const isAuto = !!type.node.getChild("Auto")
+                    const createdAtNode = type.node.getChild("NoteCreated")
+                    const updatedAtNode = type.node.getChild("NoteUpdated")
                     const contentNode = type.node.nextSibling
+
                     blocks.push({
                         language: {
                             name: language,
                             auto: isAuto,
+                        },
+                        time: {
+                            created: createdAtNode ? state.doc.sliceString(createdAtNode.from, createdAtNode.to) : null,
+                            updated: updatedAtNode ? state.doc.sliceString(updatedAtNode.from, updatedAtNode.to) : null,
                         },
                         content: {
                             from: contentNode.from,
@@ -326,12 +336,43 @@ const emitCursorChange = (editor) => ViewPlugin.fromClass(
                         selectionSize,
                         language: block.language.name,
                         languageAuto: block.language.auto,
+                        createdTime: displayTime(block.time.created),
+                        updatedTime: displayTime(block.time.updated),
                     }))
                 }
             }
         }
     }
 )
+
+const updateTimeOnChange = EditorState.transactionFilter.of((tr) => {
+    if (!tr.docChanged) return tr
+
+    const state = tr.startState
+    const block = getActiveNoteBlock(state)
+
+    // Block updates to time when deleting the last content in a block
+    if ((block.content.from === block.content.to) && !tr.changes.inserted.length) return tr
+
+    // this adds a slight debounce so the delimiter is only updated every second
+    const updatedTime = newUpdatedTime()
+    if (block.time.updated === updatedTime) return tr
+
+    const language = block.language.name
+    const auto = block.language.auto
+    const createdTimeStr = block.time.created || ""
+    const updatedTimeStr = block.time.updated ? updatedTime : ""
+
+    // return original transaction, with additional transaction to update time in delimiter
+    return [tr, {
+        changes: {
+            from: block.delimiter.from,
+            to: block.delimiter.to,
+            insert: `\n∞∞∞${language}${auto ? '-a' : ''}${createdTimeStr}${updatedTimeStr}\n`,
+        },
+        filter: false
+    }]
+})
 
 export const noteBlockExtension = (editor) => {
     return [
@@ -344,5 +385,8 @@ export const noteBlockExtension = (editor) => {
         emitCursorChange(editor),
         mathBlock,
         emptyBlockSelected,
+        updateTimeOnChange,
     ]
 }
+
+
