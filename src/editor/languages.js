@@ -237,6 +237,15 @@ export const LANGUAGES = [
 
 const languageMapping = Object.fromEntries(LANGUAGES.map(l => [l.token, l]))
 
+export const sortedLanguages = LANGUAGES.map(l => {
+    return {
+        "token": l.token,
+        "name": l.name
+    }
+}).sort((a, b) => {
+    return a.name.localeCompare(b.name)
+})
+
 export function getLanguage(token) {
     return languageMapping[token]
 }
