@@ -23,6 +23,7 @@ import { erlang } from "@codemirror/legacy-modes/mode/erlang"
 import { toml } from "@codemirror/legacy-modes/mode/toml"
 import { swift } from "@codemirror/legacy-modes/mode/swift"
 import { kotlin } from "@codemirror/legacy-modes/mode/clike"
+import { groovy } from "@codemirror/legacy-modes/mode/groovy"
 
 import typescriptPlugin from "prettier/plugins/typescript.mjs"
 import babelPrettierPlugin from "prettier/plugins/babel.mjs"
@@ -231,6 +232,12 @@ export const LANGUAGES = [
         name: "Kotlin",
         parser: StreamLanguage.define(kotlin).parser,
         guesslang: "kt",
+    }),
+    new Language({
+        token: "groovy",
+        name: "Groovy",
+        parser: StreamLanguage.define(groovy).parser,
+        guesslang: "groovy",
     }),
 ]
 
