@@ -6,6 +6,12 @@ import { selectAll } from "./select-all.js";
 
 export { moveLineDown, moveLineUp, selectAll }
 
+let newBlockLanguage = window.heynote.settings.defaultLanguage || "text"
+
+export const setNewBlockLanguage = (language) => {
+    newBlockLanguage = language
+}
+
 
 export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     if (state.readOnly)
@@ -16,7 +22,7 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     if (currentBlock) {
         delimText = `\n∞∞∞${currentBlock.language.name}${currentBlock.language.auto ? "-a" : ""}\n`
     } else {
-        delimText = "\n∞∞∞text-a\n"
+        delimText = `\n∞∞∞${newBlockLanguage}-a\n`
     }
     dispatch(state.replaceSelection(delimText), 
         {
@@ -32,7 +38,7 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     if (state.readOnly)
         return false
     const block = getActiveNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = `\n∞∞∞${newBlockLanguage}-a\n`
 
     dispatch(state.update({
         changes: {

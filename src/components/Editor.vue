@@ -19,6 +19,10 @@
                 type: Boolean,
                 default: true,
             },
+            defaultLanguage: {
+                type: String,
+                default: "text",
+            },
         },
 
         components: {},
@@ -61,6 +65,7 @@
                     keymap: this.keymap,
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
+                    defaultLanguage: this.defaultLanguage,
                 })
                 window._heynote_editor = this.editor
                 window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)

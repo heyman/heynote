@@ -118,6 +118,7 @@
             :keymap="settings.keymap"
             :showLineNumberGutter="settings.showLineNumberGutter"
             :showFoldGutter="settings.showFoldGutter"
+            :defaultLanguage="settings.defaultLanguage"
             class="editor"
             ref="editor"
             @openLanguageSelector="openLanguageSelector"

@@ -2,6 +2,8 @@
     import KeyboardHotkey from "./KeyboardHotkey.vue"
     import TabListItem from "./TabListItem.vue"
     import TabContent from "./TabContent.vue"
+    import { sortedLanguages } from "@/src/editor/languages";
+    import { setNewBlockLanguage } from "@/src/editor/block/commands";
 
     export default {
         props: {
@@ -30,7 +32,9 @@
                 globalHotkey: this.initialSettings.globalHotkey,
                 showInDock: this.initialSettings.showInDock,
                 showInMenu: this.initialSettings.showInMenu,
+                defaultLanguage: this.initialSettings.defaultLanguage,
                 autoUpdate: this.initialSettings.autoUpdate,
+                languages: sortedLanguages,
 
                 activeTab: "general",
             }
@@ -63,7 +67,9 @@
                     showInDock: this.showInDock,
                     showInMenu: this.showInMenu || !this.showInDock,
                     autoUpdate: this.autoUpdate,
+                    defaultLanguage: this.defaultLanguage,
                 })
+              setNewBlockLanguage(this.defaultLanguage)
             },
         }
     }
@@ -132,6 +138,19 @@
                                     v-model="globalHotkey"
                                     @change="updateSettings"
                                 />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Input settings</h2>
+                                <label>
+                                    Default Language
+                                    <select ref="defaultLanguageSelector" v-model="defaultLanguage" @change="updateSettings">
+                                      <template v-for="lg in languages" :key="lg.token">
+                                        <option :selected="lg.token === defaultLanguage" :value="lg.token">{{ lg.name }}</option>
+                                      </template>
+                                    </select>
+                                </label>
                             </div>
                         </div>
                         <div class="row">

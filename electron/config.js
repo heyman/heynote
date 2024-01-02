@@ -1,5 +1,36 @@
 import Store from "electron-store"
 
+let sortedLanguages = [
+    "csharp",
+    "cpp",
+    "clojure",
+    "css",
+    "erlang",
+    "golang",
+    "html",
+    "java",
+    "javascript",
+    "json",
+    "jsx",
+    "kotlin",
+    "lezer",
+    "markdown",
+    "math",
+    "php",
+    "text",
+    "python",
+    "ruby",
+    "rust",
+    "shell",
+    "sql",
+    "swift",
+    "toml",
+    "tsx",
+    "typescript",
+    "xml",
+    "yaml",
+]
+
 const isDev = !!process.env.VITE_DEV_SERVER_URL
 
 const schema = {
@@ -32,6 +63,7 @@ const schema = {
             "bufferPath" : {type: "string", default: ""},
             "showInDock": {type: "boolean", default: true},
             "showInMenu": {type: "boolean", default: false},
+            "defaultLanguage": { "enum": sortedLanguages, default: "text" },
         },
     },
 
@@ -59,6 +91,7 @@ const defaults = {
         bufferPath: "",
         showInDock: true,
         showInMenu: false,
+        defaultLanguage: "text"
     },
     theme: "system",
 }
