@@ -31,6 +31,7 @@ export class HeynotePage {
     }
 
     async setContent(content) {
+        await expect(this.page.locator("css=.cm-editor")).toBeVisible()
         await this.page.evaluate((content) => window._heynote_editor.setContent(content), content)
     }
 

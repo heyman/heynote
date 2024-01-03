@@ -17,10 +17,13 @@ class MathResult extends WidgetType {
     eq(other) { return other.displayResult == this.displayResult }
 
     toDOM() {
-        let wrap = document.createElement("span")
+        const wrap = document.createElement("span")
         wrap.className = "heynote-math-result"
-        wrap.innerHTML = this.displayResult
-        wrap.addEventListener("click", (e) => {
+        const inner = document.createElement("span")
+        inner.className = "inner"
+        inner.innerHTML = this.displayResult
+        wrap.appendChild(inner)
+        inner.addEventListener("click", (e) => {
             e.preventDefault()
             navigator.clipboard.writeText(this.copyResult)
             const copyElement = document.createElement("i")
@@ -64,8 +67,20 @@ function mathDeco(view) {
 
                 // if we got a result from math.js, add the result decoration
                 if (result !== undefined) {
-                    builder.add(line.to, line.to, Decoration.widget({
-                        widget: new MathResult(
+                    let format = parser.get("format")
+
+                    let resultWidget
+                    if (typeof(result) === "string") {
+                        resultWidget = new MathResult(result, result)
+                    } else if (format !== undefined && typeof(format) === "function") {
+                        try {
+                            resultWidget = new MathResult(format(result), format(result))
+                        } catch (e) {
+                            // suppress any errors
+                        }
+                    }
+                    if (resultWidget === undefined) {
+                        resultWidget = new MathResult(
                             math.format(result, {
                                 precision: 8,
                                 upperExp: 8,
@@ -73,9 +88,13 @@ function mathDeco(view) {
                             }),
                             math.format(result, {
                                 notation: "fixed",
-                            }),
-                        ), side: 1},
-                    ))
+                            })
+                        )
+                    }
+                    builder.add(line.to, line.to, Decoration.widget({
+                        widget: resultWidget,
+                        side: 1,
+                    }))
                 }
             }
             pos = line.to + 1

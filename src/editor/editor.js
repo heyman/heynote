@@ -8,7 +8,7 @@ import { heynoteDark } from "./theme/dark.js"
 import { heynoteBase } from "./theme/base.js"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
-import { noteBlockExtension, blockLineNumbers, getBlocks } from "./block/block.js"
+import { noteBlockExtension, blockLineNumbers, blockState } from "./block/block.js"
 import { heynoteEvent, SET_CONTENT } from "./annotation.js";
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
@@ -48,6 +48,7 @@ export class HeynoteEditor {
         this.lineNumberCompartmentPre = new Compartment
         this.lineNumberCompartment = new Compartment
         this.foldGutterCompartment = new Compartment
+        this.readOnlyCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
 
         const state = EditorState.create({
@@ -60,6 +61,8 @@ export class HeynoteEditor {
                 this.lineNumberCompartment.of(showLineNumberGutter ? [lineNumbers(), blockLineNumbers] : []),
                 customSetup, 
                 this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
+
+                this.readOnlyCompartment.of([]),
                 
                 this.themeCompartment.of(theme === "dark" ? heynoteDark : heynoteLight),
                 heynoteBase,
@@ -128,11 +131,17 @@ export class HeynoteEditor {
     }
 
     getBlocks() {
-        return getBlocks(this.view.state)
+        return this.view.state.facet(blockState)
     }
 
     focus() {
         this.view.focus()
+    }
+
+    setReadOnly(readOnly) {
+        this.view.dispatch({
+            effects: this.readOnlyCompartment.reconfigure(readOnly ? [EditorState.readOnly.of(true)] : []),
+        })
     }
 
     setTheme(theme) {
