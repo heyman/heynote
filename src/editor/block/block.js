@@ -1,6 +1,6 @@
 import { ViewPlugin, EditorView, Decoration, WidgetType, lineNumbers } from "@codemirror/view"
 import { layer, RectangleMarker } from "@codemirror/view"
-import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet} from "@codemirror/state";
+import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet, MapMode} from "@codemirror/state";
 import { syntaxTree, ensureSyntaxTree } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
@@ -231,20 +231,33 @@ const blockLayer = layer({
 const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
     //console.log("change filter!", tr)
     const protect = []
-    if (!tr.annotations.some(a => a.type === heynoteEvent) && firstBlockDelimiterSize) {
+    if (tr.annotation(heynoteEvent) === undefined && firstBlockDelimiterSize) {
         protect.push(0, firstBlockDelimiterSize)
     }
     // if the transaction is a search and replace, we want to protect all block delimiters
-    if (tr.annotations.some(a => a.value === "input.replace" || a.value === "input.replace.all")) {
+    // `isUserEvent` grabs any annotation that is equal to the specified or more specific too
+    // in this case, it returns true to "input.replace" and "input.replace.all".
+    if (tr.isUserEvent("input.replace")) {
         const blocks = tr.startState.facet(blockState)
         blocks.forEach(block => {
             protect.push(block.delimiter.from, block.delimiter.to)
         })
         //console.log("protected ranges:", protect)
     }
-    if (protect.length > 0) {
-        return protect
+    return protect;
+})
+
+/**
+ * Fix for the default Codemirror keymap "Ctrl-Shift-K", which deletes
+ * lines, but breaks HeynoteBlock delimiter syntax when deleting entire blocks
+ */
+const preventBlockDelimiterDeletion = EditorState.changeFilter.of((tr)=>{
+    // Regular line deletes dont actually trigger this
+    if(tr.isUserEvent("delete.line")){
+        let activeBlock = getActiveNoteBlock(tr.startState);
+        return [activeBlock.delimiter.from, activeBlock.delimiter.to]
     }
+    return true;
 })
 
 /**
@@ -257,12 +270,16 @@ const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) =
     tr?.selection?.ranges.forEach(range => {
         // change the selection to after the first block if the transaction sets the selection before the first block
         if (range && range.from < firstBlockDelimiterSize) {
-            range.from = firstBlockDelimiterSize
-            //console.log("changing the from selection to", markerSize)
+            // `range.to` & `range.from` should be read-only properties, so we need a new range from the old one:
+            //range.from = firstBlockDelimiterSize
+            tr.selection.replaceRange(Object.assign(range, {from:firstBlockDelimiterSize}))
+            //console.log("changing the from selection to", tr.selection)
         }
         if (range && range.to < firstBlockDelimiterSize) {
-            range.to = firstBlockDelimiterSize
-            //console.log("changing the from selection to", markerSize)
+            // `range.to` & `range.from` should be read-only properties, so we need a new range from the old one:
+            //range.to = firstBlockDelimiterSize
+            tr.selection.replaceRange(Object.assign(range, {to:firstBlockDelimiterSize}))
+            //console.log("changing the from selection to", tr.selection)
         }
     })
     return tr
@@ -313,7 +330,7 @@ const emitCursorChange = (editor) => ViewPlugin.fromClass(
         update(update) {
             // if the selection changed or the language changed (can happen without selection change), 
             // emit a selection change event
-            const langChange = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE))
+            const langChange = update.transactions.some(tr => tr.isUserEvent(LANGUAGE_CHANGE))
             if (update.selectionSet || langChange) {
                 const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
 
@@ -346,5 +363,6 @@ export const noteBlockExtension = (editor) => {
         emitCursorChange(editor),
         mathBlock,
         emptyBlockSelected,
+        preventBlockDelimiterDeletion
     ]
 }
