@@ -11,7 +11,8 @@ import { emptyBlockSelected } from "./select-all.js";
 
 
 // tracks the size of the first delimiter
-let firstBlockDelimiterSize
+let firstBlockDelimiterSize;
+let key =0 ;
 
 function getBlocks(state, timeout=50) {
     const blocks = [];  
@@ -82,23 +83,104 @@ export function getNoteBlockFromPos(state, pos) {
 
 class NoteBlockStart extends WidgetType {
     constructor(isFirst) {
-        super()
-        this.isFirst = isFirst
+      super();
+      this.isFirst = isFirst;
     }
     eq(other) {
-        //return other.checked == this.checked
-        return true
+      //return other.checked == this.checked
+      return true;
     }
     toDOM() {
-        let wrap = document.createElement("div")
-        wrap.className = "heynote-block-start" + (this.isFirst ? " first" : "")
-        //wrap.innerHTML = "<br>"
-        return wrap
+      let wrap = document.createElement("div");
+      wrap.className = "heynote-block-start" + (this.isFirst ? " first" : "");
+      //wrap.innerHTML = "<br>"
+      // Create a button element with download icon
+      let downloadButton = document.createElement("button");
+      downloadButton.className = "download-button";
+  
+      key++;
+  
+      downloadButton.innerHTML = `<i class="fas fa-download" key="${key}"></i>`;
+      downloadButton.addEventListener("click", (event) => this.handleDownloadClick(event));
+  
+      // Create a style block
+      let styleBlock = document.createElement("style");
+      styleBlock.textContent = `
+              .download-button {
+                  background-color: transparent;
+                  border: none;
+                  cursor: pointer;
+                  font-size: 14px;
+                  float: right;
+                  color: #3498db;
+              }
+  
+              .download-button i {
+                  margin-top: 10px;
+                  margin-right: 5px;
+              }
+          `;
+      wrap.appendChild(downloadButton);
+      wrap.appendChild(styleBlock);
+      return wrap;
     }
+    handleDownloadClick(e) {
+          let text = []
+          // Get the current parent div element
+          const currentParentDiv = e.target.closest('div');
+  
+          if (currentParentDiv) {
+              // Find the next div with the same class name
+              let nextDiv = currentParentDiv.nextElementSibling;
+              //console.log(nextDiv.classList.contains('heynote-block-start'))
+              while (nextDiv && !nextDiv.classList.contains('heynote-block-start')) {
+                  // Perform actions on the next div
+                  //console.log( nextDiv.textContent);
+                  text.push(nextDiv.textContent);
+                  // For example, you can get the data-index attribute from the next div
+                  
+                  // Move to the next sibling div
+                  nextDiv = nextDiv.nextElementSibling;
+                  
+              }
+  
+              if (!nextDiv) {
+                  console.log('No more divs with the same class name found.');
+              }
+          } else {
+              console.log('Current parent div not found.');
+          }
+  
+      this.writeToTextFile(text,'file.txt');
+    }
+  
+     writeToTextFile(textArray, fileName) {
+      // Combine array elements into a single string with line breaks
+      const textContent = textArray.join('\n');
+  
+      // Create a Blob with the formatted text content
+      const blob = new Blob([textContent], { type: 'text/plain' });
+  
+      // Create a temporary link element
+      const link = document.createElement('a');
+  
+      // Set the download attribute and create a data URL
+      link.download = fileName;
+      link.href = URL.createObjectURL(blob);
+  
+      // Append the link to the document
+      document.body.appendChild(link);
+  
+      // Trigger a click on the link to start the download
+      link.click();
+  
+      // Remove the link from the document
+      document.body.removeChild(link);
+  }
     ignoreEvent() {
-        return false
+      return false;
     }
-}
+  }
 const noteBlockWidget = () => {
     const decorate = (state) => {
         const widgets = [];
