@@ -1,6 +1,6 @@
 import { ViewPlugin, EditorView, Decoration, WidgetType, lineNumbers } from "@codemirror/view"
 import { layer, RectangleMarker } from "@codemirror/view"
-import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet} from "@codemirror/state";
+import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet, Annotation, Transaction} from "@codemirror/state";
 import { syntaxTree, ensureSyntaxTree } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
@@ -8,6 +8,7 @@ import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { SelectionChangeEvent } from "../event.js"
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
+import { defaultKeymap } from "@codemirror/commands";
 
 
 // tracks the size of the first delimiter
@@ -266,6 +267,16 @@ const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) =
     return tr
 })
 
+const preventBlockSyntaxCorruption = EditorState.changeFilter.of((tr)=>{
+    if(tr.isUserEvent("delete.line")){
+        let currentBlock = getActiveNoteBlock(tr.startState);
+
+        return [currentBlock.delimiter.from, currentBlock.delimiter.to]
+    }
+
+    return true;
+})
+
 export function getBlockLineFromPos(state, pos) {
     const line = state.doc.lineAt(pos)
     const block = state.facet(blockState).find(block => block.content.from <= line.from && block.content.to >= line.from)
@@ -344,5 +355,6 @@ export const noteBlockExtension = (editor) => {
         emitCursorChange(editor),
         mathBlock,
         emptyBlockSelected,
+        preventBlockSyntaxCorruption
     ]
 }
