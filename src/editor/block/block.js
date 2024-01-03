@@ -8,6 +8,7 @@ import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
 import { SelectionChangeEvent } from "../event.js"
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
+import '@fortawesome/fontawesome-free/css/all.css'
 
 
 // tracks the size of the first delimiter
