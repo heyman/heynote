@@ -15,7 +15,12 @@ import { LANGUAGES } from "../languages.js"
 
 const languageMapping = Object.fromEntries(LANGUAGES.map(l => [l.token, l.parser]))
 
-
+/**
+ * Creates a parse wrapper that, after parsing the HeyNote language syntax
+ * (such as language tokens `NoteDelimiter` and content `NoteContent`) applies
+ * another parser to the data, attaching the resulting nodes to the syntax tree, with all their props.
+ * @returns {ParseWrapper} a custom Heynote `ParseWrapper`.
+ */
 export function configureNesting() {
     return parseMixed((node, input) => {
         let id = node.type.id

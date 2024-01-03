@@ -8,7 +8,14 @@ import { setEmacsMarkMode } from "./emacs.js"
 const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
 const blockSeparatorRegex = new RegExp(`\\n∞∞∞(${languageTokensMatcher})(-a)?\\n`, "g")
 
-
+/**
+ * Given a `EditorState`, returns a object containing
+ * the current selection content as a `string`, alongside a array of ranges.
+ * @param {EditorState} state The state object of the editor.
+ * @returns {Object} object with:<br><br>
+ *  - `text`: the selection content
+ *  - `ranges`: a array of selection ranges
+ */
 function copiedRange(state) {
     let content = [], ranges = []
     for (let range of state.selection.ranges) if (!range.empty) {
