@@ -1,31 +1,13 @@
-import { isLinux, isMac, isWindows } from "./detect-platform.js"
+import os from "os";
+import { keyHelpStr } from "../shared-utils/key-helper";
 
-const modChar = isMac ? "⌘" : "Ctrl"
-const altChar = isMac ? "⌥" : "Alt"
-
-const keyHelp = [
-    [`${modChar} + Enter`, "Add new block below the current block"],
-    [`${modChar} + Shift + Enter`, "Split the current block at cursor position"],
-    [`${modChar} + L`, "Change block language"],
-    [`${modChar} + Down`, "Goto next block"],
-    [`${modChar} + Up`, "Goto previous block"],
-    [`${modChar} + A`, "Select all text in a note block. Press again to select the whole buffer"],
-    [`${modChar} + ${altChar} + Up/Down`, "Add additional cursor above/below"],
-    [`${altChar} + Shift + F`, "Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)"],
-]
-if (isWindows || isLinux) {
-    keyHelp.push([altChar, "Show menu"])
-}
-
-const keyMaxLength = keyHelp.map(([key, help]) => key.length).reduce((a, b) => Math.max(a, b))
-const keyHelpStr = keyHelp.map(([key, help]) => `${key.padEnd(keyMaxLength)}   ${help}`).join("\n")
-
+export const eraseInitialContent = !!process.env.ERASE_INITIAL_CONTENT
 
 export const initialContent = `
-∞∞∞text
+∞∞∞markdown
 Welcome to Heynote! 👋
 
-${keyHelpStr}
+${keyHelpStr(os.platform())}
 ∞∞∞math
 This is a Math block. Here, rows are evaluated as math expressions. 
 
@@ -54,13 +36,13 @@ export const initialDevContent = initialContent + `
 def my_func():
   print("hejsan")
 
-
+∞∞∞javascript-a
 import {basicSetup} from "codemirror"
 import {EditorView, keymap} from "@codemirror/view"
 import {javascript} from "@codemirror/lang-javascript"
 import {indentWithTab, insertTab, indentLess, indentMore} from "@codemirror/commands"
 import {nord} from "./nord.mjs"
-∞∞∞javascript-a
+
 let editor = new EditorView({
   //extensions: [basicSetup, javascript()],
   extensions: [

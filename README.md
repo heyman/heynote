@@ -97,8 +97,11 @@ I can totally see the usefulness of such a feature, and it's definitely somethin
 **On Mac**
 
 ```
+⌥ + Shift + Enter   Add new block at the start of the buffer
+⌘ + Shift + Enter   Add new block at the end of the buffer
+⌥ + Enter           Add new block before the current block
 ⌘ + Enter           Add new block below the current block
-⌘ + Shift + Enter   Split the current block at cursor position
+⌘ + ⌥ + Enter       Split the current block at cursor position
 ⌘ + L               Change block language
 ⌘ + Down            Goto next block
 ⌘ + Up              Goto previous block
@@ -110,8 +113,11 @@ I can totally see the usefulness of such a feature, and it's definitely somethin
 **On Windows and Linux**
 
 ```
+Alt + Shift + Enter    Add new block at the start of the buffer
+Ctrl + Shift + Enter   Add new block at the end of the buffer
+Alt + Enter            Add new block before the current block
 Ctrl + Enter           Add new block below the current block
-Ctrl + Shift + Enter   Split the current block at cursor position
+Ctrl + Alt + Enter     Split the current block at cursor position
 Ctrl + L               Change block language
 Ctrl + Down            Goto next block
 Ctrl + Up              Goto previous block

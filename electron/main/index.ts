@@ -1,10 +1,9 @@
 import { app, BrowserWindow, Tray, shell, ipcMain, Menu, nativeTheme, globalShortcut, nativeImage } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
-import * as jetpack from "fs-jetpack";
 
 import { menu, getTrayMenu } from './menu'
-import { initialContent, initialDevContent } from '../initial-content'
+import { eraseInitialContent, initialContent, initialDevContent } from '../initial-content'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
@@ -127,7 +126,7 @@ async function createWindow() {
         win.loadFile(indexHtml)
         //win.webContents.openDevTools()
     }
-    
+
     // custom keyboard shortcuts for Emacs keybindings
     win.webContents.on("before-input-event", function (event, input) {
         onBeforeInputEvent({event, input, win, currentKeymap})
@@ -139,11 +138,11 @@ async function createWindow() {
     })
 
     // Make all links open with the browser, not with the application
-    win.webContents.setWindowOpenHandler(({ url }) => {
+    win.webContents.setWindowOpenHandler(({url}) => {
         if (url.startsWith('https:') || url.startsWith('http:')) {
             shell.openExternal(url)
         }
-        return { action: 'deny' }
+        return {action: 'deny'}
     })
 
     fixElectronCors(win)
@@ -253,17 +252,17 @@ ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
 
 const buffer = new Buffer({
-    filePath: getBufferFilePath(), 
+    filePath: getBufferFilePath(),
     onChange: (eventData) => {
         win?.webContents.send("buffer-content:change", eventData)
     },
 })
 
 ipcMain.handle('buffer-content:load', async () => {
-    if (buffer.exists()) {
+    if (buffer.exists() && !(eraseInitialContent && isDev)) {
         return await buffer.load()
     } else {
-        return isDev? initialDevContent : initialContent
+        return isDev ? initialDevContent : initialContent
     }
 });
 
@@ -271,7 +270,7 @@ async function save(content) {
     return await buffer.save(content)
 }
 
-ipcMain.handle('buffer-content:save', async (event, content) =>  {
+ipcMain.handle('buffer-content:save', async (event, content) => {
     return await save(content)
 });
 
@@ -281,7 +280,7 @@ ipcMain.handle('buffer-content:saveAndQuit', async (event, content) => {
     app.quit()
 })
 
-ipcMain.handle('settings:set', (event, settings) =>  {
+ipcMain.handle('settings:set', (event, settings) => {
     if (settings.keymap !== CONFIG.get("settings.keymap")) {
         currentKeymap = settings.keymap
     }
@@ -291,7 +290,7 @@ ipcMain.handle('settings:set', (event, settings) =>  {
     CONFIG.set("settings", settings)
 
     win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
-    
+
     if (globalHotkeyChanged) {
         registerGlobalHotkey()
     }

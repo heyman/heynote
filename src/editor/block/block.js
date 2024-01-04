@@ -75,6 +75,14 @@ export function getActiveNoteBlock(state) {
     return state.facet(blockState).find(block => block.range.from <= range.head && block.range.to >= range.head)
 }
 
+export function getFirstNoteBlock(state) {
+    return state.facet(blockState)[0]
+}
+
+export function getLastNoteBlock(state) {
+    return state.facet(blockState)[state.facet(blockState).length - 1]
+}
+
 export function getNoteBlockFromPos(state, pos) {
     return state.facet(blockState).find(block => block.range.from <= pos && block.range.to >= pos)
 }
@@ -86,8 +94,7 @@ class NoteBlockStart extends WidgetType {
         this.isFirst = isFirst
     }
     eq(other) {
-        //return other.checked == this.checked
-        return true
+        return this.isFirst === other.isFirst
     }
     toDOM() {
         let wrap = document.createElement("div")
@@ -249,7 +256,7 @@ const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
  * Transaction filter to prevent the selection from being before the first block
   */
 const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) => {
-    if (!firstBlockDelimiterSize) {
+    if (!firstBlockDelimiterSize || tr.annotations.some(a => a.type === heynoteEvent)) {
         return tr
     }
     tr?.selection?.ranges.forEach(range => {

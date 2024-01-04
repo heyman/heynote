@@ -6,7 +6,8 @@ import {
 
 import { 
     insertNewBlockAtCursor, 
-    addNewBlockAfterCurrent, 
+    addNewBlockBeforeCurrent, addNewBlockAfterCurrent,
+    addNewBlockBeforeFirst, addNewBlockAfterLast,
     moveLineUp, moveLineDown, 
     selectAll, 
     gotoPreviousBlock, gotoNextBlock, 
@@ -38,8 +39,11 @@ export function heynoteKeymap(editor) {
     return keymapFromSpec([
         ["Tab", indentMore],
         ["Shift-Tab", indentLess],
+        ["Alt-Shift-Enter", addNewBlockBeforeFirst],
+        ["Mod-Shift-Enter", addNewBlockAfterLast],
+        ["Alt-Enter", addNewBlockBeforeCurrent],
         ["Mod-Enter", addNewBlockAfterCurrent],
-        ["Mod-Shift-Enter", insertNewBlockAtCursor],
+        ["Mod-Alt-Enter", insertNewBlockAtCursor],
         ["Mod-a", selectAll],
         ["Alt-ArrowUp", moveLineUp],
         ["Alt-ArrowDown", moveLineDown],
