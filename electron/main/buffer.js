@@ -1,17 +1,23 @@
 import fs from "fs"
 import { join, dirname, basename } from "path"
-import { app } from "electron"
+import { app, ipcMain, dialog } from "electron"
 import * as jetpack from "fs-jetpack";
 
 import CONFIG from "../config"
 import { isDev } from "../detect-platform"
+import { win } from "./index"
+import { eraseInitialContent, initialContent, initialDevContent } from '../initial-content'
 
+
+export function constructBufferFilePath(directoryPath) {
+    return join(directoryPath, isDev ? "buffer-dev.txt" : "buffer.txt")
+}
 
 export function getBufferFilePath() {
     let defaultPath = app.getPath("userData")
     let configPath = CONFIG.get("settings.bufferPath")
     let bufferPath = configPath.length ? configPath : defaultPath
-    let bufferFilePath = join(bufferPath, isDev ? "buffer-dev.txt" : "buffer.txt")
+    let bufferFilePath = constructBufferFilePath(bufferPath)
     try {
         // use realpathSync to resolve a potential symlink
         return fs.realpathSync(bufferFilePath)
@@ -73,10 +79,82 @@ export class Buffer {
 
                     if (this._lastSavedContent !== content) {
                         // file has changed on disk, trigger onChange
-                        this.onChange({filename, eventType, content})
+                        this.onChange(content)
                     }
                 }
             )
         }
     }
+
+    close() {
+        if (this.watcher) {
+            this.watcher.close()
+            this.watcher = null
+        }
+    }
 }
+
+
+// Buffer
+let buffer
+export function loadBuffer() {
+    if (buffer) {
+        buffer.close()
+    }
+    buffer = new Buffer({
+        filePath: getBufferFilePath(),
+        onChange: (content) => {
+            win?.webContents.send("buffer-content:change", content)
+        },
+    })
+    return buffer
+}
+
+ipcMain.handle('buffer-content:load', async () => {
+    if (buffer.exists() && !(eraseInitialContent && isDev)) {
+        return await buffer.load()
+    } else {
+        return isDev ? initialDevContent : initialContent
+    }
+});
+
+async function save(content) {
+    return await buffer.save(content)
+}
+
+ipcMain.handle('buffer-content:save', async (event, content) => {
+    return await save(content)
+});
+
+export let contentSaved = false
+ipcMain.handle('buffer-content:saveAndQuit', async (event, content) => {
+    await save(content)
+    contentSaved = true
+    app.quit()
+})
+
+ipcMain.handle("buffer-content:selectLocation", async () => {
+    let result = await dialog.showOpenDialog({
+        title: "Select directory to store buffer",
+        properties: [
+            "openDirectory",
+            "createDirectory",
+            "noResolveAliases",
+        ],
+    })
+    if (result.canceled) {
+        return
+    }
+    const filePath = result.filePaths[0]
+    if (fs.existsSync(constructBufferFilePath(filePath))) {
+        if (dialog.showMessageBoxSync({
+            type: "question",
+            message: "The selected directory already contains a buffer file. It will be loaded. Do you want to continue?",
+            buttons: ["Cancel", "Continue"],
+        }) === 0) {
+            return
+        }
+    }
+    return filePath
+})
+

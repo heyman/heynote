@@ -1,16 +1,16 @@
 import { app, BrowserWindow, Tray, shell, ipcMain, Menu, nativeTheme, globalShortcut, nativeImage } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
+import fs from "fs"
 
 import { menu, getTrayMenu } from './menu'
-import { eraseInitialContent, initialContent, initialDevContent } from '../initial-content'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { onBeforeInputEvent } from "../keymap"
 import { isDev, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
-import { getBufferFilePath, Buffer } from './buffer';
+import { loadBuffer, contentSaved } from './buffer';
 
 
 // The built directory structure
@@ -57,7 +57,6 @@ const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 
 let currentKeymap = CONFIG.get("settings.keymap")
-let contentSaved = false
 
 // if this version is a beta version, set the release channel to beta
 const isBetaVersion = app.getVersion().includes("beta")
@@ -250,43 +249,18 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
+// load buffer on app start
+loadBuffer()
 
-const buffer = new Buffer({
-    filePath: getBufferFilePath(),
-    onChange: (eventData) => {
-        win?.webContents.send("buffer-content:change", eventData)
-    },
-})
 
-ipcMain.handle('buffer-content:load', async () => {
-    if (buffer.exists() && !(eraseInitialContent && isDev)) {
-        return await buffer.load()
-    } else {
-        return isDev ? initialDevContent : initialContent
-    }
-});
-
-async function save(content) {
-    return await buffer.save(content)
-}
-
-ipcMain.handle('buffer-content:save', async (event, content) => {
-    return await save(content)
-});
-
-ipcMain.handle('buffer-content:saveAndQuit', async (event, content) => {
-    await save(content)
-    contentSaved = true
-    app.quit()
-})
-
-ipcMain.handle('settings:set', (event, settings) => {
+ipcMain.handle('settings:set', async (event, settings) => {
     if (settings.keymap !== CONFIG.get("settings.keymap")) {
         currentKeymap = settings.keymap
     }
     let globalHotkeyChanged = settings.enableGlobalHotkey !== CONFIG.get("settings.enableGlobalHotkey") || settings.globalHotkey !== CONFIG.get("settings.globalHotkey")
     let showInDockChanged = settings.showInDock !== CONFIG.get("settings.showInDock");
     let showInMenuChanged = settings.showInMenu !== CONFIG.get("settings.showInMenu");
+    let bufferPathChanged = settings.bufferPath !== CONFIG.get("settings.bufferPath");
     CONFIG.set("settings", settings)
 
     win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
@@ -299,5 +273,11 @@ ipcMain.handle('settings:set', (event, settings) => {
     }
     if (showInMenuChanged) {
         registerShowInMenu()
+    }
+    if (bufferPathChanged) {
+        const buffer = loadBuffer()
+        if (buffer.exists()) {
+            win?.webContents.send("buffer-content:change", await buffer.load())
+        }
     }
 })

@@ -32,9 +32,11 @@
                 showInMenu: this.initialSettings.showInMenu,
                 bracketClosing: this.initialSettings.bracketClosing,
                 autoUpdate: this.initialSettings.autoUpdate,
+                bufferPath: this.initialSettings.bufferPath,
 
                 activeTab: "general",
                 isWebApp: window.heynote.isWebApp,
+                customBufferLocation: !!this.initialSettings.bufferPath,
             }
         },
 
@@ -66,7 +68,23 @@
                     showInMenu: this.showInMenu || !this.showInDock,
                     autoUpdate: this.autoUpdate,
                     bracketClosing: this.bracketClosing,
+                    bufferPath: this.bufferPath,
                 })
+            },
+
+            async selectBufferLocation() {
+                const path = await window.heynote.buffer.selectLocation()
+                if (path) {
+                    this.bufferPath = path
+                    this.updateSettings()
+                }
+            },
+
+            onCustomBufferLocationChange() {
+                if (!this.customBufferLocation) {
+                    this.bufferPath = ""
+                    this.updateSettings()
+                }
             },
         }
     }
@@ -164,6 +182,26 @@
                                     />
                                     Show system tray
                                 </label>
+                            </div>
+                        </div>
+                        <div class="row" v-if="!isWebApp">
+                            <div class="entry buffer-location">
+                                <h2>Buffer File Path</h2>
+                                <label class="keyboard-shortcut-label">
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="customBufferLocation" 
+                                        @change="onCustomBufferLocationChange"
+                                    />
+                                    Use custom buffer file location
+                                </label>
+                                <div class="file-path">
+                                    <button
+                                        :disabled="!customBufferLocation"
+                                        @click="selectBufferLocation"
+                                    >Select Directory</button>
+                                    <span class="path" v-show="customBufferLocation && bufferPath">{{ bufferPath }}</span>
+                                </div>
                             </div>
                         </div>
                     </TabContent>
@@ -318,6 +356,8 @@
                         .entry
                             margin-bottom: 24px
                             margin-right: 20px
+                            &:last-child
+                                margin-right: 0
                             h2
                                 font-weight: 600
                                 margin-bottom: 10px
@@ -335,6 +375,27 @@
                                     position: relative
                                     top: 2px
                                     left: -3px
+                    .buffer-location 
+                        width: 100%
+                        .file-path
+                            display: flex
+                            > button
+                                flex-shrink: 0
+                                padding: 3px 8px
+                            .path
+                                flex-grow: 1
+                                margin-left: 10px
+                                font-size: 12px
+                                font-family: "Hack"
+                                padding: 5px 8px
+                                border-radius: 3px
+                                background: #f1f1f1
+                                color: #555
+                                white-space: nowrap
+                                overflow-x: auto
+                                +dark-mode
+                                    background: #222
+                                    color: #aaa
             .bottom-bar
                 border-radius: 0 0 5px 5px
                 background: #eee

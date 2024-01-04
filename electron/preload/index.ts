@@ -58,6 +58,10 @@ contextBridge.exposeInMainWorld("heynote", {
         onChangeCallback(callback) {
             ipcRenderer.on("buffer-content:change", callback)
         },
+
+        async selectLocation() {
+            return await ipcRenderer.invoke("buffer-content:selectLocation")
+        }
     },
 
     settings: CONFIG.get("settings"),

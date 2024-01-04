@@ -71,7 +71,7 @@
                 window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
 
                 // set up buffer change listener
-                window.heynote.buffer.onChangeCallback((event, {filename, content, eventType}) => {
+                window.heynote.buffer.onChangeCallback((event, content) => {
                     diskContent = content
                     this.editor.setContent(content)
                 })
