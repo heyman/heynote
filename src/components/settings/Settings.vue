@@ -86,6 +86,12 @@
                             @click="activeTab = 'general'"
                         />
                         <TabListItem 
+                            name="Editing" 
+                            tab="editing"
+                            :activeTab="activeTab" 
+                            @click="activeTab = 'editing'"
+                        />
+                        <TabListItem 
                             name="Appearance" 
                             tab="appearance"
                             :activeTab="activeTab" 
@@ -140,19 +146,6 @@
                         </div>
                         <div class="row" v-if="!isWebApp">
                             <div class="entry">
-                                <h2>Input settings</h2>
-                                <label>
-                                    <input 
-                                        type="checkbox"
-                                        v-model="bracketClosing"
-                                        @change="updateSettings"
-                                    />
-                                    Auto-close brackets
-                                </label>
-                            </div>  
-                        </div>
-                        <div class="row">
-                            <div class="entry">
                                 <h2>Show In</h2>
                                 <label v-if="isMac">
                                     <input
@@ -172,6 +165,22 @@
                                     Show system tray
                                 </label>
                             </div>
+                        </div>
+                    </TabContent>
+
+                    <TabContent tab="editing" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Input settings</h2>
+                                <label>
+                                    <input 
+                                        type="checkbox"
+                                        v-model="bracketClosing"
+                                        @change="updateSettings"
+                                    />
+                                    Auto-close brackets and quotation marks
+                                </label>
+                            </div>  
                         </div>
                     </TabContent>
 
