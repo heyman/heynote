@@ -22,8 +22,14 @@
             UpdateStatusItem,
         },
 
-        mounted() {
+        data() {
+            return {
+                showSettingsButton: window.heynote.isWebApp,
+            }
+        },
 
+        mounted() {
+            
         },
 
         computed: {
@@ -90,6 +96,14 @@
             :autoUpdate="autoUpdate"
             :allowBetaVersions="allowBetaVersions"
         />
+        <div 
+            v-if="showSettingsButton"
+            @click="$emit('openSettings')"
+            class="status-block settings clickable"
+            title="Settings"
+        >
+            <span class="icon icon-format"></span>
+        </div>
         <div class="status-block theme clickable" @click="$emit('toggleTheme')" title="Toggle dark/light mode">
             <span :class="'icon ' + themeSetting"></span>
         </div>
@@ -132,6 +146,12 @@
                 cursor: pointer
                 &:hover
                     background-color: rgba(255,255,255, 0.1)
+            .icon
+                display: block
+                width: 14px
+                height: 22px
+                +dark-mode
+                    opacity: 0.9
         .line-number
             color: rgba(255, 255, 255, 0.7)
             .num
@@ -148,14 +168,9 @@
             padding-top: 0
             padding-bottom: 0
             .icon
-                display: block
-                width: 14px
-                height: 22px
                 background-size: 14px
                 background-repeat: no-repeat
                 background-position: center center
-                +dark-mode
-                    opacity: 0.9
                 &.dark
                     background-image: url("@/assets/icons/dark-mode.png")
                 &.light
@@ -167,14 +182,18 @@
             padding-top: 0
             padding-bottom: 0
             .icon
-                display: block
-                width: 14px
-                height: 22px
-                +dark-mode
-                    opacity: 0.9
                 background-size: 16px
                 background-repeat: no-repeat
                 background-position: center center
                 background-image: url("@/assets/icons/format.svg")
+        
+        .settings
+            padding-top: 0
+            padding-bottom: 0
+            .icon
+                background-size: 13px
+                background-repeat: no-repeat
+                background-position: center center
+                background-image: url("@/assets/icons/settings.svg")
 
 </style>

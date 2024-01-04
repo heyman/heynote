@@ -136,6 +136,7 @@
             @toggleTheme="toggleTheme"
             @openLanguageSelector="openLanguageSelector"
             @formatCurrentBlock="formatCurrentBlock"
+            @openSettings="showSettings = true"
             class="status" 
         />
         <div class="overlay">

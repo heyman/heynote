@@ -34,6 +34,7 @@
                 autoUpdate: this.initialSettings.autoUpdate,
 
                 activeTab: "general",
+                isWebApp: window.heynote.isWebApp,
             }
         },
 
@@ -91,6 +92,7 @@
                             @click="activeTab = 'appearance'"
                         />
                         <TabListItem 
+                            v-if="!isWebApp"
                             name="Updates" 
                             tab="updates" 
                             :activeTab="activeTab" 
@@ -117,7 +119,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="!isWebApp">
                             <div class="entry">
                                 <h2>Global Keyboard Shortcut</h2>
                                 <label class="keyboard-shortcut-label">
@@ -136,7 +138,7 @@
                                 />
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="!isWebApp">
                             <div class="entry">
                                 <h2>Input settings</h2>
                                 <label>
@@ -198,7 +200,7 @@
                         </div>
                     </TabContent>
                     
-                    <TabContent tab="updates" :activeTab="activeTab">
+                    <TabContent tab="updates" :activeTab="activeTab" v-if="!isWebApp">
                         <div class="row">
                             <div class="entry">
                                 <h2>Auto Update</h2>
