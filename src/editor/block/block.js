@@ -146,10 +146,10 @@ class NoteBlockStart extends WidgetType {
               }
   
               if (!nextDiv) {
-                  console.log('No more divs with the same class name found.');
+                  // console.log('No more divs with the same class name found.');
               }
           } else {
-              console.log('Current parent div not found.');
+              //console.log('Current parent div not found.');
           }
   
       this.writeToTextFile(text,'file.txt');
