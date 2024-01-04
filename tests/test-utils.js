@@ -42,4 +42,8 @@ export class HeynotePage {
         const block = blocks[blockIndex]
         return content.slice(block.content.from, block.content.to)
     }
+
+    async getStoredSettings() {
+        return await this.page.evaluate(() => JSON.parse(window.localStorage.getItem("settings")))
+    }
 }

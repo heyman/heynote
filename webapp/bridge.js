@@ -1,3 +1,5 @@
+import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "../electron/constants";
+
 const mediaMatch = window.matchMedia('(prefers-color-scheme: dark)')
 let themeCallback = null
 mediaMatch.addEventListener("change", async (event) => {
@@ -31,8 +33,46 @@ if (uaPlatform.indexOf("Win") !== -1) {
     }
 }
 
+
+class IpcRenderer {
+    constructor() {
+        this.callbacks = {}
+    }
+
+    on(event, callback) {
+        if (!this.callbacks[event]) {
+            this.callbacks[event] = []
+        }
+        this.callbacks[event].push(callback)
+    }
+
+    send(event, ...args) {
+        if (this.callbacks[event]) {
+            for (const callback of this.callbacks[event]) {
+                callback(null, ...args)
+            }
+        }
+    }
+}
+
+const ipcRenderer = new IpcRenderer()
+
+// get initial settings
+let settingsData = localStorage.getItem("settings")
+let initialSettings = {
+    keymap: "default",
+    emacsMetaKey: "meta",
+    showLineNumberGutter: true,
+    showFoldGutter: true,
+}
+if (settingsData !== null) {
+    initialSettings = Object.assign(initialSettings, JSON.parse(settingsData))
+}
+
+
 const Heynote = {
     platform: platform,
+    isWebApp: true,
 
     buffer: {
         async load() {
@@ -57,12 +97,19 @@ const Heynote = {
         //ipcRenderer.on(WINDOW_CLOSE_EVENT, callback)
     },
 
+    settings: initialSettings,
+
     onOpenSettings(callback) {
-        //ipcRenderer.on(OPEN_SETTINGS_EVENT, callback)
+        ipcRenderer.on(OPEN_SETTINGS_EVENT, callback)
     },
 
     onSettingsChange(callback) {
-        //ipcRenderer.on(SETTINGS_CHANGE_EVENT, (event, settings) => callback(settings))
+        ipcRenderer.on(SETTINGS_CHANGE_EVENT, (event, settings) => callback(settings))
+    },
+
+    setSettings(settings) {
+        localStorage.setItem("settings", JSON.stringify(settings))
+        ipcRenderer.send(SETTINGS_CHANGE_EVENT, settings)
     },
 
     themeMode: {
@@ -88,10 +135,6 @@ const Heynote = {
         initial: localStorage.getItem("theme") || "system",
     },
 
-    settings: {
-        keymap: "default",
-    },
-
     getCurrencyData: async () => {
         if (currencyData !== null) {
             return currencyData
@@ -102,4 +145,4 @@ const Heynote = {
     },
 }
 
-export default Heynote
+export { Heynote, ipcRenderer}

@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld("heynote", {
         isWindows,
         isLinux,
     },
+    isWebApp: false,
 
     themeMode: themeMode,
 
