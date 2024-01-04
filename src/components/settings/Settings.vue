@@ -30,6 +30,7 @@
                 globalHotkey: this.initialSettings.globalHotkey,
                 showInDock: this.initialSettings.showInDock,
                 showInMenu: this.initialSettings.showInMenu,
+                bracketClosing: this.initialSettings.bracketClosing,
                 autoUpdate: this.initialSettings.autoUpdate,
 
                 activeTab: "general",
@@ -64,6 +65,7 @@
                     showInDock: this.showInDock,
                     showInMenu: this.showInMenu || !this.showInDock,
                     autoUpdate: this.autoUpdate,
+                    bracketClosing: this.bracketClosing,
                 })
             },
         }
@@ -82,6 +84,12 @@
                             tab="general" 
                             :activeTab="activeTab" 
                             @click="activeTab = 'general'"
+                        />
+                        <TabListItem 
+                            name="Editing" 
+                            tab="editing"
+                            :activeTab="activeTab" 
+                            @click="activeTab = 'editing'"
                         />
                         <TabListItem 
                             name="Appearance" 
@@ -140,21 +148,37 @@
                             <div class="entry">
                                 <h2>Show In</h2>
                                 <label v-if="isMac">
-                                    <input 
-                                        type="checkbox" 
-                                        v-model="showInDock" 
+                                    <input
+                                        type="checkbox"
+                                        v-model="showInDock"
                                         @change="updateSettings"
                                     />
                                     Show in dock
                                 </label>
                                 <label>
-                                    <input 
+                                    <input
                                         type="checkbox"
                                         :disabled="!showInDock"
-                                        v-model="showInMenu" 
+                                        v-model="showInMenu"
                                         @change="updateSettings"
                                     />
                                     Show system tray
+                                </label>
+                            </div>
+                        </div>
+                    </TabContent>
+
+                    <TabContent tab="editing" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Input settings</h2>
+                                <label>
+                                    <input 
+                                        type="checkbox"
+                                        v-model="bracketClosing"
+                                        @change="updateSettings"
+                                    />
+                                    Auto-close brackets and quotation marks
                                 </label>
                             </div>  
                         </div>

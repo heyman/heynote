@@ -64,6 +64,7 @@ let initialSettings = {
     emacsMetaKey: "meta",
     showLineNumberGutter: true,
     showFoldGutter: true,
+    bracketClosing: false,
 }
 if (settingsData !== null) {
     initialSettings = Object.assign(initialSettings, JSON.parse(settingsData))

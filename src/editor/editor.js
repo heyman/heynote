@@ -2,6 +2,7 @@ import { Annotation, EditorState, Compartment } from "@codemirror/state"
 import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
 import { indentUnit, forceParsing, foldGutter } from "@codemirror/language"
 import { markdown } from "@codemirror/lang-markdown"
+import { closeBrackets } from "@codemirror/autocomplete";
 
 import { heynoteLight } from "./theme/light.js"
 import { heynoteDark } from "./theme/dark.js"
@@ -41,6 +42,7 @@ export class HeynoteEditor {
         keymap="default", 
         showLineNumberGutter=true, 
         showFoldGutter=true,
+        bracketClosing=false,
     }) {
         this.element = element
         this.themeCompartment = new Compartment
@@ -49,6 +51,7 @@ export class HeynoteEditor {
         this.lineNumberCompartment = new Compartment
         this.foldGutterCompartment = new Compartment
         this.readOnlyCompartment = new Compartment
+        this.closeBracketsCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
 
         const state = EditorState.create({
@@ -61,6 +64,8 @@ export class HeynoteEditor {
                 this.lineNumberCompartment.of(showLineNumberGutter ? [lineNumbers(), blockLineNumbers] : []),
                 customSetup, 
                 this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
+
+                this.closeBracketsCompartment.of(bracketClosing ? [closeBrackets()] : []),
 
                 this.readOnlyCompartment.of([]),
                 
@@ -174,6 +179,12 @@ export class HeynoteEditor {
     setFoldGutter(show) {
         this.view.dispatch({
             effects: this.foldGutterCompartment.reconfigure(show ? [foldGutter()] : []),
+        })
+    }
+
+    setBracketClosing(value) {
+        this.view.dispatch({
+            effects: this.closeBracketsCompartment.reconfigure(value ? [closeBrackets()] : []),
         })
     }
 

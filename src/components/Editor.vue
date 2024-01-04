@@ -19,6 +19,10 @@
                 type: Boolean,
                 default: true,
             },
+            bracketClosing: {
+                type: Boolean,
+                default: false,
+            },
         },
 
         components: {},
@@ -61,6 +65,7 @@
                     keymap: this.keymap,
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
+                    bracketClosing: this.bracketClosing,
                 })
                 window._heynote_editor = this.editor
                 window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
@@ -115,6 +120,10 @@
 
             showFoldGutter(show) {
                 this.editor.setFoldGutter(show)
+            },
+
+            bracketClosing(value) {
+                this.editor.setBracketClosing(value)
             },
         },
 
