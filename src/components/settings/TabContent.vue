@@ -4,7 +4,7 @@
 
         computed: {
             className() {
-                return "tab-content " + (this.tab === this.activeTab ? "active" : "")
+                return "tab-content tab-" + this.tab + " " + (this.tab === this.activeTab ? "active" : "")
             }
         }
     }

@@ -16,7 +16,7 @@ Available for Mac, Windows, and Linux.
 -   Block-based
 -   Syntax highlighting:
 
-    C++, C#, Clojure, CSS, Erlang, Go, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, Swift, XML, YAML
+    C++, C#, Clojure, CSS, Erlang, Go, Groovy, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, Swift, XML, YAML
     
 -   Language auto-detection
 -   Auto-formatting
@@ -98,7 +98,10 @@ I can totally see the usefulness of such a feature, and it's definitely somethin
 
 ```
 ⌘ + Enter           Add new block below the current block
-⌘ + Shift + Enter   Split the current block at cursor position
+⌥ + Enter           Add new block before the current block
+⌘ + Shift + Enter   Add new block at the end of the buffer
+⌥ + Shift + Enter   Add new block at the start of the buffer
+⌘ + ⌥ + Enter       Split the current block at cursor position
 ⌘ + L               Change block language
 ⌘ + Down            Goto next block
 ⌘ + Up              Goto previous block
@@ -111,7 +114,10 @@ I can totally see the usefulness of such a feature, and it's definitely somethin
 
 ```
 Ctrl + Enter           Add new block below the current block
-Ctrl + Shift + Enter   Split the current block at cursor position
+Alt + Enter            Add new block before the current block
+Ctrl + Shift + Enter   Add new block at the end of the buffer
+Alt + Shift + Enter    Add new block at the start of the buffer
+Ctrl + Alt + Enter     Split the current block at cursor position
 Ctrl + L               Change block language
 Ctrl + Down            Goto next block
 Ctrl + Up              Goto previous block

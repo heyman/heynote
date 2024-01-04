@@ -118,6 +118,7 @@
             :keymap="settings.keymap"
             :showLineNumberGutter="settings.showLineNumberGutter"
             :showFoldGutter="settings.showFoldGutter"
+            :bracketClosing="settings.bracketClosing"
             class="editor"
             ref="editor"
             @openLanguageSelector="openLanguageSelector"
@@ -135,6 +136,7 @@
             @toggleTheme="toggleTheme"
             @openLanguageSelector="openLanguageSelector"
             @formatCurrentBlock="formatCurrentBlock"
+            @openSettings="showSettings = true"
             class="status" 
         />
         <div class="overlay">

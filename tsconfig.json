@@ -14,7 +14,7 @@
     "noEmit": true,
     "allowJs": true
   },
-  "include": ["src"],
+  "include": ["src"," shared-utils"],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]

@@ -30,9 +30,11 @@
                 globalHotkey: this.initialSettings.globalHotkey,
                 showInDock: this.initialSettings.showInDock,
                 showInMenu: this.initialSettings.showInMenu,
+                bracketClosing: this.initialSettings.bracketClosing,
                 autoUpdate: this.initialSettings.autoUpdate,
 
                 activeTab: "general",
+                isWebApp: window.heynote.isWebApp,
             }
         },
 
@@ -63,6 +65,7 @@
                     showInDock: this.showInDock,
                     showInMenu: this.showInMenu || !this.showInDock,
                     autoUpdate: this.autoUpdate,
+                    bracketClosing: this.bracketClosing,
                 })
             },
         }
@@ -83,12 +86,19 @@
                             @click="activeTab = 'general'"
                         />
                         <TabListItem 
+                            name="Editing" 
+                            tab="editing"
+                            :activeTab="activeTab" 
+                            @click="activeTab = 'editing'"
+                        />
+                        <TabListItem 
                             name="Appearance" 
                             tab="appearance"
                             :activeTab="activeTab" 
                             @click="activeTab = 'appearance'"
                         />
                         <TabListItem 
+                            v-if="!isWebApp"
                             name="Updates" 
                             tab="updates" 
                             :activeTab="activeTab" 
@@ -115,7 +125,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="!isWebApp">
                             <div class="entry">
                                 <h2>Global Keyboard Shortcut</h2>
                                 <label class="keyboard-shortcut-label">
@@ -134,25 +144,41 @@
                                 />
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="!isWebApp">
                             <div class="entry">
                                 <h2>Show In</h2>
                                 <label v-if="isMac">
-                                    <input 
-                                        type="checkbox" 
-                                        v-model="showInDock" 
+                                    <input
+                                        type="checkbox"
+                                        v-model="showInDock"
                                         @change="updateSettings"
                                     />
                                     Show in dock
                                 </label>
                                 <label>
-                                    <input 
+                                    <input
                                         type="checkbox"
                                         :disabled="!showInDock"
-                                        v-model="showInMenu" 
+                                        v-model="showInMenu"
                                         @change="updateSettings"
                                     />
                                     Show system tray
+                                </label>
+                            </div>
+                        </div>
+                    </TabContent>
+
+                    <TabContent tab="editing" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Input settings</h2>
+                                <label>
+                                    <input 
+                                        type="checkbox"
+                                        v-model="bracketClosing"
+                                        @change="updateSettings"
+                                    />
+                                    Auto-close brackets and quotation marks
                                 </label>
                             </div>  
                         </div>
@@ -183,7 +209,7 @@
                         </div>
                     </TabContent>
                     
-                    <TabContent tab="updates" :activeTab="activeTab">
+                    <TabContent tab="updates" :activeTab="activeTab" v-if="!isWebApp">
                         <div class="row">
                             <div class="entry">
                                 <h2>Auto Update</h2>

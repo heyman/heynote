@@ -32,6 +32,7 @@ const schema = {
             "bufferPath" : {type: "string", default: ""},
             "showInDock": {type: "boolean", default: true},
             "showInMenu": {type: "boolean", default: false},
+            "bracketClosing": {type: "boolean", default: false},
         },
     },
 
@@ -59,6 +60,7 @@ const defaults = {
         bufferPath: "",
         showInDock: true,
         showInMenu: false,
+        bracketClosing: false,
     },
     theme: "system",
 }

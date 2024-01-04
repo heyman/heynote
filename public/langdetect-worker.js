@@ -24,6 +24,7 @@ GUESSLANG_LANGUAGES = [
     "toml",
     "swift",
     "kt",
+    "groovy",
 ]
 
 const guessLang = new self.GuessLang()

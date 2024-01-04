@@ -35,11 +35,19 @@ export class HeynotePage {
         await this.page.evaluate((content) => window._heynote_editor.setContent(content), content)
     }
 
+    async getCursorPosition() {
+        return await this.page.evaluate(() => window._heynote_editor.getCursorPosition())
+    }
+
     async getBlockContent(blockIndex) {
         const blocks = await this.getBlocks()
         const content = await this.getContent()
         expect(blocks.length).toBeGreaterThan(blockIndex)
         const block = blocks[blockIndex]
         return content.slice(block.content.from, block.content.to)
+    }
+
+    async getStoredSettings() {
+        return await this.page.evaluate(() => JSON.parse(window.localStorage.getItem("settings")))
     }
 }
