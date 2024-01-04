@@ -11,8 +11,9 @@
     <div id="app"></div>
 
     <script type="module">
-      import heynote from "./bridge.js";
-      window.heynote = heynote;
+      import { Heynote, ipcRenderer } from "./bridge.js";
+      window.ipcRenderer = ipcRenderer;
+      window.heynote = Heynote;
     </script>
     <script type="module" src="main.js"></script>
     <script src="./math.js"></script>
