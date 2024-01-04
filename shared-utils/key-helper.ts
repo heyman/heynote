@@ -3,10 +3,10 @@ export const keyHelpStr = (platform: string) => {
     const altChar = platform === "darwin" ? "⌥" : "Alt"
 
     const keyHelp = [
-        [`${altChar} + Shift + Enter`, "Add new block at the start of the buffer"],
-        [`${modChar} + Shift + Enter`, "Add new block at the end of the buffer"],
-        [`${altChar} + Enter`, "Add new block before the current block"],
         [`${modChar} + Enter`, "Add new block below the current block"],
+        [`${altChar} + Enter`, "Add new block before the current block"],
+        [`${modChar} + Shift + Enter`, "Add new block at the end of the buffer"],
+        [`${altChar} + Shift + Enter`, "Add new block at the start of the buffer"],
         [`${modChar} + ${altChar} + Enter`, "Split the current block at cursor position"],
         [`${modChar} + L`, "Change block language"],
         [`${modChar} + Down`, "Goto next block"],
