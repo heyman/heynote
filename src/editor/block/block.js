@@ -138,11 +138,9 @@ class NoteBlockStart extends WidgetType {
                   // Perform actions on the next div
                   //console.log( nextDiv.textContent);
                   text.push(nextDiv.textContent);
-                  // For example, you can get the data-index attribute from the next div
-                  
+   
                   // Move to the next sibling div
-                  nextDiv = nextDiv.nextElementSibling;
-                  
+                  nextDiv = nextDiv.nextElementSibling;                  
               }
   
               if (!nextDiv) {
