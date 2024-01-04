@@ -1,5 +1,5 @@
 import { Annotation, EditorState, Compartment } from "@codemirror/state"
-import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
+import { EditorView, keymap as kmp, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
 import { indentUnit, forceParsing, foldGutter } from "@codemirror/language"
 import { markdown } from "@codemirror/lang-markdown"
 
@@ -8,11 +8,11 @@ import { heynoteDark } from "./theme/dark.js"
 import { heynoteBase } from "./theme/base.js"
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
-import { noteBlockExtension, blockLineNumbers, blockState } from "./block/block.js"
+import { noteBlockExtension, blockLineNumbers, blockState, getActiveNoteBlock } from "./block/block.js"
 import { heynoteEvent, SET_CONTENT } from "./annotation.js";
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
-import { heynoteKeymap } from "./keymap.js"
+import { heynoteKeymap, languageKeymap } from "./keymap.js"
 import { emacsKeymap } from "./emacs.js"
 import { heynoteCopyPaste } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
@@ -21,15 +21,6 @@ import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
 
 export const LANGUAGE_SELECTOR_EVENT = "openLanguageSelector"
-
-function getKeymapExtensions(editor, keymap) {
-    if (keymap === "emacs") {
-        return emacsKeymap(editor)
-    } else {
-        return heynoteKeymap(editor)
-    }
-}
-
 
 export class HeynoteEditor {
     constructor({
@@ -45,6 +36,7 @@ export class HeynoteEditor {
         this.element = element
         this.themeCompartment = new Compartment
         this.keymapCompartment = new Compartment
+        this.languageKeymapCompartment = new Compartment
         this.lineNumberCompartmentPre = new Compartment
         this.lineNumberCompartment = new Compartment
         this.foldGutterCompartment = new Compartment
@@ -54,8 +46,10 @@ export class HeynoteEditor {
         const state = EditorState.create({
             doc: content || "",
             extensions: [
-                this.keymapCompartment.of(getKeymapExtensions(this, keymap)),
+                this.keymapCompartment.of(this.getKeymapExtensions(this, keymap)),
+                this.languageKeymapCompartment.of(kmp.of([])),
                 heynoteCopyPaste(this),
+                languageKeymap(this.languageKeymapCompartment),
 
                 //minimalSetup,
                 this.lineNumberCompartment.of(showLineNumberGutter ? [lineNumbers(), blockLineNumbers] : []),
@@ -108,6 +102,15 @@ export class HeynoteEditor {
                 scrollIntoView: true,
             })
             this.view.focus()
+        }
+    }
+
+    // Changed to a class function to use with languageKeymaps
+    getKeymapExtensions(editor, keymap) {
+        if (keymap === "emacs") {
+            return emacsKeymap(editor)
+        } else {
+            return heynoteKeymap(editor)
         }
     }
 

@@ -13,10 +13,12 @@ import {
     selectNextBlock, selectPreviousBlock,
     gotoPreviousParagraph, gotoNextParagraph, 
     selectNextParagraph, selectPreviousParagraph,
-    newCursorBelow, newCursorAbove,
+    newCursorBelow, newCursorAbove, formatBold, formatItalic, formatTitle,
 } from "./block/commands.js"
 
 import { formatBlockContent } from "./block/format-code.js"
+import { EditorState } from "@codemirror/state"
+import { getActiveNoteBlock } from "./block/block.js"
 
 
 export function keymapFromSpec(specs) {
@@ -52,4 +54,35 @@ export function heynoteKeymap(editor) {
         {key:"Ctrl-ArrowUp", run:gotoPreviousParagraph, shift:selectPreviousParagraph},
         {key:"Ctrl-ArrowDown", run:gotoNextParagraph, shift:selectNextParagraph},
     ])
+}
+
+// Custom keymaps for markdown formatting
+const markdownKeymaps = {
+    language: "markdown",
+    keymap: keymap.of([
+        {key:"Ctrl-b", run:formatBold},
+        {key:"Ctrl-i", run:formatItalic},
+        {key:"Ctrl-t", run:formatTitle}
+    ])
+}
+
+export function languageKeymap(keymapComp){
+    // First, we check each transaction to see if the block language changed in some way
+    return EditorState.transactionExtender.of((tr)=>{
+        if(getActiveNoteBlock(tr.startState).language.name != getActiveNoteBlock(tr.state).language.name){
+            let targetLanguageKeymap;
+            // If it did, we assign a new keymap set for the language, or none if not defined
+            switch(getActiveNoteBlock(tr.state).language.name){
+                case "markdown":
+                    targetLanguageKeymap = markdownKeymaps.keymap;
+                break;
+                default:
+                    targetLanguageKeymap = [];
+                break;
+            }
+            return {
+                effects: keymapComp.reconfigure(targetLanguageKeymap)
+            }
+        }
+    })
 }

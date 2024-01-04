@@ -1,4 +1,4 @@
-import { EditorSelection } from "@codemirror/state"
+import { EditorSelection, ChangeSet } from "@codemirror/state"
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getNoteBlockFromPos } from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
@@ -249,4 +249,71 @@ export function triggerCurrenciesLoaded(state, dispatch) {
         changes:{from: 0, to: 0, insert:""},
         annotations: [heynoteEvent.of(CURRENCIES_LOADED)],
     }))
+}
+
+export function formatBold({state, dispatch}){
+    let boldSelectionFrom = state.selection.main.from;
+    let boldSelectionTo = state.selection.main.to;
+
+    /**
+     * Assuring that, if multiple blocks are selected, only
+     * the active block will be affected by its keymaps
+     */
+    if(state.selection.main.from < getActiveNoteBlock(state).content.from){
+        boldSelectionFrom = getActiveNoteBlock(state).content.from;
+    }
+    if(state.selection.main.to > getActiveNoteBlock(state).content.to){
+        boldSelectionTo = getActiveNoteBlock(state).content.to;
+    }
+    dispatch({
+        changes: [
+            ChangeSet.of([
+                {from: boldSelectionFrom, insert: "**"},
+                {from: boldSelectionTo, insert: "**"}
+            ], state.doc.length)
+        ],
+        selection: EditorSelection.cursor(state.selection.main.from == state.selection.main.to ? state.selection.main.from + 2 : state.selection.main.from)
+    })
+    return true;
+}
+
+export function formatItalic({state, dispatch}){
+    let italicSelectionFrom = state.selection.main.from;
+    let italicSelectionTo = state.selection.main.to;
+
+    /**
+     * Assuring that, if multiple blocks are selected, only
+     * the active block will be affected by its keymaps
+     */
+    if(state.selection.main.from < getActiveNoteBlock(state).content.from){
+        italicSelectionFrom = getActiveNoteBlock(state).content.from;
+    }
+    if(state.selection.main.to > getActiveNoteBlock(state).content.to){
+        italicSelectionTo = getActiveNoteBlock(state).content.to;
+    }
+    dispatch({
+        changes: [
+            ChangeSet.of([
+                {from: italicSelectionFrom, insert: "*"},
+                {from: italicSelectionTo, insert: "*"}
+            ], state.doc.length)
+        ],
+        // If there is no text selected, we create a formated text area and move the cursor inside it.
+        selection: EditorSelection.cursor(state.selection.main.from == state.selection.main.to ? state.selection.main.from + 1 : state.selection.main.from)
+    })
+    return true;
+}
+
+export function formatTitle({state, dispatch}){
+    let currentLine = state.doc.lineAt(state.selection.main.head);
+
+    dispatch({
+        changes: [
+            ChangeSet.of([
+                {from: currentLine.from, insert: "# "}
+            ], state.doc.length)
+        ],
+        selection: EditorSelection.cursor(state.selection.main.from == state.selection.main.to ? state.selection.main.from + 2 : currentLine.to)
+    })
+    return true;
 }
