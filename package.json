@@ -1,6 +1,6 @@
 {
   "name": "Heynote",
-  "version": "1.5.0",
+  "version": "1.6.0-beta",
   "main": "dist-electron/main/index.js",
   "description": "A dedicated scratch pad",
   "author": "Jonatan Heyman (https://heyman.info)",
