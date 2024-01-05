@@ -24,6 +24,7 @@ import {
     selectNextParagraph, selectPreviousParagraph,
     selectAll,
 } from "./block/commands.js"
+import { pasteCommand, copyCommand, cutCommand } from "./copy-paste.js"
 
 
 // if set to true, all keybindings for moving around is changed to their corresponding select commands
@@ -60,6 +61,21 @@ function emacsSelectAll(view) {
 }
 
 
+function emacsMetaKeyCommand(key, editor, command) {
+    const handler = (view, event) => {
+        if (editor.emacsMetaKey === "meta" && event.metaKey || editor.emacsMetaKey === "alt" && event.altKey) {
+            event.preventDefault()
+            return command(view)
+        } else {
+            return false
+        }
+    }
+    return [
+        {key, run:handler, preventDefault:false},
+        {key:key.replace("Meta", "Alt"), run:handler, preventDefault:false},
+    ]
+}
+
 export function emacsKeymap(editor) {
     return [
         heynoteKeymap(editor),
@@ -81,7 +97,11 @@ export function emacsKeymap(editor) {
             ["Ctrl-t", transposeChars],
             ["Ctrl-v", cursorPageDown],
 
-            { key: "Ctrl-b", run: emacsMoveCommand(cursorCharLeft, selectCharLeft), shift: selectCharLeft, preventDefault: true },
+            ["Ctrl-y", pasteCommand],
+            ["Ctrl-w", cutCommand(editor)],
+            ...emacsMetaKeyCommand("Meta-w", editor, copyCommand(editor)),
+
+            { key: "Ctrl-b", run: emacsMoveCommand(cursorCharLeft, selectCharLeft), shift: selectCharLeft },
             { key: "Ctrl-f", run: emacsMoveCommand(cursorCharRight, selectCharRight), shift: selectCharRight },
             { key: "Ctrl-p", run: emacsMoveCommand(cursorLineUp, selectLineUp), shift: selectLineUp },
             { key: "Ctrl-n", run: emacsMoveCommand(cursorLineDown, selectLineDown), shift: selectLineDown },

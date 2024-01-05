@@ -129,7 +129,7 @@
                         <div class="row">
                             <div class="entry">
                                 <h2>Keymap</h2>
-                                <select ref="keymapSelector" v-model="keymap" @change="updateSettings">
+                                <select ref="keymapSelector" v-model="keymap" @change="updateSettings" class="keymap">
                                     <template v-for="km in keymaps" :key="km.value">
                                         <option :selected="km.value === keymap" :value="km.value">{{ km.name }}</option>
                                     </template>
@@ -137,7 +137,7 @@
                             </div>
                             <div class="entry" v-if="keymap === 'emacs' && isMac">
                                 <h2>Meta Key</h2>
-                                <select v-model="metaKey" @change="updateSettings">
+                                <select v-model="metaKey" @change="updateSettings" class="metaKey">
                                     <option :selected="metaKey === 'meta'" value="meta">Command</option>
                                     <option :selected="metaKey === 'alt'" value="alt">Option</option>
                                 </select>

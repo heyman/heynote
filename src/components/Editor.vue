@@ -11,6 +11,10 @@
                 type: String,
                 default: "default",
             },
+            emacsMetaKey: {
+                type: String,
+                default: "Meta",
+            },
             showLineNumberGutter: {
                 type: Boolean,
                 default: true,
@@ -63,6 +67,7 @@
                         window.heynote.buffer.save(content)
                     },
                     keymap: this.keymap,
+                    emacsMetaKey: this.emacsMetaKey,
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                     bracketClosing: this.bracketClosing,
@@ -110,8 +115,12 @@
                 this.editor.setTheme(newTheme)
             },
 
-            keymap(keymap) {
-                this.editor.setKeymap(keymap)
+            keymap() {
+                this.editor.setKeymap(this.keymap, this.emacsMetaKey)
+            },
+
+            emacsMetaKey() {
+                this.editor.setKeymap(this.keymap, this.emacsMetaKey)
             },
 
             showLineNumberGutter(show) {
