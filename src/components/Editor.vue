@@ -13,7 +13,7 @@
             },
             emacsMetaKey: {
                 type: String,
-                default: "Meta",
+                default: "alt",
             },
             showLineNumberGutter: {
                 type: Boolean,

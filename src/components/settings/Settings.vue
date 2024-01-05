@@ -60,7 +60,7 @@
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                     keymap: this.keymap,
-                    emacsMetaKey: this.metaKey,
+                    emacsMetaKey: window.heynote.platform.isMac ? this.metaKey : "alt",
                     allowBetaVersions: this.allowBetaVersions,
                     enableGlobalHotkey: this.enableGlobalHotkey,
                     globalHotkey: this.globalHotkey,
