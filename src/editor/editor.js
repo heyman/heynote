@@ -15,7 +15,7 @@ import { changeCurrentBlockLanguage, triggerCurrenciesLoaded } from "./block/com
 import { formatBlockContent } from "./block/format-code.js"
 import { heynoteKeymap } from "./keymap.js"
 import { emacsKeymap } from "./emacs.js"
-import { heynoteCopyPaste } from "./copy-paste"
+import { heynoteCopyCut } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
@@ -40,6 +40,7 @@ export class HeynoteEditor {
         theme="light", 
         saveFunction=null, 
         keymap="default", 
+        emacsMetaKey="Meta",
         showLineNumberGutter=true, 
         showFoldGutter=true,
         bracketClosing=false,
@@ -53,12 +54,13 @@ export class HeynoteEditor {
         this.readOnlyCompartment = new Compartment
         this.closeBracketsCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
+        this.emacsMetaKey = emacsMetaKey
 
         const state = EditorState.create({
             doc: content || "",
             extensions: [
                 this.keymapCompartment.of(getKeymapExtensions(this, keymap)),
-                heynoteCopyPaste(this),
+                heynoteCopyCut(this),
 
                 //minimalSetup,
                 this.lineNumberCompartment.of(showLineNumberGutter ? [lineNumbers(), blockLineNumbers] : []),
@@ -159,8 +161,9 @@ export class HeynoteEditor {
         })
     }
 
-    setKeymap(keymap) {
+    setKeymap(keymap, emacsMetaKey) {
         this.deselectOnCopy = keymap === "emacs"
+        this.emacsMetaKey = emacsMetaKey
         this.view.dispatch({
             effects: this.keymapCompartment.reconfigure(getKeymapExtensions(this, keymap)),
         })
