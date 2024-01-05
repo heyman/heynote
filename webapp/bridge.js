@@ -61,7 +61,7 @@ const ipcRenderer = new IpcRenderer()
 let settingsData = localStorage.getItem("settings")
 let initialSettings = {
     keymap: "default",
-    emacsMetaKey: "meta",
+    emacsMetaKey: "alt",
     showLineNumberGutter: true,
     showFoldGutter: true,
     bracketClosing: false,

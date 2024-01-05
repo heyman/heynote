@@ -40,7 +40,7 @@ export class HeynoteEditor {
         theme="light", 
         saveFunction=null, 
         keymap="default", 
-        emacsMetaKey="Meta",
+        emacsMetaKey,
         showLineNumberGutter=true, 
         showFoldGutter=true,
         bracketClosing=false,
