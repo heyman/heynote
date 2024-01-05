@@ -23,7 +23,11 @@ import { formatBlockContent } from "./block/format-code.js"
 export function keymapFromSpec(specs) {
     return keymap.of(specs.map((spec) => {
         if (spec.run) {
-            return {...spec, preventDefault: true}
+            if ("preventDefault" in spec) {
+                return spec
+            } else {
+                return {...spec, preventDefault: true}
+            }
         } else {
             const [key, run] = spec
             return {
