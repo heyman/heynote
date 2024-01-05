@@ -39,7 +39,7 @@
       }
     ],
     "artifactName": "${productName}_${version}.${ext}",
-    "icon": "public/favicon.ico"
+    "icon": "public/icon.ico"
   },
   "nsis": {
     "oneClick": false,
