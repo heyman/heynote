@@ -110,6 +110,28 @@ export const addNewBlockAfterLast = ({ state, dispatch }) => {
     return true;
 }
 
+export const deleteBlockContents = ({ state, dispatch }) => {
+    if (state.readOnly)
+        return false
+
+        const emptyText = "";
+        const block = getActiveNoteBlock(state);
+
+        dispatch(state.update({
+            changes: {
+                from: block.content.from,
+                to: block.content.to,
+                insert: emptyText,
+            },
+            selection: EditorSelection.cursor(block.content.from)
+        }, {
+            scrollIntoView: true, 
+            userEvent: "delete",
+        }))
+
+    return true;
+}
+
 export function changeLanguageTo(state, dispatch, block, language, auto) {
     if (state.readOnly)
         return false
