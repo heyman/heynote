@@ -1,4 +1,5 @@
 import fs from "fs"
+import os from "node:os"
 import { join, dirname, basename } from "path"
 import { app, ipcMain, dialog } from "electron"
 import * as jetpack from "fs-jetpack";
@@ -8,9 +9,15 @@ import { isDev } from "../detect-platform"
 import { win } from "./index"
 import { eraseInitialContent, initialContent, initialDevContent } from '../initial-content'
 
+const untildify = (pathWithTilde) => {
+    const homeDirectory = os.homedir();
+    return homeDirectory
+      ? pathWithTilde.replace(/^~(?=$|\/|\\)/, homeDirectory)
+      : pathWithTilde;
+}
 
 export function constructBufferFilePath(directoryPath) {
-    return join(directoryPath, isDev ? "buffer-dev.txt" : "buffer.txt")
+    return join(untildify(directoryPath), isDev ? "buffer-dev.txt" : "buffer.txt")
 }
 
 export function getBufferFilePath() {
@@ -157,4 +164,3 @@ ipcMain.handle("buffer-content:selectLocation", async () => {
     }
     return filePath
 })
-
