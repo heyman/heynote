@@ -24,8 +24,8 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Version [e.g. 22]
+ - OS: [e.g. MacOS 13.5.1]
+ - Version [e.g. 1.6.0-beta]
 
 **Additional context**
 Add any other context about the problem here.
