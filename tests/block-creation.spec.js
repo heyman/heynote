@@ -4,7 +4,6 @@ import {HeynotePage} from "./test-utils.js";
 let heynotePage
 
 test.beforeEach(async ({page}) => {
-    console.log("beforeEach")
     heynotePage = new HeynotePage(page)
     await heynotePage.goto()
 

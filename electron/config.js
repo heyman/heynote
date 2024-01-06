@@ -1,4 +1,5 @@
 import Store from "electron-store"
+import { isMac } from "./detect-platform"
 
 const isDev = !!process.env.VITE_DEV_SERVER_URL
 
@@ -50,7 +51,7 @@ const schema = {
 const defaults = {
     settings: {
         keymap: "default",
-        emacsMetaKey: "meta",
+        emacsMetaKey: isMac ? "meta" : "alt",
         showLineNumberGutter: true,
         showFoldGutter: true,
         autoUpdate: true,

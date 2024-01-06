@@ -116,6 +116,7 @@
             :development="development"
             :debugSyntaxTree="false"
             :keymap="settings.keymap"
+            :emacsMetaKey="settings.emacsMetaKey"
             :showLineNumberGutter="settings.showLineNumberGutter"
             :showFoldGutter="settings.showFoldGutter"
             :bracketClosing="settings.bracketClosing"

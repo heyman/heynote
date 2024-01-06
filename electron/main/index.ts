@@ -6,7 +6,6 @@ import fs from "fs"
 import { menu, getTrayMenu } from './menu'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
-import { onBeforeInputEvent } from "../keymap"
 import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
@@ -125,11 +124,6 @@ async function createWindow() {
         win.loadFile(indexHtml)
         //win.webContents.openDevTools()
     }
-
-    // custom keyboard shortcuts for Emacs keybindings
-    win.webContents.on("before-input-event", function (event, input) {
-        onBeforeInputEvent({event, input, win, currentKeymap})
-    })
 
     // Test actively push message to the Electron-Renderer
     win.webContents.on('did-finish-load', () => {
