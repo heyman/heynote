@@ -64,8 +64,11 @@ if (isBetaVersion) {
 }
 
 let forceQuit = false
-export function quit() {
+export function setForceQuit() {
     forceQuit = true
+}
+export function quit() {
+    setForceQuit()
     app.quit()
 }
 
@@ -93,7 +96,6 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: true,
         },
-        skipTaskbar: isWindows && CONFIG.get("settings.showInMenu"),
     }, windowConfig))
 
     // maximize window if it was maximized last time
@@ -122,6 +124,18 @@ async function createWindow() {
                 isFullScreen: win.isFullScreen(),
             }, win.getNormalBounds())
             CONFIG.set("windowConfig", windowConfig)
+        }
+    })
+
+    win.on("hide", () => {
+        if (isWindows && CONFIG.get("settings.showInMenu")) {
+            win.setSkipTaskbar(true)
+        }
+    })
+
+    win.on("show", () => {
+        if (isWindows && CONFIG.get("settings.showInMenu")) {
+            win.setSkipTaskbar(false)
         }
     })
 
@@ -182,15 +196,25 @@ function registerGlobalHotkey() {
                 if (win.isFocused()) {
                     if (!!app.hide) {
                         // app.hide() only available on macOS
+                        // We want to use app.hide() so that the menu bar also gets changed
                         app?.hide()
                     } else {
                         win.blur()
+                        if (CONFIG.get("settings.showInMenu")) {
+                            // if we're using a tray icon we want to completely hide the window
+                            win.hide()
+                        }
                     }
                 } else {
                     app.focus({steal: true})
                     if (win.isMinimized()) {
                         win.restore()
                     }
+                    if (!win.isVisible()) {
+                        win.show()
+                    }
+                    
+                    win.focus()
                 }
             })
         } catch (error) {
@@ -218,9 +242,6 @@ function registerShowInMenu() {
     } else {
         tray?.destroy()
     }
-    if (isWindows) {
-        win.setSkipTaskbar(CONFIG.get("settings.showInMenu"))
-    }
 }
 
 app.whenReady().then(createWindow).then(async () => {
@@ -228,6 +249,11 @@ app.whenReady().then(createWindow).then(async () => {
     registerGlobalHotkey()
     registerShowInDock()
     registerShowInMenu()
+})
+
+app.on("before-quit", () => {
+    // if CMD+Q is pressed, we want to quit the app even if we're using a Menu/Tray icon
+    setForceQuit()
 })
 
 app.on('window-all-closed', () => {

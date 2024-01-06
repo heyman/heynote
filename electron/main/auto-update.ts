@@ -12,6 +12,7 @@ import {
     UPDATE_INSTALL_AND_RESTART,
     UPDATE_CHECK_FOR_UPDATES,
 } from '../constants'
+import { setForceQuit } from "./index";
 
 
 // will reference the main window
@@ -62,7 +63,11 @@ ipcMain.handle(UPDATE_START_DOWNLOAD, () => {
 })
 
 ipcMain.handle(UPDATE_INSTALL_AND_RESTART, () => {
-    setImmediate(() => autoUpdater.quitAndInstall(true, true))
+    setImmediate(() => {
+        // make sure we can quite the app if it's in the Tray/Menu bar
+        setForceQuit()
+        autoUpdater.quitAndInstall(true, true)
+    })
 })
 
 
