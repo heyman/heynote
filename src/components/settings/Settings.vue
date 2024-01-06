@@ -180,7 +180,12 @@
                                         v-model="showInMenu"
                                         @change="updateSettings"
                                     />
-                                    Show system tray
+                                    <template v-if="isMac">
+                                        Show in menu bar
+                                    </template>
+                                    <template v-else>
+                                        Show in system tray
+                                    </template>
                                 </label>
                             </div>
                         </div>
