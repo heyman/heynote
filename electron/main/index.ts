@@ -63,6 +63,12 @@ if (isBetaVersion) {
     CONFIG.set("settings.allowBetaVersions", true)
 }
 
+let forceQuit = false
+export function quit() {
+    forceQuit = true
+    app.quit()
+}
+
 
 async function createWindow() {
     // read any stored window settings from config, or use defaults
@@ -87,7 +93,7 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: true,
         },
-
+        skipTaskbar: isWindows && CONFIG.get("settings.showInMenu"),
     }, windowConfig))
 
     // maximize window if it was maximized last time
@@ -99,6 +105,11 @@ async function createWindow() {
     }
 
     win.on("close", (event) => {
+        if (!forceQuit && isWindows && CONFIG.get("settings.showInMenu")) {
+            event.preventDefault()
+            win.hide()
+            return
+        }
         // Prevent the window from closing, and send a message to the renderer which will in turn
         // send a message to the main process to save the current buffer and close the window.
         if (!contentSaved) {
@@ -206,6 +217,9 @@ function registerShowInMenu() {
         createTray()
     } else {
         tray?.destroy()
+    }
+    if (isWindows) {
+        win.setSkipTaskbar(CONFIG.get("settings.showInMenu"))
     }
 }
 

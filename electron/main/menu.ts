@@ -1,6 +1,7 @@
 const { app, Menu } = require("electron")
 import { OPEN_SETTINGS_EVENT } from "../constants";
 import { openAboutWindow } from "./about";
+import { quit } from "./index"
 
 const isMac = process.platform === "darwin"
 
@@ -157,7 +158,7 @@ export function getTrayMenu(win) {
         {
             label: 'Quit',
             click: () => {
-                app.quit()
+                quit()
             },
         },
     ])
