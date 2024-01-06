@@ -145,9 +145,9 @@ function createTray() {
     let img
     if (isMac) {
         img = nativeImage.createFromPath(join(process.env.PUBLIC, "iconTemplate.png"))
-    } else if(isLinux){
+    } else if (isLinux){
         img = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon-linux.png'));
-    } else{
+    } else {
         img = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon.ico'));
     }
     tray = new Tray(img);
