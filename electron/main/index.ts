@@ -6,7 +6,7 @@ import fs from "fs"
 import { menu, getTrayMenu } from './menu'
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
-import { isDev, isMac, isWindows } from '../detect-platform';
+import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
 import { loadBuffer, contentSaved } from './buffer';
@@ -145,7 +145,9 @@ function createTray() {
     let img
     if (isMac) {
         img = nativeImage.createFromPath(join(process.env.PUBLIC, "iconTemplate.png"))
-    } else {
+    } else if (isLinux) {
+        img = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon-linux.png'));
+    } else{
         img = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon.ico'));
     }
     tray = new Tray(img);
