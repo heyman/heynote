@@ -70,6 +70,9 @@
                     bracketClosing: this.bracketClosing,
                     bufferPath: this.bufferPath,
                 })
+                if (!this.showInDock) {
+                    this.showInMenu = true
+                }
             },
 
             async selectBufferLocation() {
