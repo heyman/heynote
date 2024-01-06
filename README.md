@@ -129,7 +129,7 @@ Alt                    Show menu
 
 ### Can Math blocks do X?
 
-Heynote's Math blocks are powered by [Math.js](https://mathjs.org/). Checkout their [documentation](https://mathjs.org/docs/reference/index.html) to see what [functions](https://mathjs.org/docs/reference/functions.html) and [constants](https://mathjs.org/docs/reference/constants.html) are available.
+Heynote's Math blocks are powered by [Math.js expressions](https://mathjs.org/docs/expressions). Checkout their [documentation](https://mathjs.org/docs/reference/index.html) to see what [functions](https://mathjs.org/docs/reference/functions.html) and [constants](https://mathjs.org/docs/reference/constants.html) are available.
 
 
 ## Thanks!
