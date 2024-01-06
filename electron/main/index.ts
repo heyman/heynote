@@ -105,7 +105,7 @@ async function createWindow() {
     }
 
     win.on("close", (event) => {
-        if (!forceQuit && isWindows && CONFIG.get("settings.showInMenu")) {
+        if (!forceQuit && CONFIG.get("settings.showInMenu")) {
             event.preventDefault()
             win.hide()
             return
