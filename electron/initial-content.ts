@@ -12,7 +12,7 @@ ${keyHelpStr(os.platform())}
 This is a Math block. Here, rows are evaluated as math expressions. 
 
 radius = 5
-volume = radius^2 * PI
+area = radius^2 * PI
 sqrt(9)
 
 It also supports some basic unit conversions, including currencies:
