@@ -14,7 +14,7 @@ import {
     selectNextBlock, selectPreviousBlock,
     gotoPreviousParagraph, gotoNextParagraph, 
     selectNextParagraph, selectPreviousParagraph,
-    newCursorBelow, newCursorAbove, deleteBlockContents,
+    newCursorBelow, newCursorAbove, deleteLine,
 } from "./block/commands.js"
 
 import { formatBlockContent } from "./block/format-code.js"
@@ -51,7 +51,7 @@ export function heynoteKeymap(editor) {
         ["Alt-Shift-f", formatBlockContent],
         ["Mod-Alt-ArrowDown", newCursorBelow],
         ["Mod-Alt-ArrowUp", newCursorAbove],
-        ["Mod-Shift-k", deleteBlockContents],
+        ["Mod-Shift-k", deleteLine],
         {key:"Mod-ArrowUp", run:gotoPreviousBlock, shift:selectPreviousBlock},
         {key:"Mod-ArrowDown", run:gotoNextBlock, shift:selectNextBlock},
         {key:"Ctrl-ArrowUp", run:gotoPreviousParagraph, shift:selectPreviousParagraph},
