@@ -275,7 +275,7 @@
                                     >{{ label }}</option>
                                 </select>
                             </div>
-                            <div class="entry" v-if="keymap === 'emacs' && isMac">
+                            <div class="entry">
                                 <h2>Font Size</h2>
                                 <select v-model="fontSize" @change="updateSettings" class="font-size">
                                     <option
