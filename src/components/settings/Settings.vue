@@ -40,7 +40,7 @@
                 activeTab: "general",
                 isWebApp: window.heynote.isWebApp,
                 customBufferLocation: !!this.initialSettings.bufferPath,
-                systemFonts: ["Hack"],
+                systemFonts: [[defaultFontFamily, defaultFontFamily + " (default)"]],
                 defaultFontSize: defaultFontSize,
             }
         },
@@ -48,7 +48,7 @@
         async mounted() {
             let localFonts = [... new Set((await window.queryLocalFonts()).map(f => f.family))].filter(f => f !== "Hack")
             localFonts = [...new Set(localFonts)].map(f => [f, f])
-            this.systemFonts = [["Hack", "Hack (default)"], ...localFonts]
+            this.systemFonts = [[defaultFontFamily, defaultFontFamily + " (default)"], ...localFonts]
 
             window.addEventListener("keydown", this.onKeyDown);
             this.$refs.keymapSelector.focus()
