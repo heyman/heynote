@@ -120,6 +120,8 @@
             :showLineNumberGutter="settings.showLineNumberGutter"
             :showFoldGutter="settings.showFoldGutter"
             :bracketClosing="settings.bracketClosing"
+            :fontFamily="settings.fontFamily"
+            :fontSize="settings.fontSize"
             class="editor"
             ref="editor"
             @openLanguageSelector="openLanguageSelector"

@@ -2,6 +2,7 @@
     import KeyboardHotkey from "./KeyboardHotkey.vue"
     import TabListItem from "./TabListItem.vue"
     import TabContent from "./TabContent.vue"
+    import { defaultFontFamily, defaultFontSize } from "@/src/editor/theme/font-theme.js"
 
     export default {
         props: {
@@ -33,14 +34,22 @@
                 bracketClosing: this.initialSettings.bracketClosing,
                 autoUpdate: this.initialSettings.autoUpdate,
                 bufferPath: this.initialSettings.bufferPath,
+                fontFamily: this.initialSettings.fontFamily || defaultFontFamily,
+                fontSize: this.initialSettings.fontSize || defaultFontSize,
 
                 activeTab: "general",
                 isWebApp: window.heynote.isWebApp,
                 customBufferLocation: !!this.initialSettings.bufferPath,
+                systemFonts: ["Hack"],
+                defaultFontSize: defaultFontSize,
             }
         },
 
-        mounted() {
+        async mounted() {
+            let localFonts = [... new Set((await window.queryLocalFonts()).map(f => f.family))].filter(f => f !== "Hack")
+            localFonts = [...new Set(localFonts)].map(f => [f, f])
+            this.systemFonts = [["Hack", "Hack (default)"], ...localFonts]
+
             window.addEventListener("keydown", this.onKeyDown);
             this.$refs.keymapSelector.focus()
         },
@@ -69,6 +78,8 @@
                     autoUpdate: this.autoUpdate,
                     bracketClosing: this.bracketClosing,
                     bufferPath: this.bufferPath,
+                    fontFamily: this.fontFamily === defaultFontFamily ? undefined : this.fontFamily,
+                    fontSize: this.fontSize === defaultFontSize ? undefined : this.fontSize,
                 })
                 if (!this.showInDock) {
                     this.showInMenu = true
@@ -253,6 +264,28 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="row font-settings">
+                            <div class="entry">
+                                <h2>Font Family</h2>
+                                <select v-model="fontFamily" @change="updateSettings" class="font-family">
+                                    <option
+                                        v-for="[font, label] in systemFonts"
+                                        :selected="font === fontFamily"
+                                        :value="font"
+                                    >{{ label }}</option>
+                                </select>
+                            </div>
+                            <div class="entry" v-if="keymap === 'emacs' && isMac">
+                                <h2>Font Size</h2>
+                                <select v-model="fontSize" @change="updateSettings" class="font-size">
+                                    <option
+                                        v-for="size in [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]"
+                                        :selected="size === fontSize"
+                                        :value="size"
+                                    >{{ size }}px{{ size === defaultFontSize ? " (default)" : "" }}</option>
+                                </select>
+                            </div>
+                        </div>
                     </TabContent>
                     
                     <TabContent tab="updates" :activeTab="activeTab" v-if="!isWebApp">
@@ -359,6 +392,8 @@
                     flex-grow: 1
                     padding: 40px
                     overflow-y: auto
+                    select
+                        height: 22px
                     .row
                         display: flex
                         .entry
@@ -383,27 +418,34 @@
                                     position: relative
                                     top: 2px
                                     left: -3px
-                    .buffer-location 
-                        width: 100%
-                        .file-path
+                        &.font-settings
                             display: flex
-                            > button
-                                flex-shrink: 0
-                                padding: 3px 8px
-                            .path
-                                flex-grow: 1
-                                margin-left: 10px
-                                font-size: 12px
-                                font-family: "Hack"
-                                padding: 5px 8px
-                                border-radius: 3px
-                                background: #f1f1f1
-                                color: #555
-                                white-space: nowrap
-                                overflow-x: auto
-                                +dark-mode
-                                    background: #222
-                                    color: #aaa
+                            .font-family
+                                width: 280px
+                            .font-size
+                                width: 120px
+                        
+                        .buffer-location 
+                            width: 100%
+                            .file-path
+                                display: flex
+                                > button
+                                    flex-shrink: 0
+                                    padding: 3px 8px
+                                .path
+                                    flex-grow: 1
+                                    margin-left: 10px
+                                    font-size: 12px
+                                    font-family: "Hack"
+                                    padding: 5px 8px
+                                    border-radius: 3px
+                                    background: #f1f1f1
+                                    color: #555
+                                    white-space: nowrap
+                                    overflow-x: auto
+                                    +dark-mode
+                                        background: #222
+                                        color: #aaa
             .bottom-bar
                 border-radius: 0 0 5px 5px
                 background: #eee

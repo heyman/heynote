@@ -7,6 +7,7 @@ import { closeBrackets } from "@codemirror/autocomplete";
 import { heynoteLight } from "./theme/light.js"
 import { heynoteDark } from "./theme/dark.js"
 import { heynoteBase } from "./theme/base.js"
+import { getFontTheme } from "./theme/font-theme.js";
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension, blockLineNumbers, blockState } from "./block/block.js"
@@ -44,6 +45,8 @@ export class HeynoteEditor {
         showLineNumberGutter=true, 
         showFoldGutter=true,
         bracketClosing=false,
+        fontFamily,
+        fontSize,
     }) {
         this.element = element
         this.themeCompartment = new Compartment
@@ -55,6 +58,7 @@ export class HeynoteEditor {
         this.closeBracketsCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
         this.emacsMetaKey = emacsMetaKey
+        this.fontTheme = new Compartment
 
         const state = EditorState.create({
             doc: content || "",
@@ -73,6 +77,7 @@ export class HeynoteEditor {
                 
                 this.themeCompartment.of(theme === "dark" ? heynoteDark : heynoteLight),
                 heynoteBase,
+                this.fontTheme.of(getFontTheme(fontFamily, fontSize)),
                 indentUnit.of("    "),
                 EditorView.scrollMargins.of(f => {
                     return {top: 80, bottom: 80}
@@ -152,6 +157,12 @@ export class HeynoteEditor {
     setReadOnly(readOnly) {
         this.view.dispatch({
             effects: this.readOnlyCompartment.reconfigure(readOnly ? [EditorState.readOnly.of(true)] : []),
+        })
+    }
+
+    setFont(fontFamily, fontSize) {
+        this.view.dispatch({
+            effects: this.fontTheme.reconfigure(getFontTheme(fontFamily, fontSize)),
         })
     }
 
