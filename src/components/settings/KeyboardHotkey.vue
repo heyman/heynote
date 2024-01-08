@@ -39,6 +39,7 @@
             keys = keys.concat(')!@#$%^&*(:;:+=<,_->.?/~`{][|\\}"'.split(""))
             return {
                 isMac: window.heynote.platform.isMac,
+                isWindows: window.heynote.platform.isWindows,
                 cmdOrCtrl: false,
                 ctrl: false,
                 shift: false,
@@ -60,7 +61,7 @@
                         this.ctrl = keys.includes("Ctrl")
                         this.shift = keys.includes("Shift")
                         this.alt = keys.includes("Alt")
-                        this.altGr = keys.includes("AltGr")
+                        this.altGr = !this.isMac && !this.isWindows && keys.includes("AltGr")
                         this.super = keys.includes("Super")
                         this.key = keys[keys.length - 1]
                     }
