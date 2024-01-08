@@ -46,9 +46,11 @@
         },
 
         async mounted() {
-            let localFonts = [... new Set((await window.queryLocalFonts()).map(f => f.family))].filter(f => f !== "Hack")
-            localFonts = [...new Set(localFonts)].map(f => [f, f])
-            this.systemFonts = [[defaultFontFamily, defaultFontFamily + " (default)"], ...localFonts]
+            if (window.queryLocalFonts !== undefined) {
+                let localFonts = [... new Set((await window.queryLocalFonts()).map(f => f.family))].filter(f => f !== "Hack")
+                localFonts = [...new Set(localFonts)].map(f => [f, f])
+                this.systemFonts = [[defaultFontFamily, defaultFontFamily + " (default)"], ...localFonts]
+            }
 
             window.addEventListener("keydown", this.onKeyDown);
             this.$refs.keymapSelector.focus()
