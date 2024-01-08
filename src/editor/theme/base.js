@@ -58,9 +58,6 @@ export const heynoteBase = EditorView.theme({
     ".cm-content": {
         paddingTop: 4,
     },
-    '.cm-scroller': {
-        fontFamily: "Hack, Menlo, Monaco, 'Courier New', monospace",
-    },
     '.cm-gutters': {
         padding: '0 2px 0 4px',
         userSelect: 'none',
@@ -77,8 +74,8 @@ export const heynoteBase = EditorView.theme({
     },
     '.cm-cursor, .cm-dropCursor': {
         borderLeftWidth:'2px', 
-        height:'19px !important', 
-        marginTop:'-2px !important'
+        paddingTop: '4px',
+        marginTop: '-2px',
     },
     '.heynote-blocks-layer': {
         width: '100%',

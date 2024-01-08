@@ -27,6 +27,8 @@
                 type: Boolean,
                 default: false,
             },
+            fontFamily: String,
+            fontSize: Number,
         },
 
         components: {},
@@ -71,6 +73,8 @@
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                     bracketClosing: this.bracketClosing,
+                    fontFamily: this.fontFamily,
+                    fontSize: this.fontSize,
                 })
                 window._heynote_editor = this.editor
                 window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
@@ -133,6 +137,13 @@
 
             bracketClosing(value) {
                 this.editor.setBracketClosing(value)
+            },
+
+            fontFamily() {
+                this.editor.setFont(this.fontFamily, this.fontSize)
+            },
+            fontSize() {
+                this.editor.setFont(this.fontFamily, this.fontSize)
             },
         },
 
