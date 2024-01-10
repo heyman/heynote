@@ -34,8 +34,12 @@ const schema = {
             "showInDock": {type: "boolean", default: true},
             "showInMenu": {type: "boolean", default: false},
             "bracketClosing": {type: "boolean", default: false},
-            "fontFamily": {type: "string"},
-            "fontSize": {type: "integer"},
+
+            // when default font settings are used, fontFamily and fontSize is not specified in the 
+            // settings file, so that it's possible for us to change the default settings in the 
+            // future and have it apply to existing users
+            "fontFamily": {type: "string"}, 
+            "fontSize": {type: "integer"},  
         },
     },
 
@@ -64,8 +68,6 @@ const defaults = {
         showInDock: true,
         showInMenu: false,
         bracketClosing: false,
-        fontFamily: null, // we use null for the default font family and size, since we could then change
-        fontSize: null,   // the default font family and size in the future and have it apply to existing users
     },
     theme: "system",
 }
