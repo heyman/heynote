@@ -131,6 +131,17 @@ Alt                    Show menu
 
 Heynote's Math blocks are powered by [Math.js expressions](https://mathjs.org/docs/expressions). Checkout their [documentation](https://mathjs.org/docs/) to see what [syntax](https://mathjs.org/docs/expressions/syntax.html), [functions](https://mathjs.org/docs/reference/functions.html), and [constants](https://mathjs.org/docs/reference/constants.html) are available.
 
+## Can I change how the results of Math blocks are formatted?
+
+Yes! You can define a custom `format` function within the Math block like this:
+
+```
+_format = format # store reference to the built in format
+format(x) = _format(x, {notation:"exponential"})
+```
+
+See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
+
 
 ## Thanks!
 
