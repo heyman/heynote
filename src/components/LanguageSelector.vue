@@ -140,6 +140,7 @@
                 outline: 2px solid #48b57e
             +dark-mode
                 background: #3b3b3b
+                color: rgba(255,255,255, 0.9)
                 border: 1px solid #5a5a5a
                 &:focus
                     border: 1px solid #3b3b3b
