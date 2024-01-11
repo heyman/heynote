@@ -20,6 +20,9 @@ import getCurrencyData from "./currency"
 
 
 contextBridge.exposeInMainWorld("heynote", {
+    defaultFontFamily: "Hack", 
+    defaultFontSize: 12,
+
     platform: {
         isMac,
         isWindows,

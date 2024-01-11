@@ -2,8 +2,10 @@
     import KeyboardHotkey from "./KeyboardHotkey.vue"
     import TabListItem from "./TabListItem.vue"
     import TabContent from "./TabContent.vue"
-    import { defaultFontFamily, defaultFontSize } from "@/src/editor/theme/font-theme.js"
 
+    const defaultFontFamily = window.heynote.defaultFontFamily
+    const defaultFontSize = window.heynote.defaultFontSize
+    
     export default {
         props: {
             initialKeymap: String,

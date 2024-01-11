@@ -1,14 +1,10 @@
 import { EditorView } from "@codemirror/view"
 
-export const defaultFontFamily = "Hack"
-export const defaultFontSize = 12
-
-
 export function getFontTheme(fontFamily, fontSize) {
-    fontSize = fontSize || defaultFontSize
+    fontSize = fontSize || window.heynote.defaultFontSize
     return EditorView.theme({
         '.cm-scroller': {
-            fontFamily: fontFamily || defaultFontFamily,
+            fontFamily: fontFamily || window.heynote.defaultFontFamily,
             fontSize: (fontSize) +  "px",
         },
     })
