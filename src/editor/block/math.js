@@ -51,16 +51,20 @@ function mathDeco(view) {
 
             if (block && block.language.name == "math") {
                 // get math.js parser and cache it for this block
-                let parser = mathParsers.get(block)
+                let {parser, prev} = mathParsers.get(block) || {}
                 if (!parser) {
                     parser = window.math.parser()
-                    mathParsers.set(block, parser)
+                    mathParsers.set(block, {parser, prev})
                 }
                 
                 // evaluate math line
                 let result
                 try {
+                    parser.set("prev", prev)
                     result = parser.evaluate(line.text)
+                    if (result !== undefined) {
+                        mathParsers.set(block, {parser, prev:result})
+                    }
                 } catch (e) {
                     // suppress any errors
                 }

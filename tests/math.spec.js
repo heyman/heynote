@@ -33,3 +33,26 @@ format(x) = _format(x, {notation:"exponential"})
 `)
     await expect(page.locator("css=.heynote-math-result").last()).toHaveText("4.2e+1")
 })
+
+test("previous result in prev variable", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞math
+128
+prev * 2 # 256
+`)
+    await expect(page.locator("css=.heynote-math-result").last()).toHaveText("256")
+})
+
+test("previous result in prev variable", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞math
+1336
+23 /
+# comment
+test
+prev+1#comment
+prev
+`)
+    await expect(page.locator("css=.heynote-math-result").last()).toHaveText("1337")
+})
+
