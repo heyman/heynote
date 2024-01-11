@@ -8,6 +8,8 @@ mediaMatch.addEventListener("change", async (event) => {
     }
 })
 
+const isMobileDevice = window.matchMedia("(max-width: 600px)").matches
+
 let autoUpdateCallbacks = null
 let currencyData = null
 
@@ -74,6 +76,8 @@ if (settingsData !== null) {
 const Heynote = {
     platform: platform,
     isWebApp: true,
+    defaultFontFamily: "Hack", 
+    defaultFontSize: isMobileDevice ? 16 : 12,
 
     buffer: {
         async load() {
