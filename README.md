@@ -70,6 +70,31 @@ To run the tests in the Playwright UI:
 
 I'm happy to merge contributions that fit my vision for the app. Bug fixes are always welcome. 
 
+## Math Blocks
+
+Heynote's Math blocks are powered by [Math.js expressions](https://mathjs.org/docs/expressions). Checkout their [documentation](https://mathjs.org/docs/) to see what [syntax](https://mathjs.org/docs/expressions/syntax.html), [functions](https://mathjs.org/docs/reference/functions.html), and [constants](https://mathjs.org/docs/reference/constants.html) are available.
+
+### Accessing the previous result
+
+The variable `prev` can be used to access the previous result. For example:
+
+```
+128
+prev * 2 # 256
+```
+
+### Changing how the results of Math blocks are formatted?
+
+You can define a custom `format` function within the Math block like this:
+
+```
+_format = format # store reference to the built in format
+format(x) = _format(x, {notation:"exponential"})
+```
+
+See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
+
+
 ## FAQ
 
 ### Where is the buffer data stored?
@@ -126,22 +151,6 @@ Ctrl + Alt + Up/Down   Add additional cursor above/below
 Alt + Shift + F        Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
 Alt                    Show menu
 ```
-
-### Can Math blocks do X?
-
-Heynote's Math blocks are powered by [Math.js expressions](https://mathjs.org/docs/expressions). Checkout their [documentation](https://mathjs.org/docs/) to see what [syntax](https://mathjs.org/docs/expressions/syntax.html), [functions](https://mathjs.org/docs/reference/functions.html), and [constants](https://mathjs.org/docs/reference/constants.html) are available.
-
-## Can I change how the results of Math blocks are formatted?
-
-Yes! You can define a custom `format` function within the Math block like this:
-
-```
-_format = format # store reference to the built in format
-format(x) = _format(x, {notation:"exponential"})
-```
-
-See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
-
 
 ## Thanks!
 
