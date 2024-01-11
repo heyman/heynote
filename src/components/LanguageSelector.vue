@@ -126,6 +126,9 @@
         +dark-mode
             background: #151516
             box-shadow: 0 0 10px rgba(0,0,0,0.5)
+        +webapp-mobile
+            max-width: calc(100% - 80px)
+
         input
             background: #fff
             padding: 4px 5px
@@ -144,6 +147,9 @@
                 border: 1px solid #5a5a5a
                 &:focus
                     border: 1px solid #3b3b3b
+            +webapp-mobile
+                font-size: 16px
+                max-width: 100%
         
         .items
             > li

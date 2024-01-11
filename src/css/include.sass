@@ -1,3 +1,12 @@
 =dark-mode()
     html[theme=dark] &
         @content
+
+=webapp()
+    html[webapp] &
+        @content
+
+=webapp-mobile()
+    @media (max-width: 600px)
+        html[webapp] &
+            @content
