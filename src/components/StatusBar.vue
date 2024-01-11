@@ -115,8 +115,8 @@
         box-sizing: border-box
         height: 22px
         width: 100%
-        background: #48b57e
-        color: #fff
+        background: var(--status-bar-background)
+        color: var(--status-bar-color)
         font-family: "Open Sans"
         font-size: 12px
         padding-left: 0px
@@ -125,10 +125,6 @@
         flex-direction: row
         align-items: center
         user-select: none
-
-        +dark-mode
-            background: #0e1217
-            color: rgba(255, 255, 255, 0.75)
 
         .spacer
             flex-grow: 1

@@ -37,9 +37,9 @@
             const onThemeChange = (theme) => {
                 this.theme = theme
                 if (theme === "system") {
-                    document.body.setAttribute("theme", window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+                    document.documentElement.setAttribute("theme", window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
                 } else {
-                    document.body.setAttribute("theme", theme)
+                    document.documentElement.setAttribute("theme", theme)
                 }
             }
             onThemeChange(window.heynote.themeMode.initial)

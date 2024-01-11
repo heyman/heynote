@@ -1,4 +1,18 @@
-html, body
+:root[theme='light']
+    --status-bar-background: #48b57e
+    --status-bar-color: #fff
+
+:root[theme='dark']
+    --status-bar-background: #0e1217
+    --status-bar-color: rgba(255, 255, 255, 0.75)
+    
+html
+    margin: 0
+    padding: 0
+    height: 100%
+    overscroll-behavior-y: none
+    
+body
     margin: 0
     padding: 0
     background: #f4f8f4
@@ -25,4 +39,3 @@ input, button
 #syntaxTree
     height: 20%
     overflow-y: auto
-
