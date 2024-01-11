@@ -43,7 +43,7 @@ prev * 2 # 256
     await expect(page.locator("css=.heynote-math-result").last()).toHaveText("256")
 })
 
-test("previous result in prev variable", async ({ page }) => {
+test("previous result in prev variable rows with invalid values", async ({ page }) => {
     await heynotePage.setContent(`
 ∞∞∞math
 1336
