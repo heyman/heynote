@@ -24,7 +24,7 @@
 
         data() {
             return {
-                showSettingsButton: window.heynote.isWebApp,
+                
             }
         },
 
@@ -96,16 +96,15 @@
             :autoUpdate="autoUpdate"
             :allowBetaVersions="allowBetaVersions"
         />
+        <div class="status-block theme clickable" @click="$emit('toggleTheme')" title="Toggle dark/light mode">
+            <span :class="'icon ' + themeSetting"></span>
+        </div>
         <div 
-            v-if="showSettingsButton"
             @click="$emit('openSettings')"
             class="status-block settings clickable"
             title="Settings"
         >
             <span class="icon icon-format"></span>
-        </div>
-        <div class="status-block theme clickable" @click="$emit('toggleTheme')" title="Toggle dark/light mode">
-            <span :class="'icon ' + themeSetting"></span>
         </div>
     </div>
 </template>
