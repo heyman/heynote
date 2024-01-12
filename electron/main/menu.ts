@@ -19,7 +19,7 @@ const template = [
             },
             { type: 'separator' },
             {
-                label: 'Preferences',
+                label: 'Settings',
                 click: (menuItem, window, event) => {
                     window?.webContents.send(OPEN_SETTINGS_EVENT)
                 },
@@ -38,7 +38,7 @@ const template = [
         role: 'fileMenu',
         submenu: [
             {
-                label: 'Preferences',
+                label: 'Settings',
                 click: (menuItem, window, event) => {
                     window?.webContents.send(OPEN_SETTINGS_EVENT)
                 },
