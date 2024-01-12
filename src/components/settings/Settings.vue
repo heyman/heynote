@@ -40,7 +40,7 @@
                 fontSize: this.initialSettings.fontSize || defaultFontSize,
 
                 activeTab: "general",
-                isWebApp: window.heynote.isWebApp,
+                isWebApp: window.heynote.platform.isWebApp,
                 customBufferLocation: !!this.initialSettings.bufferPath,
                 systemFonts: [[defaultFontFamily, defaultFontFamily + " (default)"]],
                 defaultFontSize: defaultFontSize,

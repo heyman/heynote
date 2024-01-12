@@ -34,6 +34,7 @@ if (uaPlatform.indexOf("Win") !== -1) {
         isLinux: false,
     }
 }
+platform.isWebApp = true
 
 
 class IpcRenderer {
@@ -75,7 +76,6 @@ if (settingsData !== null) {
 
 const Heynote = {
     platform: platform,
-    isWebApp: true,
     defaultFontFamily: "Hack", 
     defaultFontSize: isMobileDevice ? 16 : 12,
 
