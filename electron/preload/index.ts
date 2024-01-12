@@ -100,6 +100,10 @@ contextBridge.exposeInMainWorld("heynote", {
             ipcRenderer.invoke(UPDATE_CHECK_FOR_UPDATES)
         },
     },
+
+    async getVersion() {
+        return await ipcRenderer.invoke("getVersion")
+    }
 })
 
 

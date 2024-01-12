@@ -3,6 +3,7 @@ import { app, BrowserWindow, nativeTheme } from 'electron'
 
 import { win } from "./index"
 import CONFIG from "../config"
+import { getVersionString } from './version'
 
 let aboutWindow = null;
 
@@ -33,10 +34,7 @@ export function openAboutWindow() {
             aboutWindow.loadFile(join(process.env.DIST, 'about.html'))
         }
 
-        let versionString = app.getVersion()
-        if (CONFIG.get("settings.allowBetaVersions")) {
-            versionString += " (beta channel)"
-        }
+        let versionString = getVersionString()
 
         // don't show until content is loaded
         aboutWindow.webContents.on("did-finish-load", () => {

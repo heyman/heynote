@@ -2,8 +2,8 @@ import path from 'path'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-//import { directoryPlugin } from "vite-plugin-list-directory-contents";
 
+import * as child from "child_process";
 
 const middleware = () => {
     return {
@@ -33,7 +33,6 @@ export default defineConfig({
 
     plugins: [
         vue(), 
-        //directoryPlugin({ baseDir: __dirname }),
     ],
 
     css: {
@@ -50,5 +49,10 @@ export default defineConfig({
         alias: {
             '@': path.resolve(__dirname, '..'),
         },
+    },
+
+    define: {
+        '__APP_VERSION__': JSON.stringify(process.env.npm_package_version),
+        '__GIT_HASH__': JSON.stringify(child.execSync('git rev-parse --short HEAD').toString().trim()),
     },
 })
