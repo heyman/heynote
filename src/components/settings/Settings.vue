@@ -44,6 +44,7 @@
                 customBufferLocation: !!this.initialSettings.bufferPath,
                 systemFonts: [[defaultFontFamily, defaultFontFamily + " (default)"]],
                 defaultFontSize: defaultFontSize,
+                appVersion: "",
             }
         },
 
@@ -56,6 +57,8 @@
 
             window.addEventListener("keydown", this.onKeyDown);
             this.$refs.keymapSelector.focus()
+
+            this.appVersion = await window.heynote.getVersion()
         },
         beforeUnmount() {
             window.removeEventListener("keydown", this.onKeyDown);
@@ -134,8 +137,7 @@
                             @click="activeTab = 'appearance'"
                         />
                         <TabListItem 
-                            v-if="!isWebApp"
-                            name="Updates" 
+                            :name="isWebApp ? 'Version' : 'Updates'" 
                             tab="updates" 
                             :activeTab="activeTab" 
                             @click="activeTab = 'updates'"
@@ -292,8 +294,15 @@
                         </div>
                     </TabContent>
                     
-                    <TabContent tab="updates" :activeTab="activeTab" v-if="!isWebApp">
+                    <TabContent tab="updates" :activeTab="activeTab">
                         <div class="row">
+                            <div class="entry">
+                                <h2>Current Version</h2>
+                                <b>{{ appVersion }}</b>
+                            </div>
+                        </div>
+
+                        <div class="row" v-if="!isWebApp">
                             <div class="entry">
                                 <h2>Auto Update</h2>
                                 <label>
@@ -306,7 +315,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" v-if="!isWebApp">
                             <div class="entry">
                                 <h2>Beta Versions</h2>
                                 <label>

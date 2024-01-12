@@ -148,6 +148,10 @@ const Heynote = {
         currencyData = JSON.parse(await response.text())
         return currencyData
     },
+
+    async getVersion() {
+        return __APP_VERSION__ + " (" + __GIT_HASH__ + ")"
+    },
 }
 
 export { Heynote, ipcRenderer}
