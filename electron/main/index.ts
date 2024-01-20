@@ -75,11 +75,18 @@ export function quit() {
 
 async function createWindow() {
     // read any stored window settings from config, or use defaults
+    let window_offset = {}
+    if(CONFIG.get("windowConfig.x") && CONFIG.get("windowConfig.y")) window_offset = {
+        x: CONFIG.get("windowConfig.x"),
+        y: CONFIG.get("windowConfig.y")
+    } //getting the x and y co-ordinates for window position from last session(if available)
+
     let windowConfig = {
         width: CONFIG.get("windowConfig.width", 900) as number,
         height: CONFIG.get("windowConfig.height", 680) as number,
         isMaximized: CONFIG.get("windowConfig.isMaximized", false) as boolean,
         isFullScreen: CONFIG.get("windowConfig.isFullScreen", false) as boolean,
+        ...window_offset,
     }
 
     win = new BrowserWindow(Object.assign({
