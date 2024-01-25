@@ -11,9 +11,26 @@ const blockSeparatorRegex = new RegExp(`\\n∞∞∞(${languageTokensMatcher})(-
 
 function copiedRange(state) {
     let content = [], ranges = []
-    for (let range of state.selection.ranges) if (!range.empty) {
-        content.push(state.sliceDoc(range.from, range.to))
-        ranges.push(range)
+    for (let range of state.selection.ranges) {
+        if (!range.empty) {
+            content.push(state.sliceDoc(range.from, range.to))
+            ranges.push(range)
+        }
+    }
+    if (ranges.length == 0) {
+        // if all ranges are empty, we want to copy each whole (unique) line for each selection
+        const copiedLines = []
+        for (let range of state.selection.ranges) {
+            if (range.empty) {
+                const line = state.doc.lineAt(range.head)
+                const lineContent = state.sliceDoc(line.from, line.to)
+                if (!copiedLines.includes(line.from)) {
+                    content.push(lineContent)
+                    ranges.push(range)
+                    copiedLines.push(line.from)
+                }
+            }
+        }
     }
     return { text: content.join(state.lineBreak), ranges }
 }
