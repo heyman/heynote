@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Tray, shell, ipcMain, Menu, nativeTheme, globalShortcut, nativeImage } from 'electron'
+import { app, BrowserWindow, Tray, shell, ipcMain, Menu, nativeTheme, globalShortcut, nativeImage, screen } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
 import fs from "fs"
@@ -75,18 +75,35 @@ export function quit() {
 
 async function createWindow() {
     // read any stored window settings from config, or use defaults
-    let window_offset = {}
-    if(CONFIG.get("windowConfig.x") && CONFIG.get("windowConfig.y")) window_offset = {
-        x: CONFIG.get("windowConfig.x"),
-        y: CONFIG.get("windowConfig.y")
-    } //getting the x and y co-ordinates for window position from last session(if available)
-
     let windowConfig = {
         width: CONFIG.get("windowConfig.width", 900) as number,
         height: CONFIG.get("windowConfig.height", 680) as number,
         isMaximized: CONFIG.get("windowConfig.isMaximized", false) as boolean,
         isFullScreen: CONFIG.get("windowConfig.isFullScreen", false) as boolean,
-        ...window_offset,
+        x: CONFIG.get("windowConfig.x"),
+        y: CONFIG.get("windowConfig.y"),
+    }
+    
+    // windowConfig.x and windowConfig.y will be undefined when config file is missing, e.g. first time run
+    if (windowConfig.x !== undefined && windowConfig.y !== undefined) {
+        // check if window is outside of screen, or too large
+        const area = screen.getDisplayMatching({
+            x: windowConfig.x,
+            y: windowConfig.y,
+            width: windowConfig.width,
+            height: windowConfig.height,
+        }).workArea
+        if (windowConfig.width > area.width) {
+            windowConfig.width = area.width
+        }
+        if (windowConfig.height > area.height) {
+            windowConfig.height = area.height
+        }
+        if (windowConfig.x + windowConfig.width > area.width || windowConfig.y + windowConfig.height > area.height) {
+            // window is outside of screen, reset position
+            windowConfig.x = undefined
+            windowConfig.y = undefined
+        }
     }
 
     win = new BrowserWindow(Object.assign({
