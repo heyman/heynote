@@ -21,6 +21,12 @@ test.beforeEach(async ({ page, browserName }) => {
     await page.locator("body").press("Escape")
 });
 
+async function clearBuffer() {
+    await heynotePage.setContent(`
+∞∞∞text
+`)
+}
+
 
 test("test emacs copy/pase/cut key bindings", async ({ page }) => {
     await page.locator("body").pressSequentially("test")
@@ -50,8 +56,7 @@ test("copy current line", async ({ page }) => {
     await page.locator("body").pressSequentially("test line! ")
     await page.keyboard.press("Alt+W")
     await page.keyboard.press("Alt+W")
-    await page.keyboard.press(`${modifierKey}+A`)
-    await page.keyboard.press(`Backspace`)
+    await clearBuffer()
     expect(await heynotePage.getBlockContent(0)).toBe("")
     await page.locator("body").press("Control+Y")
     await page.locator("body").press("Control+Y")
@@ -67,8 +72,7 @@ line 2`)
     await page.keyboard.press(`${modifierKey}+Alt+ArrowUp`)
     await page.locator("body").pressSequentially("test")
     await page.keyboard.press("Alt+W")
-    await page.keyboard.press(`${modifierKey}+A`)
-    await page.keyboard.press(`Backspace`)
+    await clearBuffer()
     expect(await heynotePage.getBlockContent(0)).toBe("")
     await page.keyboard.press("Control+Y")
     //await page.waitForTimeout(100);
@@ -85,8 +89,7 @@ test`)
     expect(await heynotePage.getBlockContent(0)).toBe("1test1")
     await page.keyboard.press("Alt+W")
 
-    await page.keyboard.press(`${modifierKey}+A`)
-    await page.keyboard.press(`Backspace`)
+    await clearBuffer()
     expect(await heynotePage.getBlockContent(0)).toBe("")
 
     await page.keyboard.press("Control+Y")
