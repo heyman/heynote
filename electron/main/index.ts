@@ -225,14 +225,18 @@ function registerGlobalHotkey() {
                     return
                 }
                 if (win.isFocused()) {
-                    if (!!app.hide) {
+                    if (isMac) {
                         // app.hide() only available on macOS
                         // We want to use app.hide() so that the menu bar also gets changed
                         app?.hide()
+                        if (CONFIG.get("settings.alwaysOnTop")) {
+                            // if alwaysOnTop is on, calling app.hide() won't hide the window
+                            win.hide()
+                        }
                     } else {
                         win.blur()
-                        if (CONFIG.get("settings.showInMenu")) {
-                            // if we're using a tray icon we want to completely hide the window
+                        if (CONFIG.get("settings.showInMenu") || CONFIG.get("settings.alwaysOnTop")) {
+                            // if we're using a tray icon, or alwaysOnTop is on, we want to completely hide the window
                             win.hide()
                         }
                     }
@@ -275,11 +279,34 @@ function registerShowInMenu() {
     }
 }
 
+function registerAlwaysOnTop() {
+    if (CONFIG.get("settings.alwaysOnTop")) {
+        const disableAlwaysOnTop = () => {
+            win.setAlwaysOnTop(true, "floating");
+            win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
+            win.setFullScreenable(false);
+        }
+        // if we're in fullscreen mode, we need to exit fullscreen before we can set alwaysOnTop
+        if (win.isFullScreen()) {
+            // on Mac setFullScreen happens asynchronously, so we need to wait for the event before we can disable alwaysOnTop
+            win.once("leave-full-screen", disableAlwaysOnTop)
+            win.setFullScreen(false)
+        } else {
+            disableAlwaysOnTop()
+        }
+    } else {
+        win.setAlwaysOnTop(false);
+        win.setVisibleOnAllWorkspaces(false);
+        win.setFullScreenable(true);
+    }
+}
+
 app.whenReady().then(createWindow).then(async () => {
     initializeAutoUpdate(win)
     registerGlobalHotkey()
     registerShowInDock()
     registerShowInMenu()
+    registerAlwaysOnTop()
 })
 
 app.on("before-quit", () => {
@@ -328,6 +355,7 @@ ipcMain.handle('settings:set', async (event, settings) => {
     let showInDockChanged = settings.showInDock !== CONFIG.get("settings.showInDock");
     let showInMenuChanged = settings.showInMenu !== CONFIG.get("settings.showInMenu");
     let bufferPathChanged = settings.bufferPath !== CONFIG.get("settings.bufferPath");
+    let alwaysOnTopChanged = settings.alwaysOnTop !== CONFIG.get("settings.alwaysOnTop");
     CONFIG.set("settings", settings)
 
     win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
@@ -340,6 +368,9 @@ ipcMain.handle('settings:set', async (event, settings) => {
     }
     if (showInMenuChanged) {
         registerShowInMenu()
+    }
+    if (alwaysOnTopChanged) {
+        registerAlwaysOnTop()
     }
     if (bufferPathChanged) {
         const buffer = loadBuffer()

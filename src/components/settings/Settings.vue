@@ -33,6 +33,7 @@
                 globalHotkey: this.initialSettings.globalHotkey,
                 showInDock: this.initialSettings.showInDock,
                 showInMenu: this.initialSettings.showInMenu,
+                alwaysOnTop: this.initialSettings.alwaysOnTop,
                 bracketClosing: this.initialSettings.bracketClosing,
                 autoUpdate: this.initialSettings.autoUpdate,
                 bufferPath: this.initialSettings.bufferPath,
@@ -82,6 +83,7 @@
                     globalHotkey: this.globalHotkey,
                     showInDock: this.showInDock,
                     showInMenu: this.showInMenu || !this.showInDock,
+                    alwaysOnTop: this.alwaysOnTop,
                     autoUpdate: this.autoUpdate,
                     bracketClosing: this.bracketClosing,
                     bufferPath: this.bufferPath,
@@ -184,7 +186,7 @@
                         </div>
                         <div class="row" v-if="!isWebApp">
                             <div class="entry">
-                                <h2>Show In</h2>
+                                <h2>Window / Application</h2>
                                 <label v-if="isMac">
                                     <input
                                         type="checkbox"
@@ -206,6 +208,14 @@
                                     <template v-else>
                                         Show in system tray
                                     </template>
+                                </label>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        v-model="alwaysOnTop"
+                                        @change="updateSettings"
+                                    />
+                                    Always on top
                                 </label>
                             </div>
                         </div>
