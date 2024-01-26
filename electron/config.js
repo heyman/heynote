@@ -33,6 +33,7 @@ const schema = {
             "bufferPath" : {type: "string", default: ""},
             "showInDock": {type: "boolean", default: true},
             "showInMenu": {type: "boolean", default: false},
+            "alwaysOnTop": {type: "boolean", default: false},
             "bracketClosing": {type: "boolean", default: false},
 
             // when default font settings are used, fontFamily and fontSize is not specified in the 
@@ -67,6 +68,7 @@ const defaults = {
         bufferPath: "",
         showInDock: true,
         showInMenu: false,
+        alwaysOnTop: false,
         bracketClosing: false,
     },
     theme: "system",
