@@ -16,6 +16,7 @@ import {
     selectNextParagraph, selectPreviousParagraph,
     newCursorBelow, newCursorAbove,
 } from "./block/commands.js"
+import { pasteCommand, copyCommand, cutCommand } from "./copy-paste.js"
 
 import { formatBlockContent } from "./block/format-code.js"
 
@@ -41,6 +42,9 @@ export function keymapFromSpec(specs) {
 
 export function heynoteKeymap(editor) {
     return keymapFromSpec([
+        ["Mod-c", copyCommand(editor)],
+        ["Mod-v", pasteCommand],
+        ["Mod-x", cutCommand(editor)],
         ["Tab", indentMore],
         ["Shift-Tab", indentLess],
         ["Alt-Shift-Enter", addNewBlockBeforeFirst],
