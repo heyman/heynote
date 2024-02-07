@@ -14,10 +14,11 @@ import {
     selectNextBlock, selectPreviousBlock,
     gotoPreviousParagraph, gotoNextParagraph, 
     selectNextParagraph, selectPreviousParagraph,
-    newCursorBelow, newCursorAbove, deleteLine,
+    newCursorBelow, newCursorAbove,
 } from "./block/commands.js"
 
 import { formatBlockContent } from "./block/format-code.js"
+import { deleteLine } from "./block/delete-line.js"
 
 
 export function keymapFromSpec(specs) {
