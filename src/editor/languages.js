@@ -25,6 +25,7 @@ import { swift } from "@codemirror/legacy-modes/mode/swift"
 import { kotlin } from "@codemirror/legacy-modes/mode/clike"
 import { groovy } from "@codemirror/legacy-modes/mode/groovy"
 import { diff } from "@codemirror/legacy-modes/mode/diff";
+import { powerShell } from "@codemirror/legacy-modes/mode/powershell";
 
 import typescriptPlugin from "prettier/plugins/typescript.mjs"
 import babelPrettierPlugin from "prettier/plugins/babel.mjs"
@@ -245,6 +246,12 @@ export const LANGUAGES = [
         name: "Diff",
         parser: StreamLanguage.define(diff).parser,
         guesslang: null,
+    }),
+    new Language({
+        token: "powershell",
+        name: "PowerShell",
+        parser: StreamLanguage.define(powerShell).parser,
+        guesslang: "ps1",
     }),
 ]
 
