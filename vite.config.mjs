@@ -1,3 +1,4 @@
+import * as fs from 'node:fs'
 import { rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { defineConfig } from 'vite'
@@ -9,6 +10,7 @@ import pkg from './package.json'
 import path from 'path'
 
 import { keyHelpStr } from "./shared-utils/key-helper";
+import { LANGUAGES }  from "./src/editor/languages"
 
 rmSync('dist-electron', { recursive: true, force: true })
 
@@ -16,8 +18,6 @@ const isDevelopment = process.env.NODE_ENV === "development" || !!process.env.VS
 const isProduction = process.env.NODE_ENV === "production"
 
 const updateReadmeKeybinds = async () => {
-	const fs = require('fs')
-	const path = require('path')
 	const readmePath = path.resolve(__dirname, 'README.md')
 	let readme = fs.readFileSync(readmePath, 'utf-8')
 	const keybindsRegex = /^(### What are the default keyboard shortcuts\?\s*).*?^(```\s+#)/gms
@@ -32,10 +32,19 @@ ${keyHelpStr('darwin')}
 \`\`\`
 ${keyHelpStr('win32')}
 $2`
-
 	readme = readme.replace(keybindsRegex, shortcuts)
 	fs.writeFileSync(readmePath, readme)
 }
+
+const updateGuesslangLanguagesInWebWorker = async () => {
+	const langDetectWorkerPath = path.resolve(__dirname, 'public', 'langdetect-worker.js')
+	let workerFileContents = fs.readFileSync(langDetectWorkerPath, 'utf-8')
+	const langListRegex = /^GUESSLANG_LANGUAGES = \[[^\]]+\]/gms
+	const newLangList = JSON.stringify(LANGUAGES.map(l => l.guesslang).filter(l => l !== null))
+	workerFileContents = workerFileContents.replace(langListRegex, `GUESSLANG_LANGUAGES = ${newLangList}`)
+	fs.writeFileSync(langDetectWorkerPath, workerFileContents)
+}
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -48,6 +57,7 @@ export default defineConfig({
 	plugins: [
 		vue(),
 		updateReadmeKeybinds(),
+		updateGuesslangLanguagesInWebWorker(),
 		electron([
 			{
 				// Main-Process entry file of the Electron App.
