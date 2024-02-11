@@ -1,6 +1,6 @@
 import { Annotation, EditorState, Compartment } from "@codemirror/state"
 import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
-import { indentUnit, forceParsing, foldGutter } from "@codemirror/language"
+import { indentUnit, forceParsing, foldGutter, indentService } from "@codemirror/language"
 import { markdown } from "@codemirror/lang-markdown"
 import { closeBrackets } from "@codemirror/autocomplete";
 
@@ -32,6 +32,10 @@ function getKeymapExtensions(editor, keymap) {
     }
 }
 
+const indentPlainTextExtension = indentService.of((context, pos) => {
+    const previousLine = context.lineAt(pos, -1)
+    return previousLine.text.match(/^(\s)*/)[0].length
+})
 
 export class HeynoteEditor {
     constructor({
@@ -99,6 +103,7 @@ export class HeynoteEditor {
                 todoCheckboxPlugin,
                 markdown(),
                 links,
+                indentPlainTextExtension
             ],
         })
 
