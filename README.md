@@ -92,7 +92,7 @@ _format = format # store reference to the built in format
 format(x) = _format(x, {notation:"exponential"})
 ```
 
-You can also do something like this to show the number with your default locale or providing a [custom one](https://www.w3.org/International/articles/language-tags/):
+You can also do something like this to show the number with your default locale or provide a [custom one](https://www.w3.org/International/articles/language-tags/):
 
 ```
 format(x) = x.toLocaleString();
