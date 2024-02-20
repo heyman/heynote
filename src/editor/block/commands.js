@@ -313,3 +313,58 @@ export function triggerCurrenciesLoaded(state, dispatch) {
         annotations: [heynoteEvent.of(CURRENCIES_LOADED)],
     }))
 }
+
+export function moveCurrentBlockUp({state, dispatch}) {
+    return moveCurrentBlock(state, dispatch, true)
+}
+
+export function moveCurrentBlockDown({state, dispatch}) {
+    return moveCurrentBlock(state, dispatch, false)
+}
+
+function moveCurrentBlock(state, dispatch, up) {
+    if (state.readOnly) {
+        return false
+    }
+
+    const blocks = state.facet(blockState)
+    const currentBlock = getActiveNoteBlock(state)
+    const blockIndex = blocks.indexOf(currentBlock)
+    if ((up && blockIndex === 0) || (!up && blockIndex === blocks.length - 1)) {
+        return false
+    }
+
+    const dir = up ? -1 : 1
+    const neighborBlock = blocks[blockIndex + dir]
+
+    const currentBlockContent = state.sliceDoc(currentBlock.delimiter.from, currentBlock.content.to)
+    const neighborBlockContent = state.sliceDoc(neighborBlock.delimiter.from, neighborBlock.content.to)
+    const newContent = up ? currentBlockContent + neighborBlockContent : neighborBlockContent + currentBlockContent
+
+    const selectionRange = state.selection.asSingle().ranges[0]
+    let newSelectionRange
+    if (up) {
+        newSelectionRange = EditorSelection.range(
+            selectionRange.anchor - currentBlock.delimiter.from + neighborBlock.delimiter.from,
+            selectionRange.head - currentBlock.delimiter.from + neighborBlock.delimiter.from,
+        )
+    } else {
+        newSelectionRange = EditorSelection.range(
+            selectionRange.anchor + neighborBlock.content.to - neighborBlock.delimiter.from,
+            selectionRange.head + neighborBlock.content.to - neighborBlock.delimiter.from,
+        )
+    }
+
+    dispatch(state.update({
+        changes: {
+            from: up ? neighborBlock.delimiter.from : currentBlock.delimiter.from,
+            to: up ? currentBlock.content.to : neighborBlock.content.to,
+            insert: newContent,
+        },
+        selection: newSelectionRange,
+    }, {
+        scrollIntoView: true,
+        userEvent: "input",
+    }))
+    return true
+}
