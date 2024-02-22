@@ -1,5 +1,5 @@
 import { EditorSelection } from "@codemirror/state"
-import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK } from "../annotation.js";
+import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK, MOVE_BLOCK } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos } from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
@@ -362,6 +362,7 @@ function moveCurrentBlock(state, dispatch, up) {
             insert: newContent,
         },
         selection: newSelectionRange,
+        annotations: [heynoteEvent.of(MOVE_BLOCK)],
     }, {
         scrollIntoView: true,
         userEvent: "input",
