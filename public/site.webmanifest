@@ -1,0 +1,11 @@
+{
+    "name": "Heynote",
+    "short_name": "Heynote",
+    "icons": [
+        {
+            "src": "/icon.ico",
+            "sizes": "256x256"
+        }
+    ],
+    "display": "standalone"
+}
