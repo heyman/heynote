@@ -74,6 +74,8 @@ Download the appropriate (Mac, Windows or Linux) version from [heynote.com](http
 
 If installing Heynote on Linux in ChromeOS, see the [notes](#user-content-linux-on-chromeos) below about some packages that are needed.
 
+On macOS, [Homebrew](https://brew.sh) users can utilize an unofficial [Homebrew Cask](https://formulae.brew.sh/cask/heynote#default): `brew install --cask heynote`
+
 ## Math Blocks
 
 Heynote's Math blocks are powered by [Math.js expressions](https://mathjs.org/docs/expressions). Checkout their [documentation](https://mathjs.org/docs/) to see what [syntax](https://mathjs.org/docs/expressions/syntax.html), [functions](https://mathjs.org/docs/reference/functions.html), and [constants](https://mathjs.org/docs/reference/constants.html) are available.
