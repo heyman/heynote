@@ -301,6 +301,15 @@ function registerAlwaysOnTop() {
     }
 }
 
+
+/**
+ * Fix for SUID sandbox issues on Linux
+ * See: https://github.com/electron/electron/issues/17972
+ */
+if (isLinux) {
+    app.commandLine.appendSwitch("--no-sandbox")
+}
+
 app.whenReady().then(createWindow).then(async () => {
     initializeAutoUpdate(win)
     registerGlobalHotkey()
