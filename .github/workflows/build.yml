@@ -17,6 +17,12 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
+      
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+          limit-access-to-actor: true
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
