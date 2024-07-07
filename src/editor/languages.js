@@ -12,6 +12,7 @@ import { cppLanguage } from "@codemirror/lang-cpp"
 import { xmlLanguage } from "@codemirror/lang-xml"
 import { rustLanguage } from "@codemirror/lang-rust"
 import { csharpLanguage } from "@replit/codemirror-lang-csharp"
+import { vueLanguage } from "@codemirror/lang-vue";
 
 import { StreamLanguage } from "@codemirror/language"
 import { ruby } from "@codemirror/legacy-modes/mode/ruby"
@@ -40,7 +41,7 @@ class Language {
     /**
      * @param token: The token used to identify the language in the buffer content
      * @param name: The name of the language
-     * @param parser: The Lezer parser used to parse the language 
+     * @param parser: The Lezer parser used to parse the language
      * @param guesslang: The name of the language as used by the guesslang library
      * @param prettier: The prettier configuration for the language (if any)
      */
@@ -252,6 +253,12 @@ export const LANGUAGES = [
         name: "PowerShell",
         parser: StreamLanguage.define(powerShell).parser,
         guesslang: "ps1",
+    }),
+    new Language({
+        token: "vue",
+        name: "Vue",
+        parser: vueLanguage.parser,
+        guesslang: "vue",
     }),
 ]
 
