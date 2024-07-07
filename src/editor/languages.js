@@ -27,13 +27,13 @@ import { groovy } from "@codemirror/legacy-modes/mode/groovy"
 import { diff } from "@codemirror/legacy-modes/mode/diff";
 import { powerShell } from "@codemirror/legacy-modes/mode/powershell";
 
-import typescriptPlugin from "prettier/plugins/typescript.mjs"
-import babelPrettierPlugin from "prettier/plugins/babel.mjs"
-import htmlPrettierPlugin from "prettier/esm/parser-html.mjs"
-import cssPrettierPlugin from "prettier/esm/parser-postcss.mjs"
-import markdownPrettierPlugin from "prettier/esm/parser-markdown.mjs"
-import yamlPrettierPlugin from "prettier/plugins/yaml.mjs"
-import * as prettierPluginEstree from "prettier/plugins/estree.mjs";
+import typescriptPlugin from "prettier/plugins/typescript"
+import babelPrettierPlugin from "prettier/plugins/babel"
+import htmlPrettierPlugin from "prettier/plugins/html"
+import cssPrettierPlugin from "prettier/plugins/postcss"
+import markdownPrettierPlugin from "prettier/plugins/markdown"
+import yamlPrettierPlugin from "prettier/plugins/yaml"
+import * as prettierPluginEstree from "prettier/plugins/estree";
 
 
 class Language {
