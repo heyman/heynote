@@ -25,7 +25,7 @@ let firstBlockDelimiterSize
  * Return a list of blocks in the document from the syntax tree.
  * syntaxTreeAvailable() should have been called before this function to ensure the syntax tree is available.
  */
-function getBlocksFromSyntaxTree(state) {
+export function getBlocksFromSyntaxTree(state) {
     //const timer = startTimer()
     const blocks = [];  
     const tree = syntaxTree(state, state.doc.length)
@@ -72,7 +72,7 @@ function getBlocksFromSyntaxTree(state) {
 /**
  * Parse blocks from document's string contents using String.indexOf()
  */
-function getBlocksFromString(state) {
+export function getBlocksFromString(state) {
         //const timer = startTimer()
         const blocks = []
         const doc = state.doc
@@ -138,7 +138,7 @@ function getBlocksFromString(state) {
  * the blocks are parsed from the string contents of the document, which is much faster
  * than waiting for the tree parsing to finish.
  */
-function getBlocks(state) {
+export function getBlocks(state) {
     if (syntaxTreeAvailable(state, state.doc.length)) {
         return getBlocksFromSyntaxTree(state)
     } else {
