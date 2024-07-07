@@ -136,7 +136,7 @@ function getBlocksFromString(state) {
  * Get the blocks from the document state.
  * If the syntax tree is available, we'll extract the blocks from that. Otherwise 
  * the blocks are parsed from the string contents of the document, which is much faster
- * than waiting for the tree parsing to finnish.
+ * than waiting for the tree parsing to finish.
  */
 function getBlocks(state) {
     if (syntaxTreeAvailable(state, state.doc.length)) {
