@@ -5,7 +5,10 @@
 
 <img src="https://heynote.com/img/logo.png" style="width:79px;">
 
-**Website:** [heynote.com](https://heynote.com)
+## General Information
+
+- Website: [heynote.com](https://heynote.com)
+- Documentation: [heynote.com](https://heynote.com/docs/)
 
 Heynote is a dedicated scratchpad for developers. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
 
