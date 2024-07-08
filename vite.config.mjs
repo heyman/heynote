@@ -17,9 +17,7 @@ rmSync('dist-electron', { recursive: true, force: true })
 const isDevelopment = process.env.NODE_ENV === "development" || !!process.env.VSCODE_DEBUG
 const isProduction = process.env.NODE_ENV === "production"
 
-const updateReadmeKeybinds = async () => {
-	const readmePath = path.resolve(__dirname, 'README.md')
-	let readme = fs.readFileSync(readmePath, 'utf-8')
+const injectKeybindsInDocs = async () => {
 	const keybindsRegex = /^(<!-- keyboard_shortcuts -->\s*).*?^(```\s+#)/gms
 	const shortcuts = `$1**On Mac**
 
@@ -32,9 +30,6 @@ ${keyHelpStr('darwin')}
 \`\`\`
 ${keyHelpStr('win32')}
 $2`
-	readme = readme.replace(keybindsRegex, shortcuts)
-	fs.writeFileSync(readmePath, readme)
-
 	const docsPath = path.resolve(__dirname, 'docs', 'index.md')
 	let docs = fs.readFileSync(docsPath, 'utf-8')
 	docs = docs.replace(keybindsRegex, shortcuts)
@@ -61,7 +56,7 @@ export default defineConfig({
 
 	plugins: [
 		vue(),
-		updateReadmeKeybinds(),
+		injectKeybindsInDocs(),
 		updateGuesslangLanguagesInWebWorker(),
 		electron([
 			{
