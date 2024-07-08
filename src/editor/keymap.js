@@ -1,7 +1,7 @@
 import { keymap } from "@codemirror/view"
 //import { EditorSelection, EditorState } from "@codemirror/state"
 import {
-    indentLess, indentMore, 
+    indentLess, indentMore, redo,
 } from "@codemirror/commands"
 
 import { 
@@ -61,6 +61,7 @@ export function heynoteKeymap(editor) {
         ["Mod-Alt-ArrowDown", newCursorBelow],
         ["Mod-Alt-ArrowUp", newCursorAbove],
         ["Mod-Shift-k", deleteLine],
+        ["Mod-Shift-z", redo],
         {key:"Mod-ArrowUp", run:gotoPreviousBlock, shift:selectPreviousBlock},
         {key:"Mod-ArrowDown", run:gotoNextBlock, shift:selectNextBlock},
         {key:"Ctrl-ArrowUp", run:gotoPreviousParagraph, shift:selectPreviousParagraph},
