@@ -122,6 +122,8 @@ I can totally see the usefulness of such a feature, and it's definitely somethin
 
 ### What are the default keyboard shortcuts?
 
+<!-- keyboard_shortcuts -->
+
 **On Mac**
 
 ```

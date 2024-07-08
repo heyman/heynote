@@ -20,7 +20,7 @@ const isProduction = process.env.NODE_ENV === "production"
 const updateReadmeKeybinds = async () => {
 	const readmePath = path.resolve(__dirname, 'README.md')
 	let readme = fs.readFileSync(readmePath, 'utf-8')
-	const keybindsRegex = /^(### What are the default keyboard shortcuts\?\s*).*?^(```\s+#)/gms
+	const keybindsRegex = /^(<!-- keyboard_shortcuts -->\s*).*?^(```\s+#)/gms
 	const shortcuts = `$1**On Mac**
 
 \`\`\`
@@ -34,6 +34,11 @@ ${keyHelpStr('win32')}
 $2`
 	readme = readme.replace(keybindsRegex, shortcuts)
 	fs.writeFileSync(readmePath, readme)
+
+	const docsPath = path.resolve(__dirname, 'docs', 'index.md')
+	let docs = fs.readFileSync(docsPath, 'utf-8')
+	docs = docs.replace(keybindsRegex, shortcuts)
+	fs.writeFileSync(docsPath, docs)
 }
 
 const updateGuesslangLanguagesInWebWorker = async () => {
