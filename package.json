@@ -79,7 +79,6 @@
   "dependencies": {
     "electron-log": "^5.0.1",
     "i18next": "^23.11.5",
-    "i18next-electron-fs-backend": "^3.0.2",
     "i18next-vue": "^4.0.0"
   }
 }
