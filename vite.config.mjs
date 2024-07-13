@@ -9,8 +9,9 @@ import license from 'rollup-plugin-license'
 import pkg from './package.json'
 import path from 'path'
 
+
 import { keyHelpStr } from "./shared-utils/key-helper";
-import { LANGUAGES }  from "./src/editor/languages"
+import { LANGUAGES } from "./src/editor/languages"
 
 rmSync('dist-electron', { recursive: true, force: true })
 
