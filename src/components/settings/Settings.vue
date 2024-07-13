@@ -73,9 +73,7 @@ export default {
     },
     methods: {
         setLocale(lang) {
-            if (i18next.languages.includes(lang)) {
-                i18next.changeLanguage(lang);
-            }
+            i18next.changeLanguage(lang);
         },
         onKeyDown(event) {
             if (event.key === "Escape") {
