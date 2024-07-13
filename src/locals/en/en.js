@@ -26,5 +26,6 @@ export const en = {
     Beta_Versions: 'Beta Versions',
     Use_beta_versions_of_Heynote: 'Use beta versions of Heynote',
     Updates: 'Updates',
-    Version:'Version'
+    Version:'Version',
+    Show_in_system_tray: 'Show in system tray',
   };

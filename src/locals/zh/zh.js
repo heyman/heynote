@@ -26,5 +26,6 @@ export const zh={
     Beta_Versions: '测试版本',
     Use_beta_versions_of_Heynote: '使用 Heynote 测试版本',
     Updates: '更新',
-    Version:'版本'
+    Version:'版本',
+    Show_in_system_tray: '显示在系统托盘',
 }

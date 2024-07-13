@@ -19,6 +19,7 @@ import CONFIG from "../config"
 import getCurrencyData from "./currency"
 
 
+
 contextBridge.exposeInMainWorld("heynote", {
     defaultFontFamily: "Hack", 
     defaultFontSize: 12,
