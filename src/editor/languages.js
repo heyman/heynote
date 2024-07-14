@@ -258,7 +258,7 @@ export const LANGUAGES = [
         token: "vue",
         name: "Vue",
         parser: vueLanguage.parser,
-        guesslang: "vue",
+        guesslang: null,
     }),
 ]
 
