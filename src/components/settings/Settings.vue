@@ -284,6 +284,7 @@
                                         type="checkbox"
                                         v-model="defaultBlockLanguageAutoDetect"
                                         @change="updateSettings"
+                                        class="language-auto-detect"
                                     />
                                     Auto-detection (default: on)
                                 </label>
