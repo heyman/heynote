@@ -77,6 +77,14 @@ _format = format # store reference to the built in format
 format(x) = _format(x, {notation:"exponential"})
 ```
 
+You can also do something like this to show the number with your default locale or provide a [custom one](https://www.w3.org/International/articles/language-tags/):
+
+```
+format(x) = x.toLocaleString();
+format(x) = x.toLocaleString('en-GB');
+```
+
+
 See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
 
 ## The buffer file
