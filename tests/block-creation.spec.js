@@ -114,3 +114,32 @@ const runTest = async (page, key, expectedBlocks) => {
     await expect(await page.locator("css=.heynote-block-start.first")).toHaveCount(1)
 }
 
+
+test("test custom default block language", async ({ page, browserName }) => {
+    heynotePage.setContent(`
+∞∞∞text
+Text block`)
+    await page.locator("css=.status-block.settings").click()
+    await page.locator("css=li.tab-editing").click()
+    await page.locator("css=select.block-language").selectOption("Rust")
+    await page.locator("body").press("Escape")
+    await page.locator("body").press((heynotePage.isMac ? "Meta" : "Control") + "+Enter")
+    expect(await heynotePage.getContent()).toBe(`
+∞∞∞text
+Text block
+∞∞∞rust-a
+`)
+
+    await page.locator("css=.status-block.settings").click()
+    await page.locator("css=li.tab-editing").click()
+    await page.locator("css=input.language-auto-detect").click()
+    await page.locator("body").press("Escape")
+    await page.locator("body").press((heynotePage.isMac ? "Meta" : "Control") + "+Enter")
+    expect(await heynotePage.getContent()).toBe(`
+∞∞∞text
+Text block
+∞∞∞rust-a
+
+∞∞∞rust
+`)
+})

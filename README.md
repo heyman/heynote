@@ -3,6 +3,12 @@
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/heyman/heynote)](https://github.com/heyman/heynote/releases)
 [![Build Status](https://github.com/heyman/heynote/workflows/Tests/badge.svg)](https://github.com/heyman/heynote/actions?query=workflow%3ATests)
 
+<img src="https://heynote.com/img/logo.png" style="width:79px;">
+
+## General Information
+
+- Website: [heynote.com](https://heynote.com)
+- Documentation: [heynote.com](https://heynote.com/docs/)
 
 Heynote is a dedicated scratchpad for developers. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
 
@@ -16,7 +22,7 @@ Available for Mac, Windows, and Linux.
 -   Block-based
 -   Syntax highlighting:
 
-    C++, C#, Clojure, CSS, Erlang, Go, Groovy, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, Swift, XML, YAML
+    C++, C#, Clojure, CSS, Erlang, Dart, Go, Groovy, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, Swift, XML, YAML
     
 -   Language auto-detection
 -   Auto-formatting
@@ -28,19 +34,9 @@ Available for Mac, Windows, and Linux.
 -   Default or Emacs-like key bindings
 
 
-## Installation
+## Documentation
 
-Download the appropriate (Mac, Windows or Linux) version from the latest Github release (or from [heynote.com](https://heynote.com)). The Windows build is not signed, so you might see some scary warning (I can not justify paying a yearly fee for a certificate just to get rid of that).
-
-### Notes on Linux installation
-
-It's been reported [(#48)](https://github.com/heyman/heynote/issues/48) that ChromeOS's Debian VM need the following packages installed to run the Heynote AppImage:
-
-```
-libfuse2
-libnss3
-libnspr4
-```
+[Documentation](https://heynote.com/docs/) is available on the Heynote website.
 
 ## Development
 
@@ -70,49 +66,12 @@ To run the tests in the Playwright UI:
 
 I'm happy to merge contributions that fit my vision for the app. Bug fixes are always welcome. 
 
-## Math Blocks
-
-Heynote's Math blocks are powered by [Math.js expressions](https://mathjs.org/docs/expressions). Checkout their [documentation](https://mathjs.org/docs/) to see what [syntax](https://mathjs.org/docs/expressions/syntax.html), [functions](https://mathjs.org/docs/reference/functions.html), and [constants](https://mathjs.org/docs/reference/constants.html) are available.
-
-### Accessing the previous result
-
-The variable `prev` can be used to access the previous result. For example:
-
-```
-128
-prev * 2 # 256
-```
-
-### Changing how the results of Math blocks are formatted?
-
-You can define a custom `format` function within the Math block like this:
-
-```
-_format = format # store reference to the built in format
-format(x) = _format(x, {notation:"exponential"})
-```
-
-You can also do something like this to show the number with your default locale or provide a [custom one](https://www.w3.org/International/articles/language-tags/):
-
-```
-format(x) = x.toLocaleString();
-format(x) = x.toLocaleString('en-GB');
-```
-
-See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
-
 
 ## FAQ
 
 ### Where is the buffer data stored?
 
-The default paths for the buffer data for the respective OS are:
-
--   Mac: `~/Library/Application Support/Heynote/buffer.txt`
--   Windows: `%APPDATA%\Heynote\buffer.txt`
--   Linux: `~/.config/Heynote/buffer.txt`
-
-From version >=1.5.0, symlinks will be supported and you'll be able to configure the path where `buffer.txt` is stored.
+See the [documentation](https://heynote.com/docs/#user-content-the-buffer-file).
 
 ### Can you make a mobile app?
 
@@ -126,38 +85,7 @@ I can totally see the usefulness of such a feature, and it's definitely somethin
 
 ### What are the default keyboard shortcuts?
 
-**On Mac**
-
-```
-⌘ + Enter           Add new block below the current block
-⌥ + Enter           Add new block before the current block
-⌘ + Shift + Enter   Add new block at the end of the buffer
-⌥ + Shift + Enter   Add new block at the start of the buffer
-⌘ + ⌥ + Enter       Split the current block at cursor position
-⌘ + L               Change block language
-⌘ + Down            Goto next block
-⌘ + Up              Goto previous block
-⌘ + A               Select all text in a note block. Press again to select the whole buffer
-⌘ + ⌥ + Up/Down     Add additional cursor above/below
-⌥ + Shift + F       Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
-```
-
-**On Windows and Linux**
-
-```
-Ctrl + Enter           Add new block below the current block
-Alt + Enter            Add new block before the current block
-Ctrl + Shift + Enter   Add new block at the end of the buffer
-Alt + Shift + Enter    Add new block at the start of the buffer
-Ctrl + Alt + Enter     Split the current block at cursor position
-Ctrl + L               Change block language
-Ctrl + Down            Goto next block
-Ctrl + Up              Goto previous block
-Ctrl + A               Select all text in a note block. Press again to select the whole buffer
-Ctrl + Alt + Up/Down   Add additional cursor above/below
-Alt + Shift + F        Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
-Alt                    Show menu
-```
+See the [documentation](https://heynote.com/docs/#user-content-default-key-bindings).
 
 ## Thanks!
 

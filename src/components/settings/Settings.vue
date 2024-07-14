@@ -1,10 +1,14 @@
 <script>
+    import { LANGUAGES } from '../../editor/languages.js'
+
     import KeyboardHotkey from "./KeyboardHotkey.vue"
     import TabListItem from "./TabListItem.vue"
     import TabContent from "./TabContent.vue"
 
     const defaultFontFamily = window.heynote.defaultFontFamily
     const defaultFontSize = window.heynote.defaultFontSize
+    const defaultDefaultBlockLanguage = "text"
+    const defaultDefaultBlockLanguageAutoDetect = true
     
     export default {
         props: {
@@ -39,6 +43,16 @@
                 bufferPath: this.initialSettings.bufferPath,
                 fontFamily: this.initialSettings.fontFamily || defaultFontFamily,
                 fontSize: this.initialSettings.fontSize || defaultFontSize,
+                languageOptions: LANGUAGES.map(l => {
+                    return {
+                        "value": l.token, 
+                        "name": l.token == "text" ? l.name + " (default)" : l.name,
+                    }
+                }).sort((a, b) => {
+                    return a.name.localeCompare(b.name)
+                }),
+                defaultBlockLanguage: this.initialSettings.defaultBlockLanguage || defaultDefaultBlockLanguage,
+                defaultBlockLanguageAutoDetect: this.initialSettings.defaultBlockLanguageAutoDetect === false ? false : defaultDefaultBlockLanguageAutoDetect,
 
                 activeTab: "general",
                 isWebApp: window.heynote.platform.isWebApp,
@@ -89,6 +103,8 @@
                     bufferPath: this.bufferPath,
                     fontFamily: this.fontFamily === defaultFontFamily ? undefined : this.fontFamily,
                     fontSize: this.fontSize === defaultFontSize ? undefined : this.fontSize,
+                    defaultBlockLanguage: this.defaultBlockLanguage === "text" ? undefined : this.defaultBlockLanguage,
+                    defaultBlockLanguageAutoDetect: this.defaultBlockLanguageAutoDetect === true ? undefined : this.defaultBlockLanguageAutoDetect,
                 })
                 if (!this.showInDock) {
                     this.showInMenu = true
@@ -255,6 +271,25 @@
                                 </label>
                             </div>  
                         </div>
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Default Block Language</h2>
+                                <select v-model="defaultBlockLanguage" @change="updateSettings" class="block-language">
+                                    <template v-for="lang in languageOptions" :key="lang.value">
+                                        <option :selected="lang.value === defaultBlockLanguage" :value="lang.value">{{ lang.name }}</option>
+                                    </template>
+                                </select>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        v-model="defaultBlockLanguageAutoDetect"
+                                        @change="updateSettings"
+                                        class="language-auto-detect"
+                                    />
+                                    Auto-detection (default: on)
+                                </label>
+                            </div>  
+                        </div>
                     </TabContent>
 
                     <TabContent tab="appearance" :activeTab="activeTab">
@@ -417,6 +452,7 @@
                     overflow-y: auto
                     select
                         height: 22px
+                        margin: 4px 0
                     .row
                         display: flex
                         .entry

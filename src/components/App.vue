@@ -122,6 +122,8 @@
             :bracketClosing="settings.bracketClosing"
             :fontFamily="settings.fontFamily"
             :fontSize="settings.fontSize"
+            :defaultBlockLanguage="settings.defaultBlockLanguage || 'text'"
+            :defaultBlockLanguageAutoDetect="settings.defaultBlockLanguageAutoDetect === undefined ? true : settings.defaultBlockLanguageAutoDetect"
             class="editor"
             ref="editor"
             @openLanguageSelector="openLanguageSelector"

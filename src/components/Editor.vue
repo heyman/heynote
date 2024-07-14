@@ -29,6 +29,8 @@
             },
             fontFamily: String,
             fontSize: Number,
+            defaultBlockLanguage: String,
+            defaultBlockLanguageAutoDetect: Boolean,
         },
 
         components: {},
@@ -78,6 +80,7 @@
                 })
                 window._heynote_editor = this.editor
                 window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
+                this.editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
 
                 // set up buffer change listener
                 window.heynote.buffer.onChangeCallback((event, content) => {
@@ -145,12 +148,18 @@
             fontSize() {
                 this.editor.setFont(this.fontFamily, this.fontSize)
             },
+            defaultBlockLanguage() {
+                this.editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
+            },
+            defaultBlockLanguageAutoDetect() {
+                this.editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
+            },
         },
 
         methods: {
             setLanguage(language) {
                 if (language === "auto") {
-                    this.editor.setCurrentLanguage("text", true)
+                    this.editor.setCurrentLanguage(null, true)
                 } else {
                     this.editor.setCurrentLanguage(language, false)
                 }

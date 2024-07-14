@@ -1,7 +1,7 @@
 import { ViewPlugin, EditorView, Decoration, WidgetType, lineNumbers } from "@codemirror/view"
 import { layer, RectangleMarker } from "@codemirror/view"
 import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet} from "@codemirror/state";
-import { syntaxTree, ensureSyntaxTree } from "@codemirror/language"
+import { syntaxTree, ensureSyntaxTree, syntaxTreeAvailable } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
 import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
@@ -10,12 +10,25 @@ import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
 
 
+function startTimer() {
+    const timeStart = performance.now();
+    return function () {
+      return Math.round(performance.now() - timeStart);
+    };
+}
+
+
 // tracks the size of the first delimiter
 let firstBlockDelimiterSize
 
-function getBlocks(state, timeout=50) {
+/**
+ * Return a list of blocks in the document from the syntax tree.
+ * syntaxTreeAvailable() should have been called before this function to ensure the syntax tree is available.
+ */
+export function getBlocksFromSyntaxTree(state) {
+    //const timer = startTimer()
     const blocks = [];  
-    const tree = ensureSyntaxTree(state, state.doc.length, timeout)
+    const tree = syntaxTree(state, state.doc.length)
     if (tree) {
         tree.iterate({
             enter: (type) => {
@@ -52,12 +65,90 @@ function getBlocks(state, timeout=50) {
         });
         firstBlockDelimiterSize = blocks[0]?.delimiter.to
     }
+    //console.log("getBlocksSyntaxTree took", timer(), "ms")
     return blocks
+}
+
+/**
+ * Parse blocks from document's string contents using String.indexOf()
+ */
+export function getBlocksFromString(state) {
+        //const timer = startTimer()
+        const blocks = []
+        const doc = state.doc
+        if (doc.length === 0) {
+            return [];
+        }
+        const content = doc.sliceString(0, doc.length)
+        const delim = "\n∞∞∞"
+        let pos = 0
+        while (pos < doc.length) {
+            const blockStart = content.indexOf(delim, pos);
+            if (blockStart != pos) {
+                console.error("Error parsing blocks, expected delimiter at", pos)
+                break;
+            }
+            const langStart = blockStart + delim.length;
+            const delimiterEnd = content.indexOf("\n", langStart)
+            if (delimiterEnd < 0) {
+                console.error("Error parsing blocks. Delimiter didn't end with newline")
+                break
+            }
+            const langFull = content.substring(langStart, delimiterEnd);
+            let auto = false;
+            let lang = langFull;
+            if (langFull.endsWith("-a")) {
+                auto = true;
+                lang = langFull.substring(0, langFull.length - 2);
+            }
+            const contentFrom = delimiterEnd + 1;
+            let blockEnd = content.indexOf(delim, contentFrom);
+            if (blockEnd < 0) {
+                blockEnd = doc.length;
+            }
+            
+            const block = {
+                language: {
+                    name: lang,
+                    auto: auto,
+                },
+                content: {
+                    from: contentFrom,
+                    to: blockEnd,
+                },
+                delimiter: {
+                    from: blockStart,
+                    to: delimiterEnd + 1,
+                },
+                range: {
+                    from: blockStart,
+                    to: blockEnd,
+                },
+            };
+            blocks.push(block);
+            pos = blockEnd;
+        }
+        //console.log("getBlocksFromString() took", timer(), "ms")
+        return blocks;
+}
+
+/**
+ * Get the blocks from the document state.
+ * If the syntax tree is available, we'll extract the blocks from that. Otherwise 
+ * the blocks are parsed from the string contents of the document, which is much faster
+ * than waiting for the tree parsing to finish.
+ */
+export function getBlocks(state) {
+    if (syntaxTreeAvailable(state, state.doc.length)) {
+        return getBlocksFromSyntaxTree(state)
+    } else {
+        return getBlocksFromString(state)
+    }
 }
 
 export const blockState = StateField.define({
     create(state) {
-        return getBlocks(state, 1000);
+        return getBlocks(state);
     },
     update(blocks, transaction) {
         // if blocks are empty it likely means we didn't get a parsed syntax tree, and then we want to update

@@ -35,6 +35,8 @@ const schema = {
             "showInMenu": {type: "boolean", default: false},
             "alwaysOnTop": {type: "boolean", default: false},
             "bracketClosing": {type: "boolean", default: false},
+            "defaultBlockLanguage": {type: "string"},
+            "defaultBlockLanguageAutoDetect": {type: "boolean"},
 
             // when default font settings are used, fontFamily and fontSize is not specified in the 
             // settings file, so that it's possible for us to change the default settings in the 
