@@ -1,6 +1,6 @@
 import { Annotation, EditorState, Compartment, Facet } from "@codemirror/state"
 import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
-import { indentUnit, forceParsing, foldGutter } from "@codemirror/language"
+import { indentUnit, forceParsing, foldGutter, ensureSyntaxTree } from "@codemirror/language"
 import { markdown } from "@codemirror/lang-markdown"
 import { closeBrackets } from "@codemirror/autocomplete";
 
@@ -115,6 +115,10 @@ export class HeynoteEditor {
             state: state,
             parent: element,
         })
+
+        // Ensure we have a parsed syntax tree when buffer is loaded. This prevents errors for large buffers
+        // when moving the cursor to the end of the buffer when the program starts
+        ensureSyntaxTree(state, state.doc.length, 5000)
 
         if (focus) {
             this.view.dispatch({
