@@ -7,7 +7,11 @@ import { selectAll } from "./select-all.js";
 export { moveLineDown, moveLineUp, selectAll }
 
 
-export const insertNewBlockAtCursor = ({ state, dispatch }) => {
+function getBlockDelimiter(defaultToken, autoDetect) {
+    return `\n∞∞∞${autoDetect ? defaultToken + '-a' : defaultToken}\n`
+}
+
+export const insertNewBlockAtCursor = (editor) => ({ state, dispatch }) => {
     if (state.readOnly)
         return false
 
@@ -16,7 +20,7 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     if (currentBlock) {
         delimText = `\n∞∞∞${currentBlock.language.name}${currentBlock.language.auto ? "-a" : ""}\n`
     } else {
-        delimText = "\n∞∞∞text-a\n"
+        delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
     }
     dispatch(state.replaceSelection(delimText),
         {
@@ -28,13 +32,12 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     return true;
 }
 
-export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
-    console.log("addNewBlockBeforeCurrent")
+export const addNewBlockBeforeCurrent = (editor) =>  ({ state, dispatch }) => {
     if (state.readOnly)
         return false
 
     const block = getActiveNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
 
     dispatch(state.update({
         changes: {
@@ -50,12 +53,12 @@ export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
     return true;
 }
 
-export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
+export const addNewBlockAfterCurrent = (editor) => ({ state, dispatch }) => {
     if (state.readOnly)
         return false
 
     const block = getActiveNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
 
     dispatch(state.update({
         changes: {
@@ -70,12 +73,12 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     return true;
 }
 
-export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
+export const addNewBlockBeforeFirst = (editor) => ({ state, dispatch }) => {
     if (state.readOnly)
         return false
 
     const block = getFirstNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
 
     dispatch(state.update({
         changes: {
@@ -91,11 +94,11 @@ export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
     return true;
 }
 
-export const addNewBlockAfterLast = ({ state, dispatch }) => {
+export const addNewBlockAfterLast = (editor) => ({ state, dispatch }) => {
     if (state.readOnly)
         return false
     const block = getLastNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
 
     dispatch(state.update({
         changes: {
@@ -131,6 +134,10 @@ export function changeLanguageTo(state, dispatch, block, language, auto) {
 
 export function changeCurrentBlockLanguage(state, dispatch, language, auto) {
     const block = getActiveNoteBlock(state)
+    // if language is null, we only want to change the auto-detect flag
+    if (language === null) {
+        language = block.language.name
+    }
     changeLanguageTo(state, dispatch, block, language, auto)
 }
 

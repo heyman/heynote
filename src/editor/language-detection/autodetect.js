@@ -25,7 +25,7 @@ function cancelIdleCallbackCompat(id) {
     }
 }
 
-export function languageDetection(getView) {
+export function languageDetection(getEditor) {
     const previousBlockContent = {}
     let idleCallbackId = null
 
@@ -35,7 +35,8 @@ export function languageDetection(getView) {
         if (!event.data.guesslang.language) {
             return
         }
-        const view = getView()
+        const editor = getEditor()
+        const view = editor.view
         const state = view.state
         const block = getActiveNoteBlock(state)
         const newLang = GUESSLANG_TO_TOKEN[event.data.guesslang.language]
@@ -88,11 +89,12 @@ export function languageDetection(getView) {
 
                 const content = update.state.doc.sliceString(block.content.from, block.content.to)
                 if (content === "" && redoDepth(update.state) === 0) {
-                    // if content is cleared, set language to plaintext
-                    const view = getView()
+                    // if content is cleared, set language to default
+                    const editor = getEditor()
+                    const view = editor.view
                     const block = getActiveNoteBlock(view.state)
-                    if (block.language.name !== "text") {
-                        changeLanguageTo(view.state, view.dispatch, block, "text", true)
+                    if (block.language.name !== editor.defaultBlockToken) {
+                        changeLanguageTo(view.state, view.dispatch, block, editor.defaultBlockToken, true)
                     }
                     delete previousBlockContent[idx]
                 }

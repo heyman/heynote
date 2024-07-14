@@ -1,7 +1,7 @@
 import { keymap } from "@codemirror/view"
 //import { EditorSelection, EditorState } from "@codemirror/state"
 import {
-    indentLess, indentMore, 
+    indentLess, indentMore, redo,
 } from "@codemirror/commands"
 
 import { 
@@ -48,11 +48,11 @@ export function heynoteKeymap(editor) {
         ["Mod-x", cutCommand(editor)],
         ["Tab", indentMore],
         ["Shift-Tab", indentLess],
-        ["Alt-Shift-Enter", addNewBlockBeforeFirst],
-        ["Mod-Shift-Enter", addNewBlockAfterLast],
-        ["Alt-Enter", addNewBlockBeforeCurrent],
-        ["Mod-Enter", addNewBlockAfterCurrent],
-        ["Mod-Alt-Enter", insertNewBlockAtCursor],
+        ["Alt-Shift-Enter", addNewBlockBeforeFirst(editor)],
+        ["Mod-Shift-Enter", addNewBlockAfterLast(editor)],
+        ["Alt-Enter", addNewBlockBeforeCurrent(editor)],
+        ["Mod-Enter", addNewBlockAfterCurrent(editor)],
+        ["Mod-Alt-Enter", insertNewBlockAtCursor(editor)],
         ["Mod-a", selectAll],
         ["Alt-ArrowUp", moveLineUp],
         ["Alt-ArrowDown", moveLineDown],
@@ -61,6 +61,7 @@ export function heynoteKeymap(editor) {
         ["Mod-Alt-ArrowDown", newCursorBelow],
         ["Mod-Alt-ArrowUp", newCursorAbove],
         ["Mod-Shift-k", deleteLine],
+        ["Mod-Shift-z", redo],
         {key:"Mod-ArrowUp", run:gotoPreviousBlock, shift:selectPreviousBlock},
         {key:"Mod-ArrowDown", run:gotoNextBlock, shift:selectNextBlock},
         {key:"Ctrl-ArrowUp", run:gotoPreviousParagraph, shift:selectPreviousParagraph},

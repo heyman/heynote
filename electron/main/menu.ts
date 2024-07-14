@@ -131,7 +131,14 @@ const template = [
         role: 'help',
         submenu: [
             {
-                label: 'Learn More',
+                label: 'Documentation',
+                click: async () => {
+                    const { shell } = require('electron')
+                    await shell.openExternal('https://heynote.com/docs/')
+                }
+            },
+            {
+                label: 'Website',
                 click: async () => {
                     const { shell } = require('electron')
                     await shell.openExternal('https://heynote.com')
