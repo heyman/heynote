@@ -4,6 +4,25 @@ Heynote is a dedicated scratchpad for developers. It functions as a large persis
 
 The Heynote buffer is divided into blocks, and each block can have its own Language set (e.g. JavaScript, JSON, Markdown, etc.). This gives you syntax highlighting and lets you auto-format that JSON response.
 
+Available for Mac, Windows, and Linux.
+
+## Features
+
+-   Persistent text buffer
+-   Block-based
+-   Syntax highlighting:
+
+    C++, C#, Clojure, CSS, Erlang, Dart, Go, Groovy, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, Swift, Vue, XML, YAML
+    
+-   Language auto-detection
+-   Auto-formatting
+-   Math/Calculator mode
+-   Currency conversion
+-   Multi-cursor editing
+-   Dark & Light themes
+-   Option to set a global hotkey to show/hide the app
+-   Default or Emacs-like key bindings
+
 ## Default Key Bindings
 
 <!-- keyboard_shortcuts -->
