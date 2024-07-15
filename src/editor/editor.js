@@ -136,35 +136,41 @@ export class HeynoteEditor {
     }
 
     setContent(content) {
-        this.note = NoteFormat.load(content)
-        
-        // set buffer content
-        this.view.dispatch({
-            changes: {
-                from: 0,
-                to: this.view.state.doc.length,
-                insert: this.note.content,
-            },
-            annotations: [heynoteEvent.of(SET_CONTENT)],
+        return new Promise((resolve) => {
+            this.note = NoteFormat.load(content)
+            
+            // set buffer content
+            this.view.dispatch({
+                changes: {
+                    from: 0,
+                    to: this.view.state.doc.length,
+                    insert: this.note.content,
+                },
+                annotations: [heynoteEvent.of(SET_CONTENT)],
+            })
+
+            // Ensure we have a parsed syntax tree when buffer is loaded. This prevents errors for large buffers
+            // when moving the cursor to the end of the buffer when the program starts
+            ensureSyntaxTree(this.view.state, this.view.state.doc.length, 5000)
+
+            // Set cursor positions
+            // We use requestAnimationFrame to avoid a race condition causing the scrollIntoView to sometimes not work
+            requestAnimationFrame(() => {
+                if (this.note.cursors) {
+                    this.view.dispatch({
+                        selection: EditorSelection.fromJSON(this.note.cursors),
+                        scrollIntoView: true,
+                    })
+                } else {
+                    // if metadata doesn't contain cursor position, we set the cursor to the end of the buffer
+                    this.view.dispatch({
+                        selection: {anchor: this.view.state.doc.length, head: this.view.state.doc.length},
+                        scrollIntoView: true,
+                    })
+                }
+                resolve()
+            })
         })
-
-        // Ensure we have a parsed syntax tree when buffer is loaded. This prevents errors for large buffers
-        // when moving the cursor to the end of the buffer when the program starts
-        ensureSyntaxTree(this.view.state, this.view.state.doc.length, 5000)
-
-        // set cursor positions
-        if (this.note.cursors) {
-            this.view.dispatch({
-                selection: EditorSelection.fromJSON(this.note.cursors),
-                scrollIntoView: true,
-            })
-        } else {
-            // if metadata doesn't contain cursor position, we set the cursor to the end of the buffer
-            this.view.dispatch({
-                selection: {anchor: this.view.state.doc.length, head: this.view.state.doc.length},
-                scrollIntoView: true,
-            })
-        }
     }
 
     getBlocks() {
