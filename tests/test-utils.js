@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { NoteFormat } from '../src/editor/note-format.js';
 
 export function pageErrorGetter(page) {
     let messages = [];
@@ -26,8 +27,13 @@ export class HeynotePage {
         return await this.page.evaluate(() => window._heynote_editor.getBlocks())
     }
 
-    async getContent() {
+    async getBufferData() {
         return await this.page.evaluate(() => window._heynote_editor.getContent())
+    }
+
+    async getContent() {
+        const note = NoteFormat.load(await this.getBufferData())
+        return note.content
     }
 
     async setContent(content) {
