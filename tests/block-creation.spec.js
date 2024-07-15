@@ -8,7 +8,7 @@ test.beforeEach(async ({page}) => {
     await heynotePage.goto()
 
     expect((await heynotePage.getBlocks()).length).toBe(1)
-    heynotePage.setContent(`
+    await heynotePage.setContent(`
 ∞∞∞text
 Block A
 ∞∞∞text
