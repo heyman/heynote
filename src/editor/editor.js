@@ -1,4 +1,4 @@
-import { Annotation, EditorState, Compartment, Facet } from "@codemirror/state"
+import { Annotation, EditorState, Compartment, Facet, EditorSelection } from "@codemirror/state"
 import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
 import { indentUnit, forceParsing, foldGutter, ensureSyntaxTree } from "@codemirror/language"
 import { markdown } from "@codemirror/lang-markdown"
@@ -21,6 +21,7 @@ import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
+import { NoteFormat } from "./note-format.js"
 
 export const LANGUAGE_SELECTOR_EVENT = "openLanguageSelector"
 
@@ -61,9 +62,10 @@ export class HeynoteEditor {
         this.fontTheme = new Compartment
         this.defaultBlockToken = "text"
         this.defaultBlockAutoDetect = true
+        this.saveFunction = saveFunction
 
         const state = EditorState.create({
-            doc: content || "",
+            doc: "",
             extensions: [
                 this.keymapCompartment.of(getKeymapExtensions(this, keymap)),
                 heynoteCopyCut(this),
@@ -96,7 +98,7 @@ export class HeynoteEditor {
                     return {class: view.state.facet(EditorView.darkTheme) ? "dark-theme" : "light-theme"}
                 }),
 
-                saveFunction ? autoSaveContent(saveFunction, 2000) : [],
+                this.saveFunction ? autoSaveContent(this, 2000) : [],
 
                 todoCheckboxPlugin,
                 markdown(),
@@ -107,7 +109,7 @@ export class HeynoteEditor {
         // make sure saveFunction is called when page is unloaded
         if (saveFunction) {
             window.addEventListener("beforeunload", () => {
-                saveFunction(this.getContent())
+                this.save()
             })
         }
 
@@ -116,36 +118,53 @@ export class HeynoteEditor {
             parent: element,
         })
 
-        // Ensure we have a parsed syntax tree when buffer is loaded. This prevents errors for large buffers
-        // when moving the cursor to the end of the buffer when the program starts
-        ensureSyntaxTree(state, state.doc.length, 5000)
+        this.setContent(content)
 
         if (focus) {
-            this.view.dispatch({
-                selection: {anchor: this.view.state.doc.length, head: this.view.state.doc.length},
-                scrollIntoView: true,
-            })
             this.view.focus()
         }
     }
 
+    save() {
+        this.saveFunction(this.getContent())
+    }
+
     getContent() {
-        return this.view.state.sliceDoc()
+        this.note.content = this.view.state.sliceDoc()
+        this.note.cursors = this.view.state.selection.toJSON()
+        return this.note.serialize()
     }
 
     setContent(content) {
+        this.note = NoteFormat.load(content)
+        
+        // set buffer content
         this.view.dispatch({
             changes: {
                 from: 0,
                 to: this.view.state.doc.length,
-                insert: content,
+                insert: this.note.content,
             },
             annotations: [heynoteEvent.of(SET_CONTENT)],
         })
-        this.view.dispatch({
-            selection: {anchor: this.view.state.doc.length, head: this.view.state.doc.length},
-            scrollIntoView: true,
-        })
+
+        // Ensure we have a parsed syntax tree when buffer is loaded. This prevents errors for large buffers
+        // when moving the cursor to the end of the buffer when the program starts
+        ensureSyntaxTree(this.view.state, this.view.state.doc.length, 5000)
+
+        // set cursor positions
+        if (this.note.cursors) {
+            this.view.dispatch({
+                selection: EditorSelection.fromJSON(this.note.cursors),
+                scrollIntoView: true,
+            })
+        } else {
+            // if metadata doesn't contain cursor position, we set the cursor to the end of the buffer
+            this.view.dispatch({
+                selection: {anchor: this.view.state.doc.length, head: this.view.state.doc.length},
+                scrollIntoView: true,
+            })
+        }
     }
 
     getBlocks() {
