@@ -46,3 +46,17 @@ block`)
     const note = NoteFormat.load(bufferData)
     expect(note.cursors.ranges.length).toBe(3)
 })
+
+test("unknown note metadata keys is kept", async ({ page, browserName }) => {
+    await heynotePage.setContent(`{"yoda":[123], "formatVersion":"1.0", "cursors":{"ranges":[{"anchor":15,"head":15}],"main":0}}
+∞∞∞text
+block 1`)
+    await page.locator("body").pressSequentially("hello")
+    expect(await heynotePage.getContent()).toBe(`
+∞∞∞text
+block hello1`)
+
+    const bufferData = await heynotePage.getBufferData()
+    const note = NoteFormat.load(bufferData)
+    expect(note.metadata.yoda).toStrictEqual([123])
+})
