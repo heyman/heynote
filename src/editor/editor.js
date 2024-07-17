@@ -117,9 +117,9 @@ export class HeynoteEditor {
             state: state,
             parent: element,
         })
-
+        
         this.setContent(content)
-
+        
         if (focus) {
             this.view.focus()
         }
@@ -136,9 +136,14 @@ export class HeynoteEditor {
     }
 
     setContent(content) {
-        return new Promise((resolve) => {
+        try {
             this.note = NoteFormat.load(content)
-            
+            this.setReadOnly(false)
+        } catch (e) {
+            this.setReadOnly(true)
+            throw e
+        }
+        return new Promise((resolve) => {
             // set buffer content
             this.view.dispatch({
                 changes: {
