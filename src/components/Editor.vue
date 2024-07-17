@@ -58,35 +58,40 @@
 
             // load buffer content and create editor
             window.heynote.buffer.load().then((content) => {
-                let diskContent = content
-                this.editor = new HeynoteEditor({
-                    element: this.$refs.editor,
-                    content: content,
-                    theme: this.theme,
-                    saveFunction: (content) => {
-                        if (content === diskContent) {
-                            return
-                        }
-                        diskContent = content
-                        window.heynote.buffer.save(content)
-                    },
-                    keymap: this.keymap,
-                    emacsMetaKey: this.emacsMetaKey,
-                    showLineNumberGutter: this.showLineNumberGutter,
-                    showFoldGutter: this.showFoldGutter,
-                    bracketClosing: this.bracketClosing,
-                    fontFamily: this.fontFamily,
-                    fontSize: this.fontSize,
-                })
-                window._heynote_editor = this.editor
-                window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
-                this.editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
+                try {
+                    let diskContent = content
+                    this.editor = new HeynoteEditor({
+                        element: this.$refs.editor,
+                        content: content,
+                        theme: this.theme,
+                        saveFunction: (content) => {
+                            if (content === diskContent) {
+                                return
+                            }
+                            diskContent = content
+                            window.heynote.buffer.save(content)
+                        },
+                        keymap: this.keymap,
+                        emacsMetaKey: this.emacsMetaKey,
+                        showLineNumberGutter: this.showLineNumberGutter,
+                        showFoldGutter: this.showFoldGutter,
+                        bracketClosing: this.bracketClosing,
+                        fontFamily: this.fontFamily,
+                        fontSize: this.fontSize,
+                    })
+                    window._heynote_editor = this.editor
+                    window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
+                    this.editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
 
-                // set up buffer change listener
-                window.heynote.buffer.onChangeCallback((event, content) => {
-                    diskContent = content
-                    this.editor.setContent(content)
-                })
+                    // set up buffer change listener
+                    window.heynote.buffer.onChangeCallback((event, content) => {
+                        diskContent = content
+                        this.editor.setContent(content)
+                    })
+                } catch (e) {
+                    alert("Error! " + e.message)
+                    throw e
+                }
             })
             // set up window close handler that will save the buffer and quit
             window.heynote.onWindowClose(() => {
