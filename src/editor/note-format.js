@@ -1,7 +1,13 @@
+import { major } from "semver";
+
+
+const FORMAT_VERSION = "1.0.0"
+
+
 export class NoteFormat {
     constructor() {
         this.content = '';
-        this.metadata = {};
+        this.metadata = {formatVersion: "0.0.0"};
     }
 
     static load(data) {
@@ -16,12 +22,16 @@ export class NoteFormat {
             }
             note.content = data.slice(firstSeparator)
         }
+        
+        if (major(note.metadata.formatVersion) > major(FORMAT_VERSION)) {
+            throw new Error(`Unsupported Heynote format version: ${note.metadata.formatVersion}. You probably need to update Heynote.`)
+        }
 
         return note
     }
 
     serialize() {
-        this.metadata.formatVersion = "1.0"
+        this.metadata.formatVersion = FORMAT_VERSION
         return JSON.stringify(this.metadata) + this.content
     }
 
