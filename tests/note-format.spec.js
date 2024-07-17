@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 
 
 test("test restore cursor position", async ({ page, browserName }) => {
-    await heynotePage.setContent(`{"formatVersion":"1.0", "cursors":{"ranges":[{"anchor":13,"head":13}],"main":0}}
+    await heynotePage.setContent(`{"formatVersion":"1.0.0", "cursors":{"ranges":[{"anchor":13,"head":13}],"main":0}}
 ∞∞∞text
 Textblock`)
     await page.locator("body").press((heynotePage.isMac ? "Meta" : "Control") +  "+Alt+Enter")
@@ -24,7 +24,7 @@ block`)
 
 
 test("test save cursor positions", async ({ page, browserName }) => {
-    await heynotePage.setContent(`{"formatVersion":"1.0", "cursors":{"ranges":[{"anchor":9,"head":9}],"main":0}}
+    await heynotePage.setContent(`{"formatVersion":"1.0.0", "cursors":{"ranges":[{"anchor":9,"head":9}],"main":0}}
 ∞∞∞text
 this
 is
@@ -48,7 +48,7 @@ block`)
 })
 
 test("unknown note metadata keys is kept", async ({ page, browserName }) => {
-    await heynotePage.setContent(`{"yoda":[123], "formatVersion":"1.0", "cursors":{"ranges":[{"anchor":15,"head":15}],"main":0}}
+    await heynotePage.setContent(`{"yoda":[123], "formatVersion":"1.0.0", "cursors":{"ranges":[{"anchor":15,"head":15}],"main":0}}
 ∞∞∞text
 block 1`)
     await page.locator("body").pressSequentially("hello")
