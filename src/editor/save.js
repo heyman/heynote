@@ -1,5 +1,6 @@
 import { ViewPlugin } from "@codemirror/view"
 import { debounce } from "debounce"
+import { SET_CONTENT }  from "./annotation"
 
 
 export const autoSaveContent = (editor, interval) => {
@@ -12,7 +13,10 @@ export const autoSaveContent = (editor, interval) => {
         class {
             update(update) {
                 if (update.docChanged) {
-                    save()
+                    const initialSetContent = update.transactions.flatMap(t => t.annotations).some(a => a.value === SET_CONTENT)
+                    if (!initialSetContent) {
+                        save()
+                    }
                 }
             }
         }

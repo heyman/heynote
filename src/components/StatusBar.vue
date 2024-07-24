@@ -1,17 +1,14 @@
 <script>
+    import { mapState } from 'pinia'
     import UpdateStatusItem from './UpdateStatusItem.vue'
     import { LANGUAGES } from '../editor/languages.js'
+    import { useNotesStore } from "../stores/notes-store"
     
     const LANGUAGE_MAP = Object.fromEntries(LANGUAGES.map(l => [l.token, l]))
     const LANGUAGE_NAMES = Object.fromEntries(LANGUAGES.map(l => [l.token, l.name]))
 
     export default {
         props: [
-            "line", 
-            "column", 
-            "selectionSize",
-            "language", 
-            "languageAuto",
             "theme",
             "themeSetting",
             "autoUpdate",
@@ -33,8 +30,17 @@
         },
 
         computed: {
+            ...mapState(useNotesStore, [
+                "currentNoteName",
+                "currentCursorLine",
+                "currentLanguage", 
+                "currentSelectionSize", 
+                "currentLanguage",
+                "currentLanguageAuto",
+            ]),
+
             languageName() {
-                return LANGUAGE_NAMES[this.language] || this.language
+                return LANGUAGE_NAMES[this.currentLanguage] || this.currentLanguage
             },
 
             className() {
@@ -42,7 +48,7 @@
             },
 
             supportsFormat() {
-                const lang = LANGUAGE_MAP[this.language]
+                const lang = LANGUAGE_MAP[this.currentLanguage]
                 return !!lang ? lang.supportsFormat : false
             },
 
@@ -52,6 +58,10 @@
 
             formatBlockTitle() {
                 return `Format Block Content (Alt + Shift + F)`
+            },
+
+            changeNoteTitle() {
+                return `Change Note (${this.cmdKey} + P)`
             },
 
             changeLanguageTitle() {
@@ -68,24 +78,31 @@
 <template>
     <div :class="className">
         <div class="status-block line-number">
-            Ln <span class="num">{{ line }}</span>
-            Col <span class="num">{{ column }}</span>
-            <template v-if="selectionSize > 0">
-                Sel <span class="num">{{ selectionSize }}</span>
+            Ln <span class="num">{{ currentCursorLine?.line }}</span>
+            Col <span class="num">{{ currentCursorLine?.col }}</span>
+            <template v-if="currentSelectionSize > 0">
+                Sel <span class="num">{{ currentSelectionSize }}</span>
             </template>
         </div>
         <div class="spacer"></div>
         <div 
-            @click="$emit('openLanguageSelector')"
+            @click.stop="$emit('openNoteSelector')"
+            class="status-block note clickable"
+            :title="changeNoteTitle"
+        >
+            {{ currentNoteName }} 
+        </div>
+        <div 
+            @click.stop="$emit('openLanguageSelector')"
             class="status-block lang clickable"
             :title="changeLanguageTitle"
         >
             {{ languageName }} 
-            <span v-if="languageAuto" class="auto">(auto)</span>
+            <span v-if="currentLanguageAuto" class="auto">(auto)</span>
         </div>
         <div 
             v-if="supportsFormat"
-            @click="$emit('formatCurrentBlock')"
+            @click.stop="$emit('formatCurrentBlock')"
             class="status-block format clickable"
             :title="formatBlockTitle"
         >
@@ -100,7 +117,7 @@
             <span :class="'icon ' + themeSetting"></span>
         </div>
         <div 
-            @click="$emit('openSettings')"
+            @click.stop="$emit('openSettings')"
             class="status-block settings clickable"
             title="Settings"
         >

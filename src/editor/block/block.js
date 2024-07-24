@@ -4,8 +4,8 @@ import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet
 import { syntaxTree, ensureSyntaxTree, syntaxTreeAvailable } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
+import { useNotesStore } from "../../stores/notes-store.js"
 import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
-import { SelectionChangeEvent } from "../event.js"
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
 
@@ -404,32 +404,33 @@ function getSelectionSize(state, sel) {
     return count
 }
 
-const emitCursorChange = (editor) => ViewPlugin.fromClass(
-    class {
-        update(update) {
-            // if the selection changed or the language changed (can happen without selection change), 
-            // emit a selection change event
-            const langChange = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE))
-            if (update.selectionSet || langChange) {
-                const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
+const emitCursorChange = (editor) => {
+    const notesStore = useNotesStore()
+    return ViewPlugin.fromClass(
+        class {
+            update(update) {
+                // if the selection changed or the language changed (can happen without selection change), 
+                // emit a selection change event
+                const langChange = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE))
+                if (update.selectionSet || langChange) {
+                    const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
 
-                const selectionSize = update.state.selection.ranges.map(
-                    (sel) => getSelectionSize(update.state, sel)
-                ).reduce((a, b) => a + b, 0)
+                    const selectionSize = update.state.selection.ranges.map(
+                        (sel) => getSelectionSize(update.state, sel)
+                    ).reduce((a, b) => a + b, 0)
 
-                const block = getActiveNoteBlock(update.state)
-                if (block && cursorLine) {
-                    editor.element.dispatchEvent(new SelectionChangeEvent({
-                        cursorLine,
-                        selectionSize,
-                        language: block.language.name,
-                        languageAuto: block.language.auto,
-                    }))
+                    const block = getActiveNoteBlock(update.state)
+                    if (block && cursorLine) {
+                        notesStore.currentCursorLine = cursorLine
+                        notesStore.currentSelectionSize = selectionSize
+                        notesStore.currentLanguage = block.language.name
+                        notesStore.currentLanguageAuto = block.language.auto
+                    }
                 }
             }
         }
-    }
-)
+    )
+}
 
 export const noteBlockExtension = (editor) => {
     return [

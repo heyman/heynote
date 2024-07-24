@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 import App from './components/App.vue'
 import { loadCurrencies } from './currency'
 import { useErrorStore } from './stores/error-store'
+import { useNotesStore, initNotesStore } from './stores/notes-store'
 
 
 const pinia = createPinia()
@@ -18,10 +19,12 @@ app.mount('#app').$nextTick(() => {
 })
 
 const errorStore = useErrorStore()
+//errorStore.addError("test error")
 window.heynote.getInitErrors().then((errors) => {
     errors.forEach((e) => errorStore.addError(e))
 })
 
+initNotesStore()
 
 
 
@@ -29,3 +32,4 @@ window.heynote.getInitErrors().then((errors) => {
 loadCurrencies()
 setInterval(loadCurrencies, 1000 * 3600 * 4)
 
+window.heynote.init()
