@@ -1,6 +1,6 @@
 # Heynote Documentation
 
-Heynote is a dedicated scratchpad for developers. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
+Heynote is a dedicated scratchpad for developers. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc.
 
 The Heynote buffer is divided into blocks, and each block can have its own Language set (e.g. JavaScript, JSON, Markdown, etc.). This gives you syntax highlighting and lets you auto-format that JSON response.
 
@@ -13,7 +13,7 @@ Available for Mac, Windows, and Linux.
 -   Syntax highlighting:
 
     C++, C#, Clojure, CSS, Erlang, Dart, Go, Groovy, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Shell, SQL, Swift, Vue, XML, YAML
-    
+
 -   Language auto-detection
 -   Auto-formatting
 -   Math/Calculator mode
@@ -64,15 +64,7 @@ Alt                    Show menu
 
 Download the appropriate (Mac, Windows or Linux) version from [heynote.com](https://heynote.com). The Windows build is not signed, so you might see some scary warning (I can not justify paying a yearly fee for a certificate just to get rid of that).
 
-### Notes on Linux installation
-
-It's been reported [(#48)](https://github.com/heyman/heynote/issues/48) that ChromeOS's Debian VM need the following packages installed to run the Heynote AppImage:
-
-```
-libfuse2
-libnss3
-libnspr4
-```
+If installing Heynote to Linux in ChromeOS, see the [notes](#linux-on-chromeos) below about some packages that are needed.
 
 ## Math Blocks
 
@@ -114,3 +106,41 @@ The default paths for the buffer data for the respective operating systems are:
 -   Windows: `%APPDATA%\Heynote\buffer.txt`
 -   Linux: `~/.config/Heynote/buffer.txt`
 
+## Linux
+
+### Linux on ChromeOS
+
+It's been reported [(#48)](https://github.com/heyman/heynote/issues/48) that ChromeOS's Debian VM need the following packages installed to run the Heynote AppImage:
+
+```
+libfuse2
+libnss3
+libnspr4
+```
+
+#### Wayland
+
+Due to a [an issue in Electron](https://github.com/electron/electron/issues/38288), the global hotkey will not work in all applications running under Wayland. In KDE it is possible to work around this limitation by adding this Kwin script:
+
+```javascript
+function toggleHeynote() {
+  var client = workspace.clientList().find((c) => c.resourceClass.toLowerCase() === 'heynote');
+  if (client) {
+    if (client.minimized) {
+      client.minimized = false;
+      workspace.activeClient = client;
+    } else {
+      if (workspace.activeClient == client) {
+        client.minimized = true;
+      } else {
+        workspace.activeClient = client;
+      }
+    }
+  }
+}
+registerShortcut('toggleHeynote', 'Toggle Heynote', 'Ctrl+Shift+H', toggleHeynote);
+```
+
+See the [KWin scripting tutorial](https://develop.kde.org/docs/plasma/kwin/) for instructions on how to install the script.
+
+Remember to enable the script in the KDE System Settings. It may also be necessary to go into the KDE System Settings and bind the "Toggle Heynote" key manually.
