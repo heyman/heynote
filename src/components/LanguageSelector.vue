@@ -106,12 +106,12 @@
 
 <style scoped lang="sass">    
     .scroller
-        overflow: auto
-        position: fixed
-        top: 0
-        left: 0
-        bottom: 0
-        right: 0
+        //overflow: auto
+        //position: fixed
+        //top: 0
+        //left: 0
+        //bottom: 0
+        //right: 0
     .language-selector
         font-size: 13px
         padding: 10px
@@ -121,6 +121,10 @@
         top: 0
         left: 50%
         transform: translateX(-50%)
+        max-height: 100%
+        box-sizing: border-box
+        display: flex
+        flex-direction: column
         border-radius: 0 0 5px 5px
         box-shadow: 0 0 10px rgba(0,0,0,0.3)
         +dark-mode
@@ -152,6 +156,7 @@
                 max-width: 100%
         
         .items
+            overflow-y: auto
             > li
                 border-radius: 3px
                 padding: 5px 12px
