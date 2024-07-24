@@ -79,6 +79,7 @@
   },
   "dependencies": {
     "electron-log": "^5.0.1",
+    "pinia": "^2.1.7",
     "semver": "^7.6.3"
   }
 }

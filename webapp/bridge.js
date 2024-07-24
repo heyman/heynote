@@ -152,6 +152,10 @@ const Heynote = {
     async getVersion() {
         return __APP_VERSION__ + " (" + __GIT_HASH__ + ")"
     },
+
+    async getInitErrors() {
+        
+    },
 }
 
 export { Heynote, ipcRenderer}

@@ -103,7 +103,11 @@ contextBridge.exposeInMainWorld("heynote", {
 
     async getVersion() {
         return await ipcRenderer.invoke("getVersion")
-    }
+    },
+
+    async getInitErrors() {
+        return await ipcRenderer.invoke("getInitErrors")
+    },
 })
 
 

@@ -50,6 +50,7 @@ Menu.setApplicationMenu(menu)
 
 export let win: BrowserWindow | null = null
 let tray: Tray | null = null;
+let initErrors: string[] = []
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
@@ -350,6 +351,9 @@ ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
 // load buffer on app start
 loadBuffer()
+ipcMain.handle("getInitErrors", () => {
+    return initErrors
+})
 
 
 ipcMain.handle('settings:set', async (event, settings) => {
