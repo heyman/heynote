@@ -64,7 +64,7 @@ Alt                    Show menu
 
 Download the appropriate (Mac, Windows or Linux) version from [heynote.com](https://heynote.com). The Windows build is not signed, so you might see some scary warning (I can not justify paying a yearly fee for a certificate just to get rid of that).
 
-If installing Heynote on Linux in ChromeOS, see the [notes](#linux-on-chromeos) below about some packages that are needed.
+If installing Heynote on Linux in ChromeOS, see the [notes](#user-content-linux-on-chromeos) below about some packages that are needed.
 
 ## Math Blocks
 
