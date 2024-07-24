@@ -83,7 +83,7 @@ async function createWindow() {
         x: CONFIG.get("windowConfig.x"),
         y: CONFIG.get("windowConfig.y"),
     }
-    
+
     // windowConfig.x and windowConfig.y will be undefined when config file is missing, e.g. first time run
     if (windowConfig.x !== undefined && windowConfig.y !== undefined) {
         // check if window is outside of screen, or too large
@@ -203,7 +203,7 @@ function createTray() {
     tray.setToolTip("Heynote");
     const menu = getTrayMenu(win)
     if (isMac) {
-        // using tray.setContextMenu() on macOS will open the menu on left-click, so instead we'll 
+        // using tray.setContextMenu() on macOS will open the menu on left-click, so instead we'll
         // manually bind the right-click event to open the menu
         tray.addListener("right-click", () => {
             tray?.popUpContextMenu(menu)
@@ -233,6 +233,11 @@ function registerGlobalHotkey() {
                             // if alwaysOnTop is on, calling app.hide() won't hide the window
                             win.hide()
                         }
+                    } else if (isLinux) {
+                        win.blur()
+                        // If we don't hide the window, it will stay on top of the stack even though it's not visible
+                        // and pressing the hotkey again won't do anything
+                        win.hide()
                     } else {
                         win.blur()
                         if (CONFIG.get("settings.showInMenu") || CONFIG.get("settings.alwaysOnTop")) {
@@ -248,7 +253,7 @@ function registerGlobalHotkey() {
                     if (!win.isVisible()) {
                         win.show()
                     }
-                    
+
                     win.focus()
                 }
             })
