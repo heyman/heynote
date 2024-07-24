@@ -64,7 +64,7 @@ Alt                    Show menu
 
 Download the appropriate (Mac, Windows or Linux) version from [heynote.com](https://heynote.com). The Windows build is not signed, so you might see some scary warning (I can not justify paying a yearly fee for a certificate just to get rid of that).
 
-If installing Heynote to Linux in ChromeOS, see the [notes](#linux-on-chromeos) below about some packages that are needed.
+If installing Heynote on Linux in ChromeOS, see the [notes](#linux-on-chromeos) below about some packages that are needed.
 
 ## Math Blocks
 
@@ -120,7 +120,7 @@ libnspr4
 
 #### Wayland
 
-Due to a [an issue in Electron](https://github.com/electron/electron/issues/38288), the global hotkey will not work in all applications running under Wayland. In KDE it is possible to work around this limitation by adding this Kwin script:
+Due to [an issue in Electron](https://github.com/electron/electron/issues/38288), the global hotkey will not work in all applications running under Wayland. In KDE it is possible to work around this limitation by adding this Kwin script:
 
 ```javascript
 function toggleHeynote() {
