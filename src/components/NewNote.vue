@@ -50,7 +50,7 @@
 </script>
 
 <template>
-    <div class="scroller" @keydown="onKeydown" tabindex="-1">
+    <div class="fader" @keydown="onKeydown" tabindex="-1">
         <form class="new-note" tabindex="-1" @focusout="onFocusOut" ref="container" @submit="onSubmit">
             <div class="container">
                 <h1>New Note from Block</h1>
@@ -73,8 +73,7 @@
 </template>
 
 <style scoped lang="sass">    
-    .scroller
-        overflow: auto
+    .fader
         position: fixed
         top: 0
         left: 0
