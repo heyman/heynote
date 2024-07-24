@@ -1,6 +1,9 @@
 <script>
-    import { HeynoteEditor, LANGUAGE_SELECTOR_EVENT } from '../editor/editor.js'
+    import { HeynoteEditor } from '../editor/editor.js'
     import { syntaxTree } from "@codemirror/language"
+    import { toRaw } from 'vue';
+    import { mapState } from 'pinia'
+    import { useNotesStore } from "../stores/notes-store"
 
     export default {
         props: {
@@ -38,65 +41,22 @@
         data() {
             return {
                 syntaxTreeDebugContent: null,
+                bufferFilePath: null,
+                editor: null,
             }
         },
 
         mounted() {
-            this.$refs.editor.addEventListener("selectionChange", (e) => {
-                //console.log("selectionChange:", e)
-                this.$emit("cursorChange", {
-                    cursorLine: e.cursorLine,
-                    selectionSize: e.selectionSize,
-                    language: e.language,
-                    languageAuto: e.languageAuto,
-                })
-            })
+            this.loadBuffer(this.currentNotePath)
 
-            this.$refs.editor.addEventListener(LANGUAGE_SELECTOR_EVENT, (e) => {
-                this.$emit("openLanguageSelector")
-            })
-
-            // load buffer content and create editor
-            window.heynote.buffer.load().then((content) => {
-                try {
-                    let diskContent = content
-                    this.editor = new HeynoteEditor({
-                        element: this.$refs.editor,
-                        content: content,
-                        theme: this.theme,
-                        saveFunction: (content) => {
-                            if (content === diskContent) {
-                                return
-                            }
-                            diskContent = content
-                            window.heynote.buffer.save(content)
-                        },
-                        keymap: this.keymap,
-                        emacsMetaKey: this.emacsMetaKey,
-                        showLineNumberGutter: this.showLineNumberGutter,
-                        showFoldGutter: this.showFoldGutter,
-                        bracketClosing: this.bracketClosing,
-                        fontFamily: this.fontFamily,
-                        fontSize: this.fontSize,
-                    })
-                    window._heynote_editor = this.editor
-                    window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
-                    this.editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
-
-                    // set up buffer change listener
-                    window.heynote.buffer.onChangeCallback((event, content) => {
-                        diskContent = content
-                        this.editor.setContent(content)
-                    })
-                } catch (e) {
-                    alert("Error! " + e.message)
-                    throw e
-                }
-            })
             // set up window close handler that will save the buffer and quit
             window.heynote.onWindowClose(() => {
-                window.heynote.buffer.saveAndQuit(this.editor.getContent())
+                window.heynote.buffer.saveAndQuit([
+                    [this.editor.path, this.editor.getContent()],
+                ])
             })
+
+            window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
 
             // if debugSyntaxTree prop is set, display syntax tree for debugging
             if (this.debugSyntaxTree) {
@@ -123,65 +83,108 @@
         },
 
         watch: {
+            currentNotePath(path) {
+                //console.log("currentNotePath changed to", path)
+                this.loadBuffer(path)
+            },
+
             theme(newTheme) {
-                this.editor.setTheme(newTheme)
+                toRaw(this.editor).setTheme(newTheme)
             },
 
             keymap() {
-                this.editor.setKeymap(this.keymap, this.emacsMetaKey)
+                toRaw(this.editor).setKeymap(this.keymap, this.emacsMetaKey)
             },
 
             emacsMetaKey() {
-                this.editor.setKeymap(this.keymap, this.emacsMetaKey)
+                toRaw(this.editor).setKeymap(this.keymap, this.emacsMetaKey)
             },
 
             showLineNumberGutter(show) {
-                this.editor.setLineNumberGutter(show)
+                toRaw(this.editor).setLineNumberGutter(show)
             },
 
             showFoldGutter(show) {
-                this.editor.setFoldGutter(show)
+                toRaw(this.editor).setFoldGutter(show)
             },
 
             bracketClosing(value) {
-                this.editor.setBracketClosing(value)
+                toRaw(this.editor).setBracketClosing(value)
             },
 
             fontFamily() {
-                this.editor.setFont(this.fontFamily, this.fontSize)
+                toRaw(this.editor).setFont(this.fontFamily, this.fontSize)
             },
             fontSize() {
-                this.editor.setFont(this.fontFamily, this.fontSize)
+                toRaw(this.editor).setFont(this.fontFamily, this.fontSize)
             },
             defaultBlockLanguage() {
-                this.editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
+                toRaw(this.editor).setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
             },
             defaultBlockLanguageAutoDetect() {
-                this.editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
+                toRaw(this.editor).setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
             },
         },
 
+        computed: {
+            ...mapState(useNotesStore, [
+                "currentNotePath",
+            ]),
+        },
+
         methods: {
-            setLanguage(language) {
-                if (language === "auto") {
-                    this.editor.setCurrentLanguage(null, true)
-                } else {
-                    this.editor.setCurrentLanguage(language, false)
+            loadBuffer(path) {
+                if (this.editor) {
+                    this.editor.destroy()
                 }
-                this.editor.focus()
+                // load buffer content and create editor
+                this.bufferFilePath = path
+                try {
+                    this.editor = new HeynoteEditor({
+                        element: this.$refs.editor,
+                        path: this.bufferFilePath,
+                        theme: this.theme,
+                        keymap: this.keymap,
+                        emacsMetaKey: this.emacsMetaKey,
+                        showLineNumberGutter: this.showLineNumberGutter,
+                        showFoldGutter: this.showFoldGutter,
+                        bracketClosing: this.bracketClosing,
+                        fontFamily: this.fontFamily,
+                        fontSize: this.fontSize,
+                        defaultBlockToken: this.defaultBlockLanguage,
+                        defaultBlockAutoDetect: this.defaultBlockLanguageAutoDetect,
+                    })
+                    window._heynote_editor = toRaw(this.editor)
+                } catch (e) {
+                    alert("Error! " + e.message)
+                    throw e
+                }
+            },
+
+            setLanguage(language) {
+                const editor = toRaw(this.editor)
+                if (language === "auto") {
+                    editor.setCurrentLanguage(null, true)
+                } else {
+                    editor.setCurrentLanguage(language, false)
+                }
+                editor.focus()
             },
 
             formatCurrentBlock() {
-                this.editor.formatCurrentBlock()
-                this.editor.focus()
+                const editor = toRaw(this.editor)
+                editor.formatCurrentBlock()
+                editor.focus()
             },
 
             onCurrenciesLoaded() {
-                this.editor.currenciesLoaded()
+                if (this.editor) {
+                    toRaw(this.editor).currenciesLoaded()
+                }
             },
 
             focus() {
-                this.editor.focus()
+                toRaw(this.editor).focus()
             },
         },
     }

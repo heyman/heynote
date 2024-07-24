@@ -1,4 +1,4 @@
-import { Annotation, EditorState, Compartment, Facet, EditorSelection } from "@codemirror/state"
+import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction } from "@codemirror/state"
 import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
 import { indentUnit, forceParsing, foldGutter, ensureSyntaxTree } from "@codemirror/language"
 import { markdown } from "@codemirror/lang-markdown"
@@ -22,8 +22,8 @@ import { autoSaveContent } from "./save.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
 import { NoteFormat } from "./note-format.js"
+import { useNotesStore } from "../stores/notes-store.js";
 
-export const LANGUAGE_SELECTOR_EVENT = "openLanguageSelector"
 
 function getKeymapExtensions(editor, keymap) {
     if (keymap === "emacs") {
@@ -37,10 +37,10 @@ function getKeymapExtensions(editor, keymap) {
 export class HeynoteEditor {
     constructor({
         element, 
+        path,
         content, 
         focus=true, 
         theme="light", 
-        saveFunction=null, 
         keymap="default", 
         emacsMetaKey,
         showLineNumberGutter=true, 
@@ -48,8 +48,11 @@ export class HeynoteEditor {
         bracketClosing=false,
         fontFamily,
         fontSize,
+        defaultBlockToken,
+        defaultBlockAutoDetect,
     }) {
         this.element = element
+        this.path = path
         this.themeCompartment = new Compartment
         this.keymapCompartment = new Compartment
         this.lineNumberCompartmentPre = new Compartment
@@ -60,9 +63,10 @@ export class HeynoteEditor {
         this.deselectOnCopy = keymap === "emacs"
         this.emacsMetaKey = emacsMetaKey
         this.fontTheme = new Compartment
-        this.defaultBlockToken = "text"
-        this.defaultBlockAutoDetect = true
-        this.saveFunction = saveFunction
+        this.setDefaultBlockLanguage(defaultBlockToken, defaultBlockAutoDetect)
+        this.contentLoaded = false
+        this.notesStore = useNotesStore()
+        
 
         const state = EditorState.create({
             doc: "",
@@ -88,7 +92,7 @@ export class HeynoteEditor {
                 }),
                 heynoteLang(),
                 noteBlockExtension(this),
-                languageDetection(() => this),
+                languageDetection(path, () => this),
                 
                 // set cursor blink rate to 1 second
                 drawSelection({cursorBlinkRate:1000}),
@@ -98,7 +102,7 @@ export class HeynoteEditor {
                     return {class: view.state.facet(EditorView.darkTheme) ? "dark-theme" : "light-theme"}
                 }),
 
-                this.saveFunction ? autoSaveContent(this, 2000) : [],
+                autoSaveContent(this, 2000),
 
                 todoCheckboxPlugin,
                 markdown(),
@@ -107,32 +111,64 @@ export class HeynoteEditor {
         })
 
         // make sure saveFunction is called when page is unloaded
-        if (saveFunction) {
-            window.addEventListener("beforeunload", () => {
-                this.save()
-            })
-        }
+        window.addEventListener("beforeunload", () => {
+            this.save()
+        })
 
         this.view = new EditorView({
             state: state,
             parent: element,
         })
         
-        this.setContent(content)
-        
+        //this.setContent(content)
+        this.setReadOnly(true)
+        this.loadContent().then(() => {
+            this.setReadOnly(false)
+        })
+
         if (focus) {
             this.view.focus()
         }
     }
 
-    save() {
-        this.saveFunction(this.getContent())
+    async save() {
+        if (!this.contentLoaded) {
+            return
+        }
+        const content = this.getContent()
+        if (content === this.diskContent) {
+            return
+        }
+        console.log("saving:", this.path)
+        this.diskContent = content
+        await window.heynote.buffer.save(this.path, content)
     }
 
     getContent() {
         this.note.content = this.view.state.sliceDoc()
         this.note.cursors = this.view.state.selection.toJSON()
+        
+        const ranges = this.note.cursors.ranges
+        if (ranges.length == 1 && ranges[0].anchor == 0 && ranges[0].head == 0) {
+            console.log("DEBUG!! Cursor is at 0,0")
+            console.trace()
+        }
         return this.note.serialize()
+    }
+
+    async loadContent() {
+        console.log("loading content", this.path)
+        const content = await window.heynote.buffer.load(this.path)
+        this.diskContent = content
+        this.contentLoaded = true
+        this.setContent(content)
+
+        // set up content change listener
+        this.onChange = (content) => {
+            this.diskContent = content
+            this.setContent(content)
+        }
+        window.heynote.buffer.addOnChangeCallback(this.path, this.onChange)
     }
 
     setContent(content) {
@@ -143,6 +179,7 @@ export class HeynoteEditor {
             this.setReadOnly(true)
             throw e
         }
+        this.notesStore.currentNoteName = this.note.metadata?.name || this.path
         return new Promise((resolve) => {
             // set buffer content
             this.view.dispatch({
@@ -151,7 +188,7 @@ export class HeynoteEditor {
                     to: this.view.state.doc.length,
                     insert: this.note.content,
                 },
-                annotations: [heynoteEvent.of(SET_CONTENT)],
+                annotations: [heynoteEvent.of(SET_CONTENT), Transaction.addToHistory.of(false)],
             })
 
             // Ensure we have a parsed syntax tree when buffer is loaded. This prevents errors for large buffers
@@ -217,7 +254,15 @@ export class HeynoteEditor {
     }
 
     openLanguageSelector() {
-        this.element.dispatchEvent(new Event(LANGUAGE_SELECTOR_EVENT))
+        this.notesStore.openLanguageSelector()
+    }
+
+    openNoteSelector() {
+        this.notesStore.openNoteSelector()
+    }
+
+    openCreateNote() {
+        this.notesStore.openCreateNote()
     }
 
     setCurrentLanguage(lang, auto=false) {
@@ -256,6 +301,15 @@ export class HeynoteEditor {
 
     currenciesLoaded() {
         triggerCurrenciesLoaded(this.view.state, this.view.dispatch)
+    }
+
+    destroy() {
+        if (this.onChange) {
+            window.heynote.buffer.removeOnChangeCallback(this.path, this.onChange)
+        }
+        this.save()
+        this.view.destroy()
+        window.heynote.buffer.close(this.path)
     }
 }
 

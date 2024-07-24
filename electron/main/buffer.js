@@ -16,15 +16,15 @@ const untildify = (pathWithTilde) => {
       : pathWithTilde;
 }
 
-export function constructBufferFilePath(directoryPath) {
-    return join(untildify(directoryPath), isDev ? "buffer-dev.txt" : "buffer.txt")
+export function constructBufferFilePath(directoryPath, path) {
+    return join(untildify(directoryPath), path)
 }
 
-export function getBufferFilePath() {
+export function getFullBufferFilePath(path) {
     let defaultPath = app.getPath("userData")
     let configPath = CONFIG.get("settings.bufferPath")
     let bufferPath = configPath.length ? configPath : defaultPath
-    let bufferFilePath = constructBufferFilePath(bufferPath)
+    let bufferFilePath = constructBufferFilePath(bufferPath, path)
     try {
         // use realpathSync to resolve a potential symlink
         return fs.realpathSync(bufferFilePath)
@@ -103,39 +103,45 @@ export class Buffer {
 
 
 // Buffer
-let buffer
-export function loadBuffer() {
-    if (buffer) {
-        buffer.close()
+let buffers = {}
+export function loadBuffer(path) {
+    if (buffers[path]) {
+        buffers[path].close()
     }
-    buffer = new Buffer({
-        filePath: getBufferFilePath(),
+    buffers[path] = new Buffer({
+        filePath: getFullBufferFilePath(path),
         onChange: (content) => {
-            win?.webContents.send("buffer-content:change", content)
+            console.log("Old buffer.js onChange")
+            win?.webContents.send("buffer-content:change", path, content)
         },
     })
-    return buffer
+    return buffers[path]
 }
 
-ipcMain.handle('buffer-content:load', async () => {
-    if (buffer.exists() && !(eraseInitialContent && isDev)) {
-        return await buffer.load()
+ipcMain.handle('buffer-content:load', async (event, path) => {
+    if (!buffers[path]) {
+        loadBuffer(path)
+    }
+    if (buffers[path].exists() && !(eraseInitialContent && isDev)) {
+        return await buffers[path].load()
     } else {
         return isDev ? initialDevContent : initialContent
     }
 });
 
-async function save(content) {
-    return await buffer.save(content)
+async function save(path, content) {
+    return await buffers[path].save(content)
 }
 
-ipcMain.handle('buffer-content:save', async (event, content) => {
-    return await save(content)
+ipcMain.handle('buffer-content:save', async (event, path, content) => {
+    return await save(path, content)
 });
 
 export let contentSaved = false
-ipcMain.handle('buffer-content:saveAndQuit', async (event, content) => {
-    await save(content)
+ipcMain.handle('buffer-content:saveAndQuit', async (event, contents) => {
+    for (const [path, content] of contents) {
+        await save(path, content)
+    }
     contentSaved = true
     app.quit()
 })

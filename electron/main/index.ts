@@ -10,6 +10,7 @@ import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
 import { loadBuffer, contentSaved } from './buffer';
+import { FileLibrary, setupFileLibraryEventHandlers } from './file-library';
 
 
 // The built directory structure
@@ -49,6 +50,7 @@ Menu.setApplicationMenu(menu)
 // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 export let win: BrowserWindow | null = null
+let fileLibrary: FileLibrary | null = null
 let tray: Tray | null = null;
 let initErrors: string[] = []
 // Here, you can also use other preload
@@ -139,7 +141,7 @@ async function createWindow() {
         }
         // Prevent the window from closing, and send a message to the renderer which will in turn
         // send a message to the main process to save the current buffer and close the window.
-        if (!contentSaved) {
+        if (!!fileLibrary && !fileLibrary.contentSaved) {
             event.preventDefault()
             win?.webContents.send(WINDOW_CLOSE_EVENT)
         } else {
@@ -308,6 +310,7 @@ function registerAlwaysOnTop() {
 }
 
 app.whenReady().then(createWindow).then(async () => {
+    setupFileLibraryEventHandlers(fileLibrary, win)
     initializeAutoUpdate(win)
     registerGlobalHotkey()
     registerShowInDock()
@@ -349,8 +352,16 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
-// load buffer on app start
-loadBuffer()
+// Initialize note/file library
+const customLibraryPath = CONFIG.get("settings.bufferPath")
+const libraryPath = customLibraryPath ? customLibraryPath : join(app.getPath("userData"), "notes")
+console.log("libraryPath", libraryPath)
+try {
+    fileLibrary = new FileLibrary(libraryPath)
+} catch (error) {
+    initErrors.push(`Error: ${error.message}`)
+}
+
 ipcMain.handle("getInitErrors", () => {
     return initErrors
 })

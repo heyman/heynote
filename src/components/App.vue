@@ -1,8 +1,17 @@
 <script>
+    import { mapState, mapActions } from 'pinia'
+
+    import { mapWritableState } from 'pinia'
+    import { useNotesStore } from "../stores/notes-store"
+    import { useErrorStore } from "../stores/error-store"
+
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
     import LanguageSelector from './LanguageSelector.vue'
+    import NoteSelector from './NoteSelector.vue'
     import Settings from './settings/Settings.vue'
+    import ErrorMessages from './ErrorMessages.vue'
+    import NewNote from './NewNote.vue'
 
     export default {
         components: {
@@ -10,20 +19,17 @@
             StatusBar,
             LanguageSelector,
             Settings,
+            NoteSelector,
+            ErrorMessages,
+            NewNote,
         },
 
         data() {
             return {
-                line: 1,
-                column: 1,
-                selectionSize: 0,
-                language: "plaintext",
-                languageAuto: true,
                 theme: window.heynote.themeMode.initial,
                 initialTheme: window.heynote.themeMode.initial,
                 themeSetting: 'system',
                 development: window.location.href.indexOf("dev=1") !== -1,
-                showLanguageSelector: false,
                 showSettings: false,
                 settings: window.heynote.settings,
             }
@@ -56,13 +62,61 @@
             window.heynote.themeMode.removeListener()
         },
 
+        watch: {
+            // when a dialog is closed, we want to focus the editor
+            showLanguageSelector(value) { this.dialogWatcher(value) },
+            showNoteSelector(value) { this.dialogWatcher(value) },
+            showCreateNote(value) { this.dialogWatcher(value) },
+
+            currentNotePath() {
+                this.focusEditor()
+            },
+        },
+
+        computed: {
+            ...mapState(useNotesStore, [
+                "currentNotePath",
+                "showLanguageSelector",
+                "showNoteSelector",
+                "showCreateNote",
+            ]),
+
+            editorInert() {
+                return this.showCreateNote || this.showSettings
+            },
+        },
+
         methods: {
+            ...mapActions(useNotesStore, [
+                "openLanguageSelector",
+                "openNoteSelector",
+                "openCreateNote",
+                "closeDialog",
+                "openNote",
+            ]),
+
+            // Used as a watcher for the booleans that control the visibility of editor dialogs. 
+            // When a dialog is closed, we want to focus the editor
+            dialogWatcher(value) {
+                if (!value) {
+                    this.focusEditor()
+                }
+            },
+
+            focusEditor() {
+                // we need to wait for the next tick for the cases when we set the inert attribute on the editor
+                // in which case issuing a focus() call immediately would not work 
+                this.$nextTick(() => {
+                    this.$refs.editor.focus()
+                })
+            },
+
             openSettings() {
                 this.showSettings = true
             },
             closeSettings() {
                 this.showSettings = false
-                this.$refs.editor.focus()
+                this.focusEditor()
             },
 
             toggleTheme() {
@@ -78,25 +132,8 @@
                 this.$refs.editor.focus()
             },
 
-            onCursorChange(e) {
-                this.line = e.cursorLine.line
-                this.column = e.cursorLine.col
-                this.selectionSize = e.selectionSize
-                this.language = e.language
-                this.languageAuto = e.languageAuto
-            },
-
-            openLanguageSelector() {
-                this.showLanguageSelector = true
-            },
-
-            closeLanguageSelector() {
-                this.showLanguageSelector = false
-                this.$refs.editor.focus()
-            },
-
             onSelectLanguage(language) {
-                this.showLanguageSelector = false
+                this.closeDialog()
                 this.$refs.editor.setLanguage(language)
             },
 
@@ -111,7 +148,6 @@
 <template>
     <div class="container">
         <Editor 
-            @cursorChange="onCursorChange"
             :theme="theme"
             :development="development"
             :debugSyntaxTree="false"
@@ -124,37 +160,44 @@
             :fontSize="settings.fontSize"
             :defaultBlockLanguage="settings.defaultBlockLanguage || 'text'"
             :defaultBlockLanguageAutoDetect="settings.defaultBlockLanguageAutoDetect === undefined ? true : settings.defaultBlockLanguageAutoDetect"
+            :inert="editorInert"
             class="editor"
             ref="editor"
-            @openLanguageSelector="openLanguageSelector"
         />
         <StatusBar 
-            :line="line" 
-            :column="column" 
-            :selectionSize="selectionSize"
-            :language="language" 
-            :languageAuto="languageAuto"
             :theme="theme"
             :themeSetting="themeSetting"
             :autoUpdate="settings.autoUpdate"
             :allowBetaVersions="settings.allowBetaVersions"
             @toggleTheme="toggleTheme"
+            @openNoteSelector="openNoteSelector"
             @openLanguageSelector="openLanguageSelector"
             @formatCurrentBlock="formatCurrentBlock"
             @openSettings="showSettings = true"
+            @click="() => {$refs.editor.focus()}"
             class="status" 
         />
         <div class="overlay">
             <LanguageSelector 
                 v-if="showLanguageSelector" 
                 @selectLanguage="onSelectLanguage"
-                @close="closeLanguageSelector"
+                @close="closeDialog"
+            />
+            <NoteSelector 
+                v-if="showNoteSelector" 
+                @openNote="openNote"
+                @close="closeDialog"
             />
             <Settings 
                 v-if="showSettings"
                 :initialSettings="settings"
                 @closeSettings="closeSettings"
             />
+            <NewNote 
+                v-if="showCreateNote"
+                @close="closeDialog"
+            />
+            <ErrorMessages />
         </div>
     </div>
 </template>

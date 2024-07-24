@@ -28,6 +28,7 @@ onmessage = (event) => {
                     },
                     content: content,
                     idx: event.data.idx,
+                    path: event.data.path,
                 })
                 return
             }
@@ -53,6 +54,7 @@ onmessage = (event) => {
                     },
                     content: content,
                     idx: event.data.idx,
+                    path: event.data.path,
                 })
                 return
             }
@@ -66,6 +68,7 @@ onmessage = (event) => {
                     },
                     content: content,
                     idx: event.data.idx,
+                    path: event.data.path,
                 })
                 return
             }
