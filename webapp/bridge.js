@@ -103,6 +103,10 @@ const Heynote = {
             return [{"path":"buffer.txt", "metadata":{}}]
         },
 
+        async getDirectoryList() {
+            return []
+        },
+
         async close(path) {
             
         },

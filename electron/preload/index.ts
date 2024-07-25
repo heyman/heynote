@@ -65,6 +65,10 @@ contextBridge.exposeInMainWorld("heynote", {
             return await ipcRenderer.invoke("buffer:getList")
         },
 
+        async getDirectoryList() {
+            return await ipcRenderer.invoke("buffer:getDirectoryList")
+        },
+
         async load(path) {
             return await ipcRenderer.invoke("buffer:load", path)
         },
