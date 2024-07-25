@@ -147,7 +147,7 @@
             border: 1px solid #ccc
             box-sizing: border-box
             border-radius: 2px
-            width: 400px
+            width: 100%
             margin-bottom: 10px
             &:focus
                 outline: none
