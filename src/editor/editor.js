@@ -177,7 +177,7 @@ export class HeynoteEditor {
             this.setReadOnly(false)
         } catch (e) {
             this.setReadOnly(true)
-            throw e
+            throw new Error(`Failed to load note: ${e.message}`)
         }
         this.notesStore.currentNoteName = this.note.metadata?.name || this.path
         return new Promise((resolve) => {
