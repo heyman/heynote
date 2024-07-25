@@ -2,7 +2,7 @@
     import { mapState, mapActions } from 'pinia'
     import { useNotesStore } from "../stores/notes-store"
 
-    import FolderSelect from './form/FolderSelect.vue'
+    import FolderSelector from './folder-selector/FolderSelector.vue'
 
     export default {
         data() {
@@ -10,21 +10,60 @@
                 name: "",
                 filename: "",
                 tags: [],
+                directoryTree: null,
+                parentPath: "",
             }
         },
         components: {
-            FolderSelect
+            FolderSelector
         },
 
         async mounted() {
-            await this.updateNotes()
             this.$refs.nameInput.focus()
+            this.updateNotes()
+
+            // build directory tree
+            const directories = await window.heynote.buffer.getDirectoryList()
+            const rootNode = {
+                name: "Heynote Root",
+                path: "",
+                children: [],
+            }
+            const getNodeFromList = (list, part) => list.find(node => node.name === part)
+                
+            directories.forEach((path) => {
+                const parts = path.split("/")
+                let currentLevel = rootNode
+                let currentParts = []
+                parts.forEach(part => {
+                    currentParts.push(part)
+                    let node = getNodeFromList(currentLevel.children, part)
+                    if (node) {
+                        currentLevel = node
+                    } else {
+                        node = {
+                            name: part,
+                            children: [],
+                            path: currentParts.join("/"),
+                        }
+                        currentLevel.children.push(node)
+                        currentLevel = node
+                    }
+                })
+            })
+            //console.log("tree:", rootNode)
+            this.directoryTree = rootNode
         },
 
         computed: {
             ...mapState(useNotesStore, [
                 "notes",
+                "currentNotePath",
             ]),
+
+            currentNoteDirectory() {
+                return this.currentNotePath.split("/").slice(0, -1).join("/")
+            },
         },
 
         methods: {
@@ -35,6 +74,15 @@
             onKeydown(event) {
                 if (event.key === "Escape") {
                     this.$emit("close")
+                    event.preventDefault()
+                }
+            },
+
+            onInputKeydown(event) {
+                // redirect arrow keys and page up/down to folder selector
+                const redirectKeys = ["ArrowDown", "ArrowUp", "PageDown", "PageUp"]
+                if (redirectKeys.includes(event.key)) {
+                    this.$refs.folderSelect.$el.dispatchEvent(new KeyboardEvent("keydown", {key: event.key}))
                     event.preventDefault()
                 }
             },
@@ -60,10 +108,18 @@
                     v-model="name"
                     class="name-input"
                     ref="nameInput"
+                    @keydown="onInputKeydown"
                 />
 
                 <label for="folder-select">Create in</label>
-                <FolderSelect id="folder-select" />
+                <FolderSelector 
+                    v-if="directoryTree"
+                    :directoryTree="directoryTree"
+                    :selectedPath="currentNoteDirectory"
+                    id="folder-select" 
+                    v-model="parentPath"
+                    ref="folderSelect"
+                />
             </div>
             <div class="bottom-bar">
                 <button type="submit">Create Note</button>
@@ -84,12 +140,16 @@
         font-size: 13px
         //background: #48b57e
         background: #efefef
+        width: 420px
         position: absolute
         top: 0
         left: 50%
         transform: translateX(-50%)
         border-radius: 0 0 5px 5px
         box-shadow: 0 0 10px rgba(0,0,0,0.3)
+        display: flex
+        flex-direction: column
+        max-height: 100%
         &:focus
             outline: none
         +dark-mode
@@ -101,6 +161,9 @@
         
         .container
             padding: 10px
+            min-height: 0
+            display: flex
+            flex-direction: column
 
             h1
                 font-weight: bold
@@ -115,7 +178,7 @@
 
             
             .name-input
-                width: 400px
+                width: 100%
                 background: #fff
                 padding: 4px 5px
                 border: 1px solid #ccc
@@ -138,8 +201,9 @@
         
         .bottom-bar
             border-radius: 0 0 5px 5px
-            background: #e3e3e3
+            //background: #e3e3e3
             padding: 10px
+            padding-top: 0
             display: flex
             justify-content: flex-end
             +dark-mode
@@ -155,3 +219,4 @@
                     outline-color: #48b57e
         
 </style>
+./folder-selector/FolderSelector.vue

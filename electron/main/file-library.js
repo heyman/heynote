@@ -67,7 +67,7 @@ export class FileLibrary {
     async getList() {
         console.log("Loading notes")
         const notes = {}
-        const files = await this.jetpack.findAsync(this.basePath, {
+        const files = await this.jetpack.findAsync(".", {
             matching: "*.txt",
             recursive: true,
         })
@@ -81,6 +81,15 @@ export class FileLibrary {
             notes[path] = metadata
         })
         return notes
+    }
+
+    async getDirectoryList() {
+         const directories = await this.jetpack.findAsync("", {
+            files: false,
+            directories: true,
+            recursive: true,
+         })
+         return directories
     }
 
     setupWatcher(win) {
@@ -187,6 +196,10 @@ export function setupFileLibraryEventHandlers(library, win) {
 
     ipcMain.handle('buffer:getList', async (event) => {
         return await library.getList()
+    });
+
+    ipcMain.handle('buffer:getDirectoryList', async (event) => {
+        return await library.getDirectoryList()
     });
 
     ipcMain.handle('buffer:exists', async (event, path) => {
