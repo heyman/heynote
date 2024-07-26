@@ -64,6 +64,14 @@ export class FileLibrary {
         return await this.files[path].save(content)
     }
 
+    async create(path, content) {
+        if (await this.exists(path)) {
+            throw new Error(`File already exists: ${path}`)
+        }
+        const fullPath = join(this.basePath, path)
+        await this.jetpack.writeAsync(fullPath, content)
+    }
+
     async getList() {
         console.log("Loading notes")
         const notes = {}
@@ -192,6 +200,10 @@ export function setupFileLibraryEventHandlers(library, win) {
 
     ipcMain.handle('buffer:save', async (event, path, content) => {
         return await library.save(path, content)
+    });
+
+    ipcMain.handle('buffer:create', async (event, path, content) => {
+        return await library.create(path, content)
     });
 
     ipcMain.handle('buffer:getList', async (event) => {

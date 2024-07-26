@@ -1,5 +1,5 @@
-import { EditorSelection } from "@codemirror/state"
-import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK } from "../annotation.js";
+import { EditorSelection, Transaction } from "@codemirror/state"
+import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK, DELETE_BLOCK } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos } from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
@@ -7,7 +7,7 @@ import { selectAll } from "./select-all.js";
 export { moveLineDown, moveLineUp, selectAll }
 
 
-function getBlockDelimiter(defaultToken, autoDetect) {
+export function getBlockDelimiter(defaultToken, autoDetect) {
     return `\n∞∞∞${autoDetect ? defaultToken + '-a' : defaultToken}\n`
 }
 
@@ -317,6 +317,24 @@ export function triggerCurrenciesLoaded(state, dispatch) {
     // This will make Math blocks re-render so that currency conversions are applied
     dispatch(state.update({
         changes:{from: 0, to: 0, insert:""},
-        annotations: [heynoteEvent.of(CURRENCIES_LOADED)],
+        annotations: [heynoteEvent.of(CURRENCIES_LOADED), Transaction.addToHistory.of(false)],
+    }))
+}
+
+export const deleteBlock = (editor) => ({state, dispatch}) => {
+    const block = getActiveNoteBlock(state)
+    const blocks = state.facet(blockState)
+    let replace = ""
+    if (blocks.length == 1) {
+        replace = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
+    }
+    dispatch(state.update({
+        changes: {
+            from: block.range.from,
+            to: block.range.to,
+            insert: replace,
+        },
+        selection: EditorSelection.cursor(block.delimiter.from),
+        annotations: [heynoteEvent.of(DELETE_BLOCK)],
     }))
 }

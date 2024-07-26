@@ -1,3 +1,4 @@
+import { Exception } from "sass";
 import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "../electron/constants";
 
 const mediaMatch = window.matchMedia('(prefers-color-scheme: dark)')
@@ -90,10 +91,13 @@ const Heynote = {
             localStorage.setItem(path, content)
         },
 
+        async create(path, content) {
+            throw Exception("Not implemented")
+        },
+
         async saveAndQuit(contents) {
             
         },
-
 
         async exists(path) {
             return true

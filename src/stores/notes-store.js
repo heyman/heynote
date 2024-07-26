@@ -1,8 +1,11 @@
+import { toRaw } from 'vue';
 import { defineStore } from "pinia"
+import { NoteFormat } from "../editor/note-format"
 
 export const useNotesStore = defineStore("notes", {
     state: () => ({
         notes: {},
+        currentEditor: null,
         currentNotePath: window.heynote.isDev ? "buffer-dev.txt" : "buffer.txt",
         currentNoteName: null,
         currentLanguage: null,
@@ -22,11 +25,6 @@ export const useNotesStore = defineStore("notes", {
 
         setNotes(notes) {
             this.notes = notes
-        },
-
-        createNewNote(path, content) {
-            //window.heynote.buffer.save(path, content)
-            this.updateNotes()
         },
 
         openNote(path) {
@@ -55,6 +53,26 @@ export const useNotesStore = defineStore("notes", {
             this.showCreateNote = false
             this.showNoteSelector = false
             this.showLanguageSelector = false
+        },
+
+        async createNewNoteFromActiveBlock(path, name) {
+            await toRaw(this.currentEditor).createNewNoteFromActiveBlock(path, name)
+        },
+
+        async saveNewNote(path, name, content) {
+            //window.heynote.buffer.save(path, content)
+            //this.updateNotes()
+
+            if (this.notes[path]) {
+                throw new Error(`Note already exists: ${path}`)
+            }
+            
+            const note = new NoteFormat()
+            note.content = content
+            note.metadata.name = name
+            console.log("saving", path, note.serialize())
+            await window.heynote.buffer.create(path, note.serialize())
+            this.updateNotes()
         },
     },
 })

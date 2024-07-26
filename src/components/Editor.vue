@@ -2,8 +2,11 @@
     import { HeynoteEditor } from '../editor/editor.js'
     import { syntaxTree } from "@codemirror/language"
     import { toRaw } from 'vue';
-    import { mapState } from 'pinia'
+    import { mapState, mapWritableState, mapActions } from 'pinia'
+    import { useErrorStore } from "../stores/error-store"
     import { useNotesStore } from "../stores/notes-store"
+
+    const NUM_EDITOR_INSTANCES = 5
 
     export default {
         props: {
@@ -41,8 +44,11 @@
         data() {
             return {
                 syntaxTreeDebugContent: null,
-                bufferFilePath: null,
                 editor: null,
+                editorCache: {
+                    lru: [],
+                    cache: {}
+                },
             }
         },
 
@@ -130,34 +136,67 @@
             ...mapState(useNotesStore, [
                 "currentNotePath",
             ]),
+            ...mapWritableState(useNotesStore, [
+                "currentEditor",
+                "currentNoteName",
+            ]),
         },
 
         methods: {
+            ...mapActions(useErrorStore, ["addError"]),
+
             loadBuffer(path) {
                 if (this.editor) {
-                    this.editor.destroy()
+                    this.editor.hide()
                 }
-                // load buffer content and create editor
-                this.bufferFilePath = path
-                try {
-                    this.editor = new HeynoteEditor({
-                        element: this.$refs.editor,
-                        path: this.bufferFilePath,
-                        theme: this.theme,
-                        keymap: this.keymap,
-                        emacsMetaKey: this.emacsMetaKey,
-                        showLineNumberGutter: this.showLineNumberGutter,
-                        showFoldGutter: this.showFoldGutter,
-                        bracketClosing: this.bracketClosing,
-                        fontFamily: this.fontFamily,
-                        fontSize: this.fontSize,
-                        defaultBlockToken: this.defaultBlockLanguage,
-                        defaultBlockAutoDetect: this.defaultBlockLanguageAutoDetect,
-                    })
+
+                if (this.editorCache.cache[path]) {
+                    // editor is already loaded, just switch to it
+                    console.log("Switching to cached editor", path)
+                    toRaw(this.editor).hide()
+                    this.editor = this.editorCache.cache[path]
+                    toRaw(this.editor).show()
+                    //toRaw(this.editor).currenciesLoaded()
+                    this.currentEditor = toRaw(this.editor)
                     window._heynote_editor = toRaw(this.editor)
-                } catch (e) {
-                    alert("Error! " + e.message)
-                    throw e
+                    // move to end of LRU
+                    this.editorCache.lru = this.editorCache.lru.filter(p => p !== path)
+                    this.editorCache.lru.push(path)
+                } else {
+                    // check if we need to free up a slot
+                    if (this.editorCache.lru.length >= NUM_EDITOR_INSTANCES) {
+                        const pathToFree = this.editorCache.lru.shift()
+                        console.log("Freeing up editor slot", pathToFree)
+                        this.editorCache.cache[pathToFree].destroy()
+                        delete this.editorCache.cache[pathToFree]
+                        this.editorCache.lru = this.editorCache.lru.filter(p => p !== pathToFree)
+                    }
+
+                    // create new Editor instance
+                    console.log("Loading new editor", path)
+                    try {
+                        this.editor = new HeynoteEditor({
+                            element: this.$refs.editor,
+                            path: path,
+                            theme: this.theme,
+                            keymap: this.keymap,
+                            emacsMetaKey: this.emacsMetaKey,
+                            showLineNumberGutter: this.showLineNumberGutter,
+                            showFoldGutter: this.showFoldGutter,
+                            bracketClosing: this.bracketClosing,
+                            fontFamily: this.fontFamily,
+                            fontSize: this.fontSize,
+                            defaultBlockToken: this.defaultBlockLanguage,
+                            defaultBlockAutoDetect: this.defaultBlockLanguageAutoDetect,
+                        })
+                        this.currentEditor = toRaw(this.editor)
+                        window._heynote_editor = toRaw(this.editor)
+                        this.editorCache.cache[path] = this.editor
+                        this.editorCache.lru.push(path)
+                    } catch (e) {
+                        this.addError("Error! " + e.message)
+                        throw e
+                    }
                 }
             },
 

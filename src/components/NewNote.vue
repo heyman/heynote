@@ -1,4 +1,6 @@
 <script>
+    import slugify from '@sindresorhus/slugify';
+
     import { mapState, mapActions } from 'pinia'
     import { useNotesStore } from "../stores/notes-store"
 
@@ -12,6 +14,9 @@
                 tags: [],
                 directoryTree: null,
                 parentPath: "",
+                errors: {
+                    name: null,
+                },
             }
         },
         components: {
@@ -64,17 +69,27 @@
             currentNoteDirectory() {
                 return this.currentNotePath.split("/").slice(0, -1).join("/")
             },
+
+            nameInputClass() {
+                return {
+                    "name-input": true,
+                    "error": this.errors.name,
+                }
+            }
         },
 
         methods: {
             ...mapActions(useNotesStore, [
                 "updateNotes",
+                "createNewNoteFromActiveBlock",
             ]),
 
             onKeydown(event) {
                 if (event.key === "Escape") {
                     this.$emit("close")
                     event.preventDefault()
+                } if (event.key === "Enter") {
+                    this.submit()
                 }
             },
 
@@ -87,9 +102,29 @@
                 }
             },
 
-            onSubmit(event) {
-                event.preventDefault()
-                console.log("Creating note", this.name)
+            submit() {
+                let slug = slugify(this.name)
+                if (slug === "") {
+                    this.errors.name = true
+                    return
+                }
+                const parentPathPrefix = this.parentPath === "" ? "" : this.parentPath + "/"
+                let path;
+                for (let i=0; i<1000; i++) {
+                    let filename = slug + ".txt"
+                    path = parentPathPrefix + filename
+                    if (!this.notes[path]) {
+                        break
+                    }
+                    slug = slugify(this.name + "-" + i)
+                }
+                if (this.notes[path]) {
+                    console.error("Failed to create note, path already exists", path)
+                    this.errors.name = true
+                    return
+                }
+                console.log("Creating note", path)
+                this.createNewNoteFromActiveBlock(path, this.name)
                 this.$emit("close")
                 //this.$emit("create", this.$refs.input.value)
             },
@@ -99,16 +134,17 @@
 
 <template>
     <div class="fader" @keydown="onKeydown" tabindex="-1">
-        <form class="new-note" tabindex="-1" @focusout="onFocusOut" ref="container" @submit="onSubmit">
+        <form class="new-note" tabindex="-1" @focusout="onFocusOut" ref="container" @submit.prevent="submit">
             <div class="container">
                 <h1>New Note from Block</h1>
                 <input 
                     placeholder="Name"
                     type="text" 
                     v-model="name"
-                    class="name-input"
+                    :class="nameInputClass"
                     ref="nameInput"
                     @keydown="onInputKeydown"
+                    @input="errors.name = false"
                 />
 
                 <label for="folder-select">Create in</label>
@@ -189,6 +225,8 @@
                     outline: none
                     border: 1px solid #fff
                     outline: 2px solid #48b57e
+                &.error
+                    background: #ffe9e9
                 +dark-mode
                     background: #3b3b3b
                     color: rgba(255,255,255, 0.9)
@@ -219,4 +257,3 @@
                     outline-color: #48b57e
         
 </style>
-./folder-selector/FolderSelector.vue

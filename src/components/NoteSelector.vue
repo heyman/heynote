@@ -19,6 +19,8 @@
                 return {
                     "path": path,
                     "name": metadata?.name || path,
+                    "folder": path.split("/").slice(0, -1).join("/"),
+                    "scratch": path === "buffer-dev.txt",
                 }
             })
         },
@@ -82,6 +84,13 @@
                     this.$emit("close")
                 }
             },
+            
+            getItemClass(item, idx) {
+                return {
+                    "selected": idx === this.selected,
+                    "scratch": item.scratch,
+                }
+            }
         }
     }
 </script>
@@ -100,12 +109,12 @@
                 <li
                     v-for="item, idx in filteredItems"
                     :key="item.path"
-                    :class="idx === selected ? 'selected' : ''"
+                    :class="getItemClass(item, idx)"
                     @click="selectItem(item.path)"
                     ref="item"
                 >
                     <span class="name">{{ item.name }}</span>
-                    <span class="path">{{ item.path }}</span>
+                    <span class="path">{{ item.folder }}</span>
                 </li>
             </ul>
         </form>
@@ -128,6 +137,7 @@
         position: absolute
         top: 0
         left: 50%
+        width: 420px
         transform: translateX(-50%)
         max-height: 100%
         box-sizing: border-box
@@ -176,6 +186,8 @@
                 &.selected
                     background: #48b57e
                     color: #fff
+                &.scratch
+                    font-weight: 600
                 +dark-mode
                     color: rgba(255,255,255, 0.53)
                     &:hover
@@ -185,7 +197,15 @@
                         color: rgba(255,255,255, 0.87)
                 .name
                     margin-right: 12px
+                    flex-shrink: 0
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    text-wrap: nowrap
                 .path
                     opacity: 0.6
                     font-size: 12px
+                    flex-shrink: 1
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    text-wrap: nowrap
 </style>

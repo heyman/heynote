@@ -1,11 +1,11 @@
 import { ViewPlugin, EditorView, Decoration, WidgetType, lineNumbers } from "@codemirror/view"
 import { layer, RectangleMarker } from "@codemirror/view"
-import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet} from "@codemirror/state";
+import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet, Transaction} from "@codemirror/state";
 import { syntaxTree, ensureSyntaxTree, syntaxTreeAvailable } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
 import { useNotesStore } from "../../stores/notes-store.js"
-import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
+import { heynoteEvent, LANGUAGE_CHANGE, CURSOR_CHANGE } from "../annotation.js";
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
 
@@ -404,6 +404,15 @@ function getSelectionSize(state, sel) {
     return count
 }
 
+export function triggerCursorChange({state, dispatch}) {
+    // Trigger empty change transaction that is annotated with CURRENCIES_LOADED
+    // This will make Math blocks re-render so that currency conversions are applied
+    dispatch(state.update({
+        changes:{from: 0, to: 0, insert:""},
+        annotations: [heynoteEvent.of(CURSOR_CHANGE), Transaction.addToHistory.of(false)],
+    }))
+}
+
 const emitCursorChange = (editor) => {
     const notesStore = useNotesStore()
     return ViewPlugin.fromClass(
@@ -411,8 +420,8 @@ const emitCursorChange = (editor) => {
             update(update) {
                 // if the selection changed or the language changed (can happen without selection change), 
                 // emit a selection change event
-                const langChange = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE))
-                if (update.selectionSet || langChange) {
+                const shouldUpdate = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE || a.value == CURSOR_CHANGE))
+                if (update.selectionSet || shouldUpdate) {
                     const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
 
                     const selectionSize = update.state.selection.ranges.map(
@@ -425,6 +434,7 @@ const emitCursorChange = (editor) => {
                         notesStore.currentSelectionSize = selectionSize
                         notesStore.currentLanguage = block.language.name
                         notesStore.currentLanguageAuto = block.language.auto
+                        notesStore.currentNoteName = editor.name
                     }
                 }
             }
