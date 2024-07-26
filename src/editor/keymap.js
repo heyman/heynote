@@ -15,6 +15,7 @@ import {
     gotoPreviousParagraph, gotoNextParagraph, 
     selectNextParagraph, selectPreviousParagraph,
     newCursorBelow, newCursorAbove,
+    deleteBlock,
 } from "./block/commands.js"
 import { pasteCommand, copyCommand, cutCommand } from "./copy-paste.js"
 
@@ -59,6 +60,7 @@ export function heynoteKeymap(editor) {
         ["Mod-l", () => editor.openLanguageSelector()],
         ["Mod-p", () => editor.openNoteSelector()],
         ["Mod-s", () => editor.openCreateNote()],
+        ["Mod-Shift-d", deleteBlock(editor)],
         ["Alt-Shift-f", formatBlockContent],
         ["Mod-Alt-ArrowDown", newCursorBelow],
         ["Mod-Alt-ArrowUp", newCursorAbove],

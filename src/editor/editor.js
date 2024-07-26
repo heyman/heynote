@@ -10,9 +10,9 @@ import { heynoteBase } from "./theme/base.js"
 import { getFontTheme } from "./theme/font-theme.js";
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
-import { noteBlockExtension, blockLineNumbers, blockState } from "./block/block.js"
-import { heynoteEvent, SET_CONTENT } from "./annotation.js";
-import { changeCurrentBlockLanguage, triggerCurrenciesLoaded } from "./block/commands.js"
+import { noteBlockExtension, blockLineNumbers, blockState, getActiveNoteBlock, triggerCursorChange } from "./block/block.js"
+import { heynoteEvent, SET_CONTENT, DELETE_BLOCK } from "./annotation.js";
+import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, getBlockDelimiter, deleteBlock } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
 import { heynoteKeymap } from "./keymap.js"
 import { emacsKeymap } from "./emacs.js"
@@ -66,6 +66,7 @@ export class HeynoteEditor {
         this.setDefaultBlockLanguage(defaultBlockToken, defaultBlockAutoDetect)
         this.contentLoaded = false
         this.notesStore = useNotesStore()
+        this.name = ""
         
 
         const state = EditorState.create({
@@ -179,7 +180,8 @@ export class HeynoteEditor {
             this.setReadOnly(true)
             throw new Error(`Failed to load note: ${e.message}`)
         }
-        this.notesStore.currentNoteName = this.note.metadata?.name || this.path
+        this.name = this.note.metadata?.name || this.path
+        
         return new Promise((resolve) => {
             // set buffer content
             this.view.dispatch({
@@ -262,7 +264,24 @@ export class HeynoteEditor {
     }
 
     openCreateNote() {
-        this.notesStore.openCreateNote()
+        this.notesStore.openCreateNote(this)
+    }
+
+    async createNewNoteFromActiveBlock(path, name) {
+        const block = getActiveNoteBlock(this.view.state)
+        if (!block) {
+            return
+        }
+        const data = this.view.state.sliceDoc(block.range.from, block.range.to)
+        await this.notesStore.saveNewNote(path, name, data)
+        deleteBlock(this)(this.view)
+
+        // by using requestAnimationFrame we avoid a race condition where rendering the block backgrounds
+        // would fail if we immediately opened the new note (since the block UI wouldn't have time to update 
+        // after the block was deleted)
+        requestAnimationFrame(() => {
+            this.notesStore.openNote(path)
+        })
     }
 
     setCurrentLanguage(lang, auto=false) {
@@ -310,6 +329,16 @@ export class HeynoteEditor {
         this.save()
         this.view.destroy()
         window.heynote.buffer.close(this.path)
+    }
+
+    hide() {
+        console.log("hiding element", this.view.dom)
+        this.view.dom.style.setProperty("display", "none", "important")
+    }
+    show() {
+        console.log("showing element", this.view.dom)
+        this.view.dom.style.setProperty("display", "")
+        triggerCursorChange(this.view)
     }
 }
 
