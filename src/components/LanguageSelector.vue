@@ -186,6 +186,6 @@
                     &.selected
                         background: #1b6540
                         color: rgba(255,255,255, 0.87)
-                ::v-deep b
+                ::v-deep(b)
                     font-weight: 700
 </style>
