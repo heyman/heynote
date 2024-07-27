@@ -1,4 +1,5 @@
 <script>
+    import fuzzysort from 'fuzzysort'
     import { LANGUAGES } from '../editor/languages.js'
 
     const items = LANGUAGES.map(l => {
@@ -10,6 +11,10 @@
         return a.name.localeCompare(b.name)
     })
     items.unshift({token: "auto", name:"Auto-detect"})
+
+    items.forEach((item, idx) => {
+        item.preparedName = fuzzysort.prepare(item.name)
+    })
 
     export default {
         data() {
@@ -26,8 +31,17 @@
 
         computed: {
             filteredItems() {
-                return items.filter((lang) => {
-                    return lang.name.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1
+                if (this.filter === "") {
+                    return items
+                }
+                const searchResults = fuzzysort.go(this.filter, items, {
+                    keys: ['name'],
+                })
+                return searchResults.map(result => {
+                    return {
+                        "token": result.obj.token,
+                        "name": result[0].highlight("<b>", "</b>")
+                    }
                 })
             },
         },
@@ -96,9 +110,8 @@
                     :class="idx === selected ? 'selected' : ''"
                     @click="selectItem(item.token)"
                     ref="item"
-                >
-                    {{ item.name }}
-                </li>
+                    v-html="item.name"
+                />
             </ul>
         </form>
     </div>
@@ -173,4 +186,6 @@
                     &.selected
                         background: #1b6540
                         color: rgba(255,255,255, 0.87)
+                ::v-deep b
+                    font-weight: 700
 </style>
