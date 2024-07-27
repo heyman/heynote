@@ -1,5 +1,6 @@
 <script>
     import { mapState, mapActions } from 'pinia'
+    import { toRaw } from 'vue';
     import { useNotesStore } from "../stores/notes-store"
 
     export default {
@@ -23,15 +24,44 @@
                     "scratch": path === "buffer-dev.txt",
                 }
             })
+            if (this.items.length > 1) {
+                this.selected = 1
+            }
         },
 
         computed: {
             ...mapState(useNotesStore, [
                 "notes",
+                "recentNotePaths",
             ]),
 
+            orderedItems() {
+                const sortKeys = Object.fromEntries(this.recentNotePaths.map((item, idx) => [item, idx]))
+                const getSortScore = (item) => sortKeys[item.path] !== undefined ? sortKeys[item.path] : 1000
+                const compareFunc = (a, b) => {
+                    const sortScore = getSortScore(a) - getSortScore(b)
+                    if (sortScore !== 0) {
+                        // sort by recency first
+                        return sortScore
+                    } else {
+                        // then notes in root
+                        const aIsRoot = a.path.indexOf("/") === -1
+                        const bIsRoot = b.path.indexOf("/") === -1
+                        if (aIsRoot && !bIsRoot) {
+                            return -1
+                        } else if (!aIsRoot && bIsRoot) {
+                            return 1
+                        } else {
+                            // last sort by path
+                            return a.path.localeCompare(b.path)
+                        }
+                    }
+                }
+                return [...this.items].sort(compareFunc)
+            },
+
             filteredItems() {
-                return this.items.filter((lang) => {
+                return this.orderedItems.filter((lang) => {
                     return lang.name.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1
                 })
             },
