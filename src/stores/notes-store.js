@@ -2,11 +2,15 @@ import { toRaw } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../editor/note-format"
 
+const SCRATCH_FILE = window.heynote.isDev ? "buffer-dev.txt" : "buffer.txt"
+
 export const useNotesStore = defineStore("notes", {
     state: () => ({
         notes: {},
+        recentNotePaths: [SCRATCH_FILE],
+
         currentEditor: null,
-        currentNotePath: window.heynote.isDev ? "buffer-dev.txt" : "buffer.txt",
+        currentNotePath: SCRATCH_FILE,
         currentNoteName: null,
         currentLanguage: null,
         currentLanguageAuto: null,
@@ -32,6 +36,10 @@ export const useNotesStore = defineStore("notes", {
             this.showLanguageSelector = false
             this.showCreateNote = false
             this.currentNotePath = path
+
+            const recent = this.recentNotePaths.filter((p) => p !== path)
+            recent.unshift(path)
+            this.recentNotePaths = recent.slice(0, 100)
         },
 
         openLanguageSelector() {
