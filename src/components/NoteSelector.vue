@@ -1,4 +1,6 @@
 <script>
+    import fuzzysort from 'fuzzysort'
+
     import { mapState, mapActions } from 'pinia'
     import { toRaw } from 'vue';
     import { useNotesStore } from "../stores/notes-store"
@@ -61,9 +63,21 @@
             },
 
             filteredItems() {
-                return this.orderedItems.filter((lang) => {
-                    return lang.name.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1
-                })
+                if (this.filter === "") {
+                    return this.orderedItems
+                } else {
+                    const searchResults = fuzzysort.go(this.filter, this.items, {
+                        keys: ["name", "folder"],
+                    })
+                    return searchResults.map((result) => {
+                        const obj = {...result.obj}
+                        const nameHighlight = result[0].highlight("<b>", "</b>")
+                        const folderHighlight = result[1].highlight("<b>", "</b>")
+                        obj.name = nameHighlight !== "" ? nameHighlight : obj.name
+                        obj.folder = folderHighlight !== "" ? folderHighlight : obj.folder
+                        return obj
+                    })
+                }
             },
         },
 
@@ -74,7 +88,11 @@
 
             onKeydown(event) {
                 if (event.key === "ArrowDown") {
-                    this.selected = Math.min(this.selected + 1, this.filteredItems.length - 1)
+                    if (this.selected === this.filteredItems.length - 1) {
+                        this.selected = 0
+                    } else {
+                        this.selected = Math.min(this.selected + 1, this.filteredItems.length - 1)
+                    }
                     event.preventDefault()
                     if (this.selected === this.filteredItems.length - 1) {
                         this.$refs.container.scrollIntoView({block: "end"})
@@ -83,7 +101,11 @@
                     }
                     
                 } else if (event.key === "ArrowUp") {
-                    this.selected = Math.max(this.selected - 1, 0)
+                    if (this.selected === 0) {
+                        this.selected = this.filteredItems.length - 1
+                    } else {
+                        this.selected = Math.max(this.selected - 1, 0)
+                    }
                     event.preventDefault()
                     if (this.selected === 0) {
                         this.$refs.container.scrollIntoView({block: "start"})
@@ -143,15 +165,15 @@
                     @click="selectItem(item.path)"
                     ref="item"
                 >
-                    <span class="name">{{ item.name }}</span>
-                    <span class="path">{{ item.folder }}</span>
+                    <span class="name" v-html="item.name" />
+                    <span class="path" v-html="item.folder" />
                 </li>
             </ul>
         </form>
     </div>
 </template>
 
-<style scoped lang="sass">    
+<style scoped lang="sass">
     .scroller
         //overflow: auto
         //position: fixed
@@ -231,6 +253,8 @@
                     overflow: hidden
                     text-overflow: ellipsis
                     text-wrap: nowrap
+                    ::v-deep b
+                        font-weight: 700
                 .path
                     opacity: 0.6
                     font-size: 12px
@@ -238,4 +262,6 @@
                     overflow: hidden
                     text-overflow: ellipsis
                     text-wrap: nowrap
+                    ::v-deep b
+                        font-weight: 700
 </style>
