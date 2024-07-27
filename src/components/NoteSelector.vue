@@ -253,7 +253,7 @@
                     overflow: hidden
                     text-overflow: ellipsis
                     text-wrap: nowrap
-                    ::v-deep b
+                    ::v-deep(b)
                         font-weight: 700
                 .path
                     opacity: 0.6
@@ -262,6 +262,6 @@
                     overflow: hidden
                     text-overflow: ellipsis
                     text-wrap: nowrap
-                    ::v-deep b
+                    ::v-deep(b)
                         font-weight: 700
 </style>
