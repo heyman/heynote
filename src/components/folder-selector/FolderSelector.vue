@@ -245,4 +245,7 @@
             outline: none
             border: 1px solid #fff
             outline: 2px solid #48b57e
+        +dark-mode
+            background: #262626
+            border: 1px solid #363636
 </style>

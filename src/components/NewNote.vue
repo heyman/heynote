@@ -192,7 +192,7 @@
         &:focus
             outline: none
         +dark-mode
-            background: #333
+            background: #151516
             box-shadow: 0 0 10px rgba(0,0,0,0.5)
             color: rgba(255,255,255, 0.7)
         +webapp-mobile
@@ -247,8 +247,6 @@
             padding-top: 0
             display: flex
             justify-content: flex-end
-            +dark-mode
-                background: #222
             button
                 font-size: 12px
                 height: 28px
@@ -258,5 +256,8 @@
                 padding-right: 10px
                 &:focus
                     outline-color: #48b57e
+                +dark-mode
+                    background: #444
+                    border: none
         
 </style>
