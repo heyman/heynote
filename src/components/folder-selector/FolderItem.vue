@@ -53,7 +53,7 @@
         :style="style"
     >
         <span class="name">{{ name }}</span>
-        <button class="new-folder" tabindex="-1" @click="$emit('new-folder')">New folder (+)</button>
+        <button class="new-folder" tabindex="-1" @click.stop.prevent="$emit('new-folder')">New folder (+)</button>
     </div>
 </template>
 
