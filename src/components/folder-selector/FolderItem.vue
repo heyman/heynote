@@ -5,6 +5,7 @@
             level: Number,
             selected: Boolean,
             newFolder: Boolean,
+            open: Boolean,
         },
 
         watch: {
@@ -33,6 +34,7 @@
                     folder: true,
                     selected: this.selected,
                     new: this.newFolder,
+                    open: this.open,
                 }
             },
             
@@ -59,17 +61,27 @@
     .folder
         padding: 3px 6px
         font-size: 13px
-        padding-left: calc(6px + var(--indent-level) * 16px)
+        padding-left: calc(18px + var(--indent-level) * 16px)
         display: flex
         scroll-margin-top: 5px
         scroll-margin-bottom: 5px
+        background-image: url('@/assets/icons/caret-right.svg')
+        background-size: 13px
+        background-repeat: no-repeat
+        background-position-y: 5px
+        background-position-x: calc(2px + var(--indent-level) * 16px)
         &:hover
-            background: #f1f1f1
+            background-color: #f1f1f1
+        &.open
+            background-image: url('@/assets/icons/caret-down.svg')
         &.selected
-            background: #48b57e
+            background-color: #48b57e
             color: #fff
+            background-image: url('@/assets/icons/caret-right-white.svg')
+            &.open
+                background-image: url('@/assets/icons/caret-down-white.svg')
             &:hover
-                background: #40a773
+                background-color: #40a773
             .new-folder
                 display: block
                 color: rgba(255,255,255, 0.9)
