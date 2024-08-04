@@ -86,8 +86,8 @@
         padding-left: calc(0px + var(--indent-level) * 16px)
         display: flex
         background: #f1f1f1
-        &:hover
-            background: #f1f1f1
+        +dark-mode
+            background-color: #39393a
                 
 
         input
@@ -104,5 +104,7 @@
                 outline: none
             &::placeholder
                 font-size: 12px
+            +dark-mode
+                background: #3b3b3b
 
 </style>
