@@ -180,7 +180,7 @@
                     background: #48b57e
                     color: #fff
                 +dark-mode
-                    color: rgba(255,255,255, 0.53)
+                    color: rgba(255,255,255, 0.65)
                     &:hover
                         background: #29292a
                     &.selected

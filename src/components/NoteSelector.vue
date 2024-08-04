@@ -241,7 +241,7 @@
                 &.scratch
                     font-weight: 600
                 +dark-mode
-                    color: rgba(255,255,255, 0.53)
+                    color: rgba(255,255,255, 0.65)
                     &:hover
                         background: #29292a
                     &.selected
