@@ -95,40 +95,60 @@
             },
 
             theme(newTheme) {
-                toRaw(this.editor).setTheme(newTheme)
+                this.eachEditor(editor => {
+                    editor.setTheme(newTheme)
+                })
             },
 
             keymap() {
-                toRaw(this.editor).setKeymap(this.keymap, this.emacsMetaKey)
+                this.eachEditor(editor => {
+                    editor.setKeymap(this.keymap, this.emacsMetaKey)
+                })
             },
 
             emacsMetaKey() {
-                toRaw(this.editor).setKeymap(this.keymap, this.emacsMetaKey)
+                this.eachEditor(editor => {
+                    editor.setKeymap(this.keymap, this.emacsMetaKey)
+                })
             },
 
             showLineNumberGutter(show) {
-                toRaw(this.editor).setLineNumberGutter(show)
+                this.eachEditor(editor => {
+                    editor.setLineNumberGutter(show)
+                })
             },
 
             showFoldGutter(show) {
-                toRaw(this.editor).setFoldGutter(show)
+                this.eachEditor(editor => {
+                    editor.setFoldGutter(show)
+                })
             },
 
             bracketClosing(value) {
-                toRaw(this.editor).setBracketClosing(value)
+                this.eachEditor(editor => {
+                    editor.setBracketClosing(value)
+                })
             },
 
             fontFamily() {
-                toRaw(this.editor).setFont(this.fontFamily, this.fontSize)
+                this.eachEditor(editor => {
+                    editor.setFont(this.fontFamily, this.fontSize)
+                })
             },
             fontSize() {
-                toRaw(this.editor).setFont(this.fontFamily, this.fontSize)
+                this.eachEditor(editor => {
+                    editor.setFont(this.fontFamily, this.fontSize)
+                })
             },
             defaultBlockLanguage() {
-                toRaw(this.editor).setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
+                this.eachEditor(editor => {
+                    editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
+                })
             },
             defaultBlockLanguageAutoDetect() {
-                toRaw(this.editor).setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
+                this.eachEditor(editor => {
+                    editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
+                })
             },
         },
 
@@ -224,6 +244,10 @@
 
             focus() {
                 toRaw(this.editor).focus()
+            },
+
+            eachEditor(fn) {
+                Object.values(toRaw(this.editorCache).cache).forEach(fn)
             },
         },
     }
