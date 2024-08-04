@@ -33,6 +33,7 @@
                 name: "Heynote Root",
                 path: "",
                 children: [],
+                open: true,
             }
             const getNodeFromList = (list, part) => list.find(node => node.name === part)
                 
@@ -46,10 +47,12 @@
                     if (node) {
                         currentLevel = node
                     } else {
+                        const currentPath = currentParts.join("/")
                         node = {
                             name: part,
                             children: [],
-                            path: currentParts.join("/"),
+                            path: currentPath,
+                            open: this.currentNotePath.startsWith(currentPath),
                         }
                         currentLevel.children.push(node)
                         currentLevel = node

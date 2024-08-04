@@ -48,6 +48,7 @@
                         type: "folder",
                         createNewFolder: node.createNewFolder,
                         newFolder: node.newFolder,
+                        open: node.open,
                     })
                     if (node.createNewFolder) {
                         items.push({
@@ -56,7 +57,7 @@
                             path: node.path,
                         })
                     }
-                    if (node.children) {
+                    if (node.open && node.children) {
                         for (const child of node.children) {
                             getListItems(child, level + 1)
                         }
@@ -79,6 +80,14 @@
                 } else if (event.key === "ArrowUp") {
                     event.preventDefault()
                     this.selected = Math.max(this.selected - 1, 0)
+                } else if (event.key === "ArrowRight") {
+                    event.preventDefault()
+                    const node = this.getNode(this.listItems[this.selected].path)
+                    node.open = true
+                } else if (event.key === "ArrowLeft") {
+                    event.preventDefault()
+                    const node = this.getNode(this.listItems[this.selected].path)
+                    node.open = false
                 } else if (event.key === "+") {
                     event.preventDefault()
                     this.newFolderDialog(this.listItems[this.selected].path)
@@ -126,6 +135,7 @@
                 //console.log("Create new folder in", parentPath)
                 const node = this.getNode(parentPath)
                 node.createNewFolder = true
+                node.open = true
             },
 
             createNewFolder(parentPath, name) {
@@ -178,6 +188,12 @@
             pageCount() {
                 return Math.max(1, Math.floor(this.$refs.container.clientHeight / 24) - 1)
             },
+
+            folderClick(idx) {
+                const node = this.getNode(this.listItems[idx].path)
+                node.open = !node.open
+                this.selected = idx
+            },
         },
     }
 </script>
@@ -201,7 +217,8 @@
                 :level="item.level"
                 :selected="idx === selected && !item.createNewFolder"
                 :newFolder="item.newFolder"
-                @click="selected = idx"
+                :open="item.open"
+                @click="folderClick(idx)"
                 @new-folder="newFolderDialog(item.path)"
             />
             <NewFolderItem
