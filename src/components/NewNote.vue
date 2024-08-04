@@ -259,5 +259,6 @@
                 +dark-mode
                     background: #444
                     border: none
+                    color: rgba(255,255,255, 0.75)
         
 </style>
