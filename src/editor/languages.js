@@ -44,13 +44,15 @@ class Language {
      * @param parser: The Lezer parser used to parse the language
      * @param guesslang: The name of the language as used by the guesslang library
      * @param prettier: The prettier configuration for the language (if any)
+     * @param abbreviations: The abbreviations used to identify the language in the language selector
      */
-    constructor({ token, name, parser, guesslang, prettier }) {
+    constructor({ token, name, parser, guesslang, prettier, abbreviations }) {
         this.token = token
         this.name = name
         this.parser = parser
         this.guesslang = guesslang
         this.prettier = prettier
+        this.abbreviations = abbreviations
     }
 
     get supportsFormat() {
@@ -64,12 +66,14 @@ export const LANGUAGES = [
         name: "Plain Text",
         parser: null,
         guesslang: null,
+        abbreviations: ["txt"],
     }),
     new Language({
         token: "math",
         name: "Math",
         parser: null,
         guesslang: null,
+        abbreviations: [],
     }),
     new Language({
         token: "json",
@@ -77,12 +81,14 @@ export const LANGUAGES = [
         parser: jsonLanguage.parser,
         guesslang: "json",
         prettier: {parser:"json-stringify", plugins: [babelPrettierPlugin, prettierPluginEstree]},
+        abbreviations: [],
     }),
     new Language({
         token: "python",
         name: "Python",
         parser: pythonLanguage.parser,
         guesslang: "py",
+        abbreviations: ["py"],
     }),
     new Language({
         token: "html",
@@ -90,12 +96,14 @@ export const LANGUAGES = [
         parser: htmlLanguage.parser,
         guesslang: "html",
         prettier: {parser:"html", plugins: [htmlPrettierPlugin]},
+        abbreviations: [],
     }),
     new Language({
         token: "sql",
         name: "SQL",
         parser: StandardSQL.language.parser,
         guesslang: "sql",
+        abbreviations: [],
     }),
     new Language({
         token: "markdown",
@@ -103,24 +111,28 @@ export const LANGUAGES = [
         parser: markdownLanguage.parser,
         guesslang: "md",
         prettier: {parser:"markdown", plugins: [markdownPrettierPlugin]},
+        abbreviations: ["md"],
     }),
     new Language({
         token: "java",
         name: "Java",
         parser: javaLanguage.parser,
         guesslang: "java",
+        abbreviations: [],
     }),
     new Language({
         token: "lezer",
         name: "Lezer",
         parser: lezerLanguage.parser,
         guesslang: null,
+        abbreviations: [],
     }),
     new Language({
         token: "php",
         name: "PHP",
         parser: phpLanguage.parser,
         guesslang: "php",
+        abbreviations: [],
     }),
     new Language({
         token: "css",
@@ -128,42 +140,49 @@ export const LANGUAGES = [
         parser: cssLanguage.parser,
         guesslang: "css",
         prettier: {parser:"css", plugins: [cssPrettierPlugin]},
+        abbreviations: [],
     }),
     new Language({
         token: "xml",
         name: "XML",
         parser: xmlLanguage.parser,
         guesslang: "xml",
+        abbreviations: [],
     }),
     new Language({
         token: "cpp",
         name: "C++",
         parser: cppLanguage.parser,
         guesslang: "cpp",
+        abbreviations: [],
     }),
     new Language({
         token: "rust",
         name: "Rust",
         parser: rustLanguage.parser,
         guesslang: "rs",
+        abbreviations: ["rs"],
     }),
     new Language({
         token: "csharp",
         name: "C#",
         parser: csharpLanguage.parser,
         guesslang: "cs",
+        abbreviations: ["cs"],
     }),
     new Language({
         token: "ruby",
         name: "Ruby",
         parser: StreamLanguage.define(ruby).parser,
         guesslang: "rb",
+        abbreviations: ["rb"],
     }),
     new Language({
         token: "shell",
         name: "Shell",
         parser: StreamLanguage.define(shell).parser,
         guesslang: "sh",
+        abbreviations: ["sh"],
     }),
     new Language({
         token: "yaml",
@@ -171,30 +190,35 @@ export const LANGUAGES = [
         parser: StreamLanguage.define(yaml).parser,
         guesslang: "yaml",
         prettier: {parser:"yaml", plugins: [yamlPrettierPlugin]},
+        abbreviations: ["yml"],
     }),
     new Language({
         token: "toml",
         name: "TOML",
         parser: StreamLanguage.define(toml).parser,
         guesslang: "toml",
+        abbreviations: [],
     }),
     new Language({
         token: "golang",
         name: "Go",
         parser: StreamLanguage.define(go).parser,
         guesslang: "go",
+        abbreviations: ["go"],
     }),
     new Language({
         token: "clojure",
         name: "Clojure",
         parser: StreamLanguage.define(clojure).parser,
         guesslang: "clj",
+        abbreviations: ["clj"],
     }),
     new Language({
         token: "erlang",
         name: "Erlang",
         parser: StreamLanguage.define(erlang).parser,
         guesslang: "erl",
+        abbreviations: ["erl"],
     }),
     new Language({
         token: "javascript",
@@ -202,6 +226,7 @@ export const LANGUAGES = [
         parser: javascriptLanguage.parser,
         guesslang: "js",
         prettier: {parser:"babel", plugins: [babelPrettierPlugin, prettierPluginEstree]},
+        abbreviations: ["js"],
     }),
     new Language({
         token: "jsx",
@@ -209,6 +234,7 @@ export const LANGUAGES = [
         parser: jsxLanguage.parser,
         guesslang: null,
         prettier: {parser:"babel", plugins: [babelPrettierPlugin, prettierPluginEstree]},
+        abbreviations: [],
     }),
     new Language({
         token: "typescript",
@@ -216,6 +242,7 @@ export const LANGUAGES = [
         parser: typescriptLanguage.parser,
         guesslang: "ts",
         prettier: {parser:"typescript", plugins: [typescriptPlugin, prettierPluginEstree]},
+        abbreviations: ["ts"],
     }),
     new Language({
         token: "tsx",
@@ -223,48 +250,56 @@ export const LANGUAGES = [
         parser: tsxLanguage.parser,
         guesslang: null,
         prettier: {parser:"typescript", plugins: [typescriptPlugin, prettierPluginEstree]},
+        abbreviations: [],
     }),
     new Language({
         token: "swift",
         name: "Swift",
         parser: StreamLanguage.define(swift).parser,
         guesslang: "swift",
+        abbreviations: [],
     }),
     new Language({
         token: "kotlin",
         name: "Kotlin",
         parser: StreamLanguage.define(kotlin).parser,
         guesslang: "kt",
+        abbreviations: ["kt"],
     }),
     new Language({
         token: "groovy",
         name: "Groovy",
         parser: StreamLanguage.define(groovy).parser,
         guesslang: "groovy",
+        abbreviations: [],
     }),
     new Language({
         token: "diff",
         name: "Diff",
         parser: StreamLanguage.define(diff).parser,
         guesslang: null,
+        abbreviations: [],
     }),
     new Language({
         token: "powershell",
         name: "PowerShell",
         parser: StreamLanguage.define(powerShell).parser,
         guesslang: "ps1",
+        abbreviations: ["ps1"],
     }),
     new Language({
         token: "vue",
         name: "Vue",
         parser: vueLanguage.parser,
         guesslang: null,
+        abbreviations: [],
     }),
     new Language({
         token: "dart",
         name: "Dart",
         parser: StreamLanguage.define(dart).parser,
         guesslang: "dart",
+        abbreviations: [],
     }), 
 ]
 
