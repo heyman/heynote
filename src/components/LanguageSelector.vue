@@ -4,12 +4,13 @@
     const items = LANGUAGES.map(l => {
         return {
             "token": l.token, 
-            "name": l.name
+            "name": l.name,
+            "abbreviations": l.abbreviations,
         }
     }).sort((a, b) => {
         return a.name.localeCompare(b.name)
     })
-    items.unshift({token: "auto", name:"Auto-detect"})
+    items.unshift({token: "auto", name:"Auto-detect", abbreviations: ["auto"]})
 
     export default {
         data() {
@@ -27,7 +28,8 @@
         computed: {
             filteredItems() {
                 return items.filter((lang) => {
-                    return lang.name.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1
+                    return (lang.name.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1)
+                        || lang.abbreviations.some(abbr => abbr.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1)
                 })
             },
         },
