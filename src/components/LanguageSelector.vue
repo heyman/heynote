@@ -28,6 +28,7 @@
         computed: {
             filteredItems() {
                 return items.filter((lang) => {
+                    // filter by name or abbreviation
                     return (lang.name.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1)
                         || lang.abbreviations.some(abbr => abbr.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1)
                 })
