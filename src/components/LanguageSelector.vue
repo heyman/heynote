@@ -10,7 +10,7 @@
     }).sort((a, b) => {
         return a.name.localeCompare(b.name)
     })
-    items.unshift({token: "auto", name:"Auto-detect", abbreviations: ["auto"]})
+    items.unshift({token: "auto", name:"Auto-detect", abbreviations: []})
 
     export default {
         data() {
