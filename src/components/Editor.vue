@@ -5,6 +5,7 @@
     import { mapState, mapWritableState, mapActions } from 'pinia'
     import { useErrorStore } from "../stores/error-store"
     import { useNotesStore } from "../stores/notes-store"
+    import { useEditorCacheStore } from "../stores/editor-cache"
 
     const NUM_EDITOR_INSTANCES = 5
 
@@ -45,10 +46,6 @@
             return {
                 syntaxTreeDebugContent: null,
                 editor: null,
-                editorCache: {
-                    lru: [],
-                    cache: {}
-                },
             }
         },
 
@@ -164,36 +161,21 @@
 
         methods: {
             ...mapActions(useErrorStore, ["addError"]),
+            ...mapActions(useEditorCacheStore, ["getEditor", "addEditor", "eachEditor"]),
 
             loadBuffer(path) {
+                console.log("loadBuffer", path)
                 if (this.editor) {
                     this.editor.hide()
                 }
 
-                if (this.editorCache.cache[path]) {
-                    // editor is already loaded, just switch to it
-                    console.log("Switching to cached editor", path)
-                    toRaw(this.editor).hide()
-                    this.editor = this.editorCache.cache[path]
+                let cachedEditor = this.getEditor(path)
+                if (cachedEditor) {
+                    console.log("show cached editor")
+                    this.editor = cachedEditor
                     toRaw(this.editor).show()
-                    //toRaw(this.editor).currenciesLoaded()
-                    this.currentEditor = toRaw(this.editor)
-                    window._heynote_editor = toRaw(this.editor)
-                    // move to end of LRU
-                    this.editorCache.lru = this.editorCache.lru.filter(p => p !== path)
-                    this.editorCache.lru.push(path)
                 } else {
-                    // check if we need to free up a slot
-                    if (this.editorCache.lru.length >= NUM_EDITOR_INSTANCES) {
-                        const pathToFree = this.editorCache.lru.shift()
-                        console.log("Freeing up editor slot", pathToFree)
-                        this.editorCache.cache[pathToFree].destroy()
-                        delete this.editorCache.cache[pathToFree]
-                        this.editorCache.lru = this.editorCache.lru.filter(p => p !== pathToFree)
-                    }
-
-                    // create new Editor instance
-                    console.log("Loading new editor", path)
+                    console.log("create new editor")
                     try {
                         this.editor = new HeynoteEditor({
                             element: this.$refs.editor,
@@ -209,15 +191,15 @@
                             defaultBlockToken: this.defaultBlockLanguage,
                             defaultBlockAutoDetect: this.defaultBlockLanguageAutoDetect,
                         })
-                        this.currentEditor = toRaw(this.editor)
-                        window._heynote_editor = toRaw(this.editor)
-                        this.editorCache.cache[path] = this.editor
-                        this.editorCache.lru.push(path)
                     } catch (e) {
                         this.addError("Error! " + e.message)
                         throw e
                     }
+                    this.addEditor(path, toRaw(this.editor))
                 }
+
+                this.currentEditor = toRaw(this.editor)
+                window._heynote_editor = toRaw(this.editor)
             },
 
             setLanguage(language) {
@@ -244,10 +226,6 @@
 
             focus() {
                 toRaw(this.editor).focus()
-            },
-
-            eachEditor(fn) {
-                Object.values(toRaw(this.editorCache).cache).forEach(fn)
             },
         },
     }
