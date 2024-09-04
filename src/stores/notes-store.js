@@ -1,8 +1,9 @@
 import { toRaw } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../editor/note-format"
+import { useEditorCacheStore } from "./editor-cache"
 
-const SCRATCH_FILE = window.heynote.isDev ? "buffer-dev.txt" : "buffer.txt"
+export const SCRATCH_FILE = window.heynote.isDev ? "buffer-dev.txt" : "buffer.txt"
 
 export const useNotesStore = defineStore("notes", {
     state: () => ({
@@ -20,6 +21,7 @@ export const useNotesStore = defineStore("notes", {
         showNoteSelector: false,
         showLanguageSelector: false,
         showCreateNote: false,
+        showEditNote: false,
     }),
 
     actions: {
@@ -32,9 +34,7 @@ export const useNotesStore = defineStore("notes", {
         },
 
         openNote(path) {
-            this.showNoteSelector = false
-            this.showLanguageSelector = false
-            this.showCreateNote = false
+            this.closeDialog()
             this.currentNotePath = path
 
             const recent = this.recentNotePaths.filter((p) => p !== path)
@@ -43,30 +43,49 @@ export const useNotesStore = defineStore("notes", {
         },
 
         openLanguageSelector() {
+            this.closeDialog()
             this.showLanguageSelector = true
-            this.showNoteSelector = false
-            this.showCreateNote = false
         },
         openNoteSelector() {
+            this.closeDialog()
             this.showNoteSelector = true
-            this.showLanguageSelector = false
-            this.showCreateNote = false
         },
         openCreateNote() {
+            this.closeDialog()
             this.showCreateNote = true
-            this.showNoteSelector = false
-            this.showLanguageSelector = false
         },
         closeDialog() {
             this.showCreateNote = false
             this.showNoteSelector = false
             this.showLanguageSelector = false
+            this.showEditNote = false
         },
 
+        closeNoteSelector() {
+            this.showNoteSelector = false
+        },
+
+        editNote(path) {
+            if (this.currentNotePath !== path) {
+                this.openNote(path)
+            }
+            this.closeDialog()
+            this.showEditNote = true
+        },
+
+        /**
+         * Create a new note file at `path` with name `name` from the current block of the current open editor
+         */
         async createNewNoteFromActiveBlock(path, name) {
             await toRaw(this.currentEditor).createNewNoteFromActiveBlock(path, name)
         },
 
+        /**
+         * Create a new note file at path, with name `name`, and content content
+         * @param {*} path: File path relative to Heynote root 
+         * @param {*} name Name of the note
+         * @param {*} content Contents (without metadata)
+         */
         async saveNewNote(path, name, content) {
             //window.heynote.buffer.save(path, content)
             //this.updateNotes()
@@ -81,6 +100,24 @@ export const useNotesStore = defineStore("notes", {
             console.log("saving", path, note.serialize())
             await window.heynote.buffer.create(path, note.serialize())
             this.updateNotes()
+        },
+
+        async updateNoteMetadata(path, name, newPath) {
+            const editorCacheStore = useEditorCacheStore()
+
+            if (this.currentEditor.path !== path) {
+                throw new Error(`Can't update note (${path}) since it's not the active one (${this.currentEditor.path})`)
+            }
+            console.log("currentEditor", this.currentEditor)
+            toRaw(this.currentEditor).setName(name)
+            await (toRaw(this.currentEditor)).save()
+            if (newPath && path !== newPath) {
+                console.log("moving note", path, newPath)
+                editorCacheStore.freeEditor(path)
+                await window.heynote.buffer.move(path, newPath)
+                this.openNote(newPath)
+                this.updateNotes()
+            }
         },
     },
 })

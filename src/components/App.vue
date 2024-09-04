@@ -12,6 +12,7 @@
     import Settings from './settings/Settings.vue'
     import ErrorMessages from './ErrorMessages.vue'
     import NewNote from './NewNote.vue'
+    import EditNote from './EditNote.vue'
 
     export default {
         components: {
@@ -22,6 +23,7 @@
             NoteSelector,
             ErrorMessages,
             NewNote,
+            EditNote,
         },
 
         data() {
@@ -67,6 +69,7 @@
             showLanguageSelector(value) { this.dialogWatcher(value) },
             showNoteSelector(value) { this.dialogWatcher(value) },
             showCreateNote(value) { this.dialogWatcher(value) },
+            showEditNote(value) { this.dialogWatcher(value) },
 
             currentNotePath() {
                 this.focusEditor()
@@ -79,10 +82,11 @@
                 "showLanguageSelector",
                 "showNoteSelector",
                 "showCreateNote",
+                "showEditNote",
             ]),
 
             editorInert() {
-                return this.showCreateNote || this.showSettings
+                return this.showCreateNote || this.showSettings || this.showEditNote
             },
         },
 
@@ -92,6 +96,7 @@
                 "openNoteSelector",
                 "openCreateNote",
                 "closeDialog",
+                "closeNoteSelector",
                 "openNote",
             ]),
 
@@ -186,7 +191,7 @@
             <NoteSelector 
                 v-if="showNoteSelector" 
                 @openNote="openNote"
-                @close="closeDialog"
+                @close="closeNoteSelector"
             />
             <Settings 
                 v-if="showSettings"
@@ -195,6 +200,10 @@
             />
             <NewNote 
                 v-if="showCreateNote"
+                @close="closeDialog"
+            />
+            <EditNote 
+                v-if="showEditNote"
                 @close="closeDialog"
             />
             <ErrorMessages />

@@ -3,14 +3,16 @@
 
     import { mapState, mapActions } from 'pinia'
     import { toRaw } from 'vue';
-    import { useNotesStore } from "../stores/notes-store"
+    import { useNotesStore, SCRATCH_FILE } from "../stores/notes-store"
 
     export default {
         data() {
             return {
                 selected: 0,
+                actionButton: 0,
                 filter: "",
                 items: [],
+                SCRATCH_FILE: SCRATCH_FILE,
             }
         },
 
@@ -23,7 +25,7 @@
                     "path": path,
                     "name": metadata?.name || path,
                     "folder": path.split("/").slice(0, -1).join("/"),
-                    "scratch": path === "buffer-dev.txt",
+                    "scratch": path === SCRATCH_FILE,
                 }
             })
             if (this.items.length > 1) {
@@ -84,9 +86,11 @@
         methods: {
             ...mapActions(useNotesStore, [
                 "updateNotes",
+                "editNote",
             ]),
 
             onKeydown(event) {
+                const path = this.filteredItems[this.selected].path
                 if (event.key === "ArrowDown") {
                     if (this.selected === this.filteredItems.length - 1) {
                         this.selected = 0
@@ -99,7 +103,7 @@
                     } else {
                         this.$refs.item[this.selected].scrollIntoView({block: "nearest"})
                     }
-                    
+                    this.actionButton = 0
                 } else if (event.key === "ArrowUp") {
                     if (this.selected === 0) {
                         this.selected = this.filteredItems.length - 1
@@ -112,9 +116,23 @@
                     } else {
                         this.$refs.item[this.selected].scrollIntoView({block: "nearest"})
                     }
-                } else if (event.key === "Enter") {
-                    this.selectItem(this.filteredItems[this.selected].path)
+                    this.actionButton = 0
+                } else if (event.key === "ArrowRight" && path !== SCRATCH_FILE) {
                     event.preventDefault()
+                    this.actionButton = Math.min(2, this.actionButton + 1)
+                } else if (event.key === "ArrowLeft" && path !== SCRATCH_FILE) {
+                    event.preventDefault()
+                    this.actionButton = Math.max(0, this.actionButton - 1)
+                } else if (event.key === "Enter") {
+                    event.preventDefault()
+                    if (this.actionButton === 1) {
+                        console.log("edit file:", path)
+                        this.editNote(path)
+                    } else if (this.actionButton === 2) {
+                        console.log("delete file:", path)
+                    } else {
+                        this.selectItem(path)
+                    }
                 } else if (event.key === "Escape") {
                     this.$emit("close")
                     event.preventDefault()
@@ -140,9 +158,16 @@
             getItemClass(item, idx) {
                 return {
                     "selected": idx === this.selected,
+                    "action-buttons-visible": this.actionButton > 0,
                     "scratch": item.scratch,
                 }
-            }
+            },
+
+            showActionButtons(idx) {
+                this.selected = idx
+                this.actionButton = 1
+                this.$refs.input.focus()
+            },
         }
     }
 </script>
@@ -167,6 +192,21 @@
                 >
                     <span class="name" v-html="item.name" />
                     <span class="path" v-html="item.folder" />
+                    <span class="action-buttons">
+                        <button 
+                            v-if="actionButton > 0 && idx === selected"
+                            :class="{'selected':actionButton === 1}"
+                        >Edit</button>
+                        <button 
+                            v-if="actionButton > 0 && idx === selected"
+                            :class="{'delete':true, 'selected':actionButton === 2}"
+                        >Delete</button>
+                        <button
+                            class="show-actions"
+                            v-if="item.path !== SCRATCH_FILE && (actionButton === 0 || idx !== selected)"
+                            @click.stop.prevent="showActionButtons(idx)"
+                        ></button>
+                    </span>
                 </li>
             </ul>
         </form>
@@ -228,16 +268,20 @@
         .items
             overflow-y: auto
             > li
+                position: relative
                 border-radius: 3px
                 padding: 5px 12px
-                cursor: pointer
                 display: flex
                 align-items: center
                 &:hover
                     background: #e2e2e2
+                    .action-buttons .show-actions
+                        display: inline-block
                 &.selected
                     background: #48b57e
                     color: #fff
+                    .action-buttons .show-actions
+                        display: inline-block
                 &.scratch
                     font-weight: 600
                 +dark-mode
@@ -247,6 +291,10 @@
                     &.selected
                         background: #1b6540
                         color: rgba(255,255,255, 0.87)
+                        &.action-buttons-visible
+                            background: none
+                            border: 1px solid #1b6540
+                            padding: 4px 11px
                 .name
                     margin-right: 12px
                     flex-shrink: 0
@@ -264,4 +312,44 @@
                     text-wrap: nowrap
                     ::v-deep(b)
                         font-weight: 700
+                .action-buttons
+                    position: absolute
+                    top: 1px
+                    right: 1px
+                    button
+                        padding: 1px 10px
+                        font-size: 12px
+                        background: none
+                        border: none
+                        border-radius: 2px
+                        margin-right: 2px
+                        cursor: pointer
+                        &:last-child
+                            margin-right: 0
+                        &:hover
+                            background: rgba(255,255,255, 0.1)
+                        +dark-mode
+                            //background: #1b6540
+                            //&:hover
+                            //    background: 
+                        &.selected
+                            background: #1b6540
+                            &:hover
+                                background: #1f7449
+                            &.delete
+                                background: #ae1e1e
+                                &:hover
+                                    background: #bf2222
+                        &.show-actions
+                            display: none
+                            position: relative
+                            top: 1px
+                            padding: 1px 8px
+                            //cursor: default
+                            background-image: url(@/assets/icons/arrow-right.svg)
+                            width: 22px
+                            height: 19px
+                            background-size: 19px
+                            background-position: center center
+                            background-repeat: no-repeat
 </style>
