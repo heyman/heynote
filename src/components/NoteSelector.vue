@@ -90,6 +90,9 @@
             ]),
 
             onKeydown(event) {
+                if (this.filteredItems.length === 0) {
+                    return
+                }
                 const path = this.filteredItems[this.selected].path
                 if (event.key === "ArrowDown") {
                     if (this.selected === this.filteredItems.length - 1) {
