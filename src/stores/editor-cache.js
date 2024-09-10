@@ -42,7 +42,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
         },
 
         eachEditor(fn) {
-            Object.values(this.editorCache.cache).forEach(fn)
+            Object.values(toRaw(this.editorCache.cache)).forEach(fn)
         },
     },
 })
