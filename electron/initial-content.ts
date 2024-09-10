@@ -1,9 +1,8 @@
 import os from "os";
 import { keyHelpStr } from "../shared-utils/key-helper";
 
-export const eraseInitialContent = !!process.env.ERASE_INITIAL_CONTENT
-
 export const initialContent = `
+{"formatVersion":"1.0.0","name":"Scratch"}
 ∞∞∞markdown
 Welcome to Heynote! 👋
 

@@ -137,6 +137,11 @@
                 this.$refs.editor.focus()
             },
 
+            setTheme(theme) {
+                window.heynote.themeMode.set(theme)
+                this.themeSetting = theme
+            },
+
             onSelectLanguage(language) {
                 this.closeDialog()
                 this.$refs.editor.setLanguage(language)
@@ -170,11 +175,8 @@
             ref="editor"
         />
         <StatusBar 
-            :theme="theme"
-            :themeSetting="themeSetting"
             :autoUpdate="settings.autoUpdate"
             :allowBetaVersions="settings.allowBetaVersions"
-            @toggleTheme="toggleTheme"
             @openNoteSelector="openNoteSelector"
             @openLanguageSelector="openLanguageSelector"
             @formatCurrentBlock="formatCurrentBlock"
@@ -196,7 +198,9 @@
             <Settings 
                 v-if="showSettings"
                 :initialSettings="settings"
+                :themeSetting="themeSetting"
                 @closeSettings="closeSettings"
+                @setTheme="setTheme"
             />
             <NewNote 
                 v-if="showCreateNote"

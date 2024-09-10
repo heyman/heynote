@@ -108,12 +108,11 @@ contextBridge.exposeInMainWorld("heynote", {
         },
 
         async selectLocation() {
-            return await ipcRenderer.invoke("buffer-content:selectLocation")
+            return await ipcRenderer.invoke("library:selectLocation")
         },
 
-        callbacks(callbacks) {
-            ipcRenderer.on("buffer:noteMetadataChanged", (event, path, info) => callbacks?.noteMetadataChanged(path, info))
-            ipcRenderer.on("buffer:noteRemoved", (event, path) => callbacks?.noteRemoved(path))
+        setLibraryPathChangeCallback(callback) {
+            ipcRenderer.on("library:pathChanged", callback)
         },
     },
 

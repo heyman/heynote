@@ -1,22 +1,23 @@
 import { toRaw } from 'vue';
 import { defineStore } from "pinia"
-import { NoteFormat } from "../editor/note-format"
+import { NoteFormat } from "../common/note-format"
 import { useEditorCacheStore } from "./editor-cache"
+import { SCRATCH_FILE_NAME } from "../common/constants"
 
-export const SCRATCH_FILE = window.heynote.isDev ? "buffer-dev.txt" : "buffer.txt"
 
 export const useNotesStore = defineStore("notes", {
     state: () => ({
         notes: {},
-        recentNotePaths: [SCRATCH_FILE],
+        recentNotePaths: [SCRATCH_FILE_NAME],
 
         currentEditor: null,
-        currentNotePath: SCRATCH_FILE,
+        currentNotePath: SCRATCH_FILE_NAME,
         currentNoteName: null,
         currentLanguage: null,
         currentLanguageAuto: null,
         currentCursorLine: null,
         currentSelectionSize: null,
+        libraryId: 0,
 
         showNoteSelector: false,
         showLanguageSelector: false,
@@ -119,10 +120,22 @@ export const useNotesStore = defineStore("notes", {
                 this.updateNotes()
             }
         },
+
+        async reloadLibrary() {
+            const editorCacheStore = useEditorCacheStore()
+            await this.updateNotes()
+            editorCacheStore.clearCache(false)
+            this.currentEditor = null
+            this.currentNotePath = SCRATCH_FILE_NAME
+            this.libraryId++
+        },
     },
 })
 
 export async function initNotesStore() {
     const notesStore = useNotesStore()
+    window.heynote.buffer.setLibraryPathChangeCallback(() => {
+        notesStore.reloadLibrary()
+    })
     await notesStore.updateNotes()
 }

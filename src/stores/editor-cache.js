@@ -1,6 +1,6 @@
 import { toRaw } from 'vue';
 import { defineStore } from "pinia"
-import { NoteFormat } from "../editor/note-format"
+import { NoteFormat } from "../common/note-format"
 
 const NUM_EDITOR_INSTANCES = 5
 
@@ -43,6 +43,15 @@ export const useEditorCacheStore = defineStore("editorCache", {
 
         eachEditor(fn) {
             Object.values(toRaw(this.editorCache.cache)).forEach(fn)
+        },
+
+        clearCache(save=true) {
+            console.log("Clearing editor cache")
+            this.eachEditor((editor) => {
+                editor.destroy(save=save)
+            })
+            this.editorCache.cache = {}
+            this.editorCache.lru = []
         },
     },
 })

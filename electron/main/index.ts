@@ -9,8 +9,13 @@ import CONFIG from "../config"
 import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
-import { loadBuffer, contentSaved } from './buffer';
-import { FileLibrary, setupFileLibraryEventHandlers } from './file-library';
+import { 
+    FileLibrary, 
+    setupFileLibraryEventHandlers, 
+    setCurrentFileLibrary, 
+    migrateBufferFileToLibrary, 
+    NOTES_DIR_NAME 
+} from './file-library';
 
 
 // The built directory structure
@@ -310,7 +315,9 @@ function registerAlwaysOnTop() {
 }
 
 app.whenReady().then(createWindow).then(async () => {
-    setupFileLibraryEventHandlers(fileLibrary, win)
+    initFileLibrary(win).then(() => {
+        setupFileLibraryEventHandlers(win)
+    })
     initializeAutoUpdate(win)
     registerGlobalHotkey()
     registerShowInDock()
@@ -352,14 +359,28 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
+
 // Initialize note/file library
-const customLibraryPath = CONFIG.get("settings.bufferPath")
-const libraryPath = customLibraryPath ? customLibraryPath : join(app.getPath("userData"), "notes")
-console.log("libraryPath", libraryPath)
-try {
-    fileLibrary = new FileLibrary(libraryPath)
-} catch (error) {
-    initErrors.push(`Error: ${error.message}`)
+async function initFileLibrary(win) {
+    await migrateBufferFileToLibrary(app)
+    
+    const customLibraryPath = CONFIG.get("settings.bufferPath")
+    const defaultLibraryPath = join(app.getPath("userData"), NOTES_DIR_NAME)
+    const libraryPath = customLibraryPath ? customLibraryPath : defaultLibraryPath
+    //console.log("libraryPath", libraryPath)
+
+    // if we're using the default library path, and it doesn't exist (e.g. first time run), create it
+    if (!customLibraryPath && !fs.existsSync(defaultLibraryPath)) {
+        fs.mkdirSync(defaultLibraryPath)
+    }
+
+    try {
+        fileLibrary = new FileLibrary(libraryPath)
+        fileLibrary.setupWatcher(win)
+    } catch (error) {
+        initErrors.push(`Error: ${error.message}`)
+    }
+    setCurrentFileLibrary(fileLibrary)
 }
 
 ipcMain.handle("getInitErrors", () => {
@@ -393,9 +414,10 @@ ipcMain.handle('settings:set', async (event, settings) => {
         registerAlwaysOnTop()
     }
     if (bufferPathChanged) {
-        const buffer = loadBuffer()
-        if (buffer.exists()) {
-            win?.webContents.send("buffer-content:change", await buffer.load())
-        }
+        console.log("bufferPath changed, closing existing file library")
+        fileLibrary.close()
+        console.log("initializing new file library")
+        initFileLibrary(win)
+        await win.webContents.send("library:pathChanged")
     }
 })

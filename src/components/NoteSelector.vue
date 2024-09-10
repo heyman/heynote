@@ -3,7 +3,8 @@
 
     import { mapState, mapActions } from 'pinia'
     import { toRaw } from 'vue';
-    import { useNotesStore, SCRATCH_FILE } from "../stores/notes-store"
+    import { SCRATCH_FILE_NAME } from "../common/constants"
+    import { useNotesStore } from "../stores/notes-store"
 
     export default {
         data() {
@@ -12,7 +13,8 @@
                 actionButton: 0,
                 filter: "",
                 items: [],
-                SCRATCH_FILE: SCRATCH_FILE,
+                SCRATCH_FILE_NAME: SCRATCH_FILE_NAME,
+                deleteConfirm: false,
             }
         },
 
@@ -25,7 +27,7 @@
                     "path": path,
                     "name": metadata?.name || path,
                     "folder": path.split("/").slice(0, -1).join("/"),
-                    "scratch": path === SCRATCH_FILE,
+                    "scratch": path === SCRATCH_FILE_NAME,
                 }
             })
             if (this.items.length > 1) {
@@ -120,25 +122,30 @@
                         this.$refs.item[this.selected].scrollIntoView({block: "nearest"})
                     }
                     this.actionButton = 0
-                } else if (event.key === "ArrowRight" && path !== SCRATCH_FILE) {
+                } else if (event.key === "ArrowRight" && path !== SCRATCH_FILE_NAME) {
                     event.preventDefault()
                     this.actionButton = Math.min(2, this.actionButton + 1)
-                } else if (event.key === "ArrowLeft" && path !== SCRATCH_FILE) {
+                } else if (event.key === "ArrowLeft" && path !== SCRATCH_FILE_NAME) {
                     event.preventDefault()
                     this.actionButton = Math.max(0, this.actionButton - 1)
+                    this.deleteConfirm = false
                 } else if (event.key === "Enter") {
                     event.preventDefault()
                     if (this.actionButton === 1) {
                         console.log("edit file:", path)
                         this.editNote(path)
                     } else if (this.actionButton === 2) {
-                        console.log("delete file:", path)
+                        this.deleteConfirmNote(path)
                     } else {
                         this.selectItem(path)
                     }
                 } else if (event.key === "Escape") {
-                    this.$emit("close")
                     event.preventDefault()
+                    if (this.actionButton !== 0) {
+                        this.hideActionButtons()
+                    } else {
+                        this.$emit("close")
+                    }
                 }
             },
 
@@ -169,7 +176,23 @@
             showActionButtons(idx) {
                 this.selected = idx
                 this.actionButton = 1
+                this.deleteConfirm = false
                 this.$refs.input.focus()
+            },
+
+            hideActionButtons() {
+                this.actionButton = 0
+                this.deleteConfirm = false
+            },
+
+            deleteConfirmNote(path) {
+                if (this.deleteConfirm) {
+                    console.log("delete file:", path)
+                } else {
+                    this.deleteConfirm = true
+                    this.actionButton = 2
+                    this.$refs.input.focus()
+                }
             },
         }
     }
@@ -195,18 +218,27 @@
                 >
                     <span class="name" v-html="item.name" />
                     <span class="path" v-html="item.folder" />
-                    <span class="action-buttons">
+                    <span :class="{'action-buttons':true, 'visible':actionButton > 0 && idx === selected}">
                         <button 
                             v-if="actionButton > 0 && idx === selected"
                             :class="{'selected':actionButton === 1}"
+                            @click.stop.prevent="editNote(item.path)"
                         >Edit</button>
                         <button 
                             v-if="actionButton > 0 && idx === selected"
-                            :class="{'delete':true, 'selected':actionButton === 2}"
-                        >Delete</button>
+                            :class="{'delete':true, 'selected':actionButton === 2, 'confirm':deleteConfirm}"
+                            @click.stop.prevent="deleteConfirmNote(item.path)"
+                        >
+                            <template v-if="deleteConfirm">
+                                Really Delete?
+                            </template>
+                            <template v-else>
+                                Delete
+                            </template>
+                        </button>
                         <button
                             class="show-actions"
-                            v-if="item.path !== SCRATCH_FILE && (actionButton === 0 || idx !== selected)"
+                            v-if="item.path !== SCRATCH_FILE_NAME && (actionButton === 0 || idx !== selected)"
                             @click.stop.prevent="showActionButtons(idx)"
                         ></button>
                     </span>
@@ -273,31 +305,40 @@
             > li
                 position: relative
                 border-radius: 3px
-                padding: 5px 12px
+                padding: 3px 12px
+                line-height: 18px
                 display: flex
                 align-items: center
                 &:hover
                     background: #e2e2e2
                     .action-buttons .show-actions
                         display: inline-block
-                &.selected
-                    background: #48b57e
-                    color: #fff
-                    .action-buttons .show-actions
-                        display: inline-block
-                &.scratch
-                    font-weight: 600
+                        background-image: url(@/assets/icons/arrow-right-black.svg)
+                    &.selected .action-buttons .show-actions
+                        background-image: url(@/assets/icons/arrow-right-white.svg)
                 +dark-mode
                     color: rgba(255,255,255, 0.65)
                     &:hover
                         background: #29292a
-                    &.selected
+                &.selected
+                    background: #48b57e
+                    color: #fff
+                    &.action-buttons-visible
+                        background: none
+                        border: 1px solid #48b57e
+                        padding: 2px 11px
+                        color: #444
+                    .action-buttons .show-actions
+                        display: inline-block
+                    +dark-mode
                         background: #1b6540
                         color: rgba(255,255,255, 0.87)
                         &.action-buttons-visible
                             background: none
                             border: 1px solid #1b6540
-                            padding: 4px 11px
+                            color: rgba(255,255,255, 0.65)
+                &.scratch
+                    font-weight: 600
                 .name
                     margin-right: 12px
                     flex-shrink: 0
@@ -318,9 +359,15 @@
                 .action-buttons
                     position: absolute
                     top: 1px
-                    right: 1px
+                    right: 0px
+                    padding: 0 1px
+                    &.visible
+                        background: #efefef
+                        +dark-mode
+                            background: #151516
                     button
-                        padding: 1px 10px
+                        padding: 0 10px
+                        height: 20px
                         font-size: 12px
                         background: none
                         border: none
@@ -330,29 +377,41 @@
                         &:last-child
                             margin-right: 0
                         &:hover
-                            background: rgba(255,255,255, 0.1)
+                            background: rgba(0,0,0, 0.1)
                         +dark-mode
-                            //background: #1b6540
-                            //&:hover
-                            //    background: 
-                        &.selected
-                            background: #1b6540
                             &:hover
-                                background: #1f7449
+                                background-color: rgba(255,255,255, 0.1)
+                        &.selected
+                            background: #48b57e
+                            color: #fff
+                            &:hover
+                                background: #3ea471
                             &.delete
-                                background: #ae1e1e
+                                background: #e95050
                                 &:hover
-                                    background: #bf2222
+                                    background: #ce4848
+                            +dark-mode
+                                background: #1b6540
+                                &:hover
+                                    background: #1f7449
+                                &.delete
+                                    background: #ae1e1e
+                                    &:hover
+                                        background: #bf2222
+                            &.confirm
+                                font-weight: 600
                         &.show-actions
                             display: none
                             position: relative
                             top: 1px
                             padding: 1px 8px
                             //cursor: default
-                            background-image: url(@/assets/icons/arrow-right.svg)
+                            background-image: url(@/assets/icons/arrow-right-white.svg)
                             width: 22px
                             height: 19px
                             background-size: 19px
                             background-position: center center
                             background-repeat: no-repeat
+                            +dark-mode
+                                background-image: url(@/assets/icons/arrow-right-grey.svg)
 </style>

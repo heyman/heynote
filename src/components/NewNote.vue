@@ -96,6 +96,18 @@
                 }
             },
 
+            onCancelKeydown(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    this.cancel()
+                }
+            },
+
+            cancel() {
+                this.$emit("close")
+            },
+
             onInputKeydown(event) {
                 // redirect arrow keys and page up/down to folder selector
                 const redirectKeys = ["ArrowDown", "ArrowUp", "PageDown", "PageUp"]
@@ -162,6 +174,11 @@
             </div>
             <div class="bottom-bar">
                 <button type="submit">Create Note</button>
+                <button 
+                    class="cancel"
+                    @keydown="onCancelKeydown"
+                    @click.stop.prevent="cancel"
+                >Cancel</button>
             </div>
         </form>
     </div>
@@ -246,7 +263,7 @@
             padding: 10px
             padding-top: 0
             display: flex
-            justify-content: flex-end
+            justify-content: space-between
             button
                 font-size: 12px
                 height: 28px
@@ -260,5 +277,9 @@
                     background: #444
                     border: none
                     color: rgba(255,255,255, 0.75)
+                &[type="submit"]
+                    order: 1
+                &.cancel
+                    order: 0
         
 </style>
