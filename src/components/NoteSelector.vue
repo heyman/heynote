@@ -22,14 +22,7 @@
             await this.updateNotes()
             this.$refs.container.focus()
             this.$refs.input.focus()
-            this.items = Object.entries(this.notes).map(([path, metadata]) => {
-                return {
-                    "path": path,
-                    "name": metadata?.name || path,
-                    "folder": path.split("/").slice(0, -1).join("/"),
-                    "scratch": path === SCRATCH_FILE_NAME,
-                }
-            })
+            this.buildItems()
             if (this.items.length > 1) {
                 this.selected = 1
             }
@@ -89,7 +82,20 @@
             ...mapActions(useNotesStore, [
                 "updateNotes",
                 "editNote",
+                "deleteNote",
             ]),
+
+            buildItems() {
+                //console.log("buildItems", Object.entries(this.notes))
+                this.items = Object.entries(this.notes).map(([path, metadata]) => {
+                    return {
+                        "path": path,
+                        "name": metadata?.name || path,
+                        "folder": path.split("/").slice(0, -1).join("/"),
+                        "scratch": path === SCRATCH_FILE_NAME,
+                    }
+                })
+            },
 
             onKeydown(event) {
                 if (this.filteredItems.length === 0) {
@@ -185,9 +191,13 @@
                 this.deleteConfirm = false
             },
 
-            deleteConfirmNote(path) {
+            async deleteConfirmNote(path) {
                 if (this.deleteConfirm) {
                     console.log("delete file:", path)
+                    await this.deleteNote(path)
+                    this.hideActionButtons()
+                    this.buildItems()
+                    this.selected = Math.min(this.selected, this.items.length - 1)
                 } else {
                     this.deleteConfirm = true
                     this.actionButton = 2

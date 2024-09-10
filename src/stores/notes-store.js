@@ -109,16 +109,30 @@ export const useNotesStore = defineStore("notes", {
             if (this.currentEditor.path !== path) {
                 throw new Error(`Can't update note (${path}) since it's not the active one (${this.currentEditor.path})`)
             }
-            console.log("currentEditor", this.currentEditor)
+            //console.log("currentEditor", this.currentEditor)
             toRaw(this.currentEditor).setName(name)
             await (toRaw(this.currentEditor)).save()
             if (newPath && path !== newPath) {
-                console.log("moving note", path, newPath)
+                //console.log("moving note", path, newPath)
                 editorCacheStore.freeEditor(path)
                 await window.heynote.buffer.move(path, newPath)
                 this.openNote(newPath)
                 this.updateNotes()
             }
+        },
+
+        async deleteNote(path) {
+            if (path === SCRATCH_FILE_NAME) {
+                throw new Error("Can't delete scratch file")
+            }
+            const editorCacheStore = useEditorCacheStore()
+            if (this.currentEditor.path === path) {
+                this.currentEditor = null
+                this.currentNotePath = SCRATCH_FILE_NAME
+            }
+            editorCacheStore.freeEditor(path)
+            await window.heynote.buffer.delete(path)
+            await this.updateNotes()
         },
 
         async reloadLibrary() {
