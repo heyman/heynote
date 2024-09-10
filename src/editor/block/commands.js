@@ -325,8 +325,10 @@ export const deleteBlock = (editor) => ({state, dispatch}) => {
     const block = getActiveNoteBlock(state)
     const blocks = state.facet(blockState)
     let replace = ""
+    let newSelection = block.delimiter.from
     if (blocks.length == 1) {
         replace = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
+        newSelection = replace.length
     }
     dispatch(state.update({
         changes: {
@@ -334,7 +336,7 @@ export const deleteBlock = (editor) => ({state, dispatch}) => {
             to: block.range.to,
             insert: replace,
         },
-        selection: EditorSelection.cursor(block.delimiter.from),
+        selection: EditorSelection.cursor(newSelection),
         annotations: [heynoteEvent.of(DELETE_BLOCK)],
     }))
 }

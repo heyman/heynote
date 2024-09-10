@@ -77,6 +77,10 @@ contextBridge.exposeInMainWorld("heynote", {
             return await ipcRenderer.invoke("buffer:save", path, content)
         },
 
+        async delete(path) {
+            return await ipcRenderer.invoke("buffer:delete", path)
+        },
+
         async move(path, newPath) {
             return await ipcRenderer.invoke("buffer:move", path, newPath)
         },

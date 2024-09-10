@@ -96,6 +96,14 @@ export class FileLibrary {
         await this.jetpack.moveAsync(fullOldPath, fullNewPath)
     }
 
+    async delete(path) {
+        if (path === SCRATCH_FILE_NAME) {
+            throw new Error("Can't delete scratch file")
+        }
+        const fullPath = join(this.basePath, path)
+        await this.jetpack.removeAsync(fullPath)
+    }
+
     async getList() {
         //console.log("Listing notes")
         const notes = {}
@@ -260,6 +268,10 @@ export function setupFileLibraryEventHandlers(win) {
 
     ipcMain.handle('buffer:move', async (event, path, newPath) => {
         return await library.move(path, newPath)
+    });
+
+    ipcMain.handle('buffer:delete', async (event, path) => {
+        return await library.delete(path)
     });
 
     ipcMain.handle("library:selectLocation", async () => {
