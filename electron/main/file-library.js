@@ -5,6 +5,16 @@ import { join, dirname, basename } from "path"
 import * as jetpack from "fs-jetpack";
 import { app, ipcMain, dialog } from "electron"
 
+import CONFIG from "../config"
+import { SCRATCH_FILE_NAME } from "../../src/common/constants"
+import { NoteFormat } from "../../src/common/note-format"
+import { isDev } from '../detect-platform';
+import { initialContent, initialDevContent } from '../initial-content'
+
+export const NOTES_DIR_NAME = isDev ? "notes-dev" : "notes"
+
+
+let library
 
 const untildify = (pathWithTilde) => {
     const homeDir = os.homedir()
@@ -42,6 +52,11 @@ export class FileLibrary {
         this.watcher = null;
         this.contentSaved = false
         this.onChangeCallback = null
+
+        // create scratch.txt if it doesn't exist
+        if (!this.jetpack.exists(SCRATCH_FILE_NAME)) {
+            this.jetpack.write(SCRATCH_FILE_NAME, isDev ? initialDevContent : initialContent)
+        }
     }
 
     async exists(path) {
@@ -82,7 +97,7 @@ export class FileLibrary {
     }
 
     async getList() {
-        console.log("Loading notes")
+        //console.log("Listing notes")
         const notes = {}
         const files = await this.jetpack.findAsync(".", {
             matching: "*.txt",
@@ -199,10 +214,13 @@ export class NoteBuffer {
     }
 }
 
+export function setCurrentFileLibrary(lib) {
+    library = lib
+}
 
-export function setupFileLibraryEventHandlers(library, win) {
+export function setupFileLibraryEventHandlers(win) {
     ipcMain.handle('buffer:load', async (event, path) => {
-        console.log("buffer:load", path)
+        //console.log("buffer:load", path)
         return await library.load(path)
     });
 
@@ -244,5 +262,71 @@ export function setupFileLibraryEventHandlers(library, win) {
         return await library.move(path, newPath)
     });
 
-    library.setupWatcher(win)
+    ipcMain.handle("library:selectLocation", async () => {
+        let result = await dialog.showOpenDialog({
+            title: "Select directory to store buffer",
+            properties: [
+                "openDirectory",
+                "createDirectory",
+                "noResolveAliases",
+            ],
+        })
+        if (result.canceled) {
+            return
+        }
+        const filePath = result.filePaths[0]
+        return filePath
+    })
+}
+
+
+export async function migrateBufferFileToLibrary(app) {
+    async function ensureBufferFileMetadata(filePath) {
+        const metadata = await readNoteMetadata(filePath)
+        //console.log("Metadata", metadata)
+        if (!metadata || !metadata.name) {
+            console.log("Adding metadata to", filePath)
+            const note = NoteFormat.load(jetpack.read(filePath))
+            note.metadata.name = "Scratch"
+            jetpack.write(filePath, note.serialize())
+        } else {
+            console.log("Metadata already exists for", filePath)
+        }
+    }
+
+    const defaultLibraryPath = join(app.getPath("userData"), NOTES_DIR_NAME)
+    const customBufferPath = CONFIG.get("settings.bufferPath")
+    const oldBufferFile = isDev ? "buffer-dev.txt" : "buffer.txt"
+    if (customBufferPath) {
+        // if the new buffer file exists, no need to migrate
+        if (jetpack.exists(join(customBufferPath, SCRATCH_FILE_NAME)) === "file") {
+            return
+        }
+        const oldBufferFileFullPath = join(customBufferPath, oldBufferFile)
+        if (jetpack.exists(oldBufferFileFullPath) === "file") {
+            const newFileFullPath = join(customBufferPath, SCRATCH_FILE_NAME);
+            console.log(`Migrating file ${oldBufferFileFullPath} to ${newFileFullPath}`)
+            // rename buffer file to scratch.txt
+            jetpack.move(oldBufferFileFullPath, newFileFullPath)
+            // add metadata to scratch.txt (just to be sure, we'll double check that it's needed first)
+            await ensureBufferFileMetadata(newFileFullPath)
+        }  
+    } else {
+        // if the new buffer file exists, no need to migrate
+        if (jetpack.exists(join(defaultLibraryPath, SCRATCH_FILE_NAME)) === "file") {
+            return
+        }
+        // check if the old buffer file exists, while the default *library* path doesn't exist
+        const oldBufferFileFullPath = join(app.getPath("userData"), oldBufferFile)
+        if (jetpack.exists(oldBufferFileFullPath) === "file" && jetpack.exists(defaultLibraryPath) !== "dir") {
+            const newFileFullPath = join(defaultLibraryPath, SCRATCH_FILE_NAME);
+            console.log(`Migrating buffer file ${oldBufferFileFullPath} to ${newFileFullPath}`)
+            // create the default library path
+            jetpack.dir(defaultLibraryPath)
+            // move the buffer file to the library path
+            jetpack.move(oldBufferFileFullPath, newFileFullPath)
+            // add metadata to scratch.txt
+            await ensureBufferFileMetadata(newFileFullPath)
+        }
+    }
 }

@@ -86,9 +86,9 @@
         },
 
         watch: {
-            currentNotePath(path) {
+            loadNewEditor() {
                 //console.log("currentNotePath changed to", path)
-                this.loadBuffer(path)
+                this.loadBuffer(this.currentNotePath)
             },
 
             theme(newTheme) {
@@ -152,11 +152,16 @@
         computed: {
             ...mapState(useNotesStore, [
                 "currentNotePath",
+                "libraryId",
             ]),
             ...mapWritableState(useNotesStore, [
                 "currentEditor",
                 "currentNoteName",
             ]),
+
+            loadNewEditor() {
+                return `${this.currentNotePath}|${this.libraryId}`
+            },
         },
 
         methods: {

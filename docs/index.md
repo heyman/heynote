@@ -36,6 +36,8 @@ Available for Mac, Windows, and Linux.
 ⌥ + Shift + Enter   Add new block at the start of the buffer
 ⌘ + ⌥ + Enter       Split the current block at cursor position
 ⌘ + L               Change block language
+⌘ + S               Create a new note from the current block
+⌘ + P               Open note selector
 ⌘ + Down            Goto next block
 ⌘ + Up              Goto previous block
 ⌘ + A               Select all text in a note block. Press again to select the whole buffer
@@ -52,6 +54,8 @@ Ctrl + Shift + Enter   Add new block at the end of the buffer
 Alt + Shift + Enter    Add new block at the start of the buffer
 Ctrl + Alt + Enter     Split the current block at cursor position
 Ctrl + L               Change block language
+Ctrl + S               Create a new note from the current block
+Ctrl + P               Open note selector
 Ctrl + Down            Goto next block
 Ctrl + Up              Goto previous block
 Ctrl + A               Select all text in a note block. Press again to select the whole buffer

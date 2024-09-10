@@ -14,6 +14,7 @@
         props: {
             initialKeymap: String,
             initialSettings: Object,
+            themeSetting: String,
         },
         components: {
             KeyboardHotkey,
@@ -60,6 +61,7 @@
                 systemFonts: [[defaultFontFamily, defaultFontFamily + " (default)"]],
                 defaultFontSize: defaultFontSize,
                 appVersion: "",
+                theme: this.themeSetting,
             }
         },
 
@@ -108,6 +110,9 @@
                 })
                 if (!this.showInDock) {
                     this.showInMenu = true
+                }
+                if (this.theme != this.themeSetting) {
+                    this.$emit("setTheme", this.theme)
                 }
             },
 
@@ -293,6 +298,16 @@
                     </TabContent>
 
                     <TabContent tab="appearance" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Color Theme</h2>
+                                <select v-model="theme" @change="updateSettings" class="theme">
+                                    <option :selected="theme === 'system'" value="system">System</option>
+                                    <option :selected="theme === 'light'" value="light">Light</option>
+                                    <option :selected="theme === 'dark'" value="dark">Dark</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="entry">
                                 <h2>Gutters</h2>

@@ -9,8 +9,6 @@
 
     export default {
         props: [
-            "theme",
-            "themeSetting",
             "autoUpdate",
             "allowBetaVersions",
         ],
@@ -113,9 +111,6 @@
             :autoUpdate="autoUpdate"
             :allowBetaVersions="allowBetaVersions"
         />
-        <div class="status-block theme clickable" @click="$emit('toggleTheme')" title="Toggle dark/light mode">
-            <span :class="'icon ' + themeSetting"></span>
-        </div>
         <div 
             @click.stop="$emit('openSettings')"
             class="status-block settings clickable"
@@ -176,19 +171,6 @@
             color: rgba(255, 255, 255, 0.7)
             +dark-mode
                 color: rgba(255, 255, 255, 0.55)
-        .theme
-            padding-top: 0
-            padding-bottom: 0
-            .icon
-                background-size: 14px
-                background-repeat: no-repeat
-                background-position: center center
-                &.dark
-                    background-image: url("@/assets/icons/dark-mode.png")
-                &.light
-                    background-image: url("@/assets/icons/light-mode.png")
-                &.system
-                    background-image: url("@/assets/icons/both-mode.png")
         
         .format
             padding-top: 0

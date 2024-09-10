@@ -21,7 +21,7 @@ import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
-import { NoteFormat } from "./note-format.js"
+import { NoteFormat } from "../common/note-format.js"
 import { useNotesStore } from "../stores/notes-store.js";
 
 
@@ -140,7 +140,7 @@ export class HeynoteEditor {
         if (content === this.diskContent) {
             return
         }
-        console.log("saving:", this.path)
+        //console.log("saving:", this.path)
         this.diskContent = content
         await window.heynote.buffer.save(this.path, content)
     }
@@ -158,7 +158,7 @@ export class HeynoteEditor {
     }
 
     async loadContent() {
-        console.log("loading content", this.path)
+        //console.log("loading content", this.path)
         const content = await window.heynote.buffer.load(this.path)
         this.diskContent = content
         this.contentLoaded = true
@@ -328,11 +328,13 @@ export class HeynoteEditor {
         triggerCurrenciesLoaded(this.view.state, this.view.dispatch)
     }
 
-    destroy() {
+    destroy(save=true) {
         if (this.onChange) {
             window.heynote.buffer.removeOnChangeCallback(this.path, this.onChange)
         }
-        this.save()
+        if (save) {
+            this.save()
+        }
         this.view.destroy()
         window.heynote.buffer.close(this.path)
     }
