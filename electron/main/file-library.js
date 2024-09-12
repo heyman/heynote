@@ -142,7 +142,7 @@ export class FileLibrary {
                     encoding: "utf8",
                 },
                 async (eventType, changedPath) => {
-                    console.log("File changed", eventType, changedPath)
+                    //console.log("File changed", eventType, changedPath)
                     //if (changedPath.toLowerCase().endsWith(".txt")) {
                     //    console.log("txt", this.notes)
                     //    if (await this.exists(changedPath)) {
