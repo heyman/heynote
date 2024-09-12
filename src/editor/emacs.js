@@ -103,8 +103,6 @@ export function emacsKeymap(editor) {
 
             { key: "Ctrl-b", run: emacsMoveCommand(cursorCharLeft, selectCharLeft), shift: selectCharLeft },
             { key: "Ctrl-f", run: emacsMoveCommand(cursorCharRight, selectCharRight), shift: selectCharRight },
-            { key: "Ctrl-p", run: emacsMoveCommand(cursorLineUp, selectLineUp), shift: selectLineUp },
-            { key: "Ctrl-n", run: emacsMoveCommand(cursorLineDown, selectLineDown), shift: selectLineDown },
             { key: "Ctrl-a", run: emacsMoveCommand(cursorLineStart, selectLineStart), shift: selectLineStart },
             { key: "Ctrl-e", run: emacsMoveCommand(cursorLineEnd, selectLineEnd), shift: selectLineEnd },
         ])),
