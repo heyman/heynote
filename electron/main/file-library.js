@@ -1,6 +1,6 @@
 import fs from "fs"
 import os from "node:os"
-import { join, dirname, basename } from "path"
+import { join, basename } from "path"
 
 import * as jetpack from "fs-jetpack";
 import { app, ipcMain, dialog } from "electron"
