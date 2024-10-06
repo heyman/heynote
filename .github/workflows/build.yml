@@ -74,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: heynote-mac-universal-${{ github.sha }}
-          path: release/*/mac-universal/Heynote.app
+          path: release/*/Heynote_*_arm64.dmg
           retention-days: 30
       
       - name: Upload Windows artifact
