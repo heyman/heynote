@@ -5,7 +5,7 @@ on: push
 jobs:
   publish:
     runs-on: ${{ matrix.os }}
-    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    if: ${{ startsWith(github.ref, 'refs/tags/v') || contains(github.event.head_commit.message, '#build') }}
     permissions:
       contents: write
 
@@ -50,8 +50,8 @@ jobs:
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
-          release: true
-          #release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+          #release: true
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
           # macOS notarization API key
           APPLE_API_KEY: ~/private_keys/AuthKey.p8
@@ -61,3 +61,26 @@ jobs:
       #- name: Print notarization-error.log
       #  run: cat notarization-error.log
 
+      - name: Upload Linux artifact
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: heynote-linux-${{ github.sha }}
+          path: release/*/Heynote_*.AppImage
+          retention-days: 30
+      
+      - name: Upload Mac artifact
+        if: ${{ matrix.os == 'macos-latest' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: heynote-mac-universal-${{ github.sha }}
+          path: release/*/mac-universal/Heynote.app
+          retention-days: 30
+      
+      - name: Upload Windows artifact
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: heynote-windows-${{ github.sha }}
+          path: release/*/Heynote_*.exe
+          retention-days: 30
