@@ -73,7 +73,7 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' }}
         uses: actions/upload-artifact@v3
         with:
-          name: heynote-mac-universal-${{ github.sha }}
+          name: heynote-mac-arm64-${{ github.sha }}
           path: release/*/Heynote_*_arm64.dmg
           retention-days: 30
       
