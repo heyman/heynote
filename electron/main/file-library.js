@@ -164,7 +164,8 @@ export class FileLibrary {
                     for (const [path, buffer] of Object.entries(this.files)) {
                         if (changedPath === basename(path)) {
                             const content = await buffer.read()
-                            if (buffer._lastSavedContent !== content) {
+                            // if the file was removed (e.g. during a atomic save) the content will be undefined
+                            if (content !== undefined && buffer._lastSavedContent !== content) {
                                 win.webContents.send("buffer:change", path, content)
                             }
                         }
