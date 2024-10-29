@@ -122,7 +122,6 @@ function migrateBufferFileToLibrary() {
 }
 migrateBufferFileToLibrary()
 
-
 const Heynote = {
     platform: platform,
     defaultFontFamily: "Hack", 

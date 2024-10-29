@@ -26,7 +26,6 @@ const middleware = () => {
     }
 }
 
-
 // https://vitejs.dev/config/
 export default defineConfig({
     publicDir: "../public",
@@ -54,5 +53,6 @@ export default defineConfig({
     define: {
         '__APP_VERSION__': JSON.stringify(process.env.npm_package_version),
         '__GIT_HASH__': JSON.stringify(child.execSync('git rev-parse --short HEAD').toString().trim()),
+        '__TESTS__': process.env.HEYNOTE_TESTS,
     },
 })
