@@ -101,16 +101,27 @@ format(x) = x.toLocaleString();
 format(x) = x.toLocaleString('en-GB');
 ```
 
-
 See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
 
-## The buffer file
 
-The default paths for the buffer data for the respective operating systems are:
+## The notes library (only for Heynote 2.0, not yet released)
 
--   Mac: `~/Library/Application Support/Heynote/buffer.txt`
--   Windows: `%APPDATA%\Heynote\buffer.txt`
--   Linux: `~/.config/Heynote/buffer.txt`
+The notes library is a directory (with sub dirs) on the disk with a `.txt` file for each note. It's created the first time you start Heynote, with the default note file `scratch.txt` in it. The default location for the library is:
+
+-   Mac: `~/Library/Application Support/Heynote/notes/`
+-   Windows: `%APPDATA%\Heynote\notes\`
+-   Linux: `~/.config/Heynote/notes/`
+
+You can change the path of the notes library in the settings. Heynote expects reasonably fast disk access to the notes library, so it's not recommended to use a network drive, though file syncing services like Dropbox, OneDrive, etc. should work (see below).
+
+## Synchronizing the notes library
+
+Heynote is built to support synchronizing the notes library (or buffer file in the case of Heynote 1.x) through file-syncing services like Dropbox, OneDrive, etc. However, note that the synchronization logic is quite simple, so editing the same note on two different machines at the same time might lead to conflicts and unexpected results.
+
+When using a file synching service that support "offloading" of files in the cloud (removing them from the disk), it's recommended to mark the notes library as "always available offline".
+
+As always, backups things that are important.
+
 
 ## Linux
 
@@ -124,7 +135,7 @@ libnss3
 libnspr4
 ```
 
-#### Wayland
+### Wayland
 
 Due to [an issue in Electron](https://github.com/electron/electron/issues/38288), the global hotkey will not work in all applications running under Wayland. In KDE it is possible to work around this limitation by adding this Kwin script:
 

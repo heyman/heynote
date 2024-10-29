@@ -6,14 +6,15 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ### Support for multiple note buffers. 
 
-Apart from the default scratch buffer, you can now create and switch between multiple note buffers. By pressing `Ctrl/Cmd+S` you can create a new note from the current block (the current block will be moved into the new note). New note buffers are saved to the note library which is basically a directories (with sub dirs) on the disk with `.txt` files. You switch between note buffers by pressing `Ctrl/Cmd+P`.
+Apart from the default Scratch note, you can now create and switch between multiple notes. By pressing `Ctrl/Cmd+S` you can create a new note from the current block (the current block will be moved into the new note). New notes are saved to the note library which is basically a directory (with sub dirs) on the disk with a `.txt` file for each note. You switch between Notes by pressing `Ctrl/Cmd+P`.
 
-The first time you start the new version of Heynote, your existing buffer file will be migrated to the new note library. If you're using the default buffer location, that means that the existing scratch buffer file will be moved from `%APP_DIR%/buffer.txt` to `%APP_DIR%/notes/scratch.txt`. If you are using a custom buffer location the file will be moved from `%CUSTOM_DIR%/buffer.txt` to `%CUSTOM_DIR%/scratch.txt`.
+The first time you start the new version of Heynote, your existing buffer file will be migrated to the new note library. If you're using the default buffer location, that means that the existing Scratch note file will be moved from `%APP_DIR%/buffer.txt` to `%APP_DIR%/notes/scratch.txt`. If you are using a custom buffer location the existing scratch file will be moved from `%CUSTOM_DIR%/buffer.txt` to `%CUSTOM_DIR%/scratch.txt`.
 
 ### Other changes
 
 - The file format for the buffer files has been updated to include some JSON metadata at the top of the file. 
 - The cursor(s) location is saved between sessions.
+- Improvements when using a file syncing service (e.g. Dropbox, OneDrive) to sync the note library between machines.
 - The setting for changing the color theme is now located in the program settings, instead of in the status bar.
 
 ## 1.8.0
