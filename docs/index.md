@@ -114,7 +114,7 @@ The notes library is a directory (with sub dirs) on the disk with a `.txt` file 
 
 You can change the path of the notes library in the settings. Heynote expects reasonably fast disk access to the notes library, so it's not recommended to use a network drive, though file syncing services like Dropbox, OneDrive, etc. should work (see below).
 
-## Synchronizing the notes library
+### Synchronizing the notes library
 
 Heynote is built to support synchronizing the notes library (or buffer file in the case of Heynote 1.x) through file-syncing services like Dropbox, OneDrive, etc. However, note that the synchronization logic is quite simple, so editing the same note on two different machines at the same time might lead to conflicts and unexpected results.
 
