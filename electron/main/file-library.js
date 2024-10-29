@@ -41,7 +41,8 @@ async function readNoteMetadata(filePath) {
 
 
 export class FileLibrary {
-    constructor(basePath) {
+    constructor(basePath, win) {
+        this.win = win
         basePath = untildify(basePath)
         if (jetpack.exists(basePath) !== "dir") {
             throw new Error(`Path directory does not exist: ${basePath}`)
@@ -52,6 +53,7 @@ export class FileLibrary {
         this.watcher = null;
         this.contentSaved = false
         this.onChangeCallback = null
+        this._onWindowFocus = null
 
         // create scratch.txt if it doesn't exist
         if (!this.jetpack.exists(SCRATCH_FILE_NAME)) {
@@ -69,7 +71,7 @@ export class FileLibrary {
         }
         const fullPath = fs.realpathSync(join(this.basePath, path))
         this.files[path] = new NoteBuffer({fullPath, library:this})
-        return await this.files[path].read()
+        return await this.files[path].load()
     }
 
     async save(path, content) {
@@ -132,7 +134,7 @@ export class FileLibrary {
          return directories
     }
 
-    setupWatcher(win) {
+    setupWatcher() {
         if (!this.watcher) {
             this.watcher = fs.watch(
                 this.basePath, 
@@ -143,35 +145,28 @@ export class FileLibrary {
                 },
                 async (eventType, changedPath) => {
                     //console.log("File changed", eventType, changedPath)
-                    //if (changedPath.toLowerCase().endsWith(".txt")) {
-                    //    console.log("txt", this.notes)
-                    //    if (await this.exists(changedPath)) {
-                    //        console.log("file exists!")
-                    //        const newMetadata = await readNoteMetadata(join(this.basePath, changedPath))
-                    //        if (!(changedPath in this.notes) || newMetadata.name !== this.notes[changedPath].name) {
-                    //            this.notes[changedPath] = newMetadata
-                    //            win.webContents.send("buffer:noteMetadataChanged", changedPath, newMetadata)
-                    //            console.log("metadata changed")
-                    //        } else {
-                    //            console.log("no metadata change")
-                    //        }
-                    //    } else if (changedPath in this.notes) {
-                    //        console.log("note removed", changedPath)
-                    //        delete this.notes[changedPath]
-                    //        win.webContents.send("buffer:noteRemoved", changedPath)
-                    //    }
-                    //}
                     for (const [path, buffer] of Object.entries(this.files)) {
                         if (changedPath === basename(path)) {
-                            const content = await buffer.read()
-                            // if the file was removed (e.g. during a atomic save) the content will be undefined
-                            if (content !== undefined && buffer._lastSavedContent !== content) {
-                                win.webContents.send("buffer:change", path, content)
+                            const content = await buffer.loadIfChanged()
+                            if (content !== null) {
+                                this.win.webContents.send("buffer:change", path, content)
                             }
                         }
                     }
                 }
             )
+            
+            // fs.watch() is unreliable in some cases, e.g. OneDrive on Windows. Therefor we'll load the open buffer files 
+            // and check for changes when the window gets focus.
+            this._onWindowFocus = async (event) => {
+                for (const [path, buffer] of Object.entries(this.files)) {
+                    const content = await buffer.loadIfChanged()
+                    if (content !== null) {
+                        this.win.webContents.send("buffer:change", path, content)
+                    }
+                }
+            }
+            this.win.on("focus", this._onWindowFocus)
         }
     }
 
@@ -193,6 +188,10 @@ export class FileLibrary {
             this.watcher.close()
             this.watcher = null
         }
+        if (this._onWindowFocus) {
+            this.win.off("focus", this._onWindowFocus)
+            this._onWindowFocus = null
+        }
     }
 }
 
@@ -201,7 +200,7 @@ export class FileLibrary {
 export class NoteBuffer {
     constructor({fullPath, library}) {
         this.fullPath = fullPath
-        this._lastSavedContent = null
+        this._lastKnownContent = null
         this.library = library
     }
 
@@ -209,8 +208,33 @@ export class NoteBuffer {
         return await this.library.jetpack.read(this.fullPath, 'utf8')
     }
 
+    /**
+     * load() assumes that the actual note buffer is actually updated with the new content, otherwise 
+     * _lastKnownContent will be out of sync. If you just want to read the content, use read() instead.
+     */
+    async load() {
+        const content = await this.read()
+        this._lastKnownContent = content
+        return content
+    }
+
+    /**
+     * loadIfChanged() will only return the content if it has changed since the last time it was loaded.
+     * If content is returned, the note buffer must be updated with the new content in order to keep the
+     * _lastKnownContent in sync.
+     */
+    async loadIfChanged() {
+        const content = await this.read()
+        // if the file was removed (e.g. during an atomic save) the content will be undefined
+        if (content !== undefined && this._lastKnownContent !== content) {
+            this._lastKnownContent = content
+            return content
+        }
+        return null
+    }
+
     async save(content) {
-        this._lastSavedContent = content
+        this._lastKnownContent = content
         const saveResult = await this.library.jetpack.write(this.fullPath, content, {
             atomic: true,
             mode: '600',
@@ -227,7 +251,7 @@ export function setCurrentFileLibrary(lib) {
     library = lib
 }
 
-export function setupFileLibraryEventHandlers(win) {
+export function setupFileLibraryEventHandlers() {
     ipcMain.handle('buffer:load', async (event, path) => {
         //console.log("buffer:load", path)
         return await library.load(path)
