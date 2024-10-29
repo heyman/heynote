@@ -343,11 +343,11 @@ export class HeynoteEditor {
     }
 
     hide() {
-        console.log("hiding element", this.view.dom)
+        //console.log("hiding element", this.view.dom)
         this.view.dom.style.setProperty("display", "none", "important")
     }
     show() {
-        console.log("showing element", this.view.dom)
+        //console.log("showing element", this.view.dom)
         this.view.dom.style.setProperty("display", "")
         triggerCursorChange(this.view)
     }
