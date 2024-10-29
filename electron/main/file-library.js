@@ -125,6 +125,9 @@ export class FileLibrary {
         return notes
     }
 
+    /**
+     * @returns {Array<string>} List of path to all directories, but not the root directory.
+     */
     async getDirectoryList() {
          const directories = await this.jetpack.findAsync("", {
             files: false,
