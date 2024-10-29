@@ -169,18 +169,18 @@
             ...mapActions(useEditorCacheStore, ["getEditor", "addEditor", "eachEditor"]),
 
             loadBuffer(path) {
-                console.log("loadBuffer", path)
+                //console.log("loadBuffer", path)
                 if (this.editor) {
                     this.editor.hide()
                 }
 
                 let cachedEditor = this.getEditor(path)
                 if (cachedEditor) {
-                    console.log("show cached editor")
+                    //console.log("show cached editor")
                     this.editor = cachedEditor
                     toRaw(this.editor).show()
                 } else {
-                    console.log("create new editor")
+                    //console.log("create new editor")
                     try {
                         this.editor = new HeynoteEditor({
                             element: this.$refs.editor,
