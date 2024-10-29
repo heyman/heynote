@@ -1,5 +1,6 @@
 import { Exception } from "sass";
 import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "../electron/constants";
+import { NoteFormat } from "../src/common/note-format";
 
 const mediaMatch = window.matchMedia('(prefers-color-scheme: dark)')
 let themeCallback = null
@@ -93,6 +94,33 @@ function getNoteMetadata(content) {
         return {}
     }
 }
+
+// Migrate single buffer (Heynote pre 2.0) in localStorage to notes library
+// At some point we can remove this migration code
+function migrateBufferFileToLibrary() {
+    if (!("buffer" in localStorage)) {
+        // nothing to migrate
+        return
+    }
+    if (Object.keys(localStorage).filter(key => key.startsWith(NOTE_KEY_PREFIX)).length > 0) {
+        // already migrated
+        return
+    }
+
+    console.log("Migrating single buffer to notes library")
+
+    let content = localStorage.getItem("buffer")
+    const metadata = getNoteMetadata(content)
+    if (!metadata || !metadata.name) {
+        console.log("Adding metadata to Scratch note")
+        const note = NoteFormat.load(content)
+        note.metadata.name = "Scratch"
+        content = note.serialize()
+    }
+    localStorage.setItem("heynote-library__scratch.txt", content)
+    localStorage.removeItem("buffer")
+}
+migrateBufferFileToLibrary()
 
 
 const Heynote = {
