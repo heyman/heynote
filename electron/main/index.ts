@@ -316,7 +316,7 @@ function registerAlwaysOnTop() {
 
 app.whenReady().then(createWindow).then(async () => {
     initFileLibrary(win).then(() => {
-        setupFileLibraryEventHandlers(win)
+        setupFileLibraryEventHandlers()
     })
     initializeAutoUpdate(win)
     registerGlobalHotkey()
@@ -375,8 +375,8 @@ async function initFileLibrary(win) {
     }
 
     try {
-        fileLibrary = new FileLibrary(libraryPath)
-        fileLibrary.setupWatcher(win)
+        fileLibrary = new FileLibrary(libraryPath, win)
+        fileLibrary.setupWatcher()
     } catch (error) {
         initErrors.push(`Error: ${error.message}`)
     }
