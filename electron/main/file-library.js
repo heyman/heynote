@@ -67,7 +67,7 @@ export class FileLibrary {
 
     async load(path) {
         if (this.files[path]) {
-            return this.files[path].read()
+            return this.files[path].load()
         }
         const fullPath = fs.realpathSync(join(this.basePath, path))
         this.files[path] = new NoteBuffer({fullPath, library:this})
