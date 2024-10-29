@@ -98,9 +98,21 @@
             },
 
             onKeydown(event) {
+                if (event.key === "Escape") {
+                    console.log("escape")
+                    event.preventDefault()
+                    if (this.actionButton !== 0) {
+                        this.hideActionButtons()
+                    } else {
+                        this.$emit("close")
+                    }
+                    return
+                }
+
                 if (this.filteredItems.length === 0) {
                     return
                 }
+
                 const path = this.filteredItems[this.selected].path
                 if (event.key === "ArrowDown") {
                     if (this.selected === this.filteredItems.length - 1) {
@@ -144,13 +156,6 @@
                         this.deleteConfirmNote(path)
                     } else {
                         this.selectItem(path)
-                    }
-                } else if (event.key === "Escape") {
-                    event.preventDefault()
-                    if (this.actionButton !== 0) {
-                        this.hideActionButtons()
-                    } else {
-                        this.$emit("close")
                     }
                 }
             },
