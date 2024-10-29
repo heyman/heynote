@@ -120,7 +120,7 @@ Heynote is built to support synchronizing the notes library (or buffer file in t
 
 When using a file synching service that support "offloading" of files in the cloud (removing them from the disk), it's recommended to mark the notes library as "always available offline".
 
-As always, backups things that are important.
+As always, backup things that are important.
 
 
 ## Linux
@@ -161,3 +161,4 @@ registerShortcut('toggleHeynote', 'Toggle Heynote', 'Ctrl+Shift+H', toggleHeynot
 See the [KWin scripting tutorial](https://develop.kde.org/docs/plasma/kwin/) for instructions on how to install the script.
 
 Remember to enable the script in the KDE System Settings. It may also be necessary to go into the KDE System Settings and bind the "Toggle Heynote" key manually.
+
