@@ -4,6 +4,10 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ## 2.0.0-beta (not yet released)
 
+### IMPORTANT (breaking change)
+
+The default path of the scratch file has changed. If you are running a previous version of Heynote with the buffer file synchronized across multiple machines using a file synching service such as Dropbox or OneDrive, you should make sure to upgrade all machines to Heynote 2.0 at the same time (closing Heynote before) in order for the file to stay synched, since the file path for the buffer file has changed. See below for more info.
+
 ### Support for multiple note buffers. 
 
 Apart from the default Scratch note, you can now create and switch between multiple notes. By pressing `Ctrl/Cmd+S` you can create a new note from the current block (the current block will be moved into the new note). New notes are saved to the note library which is basically a directory (with sub dirs) on the disk with a `.txt` file for each note. You switch between Notes by pressing `Ctrl/Cmd+P`.
