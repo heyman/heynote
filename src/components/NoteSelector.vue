@@ -217,6 +217,7 @@
                 @keydown="onKeydown"
                 @input="onInput"
                 v-model="filter"
+                autocomplete="off"
             />
             <ul class="items">
                 <li

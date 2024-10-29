@@ -160,6 +160,8 @@
                     ref="nameInput"
                     @keydown="onInputKeydown"
                     @input="errors.name = false"
+                    autocomplete="off"
+                    data-1p-ignore
                 />
 
                 <label for="folder-select">Create in</label>
