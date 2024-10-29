@@ -23,6 +23,7 @@ import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
 import { NoteFormat } from "../common/note-format.js"
 import { useNotesStore } from "../stores/notes-store.js";
+import { useErrorStore } from "../stores/error-store.js";
 
 
 function getKeymapExtensions(editor, keymap) {
@@ -66,6 +67,7 @@ export class HeynoteEditor {
         this.setDefaultBlockLanguage(defaultBlockToken, defaultBlockAutoDetect)
         this.contentLoaded = false
         this.notesStore = useNotesStore()
+        this.errorStore = useErrorStore()
         this.name = ""
         
 
@@ -178,6 +180,7 @@ export class HeynoteEditor {
             this.setReadOnly(false)
         } catch (e) {
             this.setReadOnly(true)
+            this.errorStore.addError(`Failed to load note: ${e.message}`)
             throw new Error(`Failed to load note: ${e.message}`)
         }
         this.name = this.note.metadata?.name || this.path
