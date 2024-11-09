@@ -114,9 +114,17 @@ async function createWindow() {
         }
     }
 
+    const pngSystems: NodeJS.Platform[] = ["linux", "freebsd", "openbsd", "netbsd"]
+    const icon = join(
+        process.env.PUBLIC,
+        pngSystems.includes(process.platform)
+            ? "favicon-linux.png"
+            : "favicon.ico",
+    )
+
     win = new BrowserWindow(Object.assign({
         title: 'heynote',
-        icon: join(process.env.PUBLIC, 'favicon.ico'),
+        icon,
         backgroundColor: nativeTheme.shouldUseDarkColors ? '#262B37' : '#FFFFFF',
         //titleBarStyle: 'customButtonsOnHover',
         autoHideMenuBar: true,
