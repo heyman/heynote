@@ -54,7 +54,6 @@ test("create new buffer from block", async ({page}) => {
     const defaultBuffer = NoteFormat.load(await heynotePage.getStoredBuffer("scratch.txt"))
     const newBuffer = NoteFormat.load(await heynotePage.getStoredBuffer("my-new-buffer.txt"))
 
-
     expect(defaultBuffer.content).toBe(`
 ∞∞∞text
 Block A
@@ -66,4 +65,33 @@ Block B`)
 Block C
 New buffer content`)
 
+})
+
+
+test("create new empty note", async ({page}) => {
+    await page.locator("body").press("Enter")
+    await page.locator("body").press("Backspace")
+    await page.locator("body").press(heynotePage.agnosticKey("Mod+N"))
+    await page.locator("body").pressSequentially("New Empty Buffer")
+    await page.locator("body").press("Enter")
+    await page.waitForTimeout(AUTO_SAVE_INTERVAL + 50);
+
+    const buffers = Object.keys(await heynotePage.getStoredBufferList())
+    expect(buffers).toContain("scratch.txt")
+    expect(buffers).toContain("new-empty-buffer.txt")
+
+    const defaultBuffer = NoteFormat.load(await heynotePage.getStoredBuffer("scratch.txt"))
+    const newBuffer = NoteFormat.load(await heynotePage.getStoredBuffer("new-empty-buffer.txt"))
+
+    expect(defaultBuffer.content).toBe(`
+∞∞∞text
+Block A
+∞∞∞text
+Block B
+∞∞∞text
+Block C`)
+
+    expect(newBuffer.content).toBe(`
+∞∞∞text-a
+`)
 })
