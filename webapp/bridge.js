@@ -2,6 +2,8 @@ import { Exception } from "sass";
 import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "../electron/constants";
 import { NoteFormat } from "../src/common/note-format";
 
+const NOTE_KEY_PREFIX = "heynote-library__"
+
 const mediaMatch = window.matchMedia('(prefers-color-scheme: dark)')
 let themeCallback = null
 mediaMatch.addEventListener("change", async (event) => {
@@ -74,9 +76,6 @@ let initialSettings = {
 if (settingsData !== null) {
     initialSettings = Object.assign(initialSettings, JSON.parse(settingsData))
 }
-
-
-const NOTE_KEY_PREFIX = "heynote-library__"
 
 function noteKey(path) {
     return NOTE_KEY_PREFIX + path
@@ -161,7 +160,7 @@ const Heynote = {
             return localStorage.getItem(noteKey(path)) !== null
         },
 
-        async getList(path) {
+        async getList() {
             //return {"scratch.txt": {name:"Scratch"}}
             const notes = {}
             for (let [key, content] of Object.entries(localStorage)) {
