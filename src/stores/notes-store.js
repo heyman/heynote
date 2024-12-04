@@ -18,6 +18,7 @@ export const useNotesStore = defineStore("notes", {
         currentCursorLine: null,
         currentSelectionSize: null,
         libraryId: 0,
+        createNoteMode: "new",
 
         showNoteSelector: false,
         showLanguageSelector: false,
@@ -51,8 +52,10 @@ export const useNotesStore = defineStore("notes", {
             this.closeDialog()
             this.showNoteSelector = true
         },
-        openCreateNote() {
+        openCreateNote(createMode) {
+            createMode = createMode || "new"
             this.closeDialog()
+            this.createNoteMode = createMode
             this.showCreateNote = true
         },
         closeDialog() {
@@ -75,10 +78,18 @@ export const useNotesStore = defineStore("notes", {
         },
 
         /**
-         * Create a new note file at `path` with name `name` from the current block of the current open editor
+         * Create a new note file at `path` with name `name` from the current block of the current open editor, 
+         * and switch to it
          */
         async createNewNoteFromActiveBlock(path, name) {
             await toRaw(this.currentEditor).createNewNoteFromActiveBlock(path, name)
+        },
+
+        /**
+         * Create a new empty note file at `path` with name `name`, and switch to it
+         */
+        async createNewNote(path, name) {
+            await toRaw(this.currentEditor).createNewNote(path, name)
         },
 
         /**

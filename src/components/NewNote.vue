@@ -67,6 +67,7 @@
             ...mapState(useNotesStore, [
                 "notes",
                 "currentNotePath",
+                "createNoteMode",
             ]),
 
             currentNoteDirectory() {
@@ -78,12 +79,17 @@
                     "name-input": true,
                     "error": this.errors.name,
                 }
-            }
+            },
+
+            dialogTitle() {
+                return this.createNoteMode === "currentBlock" ? "New Note from Block" : "New Note"
+            },
         },
 
         methods: {
             ...mapActions(useNotesStore, [
                 "updateNotes",
+                "createNewNote",
                 "createNewNoteFromActiveBlock",
             ]),
 
@@ -141,7 +147,14 @@
                     return
                 }
                 console.log("Creating note", path)
-                this.createNewNoteFromActiveBlock(path, this.name)
+                if (this.createNoteMode === "currentBlock") {
+                    this.createNewNoteFromActiveBlock(path, this.name)
+                } else if (this.createNoteMode === "new") {
+                    this.createNewNote(path, this.name)
+                } else {
+                    throw new Error("Unknown createNoteMode: " + this.createNoteMode)
+                }
+
                 this.$emit("close")
                 //this.$emit("create", this.$refs.input.value)
             },
@@ -153,7 +166,7 @@
     <div class="fader" @keydown="onKeydown" tabindex="-1">
         <form class="new-note" tabindex="-1" @focusout="onFocusOut" ref="container" @submit.prevent="submit">
             <div class="container">
-                <h1>New Note from Block</h1>
+                <h1>{{ dialogTitle }}</h1>
                 <input 
                     placeholder="Name"
                     type="text" 

@@ -273,8 +273,20 @@ export class HeynoteEditor {
         this.notesStore.openNoteSelector()
     }
 
-    openCreateNote() {
-        this.notesStore.openCreateNote(this)
+    openCreateNote(createMode) {
+        this.notesStore.openCreateNote(createMode)
+    }
+
+    async createNewNote(path, name) {
+        const data = getBlockDelimiter(this.defaultBlockToken, this.defaultBlockAutoDetect)
+        await this.notesStore.saveNewNote(path, name, data)
+
+        // by using requestAnimationFrame we avoid a race condition where rendering the block backgrounds
+        // would fail if we immediately opened the new note (since the block UI wouldn't have time to update 
+        // after the block was deleted)
+        requestAnimationFrame(() => {
+            this.notesStore.openNote(path)
+        })
     }
 
     async createNewNoteFromActiveBlock(path, name) {
