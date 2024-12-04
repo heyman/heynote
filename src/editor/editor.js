@@ -22,6 +22,7 @@ import { autoSaveContent } from "./save.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
 import { NoteFormat } from "../common/note-format.js"
+import { AUTO_SAVE_INTERVAL } from "../common/constants.js"
 import { useNotesStore } from "../stores/notes-store.js";
 import { useErrorStore } from "../stores/error-store.js";
 
@@ -105,7 +106,7 @@ export class HeynoteEditor {
                     return {class: view.state.facet(EditorView.darkTheme) ? "dark-theme" : "light-theme"}
                 }),
 
-                autoSaveContent(this, 2000),
+                autoSaveContent(this, AUTO_SAVE_INTERVAL),
 
                 todoCheckboxPlugin,
                 markdown(),

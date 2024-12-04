@@ -56,4 +56,16 @@ export class HeynotePage {
     async getStoredSettings() {
         return await this.page.evaluate(() => JSON.parse(window.localStorage.getItem("settings")))
     }
+
+    async getStoredBufferList() {
+        return await this.page.evaluate(() => window.heynote.buffer.getList())
+    }
+
+    async getStoredBuffer(path) {
+        return await this.page.evaluate((path) => window.heynote.buffer.load(path), path)
+    }
+
+    agnosticKey(key) {
+        return key.replace("Mod", this.isMac ? "Meta" : "Control")
+    }
 }
