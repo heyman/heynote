@@ -92,6 +92,8 @@
                     this.$emit("close")
                     event.preventDefault()
                 } if (event.key === "Enter") {
+                    // without preventDefault, the editor will receive a Enter keydown event on webapp (not in Electron)
+                    event.preventDefault()
                     this.submit()
                 }
             },
