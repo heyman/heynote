@@ -24,7 +24,16 @@
         },
 
         async mounted() {
-            this.$refs.nameInput.focus()
+            if (!!this.createNoteParams.name) {
+                this.name = this.createNoteParams.name
+                this.$refs.nameInput.focus()
+                this.$nextTick(() => {
+                    this.$refs.nameInput.select()
+                })
+            } else {
+                this.$refs.nameInput.focus()
+            }
+
             this.updateNotes()
 
             // build directory tree
@@ -67,7 +76,7 @@
             ...mapState(useNotesStore, [
                 "notes",
                 "currentNotePath",
-                "createNoteMode",
+                "createNoteParams",
             ]),
 
             currentNoteDirectory() {
@@ -82,7 +91,7 @@
             },
 
             dialogTitle() {
-                return this.createNoteMode === "currentBlock" ? "New Note from Block" : "New Note"
+                return this.createNoteParams.mode === "currentBlock" ? "New Note from Block" : "New Note"
             },
         },
 
@@ -147,12 +156,12 @@
                     return
                 }
                 console.log("Creating note", path)
-                if (this.createNoteMode === "currentBlock") {
+                if (this.createNoteParams.mode === "currentBlock") {
                     this.createNewNoteFromActiveBlock(path, this.name)
-                } else if (this.createNoteMode === "new") {
+                } else if (this.createNoteParams.mode === "new") {
                     this.createNewNote(path, this.name)
                 } else {
-                    throw new Error("Unknown createNoteMode: " + this.createNoteMode)
+                    throw new Error("Unknown createNote Mode: " + this.createNoteParams.mode)
                 }
 
                 this.$emit("close")
