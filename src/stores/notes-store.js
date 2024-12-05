@@ -18,7 +18,10 @@ export const useNotesStore = defineStore("notes", {
         currentCursorLine: null,
         currentSelectionSize: null,
         libraryId: 0,
-        createNoteMode: "new",
+        createNoteParams: {
+            mode: "new",
+            nameSuggestion: ""
+        },
 
         showNoteSelector: false,
         showLanguageSelector: false,
@@ -52,10 +55,13 @@ export const useNotesStore = defineStore("notes", {
             this.closeDialog()
             this.showNoteSelector = true
         },
-        openCreateNote(createMode) {
+        openCreateNote(createMode, nameSuggestion) {
             createMode = createMode || "new"
             this.closeDialog()
-            this.createNoteMode = createMode
+            this.createNoteParams = {
+                mode: createMode || "new",
+                name: nameSuggestion || ""
+            }
             this.showCreateNote = true
         },
         closeDialog() {

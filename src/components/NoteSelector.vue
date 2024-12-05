@@ -60,13 +60,15 @@
             },
 
             filteredItems() {
+                let items
                 if (this.filter === "") {
-                    return this.orderedItems
+                    items = this.orderedItems
+                    
                 } else {
                     const searchResults = fuzzysort.go(this.filter, this.items, {
                         keys: ["name", "folder"],
                     })
-                    return searchResults.map((result) => {
+                    items = searchResults.map((result) => {
                         const obj = {...result.obj}
                         const nameHighlight = result[0].highlight("<b>", "</b>")
                         const folderHighlight = result[1].highlight("<b>", "</b>")
@@ -75,6 +77,15 @@
                         return obj
                     })
                 }
+                
+                const newNoteItem = {
+                    name: "Create new…", 
+                    createNew:true,
+                }
+                return [
+                    ...items,
+                    newNoteItem,
+                ]
             },
         },
 
@@ -83,6 +94,7 @@
                 "updateNotes",
                 "editNote",
                 "deleteNote",
+                "openCreateNote",
             ]),
 
             buildItems() {
@@ -99,7 +111,6 @@
 
             onKeydown(event) {
                 if (event.key === "Escape") {
-                    console.log("escape")
                     event.preventDefault()
                     if (this.actionButton !== 0) {
                         this.hideActionButtons()
@@ -112,8 +123,8 @@
                 if (this.filteredItems.length === 0) {
                     return
                 }
-
-                const path = this.filteredItems[this.selected].path
+                
+                const item = this.filteredItems[this.selected]
                 if (event.key === "ArrowDown") {
                     if (this.selected === this.filteredItems.length - 1) {
                         this.selected = 0
@@ -121,11 +132,9 @@
                         this.selected = Math.min(this.selected + 1, this.filteredItems.length - 1)
                     }
                     event.preventDefault()
-                    if (this.selected === this.filteredItems.length - 1) {
-                        this.$refs.container.scrollIntoView({block: "end"})
-                    } else {
-                        this.$refs.item[this.selected].scrollIntoView({block: "nearest"})
-                    }
+                    this.$nextTick(() => {
+                        this.$refs.container.querySelector(".selected").scrollIntoView({block: "nearest"})
+                    })
                     this.actionButton = 0
                 } else if (event.key === "ArrowUp") {
                     if (this.selected === 0) {
@@ -134,34 +143,42 @@
                         this.selected = Math.max(this.selected - 1, 0)
                     }
                     event.preventDefault()
-                    if (this.selected === 0) {
-                        this.$refs.container.scrollIntoView({block: "start"})
-                    } else {
-                        this.$refs.item[this.selected].scrollIntoView({block: "nearest"})
-                    }
+                    this.$nextTick(() => {
+                        this.$refs.container.querySelector(".selected").scrollIntoView({block: "nearest"})
+                    })
                     this.actionButton = 0
-                } else if (event.key === "ArrowRight" && path !== SCRATCH_FILE_NAME) {
+                } else if (event.key === "ArrowRight" && this.itemHasActionButtons(item)) {
                     event.preventDefault()
                     this.actionButton = Math.min(2, this.actionButton + 1)
-                } else if (event.key === "ArrowLeft" && path !== SCRATCH_FILE_NAME) {
+                } else if (event.key === "ArrowLeft" && this.itemHasActionButtons(item)) {
                     event.preventDefault()
                     this.actionButton = Math.max(0, this.actionButton - 1)
                     this.deleteConfirm = false
                 } else if (event.key === "Enter") {
                     event.preventDefault()
-                    if (this.actionButton === 1) {
-                        console.log("edit file:", path)
-                        this.editNote(path)
+                    if (item.createNew) {
+                        if (this.filteredItems.length === 1) {
+                            this.openCreateNote("new", this.filter)
+                        } else {
+                            this.openCreateNote("new", "")
+                        }
+                    } else if (this.actionButton === 1) {
+                        //console.log("edit file:", path)
+                        this.editNote(item.path)
                     } else if (this.actionButton === 2) {
-                        this.deleteConfirmNote(path)
+                        this.deleteConfirmNote(item.path)
                     } else {
-                        this.selectItem(path)
+                        this.selectItem(item.path)
                     }
                 }
             },
 
             selectItem(path) {
                 this.$emit("openNote", path)
+            },
+
+            itemHasActionButtons(item) {
+                return !item.createNew && item.path !== SCRATCH_FILE_NAME
             },
 
             onInput(event) {
@@ -178,9 +195,11 @@
             
             getItemClass(item, idx) {
                 return {
+                    "item": true,
                     "selected": idx === this.selected,
                     "action-buttons-visible": this.actionButton > 0,
                     "scratch": item.scratch,
+                    "new-note": item.createNew,
                 }
             },
 
@@ -198,7 +217,7 @@
 
             async deleteConfirmNote(path) {
                 if (this.deleteConfirm) {
-                    console.log("delete file:", path)
+                    //console.log("delete file:", path)
                     await this.deleteNote(path)
                     this.hideActionButtons()
                     this.buildItems()
@@ -214,8 +233,8 @@
 </script>
 
 <template>
-    <div class="scroller">
-        <form class="note-selector" tabindex="-1" @focusout="onFocusOut" ref="container">
+    <form class="note-selector" tabindex="-1" @focusout="onFocusOut" ref="container">
+        <div class="input-container">
             <input 
                 type="text" 
                 ref="input"
@@ -224,57 +243,55 @@
                 v-model="filter"
                 autocomplete="off"
             />
-            <ul class="items">
-                <li
+        </div>
+        <div class="scroller">
+            <ul class="items" ref="itemsContainer">
+                <template 
                     v-for="item, idx in filteredItems"
                     :key="item.path"
-                    :class="getItemClass(item, idx)"
-                    @click="selectItem(item.path)"
-                    ref="item"
                 >
-                    <span class="name" v-html="item.name" />
-                    <span class="path" v-html="item.folder" />
-                    <span :class="{'action-buttons':true, 'visible':actionButton > 0 && idx === selected}">
-                        <button 
-                            v-if="actionButton > 0 && idx === selected"
-                            :class="{'selected':actionButton === 1}"
-                            @click.stop.prevent="editNote(item.path)"
-                        >Edit</button>
-                        <button 
-                            v-if="actionButton > 0 && idx === selected"
-                            :class="{'delete':true, 'selected':actionButton === 2, 'confirm':deleteConfirm}"
-                            @click.stop.prevent="deleteConfirmNote(item.path)"
-                        >
-                            <template v-if="deleteConfirm">
-                                Really Delete?
-                            </template>
-                            <template v-else>
-                                Delete
-                            </template>
-                        </button>
-                        <button
-                            class="show-actions"
-                            v-if="item.path !== SCRATCH_FILE_NAME && (actionButton === 0 || idx !== selected)"
-                            @click.stop.prevent="showActionButtons(idx)"
-                        ></button>
-                    </span>
-                </li>
+                    <li v-if="item.createNew" class="line-separator"></li>
+                    <li
+                        :class="getItemClass(item, idx)"
+                        @click="selectItem(item.path)"
+                        ref="item"
+                    >
+                        <span class="name" v-html="item.name" />
+                        <span class="path" v-html="item.folder" />
+                        <span :class="{'action-buttons':true, 'visible':actionButton > 0 && idx === selected}">
+                            <button 
+                                v-if="actionButton > 0 && idx === selected"
+                                :class="{'selected':actionButton === 1}"
+                                @click.stop.prevent="editNote(item.path)"
+                            >Edit</button>
+                            <button 
+                                v-if="actionButton > 0 && idx === selected"
+                                :class="{'delete':true, 'selected':actionButton === 2, 'confirm':deleteConfirm}"
+                                @click.stop.prevent="deleteConfirmNote(item.path)"
+                            >
+                                <template v-if="deleteConfirm">
+                                    Really Delete?
+                                </template>
+                                <template v-else>
+                                    Delete
+                                </template>
+                            </button>
+                            <button
+                                class="show-actions"
+                                v-if="itemHasActionButtons(item) && (actionButton === 0 || idx !== selected)"
+                                @click.stop.prevent="showActionButtons(idx)"
+                            ></button>
+                        </span>
+                    </li>
+                </template>
             </ul>
-        </form>
-    </div>
+        </div>
+    </form>
 </template>
 
 <style scoped lang="sass">
-    .scroller
-        //overflow: auto
-        //position: fixed
-        //top: 0
-        //left: 0
-        //bottom: 0
-        //right: 0
     .note-selector
         font-size: 13px
-        padding: 10px
         //background: #48b57e
         background: #efefef
         position: absolute
@@ -294,37 +311,52 @@
         +webapp-mobile
             max-width: calc(100% - 80px)
 
-        input
-            background: #fff
-            padding: 4px 5px
-            border: 1px solid #ccc
-            box-sizing: border-box
-            border-radius: 2px
-            width: 100%
-            margin-bottom: 10px
-            &:focus
-                outline: none
-                border: 1px solid #fff
-                outline: 2px solid #48b57e
-            +dark-mode
-                background: #3b3b3b
-                color: rgba(255,255,255, 0.9)
-                border: 1px solid #5a5a5a
+        .input-container
+            padding: 10px
+            input
+                background: #fff
+                padding: 4px 5px
+                border: 1px solid #ccc
+                box-sizing: border-box
+                border-radius: 2px
+                width: 100%
                 &:focus
-                    border: 1px solid #3b3b3b
-            +webapp-mobile
-                font-size: 16px
-                max-width: 100%
+                    outline: none
+                    border: 1px solid #fff
+                    outline: 2px solid #48b57e
+                +dark-mode
+                    background: #3b3b3b
+                    color: rgba(255,255,255, 0.9)
+                    border: 1px solid #5a5a5a
+                    &:focus
+                        border: 1px solid #3b3b3b
+                +webapp-mobile
+                    font-size: 16px
+                    max-width: 100%
+        
+        .scroller
+            overflow-y: auto
+            padding: 0 10px 5px 10px
         
         .items
-            overflow-y: auto
-            > li
+            > li.line-separator
+                height: 1px
+                background: rgba(0,0,0, 0.05)
+                margin-left: -10px
+                margin-right: -10px
+                margin-top: 3px
+                margin-bottom: 3px
+                +dark-mode
+                    background: rgba(255,255,255, 0.1)
+            > li.item
                 position: relative
                 border-radius: 3px
                 padding: 3px 12px
                 line-height: 18px
                 display: flex
                 align-items: center
+                scroll-margin-top: 6px
+                scroll-margin-bottom: 6px
                 &:hover
                     background: #e2e2e2
                     .action-buttons .show-actions
@@ -357,6 +389,8 @@
                             color: rgba(255,255,255, 0.65)
                 &.scratch
                     font-weight: 600
+                &.new-note
+                    font-size: 12px
                 .name
                     margin-right: 12px
                     flex-shrink: 0
