@@ -2,7 +2,7 @@
     import slugify from '@sindresorhus/slugify';
 
     import { mapState, mapActions } from 'pinia'
-    import { useNotesStore } from "../stores/notes-store"
+    import { useHeynoteStore } from "../stores/heynote-store"
 
     import FolderSelector from './folder-selector/FolderSelector.vue'
 
@@ -24,8 +24,8 @@
         },
 
         async mounted() {
-            if (!!this.createNoteParams.name) {
-                this.name = this.createNoteParams.name
+            if (!!this.createBufferParams.name) {
+                this.name = this.createBufferParams.name
                 this.$refs.nameInput.focus()
                 this.$nextTick(() => {
                     this.$refs.nameInput.select()
@@ -34,7 +34,7 @@
                 this.$refs.nameInput.focus()
             }
 
-            this.updateNotes()
+            this.updateBuffers()
 
             // build directory tree
             const directories = await window.heynote.buffer.getDirectoryList()
@@ -61,7 +61,7 @@
                             name: part,
                             children: [],
                             path: currentPath,
-                            open: this.currentNotePath.startsWith(currentPath),
+                            open: this.currentBufferPath.startsWith(currentPath),
                         }
                         currentLevel.children.push(node)
                         currentLevel = node
@@ -73,14 +73,14 @@
         },
 
         computed: {
-            ...mapState(useNotesStore, [
-                "notes",
-                "currentNotePath",
-                "createNoteParams",
+            ...mapState(useHeynoteStore, [
+                "buffers",
+                "currentBufferPath",
+                "createBufferParams",
             ]),
 
             currentNoteDirectory() {
-                return this.currentNotePath.split("/").slice(0, -1).join("/")
+                return this.currentBufferPath.split("/").slice(0, -1).join("/")
             },
 
             nameInputClass() {
@@ -91,15 +91,15 @@
             },
 
             dialogTitle() {
-                return this.createNoteParams.mode === "currentBlock" ? "New Note from Block" : "New Note"
+                return this.createBufferParams.mode === "currentBlock" ? "New Note from Block" : "New Note"
             },
         },
 
         methods: {
-            ...mapActions(useNotesStore, [
-                "updateNotes",
-                "createNewNote",
-                "createNewNoteFromActiveBlock",
+            ...mapActions(useHeynoteStore, [
+                "updateBuffers",
+                "createNewBuffer",
+                "createNewBufferFromActiveBlock",
             ]),
 
             onKeydown(event) {
@@ -145,23 +145,23 @@
                 for (let i=0; i<1000; i++) {
                     let filename = slug + ".txt"
                     path = parentPathPrefix + filename
-                    if (!this.notes[path]) {
+                    if (!this.buffers[path]) {
                         break
                     }
                     slug = slugify(this.name + "-" + i)
                 }
-                if (this.notes[path]) {
+                if (this.buffers[path]) {
                     console.error("Failed to create note, path already exists", path)
                     this.errors.name = true
                     return
                 }
-                console.log("Creating note", path)
-                if (this.createNoteParams.mode === "currentBlock") {
-                    this.createNewNoteFromActiveBlock(path, this.name)
-                } else if (this.createNoteParams.mode === "new") {
-                    this.createNewNote(path, this.name)
+                //console.log("Creating note", path, this.createBufferParams)
+                if (this.createBufferParams.mode === "currentBlock") {
+                    this.createNewBufferFromActiveBlock(path, this.name)
+                } else if (this.createBufferParams.mode === "new") {
+                    this.createNewBuffer(path, this.name)
                 } else {
-                    throw new Error("Unknown createNote Mode: " + this.createNoteParams.mode)
+                    throw new Error("Unknown createNote Mode: " + this.createBufferParams.mode)
                 }
 
                 this.$emit("close")

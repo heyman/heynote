@@ -4,7 +4,7 @@ import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet
 import { syntaxTree, ensureSyntaxTree, syntaxTreeAvailable } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
-import { useNotesStore } from "../../stores/notes-store.js"
+import { useHeynoteStore } from "../../stores/heynote-store.js"
 import { heynoteEvent, LANGUAGE_CHANGE, CURSOR_CHANGE } from "../annotation.js";
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
@@ -414,7 +414,7 @@ export function triggerCursorChange({state, dispatch}) {
 }
 
 const emitCursorChange = (editor) => {
-    const notesStore = useNotesStore()
+    const notesStore = useHeynoteStore()
     return ViewPlugin.fromClass(
         class {
             update(update) {
@@ -434,7 +434,7 @@ const emitCursorChange = (editor) => {
                         notesStore.currentSelectionSize = selectionSize
                         notesStore.currentLanguage = block.language.name
                         notesStore.currentLanguageAuto = block.language.auto
-                        notesStore.currentNoteName = editor.name
+                        notesStore.currentBufferName = editor.name
                     }
                 }
             }

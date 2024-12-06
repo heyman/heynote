@@ -5,97 +5,97 @@ import { useEditorCacheStore } from "./editor-cache"
 import { SCRATCH_FILE_NAME } from "../common/constants"
 
 
-export const useNotesStore = defineStore("notes", {
+export const useHeynoteStore = defineStore("heynote", {
     state: () => ({
-        notes: {},
-        recentNotePaths: [SCRATCH_FILE_NAME],
+        buffers: {},
+        recentBufferPaths: [SCRATCH_FILE_NAME],
 
         currentEditor: null,
-        currentNotePath: SCRATCH_FILE_NAME,
-        currentNoteName: null,
+        currentBufferPath: SCRATCH_FILE_NAME,
+        currentBufferName: null,
         currentLanguage: null,
         currentLanguageAuto: null,
         currentCursorLine: null,
         currentSelectionSize: null,
         libraryId: 0,
-        createNoteParams: {
+        createBufferParams: {
             mode: "new",
             nameSuggestion: ""
         },
 
-        showNoteSelector: false,
+        showBufferSelector: false,
         showLanguageSelector: false,
-        showCreateNote: false,
-        showEditNote: false,
+        showCreateBuffer: false,
+        showEditBuffer: false,
     }),
 
     actions: {
-        async updateNotes() {
-            this.setNotes(await window.heynote.buffer.getList())
+        async updateBuffers() {
+            this.setBuffers(await window.heynote.buffer.getList())
         },
 
-        setNotes(notes) {
-            this.notes = notes
+        setBuffers(buffers) {
+            this.buffers = buffers
         },
 
-        openNote(path) {
+        openBuffer(path) {
             this.closeDialog()
-            this.currentNotePath = path
+            this.currentBufferPath = path
 
-            const recent = this.recentNotePaths.filter((p) => p !== path)
+            const recent = this.recentBufferPaths.filter((p) => p !== path)
             recent.unshift(path)
-            this.recentNotePaths = recent.slice(0, 100)
+            this.recentBufferPaths = recent.slice(0, 100)
         },
 
         openLanguageSelector() {
             this.closeDialog()
             this.showLanguageSelector = true
         },
-        openNoteSelector() {
+        openBufferSelector() {
             this.closeDialog()
-            this.showNoteSelector = true
+            this.showBufferSelector = true
         },
-        openCreateNote(createMode, nameSuggestion) {
+        openCreateBuffer(createMode, nameSuggestion) {
             createMode = createMode || "new"
             this.closeDialog()
-            this.createNoteParams = {
+            this.createBufferParams = {
                 mode: createMode || "new",
                 name: nameSuggestion || ""
             }
-            this.showCreateNote = true
+            this.showCreateBuffer = true
         },
         closeDialog() {
-            this.showCreateNote = false
-            this.showNoteSelector = false
+            this.showCreateBuffer = false
+            this.showBufferSelector = false
             this.showLanguageSelector = false
-            this.showEditNote = false
+            this.showEditBuffer = false
         },
 
-        closeNoteSelector() {
-            this.showNoteSelector = false
+        closeBufferSelector() {
+            this.showBufferSelector = false
         },
 
-        editNote(path) {
-            if (this.currentNotePath !== path) {
-                this.openNote(path)
+        editBufferMetadata(path) {
+            if (this.currentBufferPath !== path) {
+                this.openBuffer(path)
             }
             this.closeDialog()
-            this.showEditNote = true
+            this.showEditBuffer = true
         },
 
         /**
          * Create a new note file at `path` with name `name` from the current block of the current open editor, 
          * and switch to it
          */
-        async createNewNoteFromActiveBlock(path, name) {
-            await toRaw(this.currentEditor).createNewNoteFromActiveBlock(path, name)
+        async createNewBufferFromActiveBlock(path, name) {
+            await toRaw(this.currentEditor).createNewBufferFromActiveBlock(path, name)
         },
 
         /**
          * Create a new empty note file at `path` with name `name`, and switch to it
          */
-        async createNewNote(path, name) {
-            await toRaw(this.currentEditor).createNewNote(path, name)
+        async createNewBuffer(path, name) {
+            await toRaw(this.currentEditor).createNewBuffer(path, name)
         },
 
         /**
@@ -104,23 +104,20 @@ export const useNotesStore = defineStore("notes", {
          * @param {*} name Name of the note
          * @param {*} content Contents (without metadata)
          */
-        async saveNewNote(path, name, content) {
-            //window.heynote.buffer.save(path, content)
-            //this.updateNotes()
-
-            if (this.notes[path]) {
+        async saveNewBuffer(path, name, content) {
+            if (this.buffers[path]) {
                 throw new Error(`Note already exists: ${path}`)
             }
             
             const note = new NoteFormat()
             note.content = content
             note.metadata.name = name
-            console.log("saving", path, note.serialize())
+            //console.log("saving", path, note.serialize())
             await window.heynote.buffer.create(path, note.serialize())
-            this.updateNotes()
+            this.updateBuffers()
         },
 
-        async updateNoteMetadata(path, name, newPath) {
+        async updateBufferMetadata(path, name, newPath) {
             const editorCacheStore = useEditorCacheStore()
 
             if (this.currentEditor.path !== path) {
@@ -133,40 +130,40 @@ export const useNotesStore = defineStore("notes", {
                 //console.log("moving note", path, newPath)
                 editorCacheStore.freeEditor(path)
                 await window.heynote.buffer.move(path, newPath)
-                this.openNote(newPath)
-                this.updateNotes()
+                this.openBuffer(newPath)
+                this.updateBuffers()
             }
         },
 
-        async deleteNote(path) {
+        async deleteBuffer(path) {
             if (path === SCRATCH_FILE_NAME) {
                 throw new Error("Can't delete scratch file")
             }
             const editorCacheStore = useEditorCacheStore()
             if (this.currentEditor.path === path) {
                 this.currentEditor = null
-                this.currentNotePath = SCRATCH_FILE_NAME
+                this.currentBufferPath = SCRATCH_FILE_NAME
             }
             editorCacheStore.freeEditor(path)
             await window.heynote.buffer.delete(path)
-            await this.updateNotes()
+            await this.updateBuffers()
         },
 
         async reloadLibrary() {
             const editorCacheStore = useEditorCacheStore()
-            await this.updateNotes()
+            await this.updateBuffers()
             editorCacheStore.clearCache(false)
             this.currentEditor = null
-            this.currentNotePath = SCRATCH_FILE_NAME
+            this.currentBufferPath = SCRATCH_FILE_NAME
             this.libraryId++
         },
     },
 })
 
-export async function initNotesStore() {
-    const notesStore = useNotesStore()
+export async function initHeynoteStore() {
+    const heynoteStore = useHeynoteStore()
     window.heynote.buffer.setLibraryPathChangeCallback(() => {
-        notesStore.reloadLibrary()
+        heynoteStore.reloadLibrary()
     })
-    await notesStore.updateNotes()
+    await heynoteStore.updateBuffers()
 }

@@ -23,7 +23,7 @@ import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
 import { NoteFormat } from "../common/note-format.js"
 import { AUTO_SAVE_INTERVAL } from "../common/constants.js"
-import { useNotesStore } from "../stores/notes-store.js";
+import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useErrorStore } from "../stores/error-store.js";
 
 
@@ -67,7 +67,7 @@ export class HeynoteEditor {
         this.fontTheme = new Compartment
         this.setDefaultBlockLanguage(defaultBlockToken, defaultBlockAutoDetect)
         this.contentLoaded = false
-        this.notesStore = useNotesStore()
+        this.notesStore = useHeynoteStore()
         this.errorStore = useErrorStore()
         this.name = ""
         
@@ -269,40 +269,40 @@ export class HeynoteEditor {
         this.notesStore.openLanguageSelector()
     }
 
-    openNoteSelector() {
-        this.notesStore.openNoteSelector()
+    openBufferSelector() {
+        this.notesStore.openBufferSelector()
     }
 
-    openCreateNote(createMode) {
-        this.notesStore.openCreateNote(createMode)
+    openCreateBuffer(createMode) {
+        this.notesStore.openCreateBuffer(createMode)
     }
 
-    async createNewNote(path, name) {
+    async createNewBuffer(path, name) {
         const data = getBlockDelimiter(this.defaultBlockToken, this.defaultBlockAutoDetect)
-        await this.notesStore.saveNewNote(path, name, data)
+        await this.notesStore.saveNewBuffer(path, name, data)
 
         // by using requestAnimationFrame we avoid a race condition where rendering the block backgrounds
         // would fail if we immediately opened the new note (since the block UI wouldn't have time to update 
         // after the block was deleted)
         requestAnimationFrame(() => {
-            this.notesStore.openNote(path)
+            this.notesStore.openBuffer(path)
         })
     }
 
-    async createNewNoteFromActiveBlock(path, name) {
+    async createNewBufferFromActiveBlock(path, name) {
         const block = getActiveNoteBlock(this.view.state)
         if (!block) {
             return
         }
         const data = this.view.state.sliceDoc(block.range.from, block.range.to)
-        await this.notesStore.saveNewNote(path, name, data)
+        await this.notesStore.saveNewBuffer(path, name, data)
         deleteBlock(this)(this.view)
 
         // by using requestAnimationFrame we avoid a race condition where rendering the block backgrounds
         // would fail if we immediately opened the new note (since the block UI wouldn't have time to update 
         // after the block was deleted)
         requestAnimationFrame(() => {
-            this.notesStore.openNote(path)
+            this.notesStore.openBuffer(path)
         })
     }
 

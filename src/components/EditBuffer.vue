@@ -3,7 +3,7 @@
 
     import { toRaw } from 'vue';
     import { mapState, mapActions } from 'pinia'
-    import { useNotesStore } from "../stores/notes-store"
+    import { useHeynoteStore } from "../stores/heynote-store"
 
     import FolderSelector from './folder-selector/FolderSelector.vue'
 
@@ -26,7 +26,7 @@
 
         async mounted() {
             this.$refs.nameInput.focus()
-            this.updateNotes()
+            this.updateBuffers()
 
             console.log("EditNote mounted", this.currentNote)
             this.name = this.currentNote.name
@@ -56,7 +56,7 @@
                             name: part,
                             children: [],
                             path: currentPath,
-                            open: this.currentNotePath.startsWith(currentPath),
+                            open: this.currentBufferPath.startsWith(currentPath),
                         }
                         currentLevel.children.push(node)
                         currentLevel = node
@@ -68,17 +68,17 @@
         },
 
         computed: {
-            ...mapState(useNotesStore, [
-                "notes",
-                "currentNotePath",
+            ...mapState(useHeynoteStore, [
+                "buffers",
+                "currentBufferPath",
             ]),
 
             currentNote() {
-                return this.notes[this.currentNotePath]
+                return this.buffers[this.currentBufferPath]
             },
 
             currentNoteDirectory() {
-                return this.currentNotePath.split("/").slice(0, -1).join("/")
+                return this.currentBufferPath.split("/").slice(0, -1).join("/")
             },
 
             nameInputClass() {
@@ -90,9 +90,9 @@
         },
 
         methods: {
-            ...mapActions(useNotesStore, [
-                "updateNotes",
-                "updateNoteMetadata",
+            ...mapActions(useHeynoteStore, [
+                "updateBuffers",
+                "updateBufferMetadata",
             ]),
 
             onKeydown(event) {
@@ -137,19 +137,19 @@
                 for (let i=0; i<1000; i++) {
                     let filename = slug + ".txt"
                     path = parentPathPrefix + filename
-                    if (path === this.currentNotePath || !this.notes[path]) {
+                    if (path === this.currentBufferPath || !this.buffers[path]) {
                         // file name is ok if it's the current note, or if it doesn't exist
                         break
                     }
                     slug = slugify(this.name + "-" + i)
                 }
-                if (path !== this.currentNotePath && this.notes[path]) {
+                if (path !== this.currentBufferPath && this.buffers[path]) {
                     console.error("Failed to edit note, path already exists", path)
                     this.errors.name = true
                     return
                 }
                 console.log("Update note", path)
-                this.updateNoteMetadata(this.currentNotePath, this.name, path)
+                this.updateBufferMetadata(this.currentBufferPath, this.name, path)
                 this.$emit("close")
                 //this.$emit("create", this.$refs.input.value)
             },

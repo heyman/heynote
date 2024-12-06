@@ -2,17 +2,17 @@
     import { mapState, mapActions } from 'pinia'
 
     import { mapWritableState } from 'pinia'
-    import { useNotesStore } from "../stores/notes-store"
+    import { useHeynoteStore } from "../stores/heynote-store"
     import { useErrorStore } from "../stores/error-store"
 
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
     import LanguageSelector from './LanguageSelector.vue'
-    import NoteSelector from './NoteSelector.vue'
+    import BufferSelector from './BufferSelector.vue'
     import Settings from './settings/Settings.vue'
     import ErrorMessages from './ErrorMessages.vue'
-    import NewNote from './NewNote.vue'
-    import EditNote from './EditNote.vue'
+    import NewBuffer from './NewBuffer.vue'
+    import EditBuffer from './EditBuffer.vue'
 
     export default {
         components: {
@@ -20,10 +20,10 @@
             StatusBar,
             LanguageSelector,
             Settings,
-            NoteSelector,
+            BufferSelector,
             ErrorMessages,
-            NewNote,
-            EditNote,
+            NewBuffer,
+            EditBuffer,
         },
 
         data() {
@@ -67,37 +67,37 @@
         watch: {
             // when a dialog is closed, we want to focus the editor
             showLanguageSelector(value) { this.dialogWatcher(value) },
-            showNoteSelector(value) { this.dialogWatcher(value) },
-            showCreateNote(value) { this.dialogWatcher(value) },
-            showEditNote(value) { this.dialogWatcher(value) },
+            showBufferSelector(value) { this.dialogWatcher(value) },
+            showCreateBuffer(value) { this.dialogWatcher(value) },
+            showEditBuffer(value) { this.dialogWatcher(value) },
 
-            currentNotePath() {
+            currentBufferPath() {
                 this.focusEditor()
             },
         },
 
         computed: {
-            ...mapState(useNotesStore, [
-                "currentNotePath",
+            ...mapState(useHeynoteStore, [
+                "currentBufferPath",
                 "showLanguageSelector",
-                "showNoteSelector",
-                "showCreateNote",
-                "showEditNote",
+                "showBufferSelector",
+                "showCreateBuffer",
+                "showEditBuffer",
             ]),
 
             editorInert() {
-                return this.showCreateNote || this.showSettings || this.showEditNote
+                return this.showCreateBuffer || this.showSettings || this.showEditBuffer
             },
         },
 
         methods: {
-            ...mapActions(useNotesStore, [
+            ...mapActions(useHeynoteStore, [
                 "openLanguageSelector",
-                "openNoteSelector",
-                "openCreateNote",
+                "openBufferSelector",
+                "openCreateBuffer",
                 "closeDialog",
-                "closeNoteSelector",
-                "openNote",
+                "closeBufferSelector",
+                "openBuffer",
             ]),
 
             // Used as a watcher for the booleans that control the visibility of editor dialogs. 
@@ -177,7 +177,7 @@
         <StatusBar 
             :autoUpdate="settings.autoUpdate"
             :allowBetaVersions="settings.allowBetaVersions"
-            @openNoteSelector="openNoteSelector"
+            @openBufferSelector="openBufferSelector"
             @openLanguageSelector="openLanguageSelector"
             @formatCurrentBlock="formatCurrentBlock"
             @openSettings="showSettings = true"
@@ -190,10 +190,10 @@
                 @selectLanguage="onSelectLanguage"
                 @close="closeDialog"
             />
-            <NoteSelector 
-                v-if="showNoteSelector" 
-                @openNote="openNote"
-                @close="closeNoteSelector"
+            <BufferSelector 
+                v-if="showBufferSelector" 
+                @openBuffer="openBuffer"
+                @close="closeBufferSelector"
             />
             <Settings 
                 v-if="showSettings"
@@ -202,12 +202,12 @@
                 @closeSettings="closeSettings"
                 @setTheme="setTheme"
             />
-            <NewNote 
-                v-if="showCreateNote"
+            <NewBuffer 
+                v-if="showCreateBuffer"
                 @close="closeDialog"
             />
-            <EditNote 
-                v-if="showEditNote"
+            <EditBuffer 
+                v-if="showEditBuffer"
                 @close="closeDialog"
             />
             <ErrorMessages />
