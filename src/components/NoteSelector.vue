@@ -392,7 +392,7 @@
                 &.scratch
                     font-weight: 600
                 &.new-note
-                    font-size: 12px
+                    //font-size: 12px
                 .name
                     margin-right: 12px
                     flex-shrink: 0
