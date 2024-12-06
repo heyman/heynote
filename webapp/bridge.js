@@ -260,6 +260,10 @@ const Heynote = {
     async getInitErrors() {
         
     },
+
+    setWindowTitle(title) {
+        document.title = title + " - Heynote"
+    },
 }
 
 export { Heynote, ipcRenderer}

@@ -74,11 +74,16 @@
             currentBufferPath() {
                 this.focusEditor()
             },
+
+            currentBufferName() {
+                window.heynote.setWindowTitle(this.currentBufferName)
+            },
         },
 
         computed: {
             ...mapState(useHeynoteStore, [
                 "currentBufferPath",
+                "currentBufferName",
                 "showLanguageSelector",
                 "showBufferSelector",
                 "showCreateBuffer",
