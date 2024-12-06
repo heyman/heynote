@@ -156,25 +156,27 @@
                     this.deleteConfirm = false
                 } else if (event.key === "Enter") {
                     event.preventDefault()
-                    if (item.createNew) {
-                        if (this.filteredItems.length === 1) {
-                            this.openCreateNote("new", this.filter)
-                        } else {
-                            this.openCreateNote("new", "")
-                        }
-                    } else if (this.actionButton === 1) {
+                    if (this.actionButton === 1) {
                         //console.log("edit file:", path)
                         this.editNote(item.path)
                     } else if (this.actionButton === 2) {
                         this.deleteConfirmNote(item.path)
                     } else {
-                        this.selectItem(item.path)
+                        this.selectItem(item)
                     }
                 }
             },
 
-            selectItem(path) {
-                this.$emit("openNote", path)
+            selectItem(item) {
+                if (item.createNew) {
+                    if (this.filteredItems.length === 1) {
+                        this.openCreateNote("new", this.filter)
+                    } else {
+                        this.openCreateNote("new", "")
+                    }
+                } else {
+                    this.$emit("openNote", item.path)
+                }
             },
 
             itemHasActionButtons(item) {
@@ -253,7 +255,7 @@
                     <li v-if="item.createNew" class="line-separator"></li>
                     <li
                         :class="getItemClass(item, idx)"
-                        @click="selectItem(item.path)"
+                        @click="selectItem(item)"
                         ref="item"
                     >
                         <span class="name" v-html="item.name" />
