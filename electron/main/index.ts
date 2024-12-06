@@ -359,6 +359,9 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
+ipcMain.handle("setWindowTitle", (event, title) => {
+    win?.setTitle(title)
+})
 
 // Initialize note/file library
 async function initFileLibrary(win) {

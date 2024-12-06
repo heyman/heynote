@@ -414,7 +414,7 @@ export function triggerCursorChange({state, dispatch}) {
 }
 
 const emitCursorChange = (editor) => {
-    const notesStore = useHeynoteStore()
+    const heynoteStore = useHeynoteStore()
     return ViewPlugin.fromClass(
         class {
             update(update) {
@@ -430,11 +430,11 @@ const emitCursorChange = (editor) => {
 
                     const block = getActiveNoteBlock(update.state)
                     if (block && cursorLine) {
-                        notesStore.currentCursorLine = cursorLine
-                        notesStore.currentSelectionSize = selectionSize
-                        notesStore.currentLanguage = block.language.name
-                        notesStore.currentLanguageAuto = block.language.auto
-                        notesStore.currentBufferName = editor.name
+                        heynoteStore.currentCursorLine = cursorLine
+                        heynoteStore.currentSelectionSize = selectionSize
+                        heynoteStore.currentLanguage = block.language.name
+                        heynoteStore.currentLanguageAuto = block.language.auto
+                        heynoteStore.currentBufferName = editor.name
                     }
                 }
             }

@@ -161,6 +161,10 @@ contextBridge.exposeInMainWorld("heynote", {
     async getInitErrors() {
         return await ipcRenderer.invoke("getInitErrors")
     },
+
+    setWindowTitle(title) {
+        ipcRenderer.invoke("setWindowTitle", title)
+    },
 })
 
 
