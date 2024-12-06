@@ -4,7 +4,7 @@
     import { toRaw } from 'vue';
     import { mapState, mapWritableState, mapActions } from 'pinia'
     import { useErrorStore } from "../stores/error-store"
-    import { useNotesStore } from "../stores/notes-store"
+    import { useHeynoteStore } from "../stores/heynote-store.js"
     import { useEditorCacheStore } from "../stores/editor-cache"
 
     const NUM_EDITOR_INSTANCES = 5
@@ -50,7 +50,7 @@
         },
 
         mounted() {
-            this.loadBuffer(this.currentNotePath)
+            this.loadBuffer(this.currentBufferPath)
 
             // set up window close handler that will save the buffer and quit
             window.heynote.onWindowClose(() => {
@@ -87,8 +87,8 @@
 
         watch: {
             loadNewEditor() {
-                //console.log("currentNotePath changed to", path)
-                this.loadBuffer(this.currentNotePath)
+                //console.log("currentBufferPath changed to", path)
+                this.loadBuffer(this.currentBufferPath)
             },
 
             theme(newTheme) {
@@ -150,17 +150,17 @@
         },
 
         computed: {
-            ...mapState(useNotesStore, [
-                "currentNotePath",
+            ...mapState(useHeynoteStore, [
+                "currentBufferPath",
                 "libraryId",
             ]),
-            ...mapWritableState(useNotesStore, [
+            ...mapWritableState(useHeynoteStore, [
                 "currentEditor",
-                "currentNoteName",
+                "currentBufferName",
             ]),
 
             loadNewEditor() {
-                return `${this.currentNotePath}|${this.libraryId}`
+                return `${this.currentBufferPath}|${this.libraryId}`
             },
         },
 

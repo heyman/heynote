@@ -4,7 +4,7 @@
     import { mapState, mapActions } from 'pinia'
     import { toRaw } from 'vue';
     import { SCRATCH_FILE_NAME } from "../common/constants"
-    import { useNotesStore } from "../stores/notes-store"
+    import { useHeynoteStore } from "../stores/heynote-store"
 
     export default {
         data() {
@@ -19,7 +19,7 @@
         },
 
         async mounted() {
-            await this.updateNotes()
+            await this.updateBuffers()
             this.$refs.container.focus()
             this.$refs.input.focus()
             this.buildItems()
@@ -29,13 +29,13 @@
         },
 
         computed: {
-            ...mapState(useNotesStore, [
-                "notes",
-                "recentNotePaths",
+            ...mapState(useHeynoteStore, [
+                "buffers",
+                "recentBufferPaths",
             ]),
 
             orderedItems() {
-                const sortKeys = Object.fromEntries(this.recentNotePaths.map((item, idx) => [item, idx]))
+                const sortKeys = Object.fromEntries(this.recentBufferPaths.map((item, idx) => [item, idx]))
                 const getSortScore = (item) => sortKeys[item.path] !== undefined ? sortKeys[item.path] : 1000
                 const compareFunc = (a, b) => {
                     const sortScore = getSortScore(a) - getSortScore(b)
@@ -90,16 +90,16 @@
         },
 
         methods: {
-            ...mapActions(useNotesStore, [
-                "updateNotes",
-                "editNote",
-                "deleteNote",
-                "openCreateNote",
+            ...mapActions(useHeynoteStore, [
+                "updateBuffers",
+                "editBufferMetadata",
+                "deleteBuffer",
+                "openCreateBuffer",
             ]),
 
             buildItems() {
-                //console.log("buildItems", Object.entries(this.notes))
-                this.items = Object.entries(this.notes).map(([path, metadata]) => {
+                //console.log("buildItems", Object.entries(this.buffers))
+                this.items = Object.entries(this.buffers).map(([path, metadata]) => {
                     return {
                         "path": path,
                         "name": metadata?.name || path,
@@ -158,7 +158,7 @@
                     event.preventDefault()
                     if (this.actionButton === 1) {
                         //console.log("edit file:", path)
-                        this.editNote(item.path)
+                        this.editBufferMetadata(item.path)
                     } else if (this.actionButton === 2) {
                         this.deleteConfirmNote(item.path)
                     } else {
@@ -170,12 +170,12 @@
             selectItem(item) {
                 if (item.createNew) {
                     if (this.filteredItems.length === 1) {
-                        this.openCreateNote("new", this.filter)
+                        this.openCreateBuffer("new", this.filter)
                     } else {
-                        this.openCreateNote("new", "")
+                        this.openCreateBuffer("new", "")
                     }
                 } else {
-                    this.$emit("openNote", item.path)
+                    this.$emit("openBuffer", item.path)
                 }
             },
 
@@ -220,7 +220,7 @@
             async deleteConfirmNote(path) {
                 if (this.deleteConfirm) {
                     //console.log("delete file:", path)
-                    await this.deleteNote(path)
+                    await this.deleteBuffer(path)
                     this.hideActionButtons()
                     this.buildItems()
                     this.selected = Math.min(this.selected, this.items.length - 1)
@@ -264,7 +264,7 @@
                             <button 
                                 v-if="actionButton > 0 && idx === selected"
                                 :class="{'selected':actionButton === 1}"
-                                @click.stop.prevent="editNote(item.path)"
+                                @click.stop.prevent="editBufferMetadata(item.path)"
                             >Edit</button>
                             <button 
                                 v-if="actionButton > 0 && idx === selected"

@@ -2,7 +2,7 @@
     import { mapState } from 'pinia'
     import UpdateStatusItem from './UpdateStatusItem.vue'
     import { LANGUAGES } from '../editor/languages.js'
-    import { useNotesStore } from "../stores/notes-store"
+    import { useHeynoteStore } from "../stores/heynote-store"
     
     const LANGUAGE_MAP = Object.fromEntries(LANGUAGES.map(l => [l.token, l]))
     const LANGUAGE_NAMES = Object.fromEntries(LANGUAGES.map(l => [l.token, l.name]))
@@ -28,8 +28,8 @@
         },
 
         computed: {
-            ...mapState(useNotesStore, [
-                "currentNoteName",
+            ...mapState(useHeynoteStore, [
+                "currentBufferName",
                 "currentCursorLine",
                 "currentLanguage", 
                 "currentSelectionSize", 
@@ -84,11 +84,11 @@
         </div>
         <div class="spacer"></div>
         <div 
-            @click.stop="$emit('openNoteSelector')"
+            @click.stop="$emit('openBufferSelector')"
             class="status-block note clickable"
             :title="changeNoteTitle"
         >
-            {{ currentNoteName }} 
+            {{ currentBufferName }} 
         </div>
         <div 
             @click.stop="$emit('openLanguageSelector')"
