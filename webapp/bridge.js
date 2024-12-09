@@ -18,24 +18,35 @@ let autoUpdateCallbacks = null
 let currencyData = null
 
 let platform
-const uaPlatform = window.navigator?.userAgentData?.platform || window.navigator.platform
-if (uaPlatform.indexOf("Win") !== -1) {
-    platform = {
-        isMac: false,
-        isWindows: true,
-        isLinux: false,
-    }
-}  else if (uaPlatform.indexOf("Linux") !== -1) {
-    platform = {
-        isMac: false,
-        isWindows: false,
-        isLinux: true,
-    }
-} else {
+
+// In the latest version of Playwright, the window.navigator.userAgentData.platform is not reported correctly on Mac,
+// wo we'll fallback to deprecated window.navigator.platform which still works
+if (__TESTS__ && window.navigator.platform.indexOf("Mac") !== -1) {
     platform = {
         isMac: true,
         isWindows: false,
         isLinux: false,
+    }
+} else {
+    const uaPlatform = window.navigator?.userAgentData?.platform || window.navigator.platform
+    if (uaPlatform.indexOf("Win") !== -1) {
+        platform = {
+            isMac: false,
+            isWindows: true,
+            isLinux: false,
+        }
+    }  else if (uaPlatform.indexOf("Linux") !== -1) {
+        platform = {
+            isMac: false,
+            isWindows: false,
+            isLinux: true,
+        }
+    } else {
+        platform = {
+            isMac: true,
+            isWindows: false,
+            isLinux: false,
+        }
     }
 }
 platform.isWebApp = true
