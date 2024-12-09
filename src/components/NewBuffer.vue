@@ -91,7 +91,7 @@
             },
 
             dialogTitle() {
-                return this.createBufferParams.mode === "currentBlock" ? "New Note from Block" : "New Note"
+                return this.createBufferParams.mode === "currentBlock" ? "New Buffer from Block" : "New Buffer"
             },
         },
 
@@ -151,17 +151,17 @@
                     slug = slugify(this.name + "-" + i)
                 }
                 if (this.buffers[path]) {
-                    console.error("Failed to create note, path already exists", path)
+                    console.error("Failed to create buffer, path already exists", path)
                     this.errors.name = true
                     return
                 }
-                //console.log("Creating note", path, this.createBufferParams)
+                //console.log("Creating buffer", path, this.createBufferParams)
                 if (this.createBufferParams.mode === "currentBlock") {
                     this.createNewBufferFromActiveBlock(path, this.name)
                 } else if (this.createBufferParams.mode === "new") {
                     this.createNewBuffer(path, this.name)
                 } else {
-                    throw new Error("Unknown createNote Mode: " + this.createBufferParams.mode)
+                    throw new Error("Unknown createBuffer Mode: " + this.createBufferParams.mode)
                 }
 
                 this.$emit("close")
@@ -173,7 +173,7 @@
 
 <template>
     <div class="fader" @keydown="onKeydown" tabindex="-1">
-        <form class="new-note" tabindex="-1" @focusout="onFocusOut" ref="container" @submit.prevent="submit">
+        <form class="new-buffer" tabindex="-1" @focusout="onFocusOut" ref="container" @submit.prevent="submit">
             <div class="container">
                 <h1>{{ dialogTitle }}</h1>
                 <input 
@@ -199,7 +199,7 @@
                 />
             </div>
             <div class="bottom-bar">
-                <button type="submit">Create Note</button>
+                <button type="submit">Create New Buffer</button>
                 <button 
                     class="cancel"
                     @keydown="onCancelKeydown"
@@ -218,7 +218,7 @@
         bottom: 0
         right: 0
         background: rgba(0,0,0, 0.2)
-    .new-note
+    .new-buffer
         font-size: 13px
         //background: #48b57e
         background: #efefef
