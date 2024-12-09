@@ -42,7 +42,7 @@ test("create new buffer from block", async ({page}) => {
     await page.waitForTimeout(50)
     await page.locator("body").pressSequentially("My New Buffer")
     await page.locator("body").press("Enter")
-    await page.waitForTimeout(50)
+    await page.waitForTimeout(150)
     await page.locator("body").press("Enter")
     await page.locator("body").pressSequentially("New buffer content")
     await page.waitForTimeout(AUTO_SAVE_INTERVAL + 50);
