@@ -3,10 +3,12 @@ import { keyHelpStr } from "../shared-utils/key-helper";
 
 export const initialContent = `
 {"formatVersion":"1.0.0","name":"Scratch"}
-∞∞∞markdown
+∞∞∞text
 Welcome to Heynote! 👋
 
 ${keyHelpStr(os.platform())}
+∞∞∞markdown
+Read full documentation at https://heynote.com/docs
 ∞∞∞math
 This is a Math block. Here, rows are evaluated as math expressions. 
 
