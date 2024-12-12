@@ -334,6 +334,18 @@ export async function migrateBufferFileToLibrary(app) {
         }
     }
 
+    function getBackupFile(filePath) {
+        // Get a backup file path by adding a .bak suffix. If the file already exists, add a number suffix.
+        let backupFile = filePath + ".bak";
+        for (let i = 1; i < 1000; i++) {
+            if (jetpack.exists(backupFile) !== "file") {
+                return backupFile;
+            }
+            backupFile = `${filePath}.bak.${i}`;
+        }
+        throw new Error(`Unable to find an available file path after 1000 attempts for base path: ${filePath}`);
+    }
+
     const defaultLibraryPath = join(app.getPath("userData"), NOTES_DIR_NAME)
     const customBufferPath = CONFIG.get("settings.bufferPath")
     const oldBufferFile = isDev ? "buffer-dev.txt" : "buffer.txt"
@@ -343,10 +355,15 @@ export async function migrateBufferFileToLibrary(app) {
             return
         }
         const oldBufferFileFullPath = join(customBufferPath, oldBufferFile)
+        const backupFile = getBackupFile(oldBufferFileFullPath)
         if (jetpack.exists(oldBufferFileFullPath) === "file") {
+            // make a backup copy of the old buffer file
+            console.log(`Taking backup of ${oldBufferFileFullPath} to ${backupFile}`)
+            jetpack.copy(oldBufferFileFullPath, backupFile)
+
+            // rename buffer file to scratch.txt
             const newFileFullPath = join(customBufferPath, SCRATCH_FILE_NAME);
             console.log(`Migrating file ${oldBufferFileFullPath} to ${newFileFullPath}`)
-            // rename buffer file to scratch.txt
             jetpack.move(oldBufferFileFullPath, newFileFullPath)
             // add metadata to scratch.txt (just to be sure, we'll double check that it's needed first)
             await ensureBufferFileMetadata(newFileFullPath)
@@ -358,7 +375,12 @@ export async function migrateBufferFileToLibrary(app) {
         }
         // check if the old buffer file exists, while the default *library* path doesn't exist
         const oldBufferFileFullPath = join(app.getPath("userData"), oldBufferFile)
+        const backupFile = getBackupFile(oldBufferFileFullPath)
         if (jetpack.exists(oldBufferFileFullPath) === "file" && jetpack.exists(defaultLibraryPath) !== "dir") {
+            // make a backup copy of the old buffer file
+            console.log(`Taking backup of ${oldBufferFileFullPath} to ${backupFile}`)
+            jetpack.copy(oldBufferFileFullPath, backupFile)
+
             const newFileFullPath = join(defaultLibraryPath, SCRATCH_FILE_NAME);
             console.log(`Migrating buffer file ${oldBufferFileFullPath} to ${newFileFullPath}`)
             // create the default library path

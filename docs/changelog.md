@@ -6,13 +6,13 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ### IMPORTANT (breaking change)
 
-The default path of the scratch file has changed. If you are running a previous version of Heynote with the buffer file synchronized across multiple machines using a file synching service such as Dropbox or OneDrive, you should make sure to upgrade all machines to Heynote 2.0 at the same time (closing Heynote before) in order for the file to stay in sync, since the file path for the buffer file has changed. See below for more info.
+The default path of the scratch file has changed. The first time you start the new version of Heynote, your existing buffer file will be migrated to the new note library. If you're using the default buffer location, that means that the existing Scratch buffer file will be moved from `%APP_DIR%/buffer.txt` to `%APP_DIR%/notes/scratch.txt`. If you are using a custom buffer location the existing scratch file will be moved from `%CUSTOM_DIR%/buffer.txt` to `%CUSTOM_DIR%/scratch.txt`. Before the migration, the existing buffer file will be backed up to `%APP_DIR%/buffer.txt.bak` or `%CUSTOM_DIR%/buffer.txt.bak`.
+
+If you are running a previous version of Heynote with the buffer file synchronized across multiple machines using a file synching service such as Dropbox or OneDrive, you should make sure to upgrade all machines to Heynote 2.0 at the same time (closing Heynote before) in order for the file to stay in sync, since the file path for the buffer file has changed. 
 
 ### Support for multiple note buffers. 
 
 Apart from the default Scratch buffer, you can now create and switch between multiple note buffers. `Ctrl/Cmd+N` opens up a dialog for creating a new buffer. By pressing `Ctrl/Cmd+S` you can create a new note from the current block (the current block will be moved into the new note). New note buffers are saved to the note library which is basically a directory (with sub dirs) on the disk with a `.txt` file for each buffer. You switch between buffers by pressing `Ctrl/Cmd+P`.
-
-The first time you start the new version of Heynote, your existing buffer file will be migrated to the new note library. If you're using the default buffer location, that means that the existing Scratch buffer file will be moved from `%APP_DIR%/buffer.txt` to `%APP_DIR%/notes/scratch.txt`. If you are using a custom buffer location the existing scratch file will be moved from `%CUSTOM_DIR%/buffer.txt` to `%CUSTOM_DIR%/scratch.txt`.
 
 ### Other changes
 
