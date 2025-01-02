@@ -23,7 +23,7 @@ import { clojure } from "@codemirror/legacy-modes/mode/clojure"
 import { erlang } from "@codemirror/legacy-modes/mode/erlang"
 import { toml } from "@codemirror/legacy-modes/mode/toml"
 import { swift } from "@codemirror/legacy-modes/mode/swift"
-import { kotlin, dart } from "@codemirror/legacy-modes/mode/clike"
+import { kotlin, dart, scala } from "@codemirror/legacy-modes/mode/clike"
 import { groovy } from "@codemirror/legacy-modes/mode/groovy"
 import { diff } from "@codemirror/legacy-modes/mode/diff";
 import { powerShell } from "@codemirror/legacy-modes/mode/powershell";
@@ -265,6 +265,12 @@ export const LANGUAGES = [
         name: "Dart",
         parser: StreamLanguage.define(dart).parser,
         guesslang: "dart",
+    }),
+    new Language({
+        token: "scala",
+        name: "Scala",
+        parser: StreamLanguage.define(scala).parser,
+        guesslang: "scala",
     }), 
 ]
 
