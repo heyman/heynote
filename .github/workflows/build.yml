@@ -58,8 +58,8 @@ jobs:
           APPLE_API_KEY_ID: ${{ secrets.apple_api_key_id }}
           APPLE_API_KEY_ISSUER: ${{ secrets.apple_api_key_issuer_id }}
       
-      #- name: Print notarization-error.log
-      #  run: cat notarization-error.log
+      - name: Print notarization-error.log
+        run: cat notarization-error.log
 
       - name: Upload Linux artifact
         if: ${{ matrix.os == 'ubuntu-latest' }}
