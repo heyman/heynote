@@ -73,6 +73,7 @@ Apart from the default Scratch buffer, you can now create and switch between mul
   * TOML
   * C#
   * Clojure
+  * Elixir
   * Erlang
   * Golang
   * Lezer
