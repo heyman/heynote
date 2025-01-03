@@ -20,6 +20,7 @@ Apart from the default Scratch buffer, you can now create and switch between mul
 - The cursor(s) location is saved between sessions.
 - Improvements when using a file syncing service (e.g. Dropbox, OneDrive) to sync the note library between machines.
 - The setting for changing the color theme is now located in the program settings, instead of in the status bar.
+- Improvements to the language selector's search feature (it's now possible to search for languages by their file extension).
 
 ## 1.8.0
 
