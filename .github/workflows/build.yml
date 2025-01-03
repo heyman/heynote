@@ -59,6 +59,7 @@ jobs:
           APPLE_API_KEY_ISSUER: ${{ secrets.apple_api_key_issuer_id }}
       
       #- name: Print notarization-error.log
+      #  if: ${{ matrix.os == 'macos-latest' }}
       #  run: cat notarization-error.log
 
       - name: Upload Linux artifact
