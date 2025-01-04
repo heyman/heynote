@@ -2,7 +2,15 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.0.0-beta
+
+## 2.1.0 (not yet released)
+
+- Added support for the following languages:
+  * Elixir
+  * Scala
+
+
+## 2.0.0
 
 ### IMPORTANT (breaking change)
 
