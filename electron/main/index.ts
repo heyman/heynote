@@ -351,10 +351,14 @@ app.on('second-instance', () => {
     }
 })
 
-app.on('activate', () => {
+app.on('activate', (event, hasVisibleWindows) => {
     const allWindows = BrowserWindow.getAllWindows()
     if (allWindows.length) {
         allWindows[0].focus()
+        // show the window if it's hidden (e.g. the window was closed with "show in menu bar" setting turned on)
+        if (!allWindows[0].isVisible()) {
+            allWindows[0].show()
+        }
     } else {
         createWindow()
     }
