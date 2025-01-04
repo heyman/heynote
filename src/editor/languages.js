@@ -120,7 +120,7 @@ export const LANGUAGES = [
     new Language({
         token: "php",
         name: "PHP",
-        parser: phpLanguage.parser,
+        parser: phpLanguage.configure({top:"Program"}).parser,
         guesslang: "php",
     }),
     new Language({
