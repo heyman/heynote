@@ -8,6 +8,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 - Added support for the following languages:
   * Elixir
   * Scala
+- PHP blocks no longer requires `<?php` for syntax highlighting to work
 
 
 ## 2.0.0
