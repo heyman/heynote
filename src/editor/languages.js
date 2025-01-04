@@ -20,6 +20,7 @@ import { shell } from "@codemirror/legacy-modes/mode/shell"
 import { yaml } from "@codemirror/legacy-modes/mode/yaml"
 import { go } from "@codemirror/legacy-modes/mode/go"
 import { clojure } from "@codemirror/legacy-modes/mode/clojure"
+import { elixirLanguage } from "codemirror-lang-elixir"
 import { erlang } from "@codemirror/legacy-modes/mode/erlang"
 import { toml } from "@codemirror/legacy-modes/mode/toml"
 import { swift } from "@codemirror/legacy-modes/mode/swift"
@@ -189,6 +190,12 @@ export const LANGUAGES = [
         name: "Clojure",
         parser: StreamLanguage.define(clojure).parser,
         guesslang: "clj",
+    }),
+    new Language({
+        token: "elixir",
+        name: "Elixir",
+        parser: elixirLanguage.parser,
+        guesslang: "ex",
     }),
     new Language({
         token: "erlang",
