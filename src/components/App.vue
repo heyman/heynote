@@ -5,6 +5,8 @@
     import { useHeynoteStore } from "../stores/heynote-store"
     import { useErrorStore } from "../stores/error-store"
 
+    import { OPEN_SETTINGS_EVENT, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
+
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
     import LanguageSelector from './LanguageSelector.vue'
@@ -52,10 +54,10 @@
             }
             onThemeChange(window.heynote.themeMode.initial)
             window.heynote.themeMode.onChange(onThemeChange)
-            window.heynote.onSettingsChange((settings) => {
+            window.heynote.mainProcess.on(SETTINGS_CHANGE_EVENT, (event, settings) => {
                 this.settings = settings
             })
-            window.heynote.onOpenSettings(() => {
+            window.heynote.mainProcess.on(OPEN_SETTINGS_EVENT, () => {
                 this.showSettings = true
             })
         },

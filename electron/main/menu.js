@@ -1,5 +1,5 @@
 const { app, Menu } = require("electron")
-import { OPEN_SETTINGS_EVENT } from "@/src/common/constants";
+import { OPEN_SETTINGS_EVENT, REDO_EVENT } from '@/src/common/constants'
 import { openAboutWindow } from "./about";
 import { quit } from "./index"
 
@@ -63,7 +63,15 @@ const template = [
         label: 'Edit',
         submenu: [
             { role: 'undo' },
-            { role: 'redo' },
+            //{ role: 'undo' },
+            {
+                label: 'Redo',
+                accelerator: 'CommandOrControl+Shift+z',
+                click: (menuItem, window, event) => {
+                    window?.webContents.send(REDO_EVENT)
+                    console.log("redo")
+                },
+            },
             { type: 'separator' },
             { role: 'cut' },
             { role: 'copy' },

@@ -64,6 +64,12 @@ class IpcRenderer {
         this.callbacks[event].push(callback)
     }
 
+    off(event, callback) {
+        if (this.callbacks[event]) {
+            this.callbacks[event] = this.callbacks[event].filter(cb => cb !== callback)
+        }
+    }
+
     send(event, ...args) {
         if (this.callbacks[event]) {
             for (const callback of this.callbacks[event]) {
@@ -213,19 +219,17 @@ const Heynote = {
         },
     },
 
-    onWindowClose(callback) {
-        //ipcRenderer.on(WINDOW_CLOSE_EVENT, callback)
+    mainProcess: {
+        on(event, callback) {
+            ipcRenderer.on(event, callback)
+        },
+        
+        off(event, callback) {
+            ipcRenderer.off(event, callback)
+        },
     },
 
     settings: initialSettings,
-
-    onOpenSettings(callback) {
-        ipcRenderer.on(OPEN_SETTINGS_EVENT, callback)
-    },
-
-    onSettingsChange(callback) {
-        ipcRenderer.on(SETTINGS_CHANGE_EVENT, (event, settings) => callback(settings))
-    },
 
     setSettings(settings) {
         localStorage.setItem("settings", JSON.stringify(settings))
