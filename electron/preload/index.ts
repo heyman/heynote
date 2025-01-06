@@ -43,9 +43,6 @@ contextBridge.exposeInMainWorld("heynote", {
         })
     },
 
-    quit() {
-        console.log("quitting")
-        //ipcRenderer.invoke("app_quit")
     },
 
     onWindowClose(callback) {
