@@ -3,8 +3,9 @@ import { release } from 'node:os'
 import { join } from 'node:path'
 import fs from "fs"
 
+import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
+
 import { menu, getTrayMenu } from './menu'
-import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '../constants';
 import CONFIG from "../config"
 import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
