@@ -1,5 +1,5 @@
 import { Exception } from "sass";
-import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "../electron/constants";
+import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "@/src/common/constants";
 import { NoteFormat } from "../src/common/note-format";
 
 const NOTE_KEY_PREFIX = "heynote-library__"
