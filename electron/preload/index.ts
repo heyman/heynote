@@ -43,8 +43,6 @@ contextBridge.exposeInMainWorld("heynote", {
         })
     },
 
-    },
-
     onWindowClose(callback) {
         ipcRenderer.on(WINDOW_CLOSE_EVENT, callback)
     },
