@@ -6,6 +6,7 @@
     import { useErrorStore } from "../stores/error-store"
     import { useHeynoteStore } from "../stores/heynote-store.js"
     import { useEditorCacheStore } from "../stores/editor-cache"
+    import { REDO_EVENT, WINDOW_CLOSE_EVENT } from '@/src/common/constants';
 
     const NUM_EDITOR_INSTANCES = 5
 
@@ -46,6 +47,7 @@
             return {
                 syntaxTreeDebugContent: null,
                 editor: null,
+                onWindowClose: null,
             }
         },
 
@@ -53,12 +55,13 @@
             this.loadBuffer(this.currentBufferPath)
 
             // set up window close handler that will save the buffer and quit
-            window.heynote.onWindowClose(() => {
+            this.onWindowClose = () => {
                 window.heynote.buffer.saveAndQuit([
                     [this.editor.path, this.editor.getContent()],
                 ])
-            })
+            }
 
+            window.heynote.mainProcess.on(WINDOW_CLOSE_EVENT, this.onWindowClose)
             window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
 
             // if debugSyntaxTree prop is set, display syntax tree for debugging
@@ -82,6 +85,7 @@
         },
 
         beforeUnmount() {
+            window.heynote.mainProcess.off(WINDOW_CLOSE_EVENT, this.onWindowClose)
             window.document.removeEventListener("currenciesLoaded", this.onCurrenciesLoaded)
         },
 
