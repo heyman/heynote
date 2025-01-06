@@ -3,6 +3,7 @@ import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@cod
 import { indentUnit, forceParsing, foldGutter, ensureSyntaxTree } from "@codemirror/language"
 import { markdown } from "@codemirror/lang-markdown"
 import { closeBrackets } from "@codemirror/autocomplete";
+import { redo } from "@codemirror/commands"
 
 import { heynoteLight } from "./theme/light.js"
 import { heynoteDark } from "./theme/dark.js"
@@ -363,6 +364,10 @@ export class HeynoteEditor {
         //console.log("showing element", this.view.dom)
         this.view.dom.style.setProperty("display", "")
         triggerCursorChange(this.view)
+    }
+
+    redo() {
+        redo(this.view)
     }
 }
 

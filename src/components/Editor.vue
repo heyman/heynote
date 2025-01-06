@@ -48,6 +48,7 @@
                 syntaxTreeDebugContent: null,
                 editor: null,
                 onWindowClose: null,
+                onRedo: null,
             }
         },
 
@@ -61,7 +62,14 @@
                 ])
             }
 
+            this.onRedo = () => {
+                if (this.editor) {
+                    toRaw(this.editor).redo()
+                }
+            }
+            
             window.heynote.mainProcess.on(WINDOW_CLOSE_EVENT, this.onWindowClose)
+            window.heynote.mainProcess.on(REDO_EVENT, this.onRedo)
             window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
 
             // if debugSyntaxTree prop is set, display syntax tree for debugging
@@ -86,6 +94,7 @@
 
         beforeUnmount() {
             window.heynote.mainProcess.off(WINDOW_CLOSE_EVENT, this.onWindowClose)
+            window.heynote.mainProcess.off(REDO_EVENT, this.onRedo)
             window.document.removeEventListener("currenciesLoaded", this.onCurrenciesLoaded)
         },
 
