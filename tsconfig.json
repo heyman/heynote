@@ -17,7 +17,7 @@
       "@/*": ["./*"],
     }
   },
-  "include": ["src"," shared-utils"],
+  "include": ["src"," shared-utils", "electron"],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]

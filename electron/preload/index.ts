@@ -14,7 +14,7 @@ import {
     UPDATE_INSTALL_AND_RESTART,
     UPDATE_DOWNLOADED,
     UPDATE_CHECK_FOR_UPDATES,
-} from "../constants"
+} from "@/src/common/constants"
 import CONFIG from "../config"
 import getCurrencyData from "./currency"
 

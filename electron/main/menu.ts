@@ -1,5 +1,5 @@
 const { app, Menu } = require("electron")
-import { OPEN_SETTINGS_EVENT } from "../constants";
+import { OPEN_SETTINGS_EVENT } from "@/src/common/constants";
 import { openAboutWindow } from "./about";
 import { quit } from "./index"
 
