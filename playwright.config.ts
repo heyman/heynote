@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+process.env["HEYNOTE_TESTS"] = "1"
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
