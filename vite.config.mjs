@@ -46,13 +46,15 @@ const updateGuesslangLanguagesInWebWorker = async () => {
 }
 
 
+const resolveConfig = {
+	alias: {
+		'@': path.resolve(__dirname),
+	},
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
-	resolve: {
-        alias: {
-            '@': path.resolve(__dirname),
-        },
-    },
+	resolve: resolveConfig,
 
 	plugins: [
 		vue(),
@@ -78,6 +80,7 @@ export default defineConfig({
 							external: Object.keys("dependencies" in pkg ? pkg.dependencies : {}),
 						},
 					},
+					resolve: resolveConfig,
 				},
 			},
 			{
@@ -96,6 +99,7 @@ export default defineConfig({
 							external: Object.keys("dependencies" in pkg ? pkg.dependencies : {}),
 						},
 					},
+					resolve: resolveConfig,
 				},
 			},
 			{
