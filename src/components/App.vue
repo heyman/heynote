@@ -7,7 +7,7 @@
     import { useSettingsStore } from "../stores/settings-store"
     import { useEditorCacheStore } from '../stores/editor-cache'
 
-    import { OPEN_SETTINGS_EVENT, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
+    import { OPEN_SETTINGS_EVENT, MOVE_BLOCK_EVENT } from '@/src/common/constants'
 
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
@@ -44,6 +44,10 @@
             window.heynote.mainProcess.on(OPEN_SETTINGS_EVENT, () => {
                 this.showSettings = true
             })
+
+            window.heynote.mainProcess.on(MOVE_BLOCK_EVENT, (path) => {
+                this.openMoveToBufferSelector()
+            })
         },
 
         beforeUnmount() {
@@ -77,6 +81,7 @@
                 "showCreateBuffer",
                 "showEditBuffer",
                 "showMoveToBufferSelector",
+                "openMoveToBufferSelector",
             ]),
 
             editorInert() {
