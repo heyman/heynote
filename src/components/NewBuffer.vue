@@ -91,7 +91,7 @@
             },
 
             dialogTitle() {
-                return this.createBufferParams.mode === "currentBlock" ? "New Buffer from Block" : "New Buffer"
+                return this.createBufferParams.mode === "currentBlock" ? "Move Block to New Buffer" : "New Buffer"
             },
         },
 

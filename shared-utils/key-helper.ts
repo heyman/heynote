@@ -10,7 +10,7 @@ export const keyHelpStr = (platform: string) => {
         [`${modChar} + ${altChar} + Enter`, "Split the current block at cursor position"],
         [`${modChar} + L`, "Change block language"],
         [`${modChar} + N`, "Create a new note buffer"],
-        [`${modChar} + S`, "Create a new note buffer from the current block"],
+        [`${modChar} + S`, "Move the current block to another (or new) buffer"],
         [`${modChar} + P`, "Open note selector"],
         [`${modChar} + Down`, "Goto next block"],
         [`${modChar} + Up`, "Goto previous block"],

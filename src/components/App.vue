@@ -5,6 +5,7 @@
     import { useHeynoteStore } from "../stores/heynote-store"
     import { useErrorStore } from "../stores/error-store"
     import { useSettingsStore } from "../stores/settings-store"
+    import { useEditorCacheStore } from '../stores/editor-cache'
 
     import { OPEN_SETTINGS_EVENT, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
 
@@ -55,6 +56,7 @@
             showBufferSelector(value) { this.dialogWatcher(value) },
             showCreateBuffer(value) { this.dialogWatcher(value) },
             showEditBuffer(value) { this.dialogWatcher(value) },
+            showMoveToBufferSelector(value) { this.dialogWatcher(value) },
 
             currentBufferPath() {
                 this.focusEditor()
@@ -66,7 +68,7 @@
         },
 
         computed: {
-            ...mapStores(useSettingsStore),
+            ...mapStores(useSettingsStore, useEditorCacheStore),
             ...mapState(useHeynoteStore, [
                 "currentBufferPath",
                 "currentBufferName",
@@ -74,6 +76,7 @@
                 "showBufferSelector",
                 "showCreateBuffer",
                 "showEditBuffer",
+                "showMoveToBufferSelector",
             ]),
 
             editorInert() {
@@ -89,6 +92,7 @@
                 "closeDialog",
                 "closeBufferSelector",
                 "openBuffer",
+                "closeMoveToBufferSelector",
             ]),
 
             // Used as a watcher for the booleans that control the visibility of editor dialogs. 
@@ -122,6 +126,11 @@
 
             formatCurrentBlock() {
                 this.$refs.editor.formatCurrentBlock()
+            },
+
+            onMoveCurrentBlockToOtherEditor(path) {
+                this.editorCacheStore.moveCurrentBlockToOtherEditor(path)
+                this.closeMoveToBufferSelector()
             },
         },
     }
@@ -157,7 +166,15 @@
             <BufferSelector 
                 v-if="showBufferSelector" 
                 @openBuffer="openBuffer"
+                @openCreateBuffer="(nameSuggestion) => openCreateBuffer('new', nameSuggestion)"
                 @close="closeBufferSelector"
+            />
+            <BufferSelector 
+                v-if="showMoveToBufferSelector" 
+                headline="Move block to..."
+                @openBuffer="onMoveCurrentBlockToOtherEditor"
+                @openCreateBuffer="(nameSuggestion) => openCreateBuffer('currentBlock', nameSuggestion)"
+                @close="closeMoveToBufferSelector"
             />
             <Settings 
                 v-if="showSettings"

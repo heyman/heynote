@@ -12,7 +12,7 @@ import { getFontTheme } from "./theme/font-theme.js";
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension, blockLineNumbers, blockState, getActiveNoteBlock, triggerCursorChange } from "./block/block.js"
-import { heynoteEvent, SET_CONTENT, DELETE_BLOCK } from "./annotation.js";
+import { heynoteEvent, SET_CONTENT, DELETE_BLOCK, APPEND_BLOCK } from "./annotation.js";
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, getBlockDelimiter, deleteBlock } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
 import { heynoteKeymap } from "./keymap.js"
@@ -127,7 +127,8 @@ export class HeynoteEditor {
         
         //this.setContent(content)
         this.setReadOnly(true)
-        this.loadContent().then(() => {
+        this.contentLoadedPromise = this.loadContent();
+        this.contentLoadedPromise.then(() => {
             this.setReadOnly(false)
         })
 
@@ -166,7 +167,6 @@ export class HeynoteEditor {
         const content = await window.heynote.buffer.load(this.path)
         this.diskContent = content
         this.contentLoaded = true
-        this.setContent(content)
 
         // set up content change listener
         this.onChange = (content) => {
@@ -174,6 +174,8 @@ export class HeynoteEditor {
             this.setContent(content)
         }
         window.heynote.buffer.addOnChangeCallback(this.path, this.onChange)
+
+        await this.setContent(content)
     }
 
     setContent(content) {
@@ -278,6 +280,10 @@ export class HeynoteEditor {
         this.notesStore.openCreateBuffer(createMode)
     }
 
+    openMoveToBufferSelector() {
+        this.notesStore.openMoveToBufferSelector()
+    }
+
     async createNewBuffer(path, name) {
         const data = getBlockDelimiter(this.defaultBlockToken, this.defaultBlockAutoDetect)
         await this.notesStore.saveNewBuffer(path, name, data)
@@ -302,8 +308,35 @@ export class HeynoteEditor {
         // by using requestAnimationFrame we avoid a race condition where rendering the block backgrounds
         // would fail if we immediately opened the new note (since the block UI wouldn't have time to update 
         // after the block was deleted)
-        requestAnimationFrame(() => {
-            this.notesStore.openBuffer(path)
+        //requestAnimationFrame(() => {
+        //    this.notesStore.openBuffer(path)
+        //})
+
+        // add new buffer to recent list so that it shows up at the top of the buffer selector
+        this.notesStore.addRecentBuffer(path)
+        this.notesStore.addRecentBuffer(this.notesStore.currentBufferPath)
+    }
+
+    getActiveBlockContent() {
+        const block = getActiveNoteBlock(this.view.state)
+        if (!block) {
+            return
+        }
+        return this.view.state.sliceDoc(block.range.from, block.range.to)
+    }
+
+    deleteActiveBlock() {
+        deleteBlock(this)(this.view)
+    }
+
+    appendBlockContent(content) {
+        this.view.dispatch({
+            changes: {
+                from: this.view.state.doc.length,
+                to: this.view.state.doc.length,
+                insert: content,
+            },
+            annotations: [heynoteEvent.of(APPEND_BLOCK)],
         })
     }
 

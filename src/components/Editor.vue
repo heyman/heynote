@@ -1,5 +1,4 @@
 <script>
-    import { HeynoteEditor } from '../editor/editor.js'
     import { syntaxTree } from "@codemirror/language"
     import { toRaw } from 'vue';
     import { mapState, mapWritableState, mapActions, mapStores } from 'pinia'
@@ -28,6 +27,9 @@
         },
 
         mounted() {
+            // initialize editorCacheStore (sets up watchers for settings changes, propagating them to all editors)
+            this.editorCacheStore.setUp(this.$refs.editor);
+
             this.loadBuffer(this.currentBufferPath)
 
             // set up window close handler that will save the buffer and quit
@@ -45,9 +47,6 @@
             
             window.heynote.mainProcess.on(WINDOW_CLOSE_EVENT, this.onWindowClose)
             window.heynote.mainProcess.on(REDO_EVENT, this.onRedo)
-
-            // initialize editorCacheStore (sets up watchers for settings changes, propagating them to all editors)
-            this.editorCacheStore.setUp();
 
             // if debugSyntaxTree prop is set, display syntax tree for debugging
             if (this.debugSyntaxTree) {
@@ -112,7 +111,7 @@
                     toRaw(this.editor).show()
                 } else {
                     //console.log("create new editor")
-                    this.editor = this.editorCacheStore.createEditor(path, this.$refs.editor)
+                    this.editor = this.editorCacheStore.createEditor(path)
                     this.editorCacheStore.addEditor(path, toRaw(this.editor))
                 }
 

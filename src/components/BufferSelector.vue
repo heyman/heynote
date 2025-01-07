@@ -2,11 +2,14 @@
     import fuzzysort from 'fuzzysort'
 
     import { mapState, mapActions } from 'pinia'
-    import { toRaw } from 'vue';
     import { SCRATCH_FILE_NAME } from "../common/constants"
     import { useHeynoteStore } from "../stores/heynote-store"
 
     export default {
+        props: {
+            headline: String,
+        },
+        
         data() {
             return {
                 selected: 0,
@@ -94,7 +97,6 @@
                 "updateBuffers",
                 "editBufferMetadata",
                 "deleteBuffer",
-                "openCreateBuffer",
             ]),
 
             buildItems() {
@@ -170,9 +172,9 @@
             selectItem(item) {
                 if (item.createNew) {
                     if (this.filteredItems.length === 1) {
-                        this.openCreateBuffer("new", this.filter)
+                        this.$emit("openCreateBuffer", this.filter)
                     } else {
-                        this.openCreateBuffer("new", "")
+                        this.$emit("openCreateBuffer", "")
                     }
                 } else {
                     this.$emit("openBuffer", item.path)
@@ -237,6 +239,7 @@
 <template>
     <form class="note-selector" tabindex="-1" @focusout="onFocusOut" ref="container">
         <div class="input-container">
+            <h1 v-if="headline">{{headline}}</h1>
             <input 
                 type="text" 
                 ref="input"
@@ -310,11 +313,15 @@
         +dark-mode
             background: #151516
             box-shadow: 0 0 10px rgba(0,0,0,0.5)
+            color: rgba(255,255,255, 0.7)
         +webapp-mobile
             max-width: calc(100% - 80px)
 
         .input-container
             padding: 10px
+            h1
+                font-weight: bold
+                margin-bottom: 14px
             input
                 background: #fff
                 padding: 4px 5px

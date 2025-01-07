@@ -3,7 +3,7 @@ import {HeynotePage} from "./test-utils.js";
 
 import { AUTO_SAVE_INTERVAL } from "../src/common/constants.js"
 import { NoteFormat } from "../src/common/note-format.js"
-import exp from "constants";
+
 
 let heynotePage
 
@@ -40,11 +40,12 @@ test("default buffer saved", async ({page}) => {
 test("create new buffer from block", async ({page}) => {
     await page.locator("body").press(heynotePage.agnosticKey("Mod+S"))
     await page.waitForTimeout(50)
+    await page.locator("body").press("ArrowUp")
+    await page.locator("body").press("Enter")
+    await page.waitForTimeout(50)
     await page.locator("body").pressSequentially("My New Buffer")
     await page.locator("body").press("Enter")
     await page.waitForTimeout(150)
-    await page.locator("body").press("Enter")
-    await page.locator("body").pressSequentially("New buffer content")
     await page.waitForTimeout(AUTO_SAVE_INTERVAL + 50);
 
     const buffers = Object.keys(await heynotePage.getStoredBufferList())
@@ -62,8 +63,7 @@ Block B`)
 
     expect(newBuffer.content).toBe(`
 ∞∞∞text
-Block C
-New buffer content`)
+Block C`)
 
 })
 
