@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test"
 import { EditorState } from "@codemirror/state"
 
 import { heynoteLang } from "../src/editor/lang-heynote/heynote.js"
-import { getBlocksFromSyntaxTree, getBlocksFromString } from "../src/editor/block/block.js"
+import { getBlocksFromSyntaxTree, getBlocksFromString } from "../src/editor/block/block-parsing.js"
 
 test("parse blocks from both syntax tree and string contents", async ({page}) => {
     const contents = `
