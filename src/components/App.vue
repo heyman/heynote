@@ -1,9 +1,10 @@
 <script>
     import { mapState, mapActions } from 'pinia'
 
-    import { mapWritableState } from 'pinia'
+    import { mapWritableState, mapStores } from 'pinia'
     import { useHeynoteStore } from "../stores/heynote-store"
     import { useErrorStore } from "../stores/error-store"
+    import { useSettingsStore } from "../stores/settings-store"
 
     import { OPEN_SETTINGS_EVENT, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
 
@@ -30,9 +31,6 @@
 
         data() {
             return {
-                theme: window.heynote.themeMode.initial,
-                initialTheme: window.heynote.themeMode.initial,
-                themeSetting: 'system',
                 development: window.location.href.indexOf("dev=1") !== -1,
                 showSettings: false,
                 settings: window.heynote.settings,
@@ -40,30 +38,15 @@
         },
 
         mounted() {
-            window.heynote.themeMode.get().then((mode) => {
-                this.theme = mode.computed
-                this.themeSetting = mode.theme
-            })
-            const onThemeChange = (theme) => {
-                this.theme = theme
-                if (theme === "system") {
-                    document.documentElement.setAttribute("theme", window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-                } else {
-                    document.documentElement.setAttribute("theme", theme)
-                }
-            }
-            onThemeChange(window.heynote.themeMode.initial)
-            window.heynote.themeMode.onChange(onThemeChange)
-            window.heynote.mainProcess.on(SETTINGS_CHANGE_EVENT, (event, settings) => {
-                this.settings = settings
-            })
+            this.settingsStore.setUp()
+            
             window.heynote.mainProcess.on(OPEN_SETTINGS_EVENT, () => {
                 this.showSettings = true
             })
         },
 
         beforeUnmount() {
-            window.heynote.themeMode.removeListener()
+            this.settingsStore.tearDown()
         },
 
         watch: {
@@ -83,6 +66,7 @@
         },
 
         computed: {
+            ...mapStores(useSettingsStore),
             ...mapState(useHeynoteStore, [
                 "currentBufferPath",
                 "currentBufferName",
@@ -131,24 +115,6 @@
                 this.focusEditor()
             },
 
-            toggleTheme() {
-                let newTheme
-                // when the "system" theme is used, make sure that the first click always results in amn actual theme change
-                if (this.initialTheme === "light") {
-                    newTheme = this.themeSetting === "system" ? "dark" : (this.themeSetting === "dark" ? "light" : "system")
-                } else {
-                    newTheme = this.themeSetting === "system" ? "light" : (this.themeSetting === "light" ? "dark" : "system")
-                }
-                window.heynote.themeMode.set(newTheme)
-                this.themeSetting = newTheme
-                this.$refs.editor.focus()
-            },
-
-            setTheme(theme) {
-                window.heynote.themeMode.set(theme)
-                this.themeSetting = theme
-            },
-
             onSelectLanguage(language) {
                 this.closeDialog()
                 this.$refs.editor.setLanguage(language)
@@ -165,18 +131,9 @@
 <template>
     <div class="container">
         <Editor 
-            :theme="theme"
+            :theme="settingsStore.theme"
             :development="development"
             :debugSyntaxTree="false"
-            :keymap="settings.keymap"
-            :emacsMetaKey="settings.emacsMetaKey"
-            :showLineNumberGutter="settings.showLineNumberGutter"
-            :showFoldGutter="settings.showFoldGutter"
-            :bracketClosing="settings.bracketClosing"
-            :fontFamily="settings.fontFamily"
-            :fontSize="settings.fontSize"
-            :defaultBlockLanguage="settings.defaultBlockLanguage || 'text'"
-            :defaultBlockLanguageAutoDetect="settings.defaultBlockLanguageAutoDetect === undefined ? true : settings.defaultBlockLanguageAutoDetect"
             :inert="editorInert"
             class="editor"
             ref="editor"
@@ -204,10 +161,10 @@
             />
             <Settings 
                 v-if="showSettings"
-                :initialSettings="settings"
-                :themeSetting="themeSetting"
+                :initialSettings="settingsStore.settings"
+                :themeSetting="settingsStore.themeSetting"
                 @closeSettings="closeSettings"
-                @setTheme="setTheme"
+                @setTheme="settingsStore.setTheme"
             />
             <NewBuffer 
                 v-if="showCreateBuffer"

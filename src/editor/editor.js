@@ -330,8 +330,8 @@ export class HeynoteEditor {
     }
 
     setDefaultBlockLanguage(token, autoDetect) {
-        this.defaultBlockToken = token
-        this.defaultBlockAutoDetect = autoDetect
+        this.defaultBlockToken = token || "text"
+        this.defaultBlockAutoDetect = autoDetect === undefined ? true : autoDetect
     }
 
     formatCurrentBlock() {
