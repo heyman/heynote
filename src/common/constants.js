@@ -5,6 +5,7 @@ export const WINDOW_CLOSE_EVENT = "window-close"
 export const OPEN_SETTINGS_EVENT = "open-settings"
 export const SETTINGS_CHANGE_EVENT = "settings-change"
 export const REDO_EVENT = "redo"
+export const MOVE_BLOCK_EVENT = "move-block"
 
 export const UPDATE_AVAILABLE_EVENT = "update-available"
 export const UPDATE_NOT_AVAILABLE_EVENT = "update-not-available"
