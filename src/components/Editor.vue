@@ -2,7 +2,7 @@
     import { HeynoteEditor } from '../editor/editor.js'
     import { syntaxTree } from "@codemirror/language"
     import { toRaw } from 'vue';
-    import { mapState, mapWritableState, mapActions } from 'pinia'
+    import { mapState, mapWritableState, mapActions, mapStores } from 'pinia'
     import { useErrorStore } from "../stores/error-store"
     import { useHeynoteStore } from "../stores/heynote-store.js"
     import { useEditorCacheStore } from "../stores/editor-cache"
@@ -12,33 +12,8 @@
 
     export default {
         props: {
-            theme: String,
             development: Boolean,
             debugSyntaxTree: Boolean,
-            keymap: {
-                type: String,
-                default: "default",
-            },
-            emacsMetaKey: {
-                type: String,
-                default: "alt",
-            },
-            showLineNumberGutter: {
-                type: Boolean,
-                default: true,
-            },
-            showFoldGutter: {
-                type: Boolean,
-                default: true,
-            },
-            bracketClosing: {
-                type: Boolean,
-                default: false,
-            },
-            fontFamily: String,
-            fontSize: Number,
-            defaultBlockLanguage: String,
-            defaultBlockLanguageAutoDetect: Boolean,
         },
 
         components: {},
@@ -70,7 +45,9 @@
             
             window.heynote.mainProcess.on(WINDOW_CLOSE_EVENT, this.onWindowClose)
             window.heynote.mainProcess.on(REDO_EVENT, this.onRedo)
-            window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
+
+            // initialize editorCacheStore (sets up watchers for settings changes, propagating them to all editors)
+            this.editorCacheStore.setUp();
 
             // if debugSyntaxTree prop is set, display syntax tree for debugging
             if (this.debugSyntaxTree) {
@@ -95,7 +72,7 @@
         beforeUnmount() {
             window.heynote.mainProcess.off(WINDOW_CLOSE_EVENT, this.onWindowClose)
             window.heynote.mainProcess.off(REDO_EVENT, this.onRedo)
-            window.document.removeEventListener("currenciesLoaded", this.onCurrenciesLoaded)
+            this.editorCacheStore.tearDown();
         },
 
         watch: {
@@ -103,66 +80,10 @@
                 //console.log("currentBufferPath changed to", path)
                 this.loadBuffer(this.currentBufferPath)
             },
-
-            theme(newTheme) {
-                this.eachEditor(editor => {
-                    editor.setTheme(newTheme)
-                })
-            },
-
-            keymap() {
-                this.eachEditor(editor => {
-                    editor.setKeymap(this.keymap, this.emacsMetaKey)
-                })
-            },
-
-            emacsMetaKey() {
-                this.eachEditor(editor => {
-                    editor.setKeymap(this.keymap, this.emacsMetaKey)
-                })
-            },
-
-            showLineNumberGutter(show) {
-                this.eachEditor(editor => {
-                    editor.setLineNumberGutter(show)
-                })
-            },
-
-            showFoldGutter(show) {
-                this.eachEditor(editor => {
-                    editor.setFoldGutter(show)
-                })
-            },
-
-            bracketClosing(value) {
-                this.eachEditor(editor => {
-                    editor.setBracketClosing(value)
-                })
-            },
-
-            fontFamily() {
-                this.eachEditor(editor => {
-                    editor.setFont(this.fontFamily, this.fontSize)
-                })
-            },
-            fontSize() {
-                this.eachEditor(editor => {
-                    editor.setFont(this.fontFamily, this.fontSize)
-                })
-            },
-            defaultBlockLanguage() {
-                this.eachEditor(editor => {
-                    editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
-                })
-            },
-            defaultBlockLanguageAutoDetect() {
-                this.eachEditor(editor => {
-                    editor.setDefaultBlockLanguage(this.defaultBlockLanguage, this.defaultBlockLanguageAutoDetect)
-                })
-            },
         },
 
         computed: {
+            ...mapStores(useEditorCacheStore),
             ...mapState(useHeynoteStore, [
                 "currentBufferPath",
                 "libraryId",
@@ -178,42 +99,21 @@
         },
 
         methods: {
-            ...mapActions(useErrorStore, ["addError"]),
-            ...mapActions(useEditorCacheStore, ["getEditor", "addEditor", "eachEditor"]),
-
             loadBuffer(path) {
                 //console.log("loadBuffer", path)
                 if (this.editor) {
                     this.editor.hide()
                 }
 
-                let cachedEditor = this.getEditor(path)
+                let cachedEditor = this.editorCacheStore.getEditor(path)
                 if (cachedEditor) {
                     //console.log("show cached editor")
                     this.editor = cachedEditor
                     toRaw(this.editor).show()
                 } else {
                     //console.log("create new editor")
-                    try {
-                        this.editor = new HeynoteEditor({
-                            element: this.$refs.editor,
-                            path: path,
-                            theme: this.theme,
-                            keymap: this.keymap,
-                            emacsMetaKey: this.emacsMetaKey,
-                            showLineNumberGutter: this.showLineNumberGutter,
-                            showFoldGutter: this.showFoldGutter,
-                            bracketClosing: this.bracketClosing,
-                            fontFamily: this.fontFamily,
-                            fontSize: this.fontSize,
-                            defaultBlockToken: this.defaultBlockLanguage,
-                            defaultBlockAutoDetect: this.defaultBlockLanguageAutoDetect,
-                        })
-                    } catch (e) {
-                        this.addError("Error! " + e.message)
-                        throw e
-                    }
-                    this.addEditor(path, toRaw(this.editor))
+                    this.editor = this.editorCacheStore.createEditor(path, this.$refs.editor)
+                    this.editorCacheStore.addEditor(path, toRaw(this.editor))
                 }
 
                 this.currentEditor = toRaw(this.editor)
@@ -234,12 +134,6 @@
                 const editor = toRaw(this.editor)
                 editor.formatCurrentBlock()
                 editor.focus()
-            },
-
-            onCurrenciesLoaded() {
-                if (this.editor) {
-                    toRaw(this.editor).currenciesLoaded()
-                }
             },
 
             focus() {
