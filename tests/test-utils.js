@@ -38,7 +38,10 @@ export class HeynotePage {
 
     async setContent(content) {
         await expect(this.page.locator("css=.cm-editor")).toBeVisible()
-        await this.page.evaluate((content) => window._heynote_editor.setContent(content), content)
+        await this.page.evaluate(async (content) => {
+            await window._heynote_editor.setContent(content)
+            await window._heynote_editor.save()
+        }, content)
     }
 
     async getCursorPosition() {
@@ -63,6 +66,12 @@ export class HeynotePage {
 
     async getStoredBuffer(path) {
         return await this.page.evaluate((path) => window.heynote.buffer.load(path), path)
+    }
+
+    async saveBuffer(path, content) {
+        const format = new NoteFormat()
+        format.content = content
+        await this.page.evaluate(({path, content}) => window.heynote.buffer.save(path, content), {path, content:format.serialize()})
     }
 
     agnosticKey(key) {

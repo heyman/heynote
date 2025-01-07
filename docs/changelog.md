@@ -5,6 +5,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ## 2.1.0 (not yet released)
 
+- Added support for moving the current block to another (or new) buffer. Pressing `Ctrl/Cmd+S` will now pop up a dialog where you can search for and select another buffer to which the block will be moved. It's also possible to select to create a brand new buffer to which the block will be moved.
 - Added support for the following languages:
   * Elixir
   * Scala

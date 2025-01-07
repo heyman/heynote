@@ -169,8 +169,9 @@ const blockLayer = layer({
                 idx++;
                 return
             }
-            const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from)).top
-            let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)).bottom
+            // view.coordsAtPos returns null if the editor is not visible
+            const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from))?.top
+            let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to))?.bottom
             if (idx === blocks.length - 1) {
                 // Calculate how much extra height we need to add to the last block
                 let extraHeight = view.viewState.editorHeight - (

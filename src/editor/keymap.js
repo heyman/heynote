@@ -59,7 +59,7 @@ export function heynoteKeymap(editor) {
         ["Alt-ArrowDown", moveLineDown],
         ["Mod-l", () => editor.openLanguageSelector()],
         ["Mod-p", () => editor.openBufferSelector()],
-        ["Mod-s", () => editor.openCreateBuffer("currentBlock")],
+        ["Mod-s", () => editor.openMoveToBufferSelector()],
         ["Mod-n", () => editor.openCreateBuffer("new")],
         ["Mod-Shift-d", deleteBlock(editor)],
         ["Alt-Shift-f", formatBlockContent],
