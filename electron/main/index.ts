@@ -5,7 +5,7 @@ import fs from "fs"
 
 import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
 
-import { menu, getTrayMenu } from './menu'
+import { menu, getTrayMenu, getEditorContextMenu } from './menu'
 import CONFIG from "../config"
 import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
@@ -374,6 +374,10 @@ ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
 
 ipcMain.handle("setWindowTitle", (event, title) => {
     win?.setTitle(title)
+})
+
+ipcMain.handle("showEditorContextMenu", () =>  {
+    getEditorContextMenu(win).popup({window:win});
 })
 
 // Initialize note/file library

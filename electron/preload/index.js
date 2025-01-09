@@ -48,6 +48,10 @@ contextBridge.exposeInMainWorld("heynote", {
         off(event, callback) {
             ipcRenderer.off(event, callback)
         },
+
+        invoke(event, ...args) {
+            return ipcRenderer.invoke(event, ...args)
+        }
     },
 
     buffer: {

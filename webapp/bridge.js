@@ -227,6 +227,10 @@ const Heynote = {
         off(event, callback) {
             ipcRenderer.off(event, callback)
         },
+
+        invoke(event, ...args) {
+            
+        }
     },
 
     settings: initialSettings,

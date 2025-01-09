@@ -5,7 +5,7 @@
     import { useErrorStore } from "../stores/error-store"
     import { useHeynoteStore } from "../stores/heynote-store.js"
     import { useEditorCacheStore } from "../stores/editor-cache"
-    import { REDO_EVENT, WINDOW_CLOSE_EVENT } from '@/src/common/constants';
+    import { REDO_EVENT, WINDOW_CLOSE_EVENT, DELETE_BLOCK_EVENT, UNDO_EVENT } from '@/src/common/constants';
 
     const NUM_EDITOR_INSTANCES = 5
 
@@ -22,7 +22,6 @@
                 syntaxTreeDebugContent: null,
                 editor: null,
                 onWindowClose: null,
-                onRedo: null,
             }
         },
 
@@ -38,15 +37,25 @@
                     [this.editor.path, this.editor.getContent()],
                 ])
             }
+            window.heynote.mainProcess.on(WINDOW_CLOSE_EVENT, this.onWindowClose)
 
-            this.onRedo = () => {
+            window.heynote.mainProcess.on(UNDO_EVENT, () => {
+                if (this.editor) {
+                    toRaw(this.editor).undo()
+                }
+            })
+
+            window.heynote.mainProcess.on(REDO_EVENT, () => {
                 if (this.editor) {
                     toRaw(this.editor).redo()
                 }
-            }
+            })
             
-            window.heynote.mainProcess.on(WINDOW_CLOSE_EVENT, this.onWindowClose)
-            window.heynote.mainProcess.on(REDO_EVENT, this.onRedo)
+            window.heynote.mainProcess.on(DELETE_BLOCK_EVENT, () => {
+                if (this.editor) {
+                    toRaw(this.editor).deleteActiveBlock()
+                }
+            })
 
             // if debugSyntaxTree prop is set, display syntax tree for debugging
             if (this.debugSyntaxTree) {
@@ -70,7 +79,9 @@
 
         beforeUnmount() {
             window.heynote.mainProcess.off(WINDOW_CLOSE_EVENT, this.onWindowClose)
-            window.heynote.mainProcess.off(REDO_EVENT, this.onRedo)
+            window.heynote.mainProcess.off(UNDO_EVENT)
+            window.heynote.mainProcess.off(REDO_EVENT)
+            window.heynote.mainProcess.off(DELETE_BLOCK_EVENT)
             this.editorCacheStore.tearDown();
         },
 
@@ -138,13 +149,18 @@
             focus() {
                 toRaw(this.editor).focus()
             },
+
+            onContextMenu(event) {
+                event.preventDefault()
+                window.heynote.mainProcess.invoke("showEditorContextMenu")
+            },
         },
     }
 </script>
 
 <template>
     <div>
-        <div class="editor" ref="editor"></div>
+        <div class="editor" ref="editor" @contextmenu="onContextMenu"></div>
         <div 
             v-if="debugSyntaxTree"
             v-html="syntaxTreeDebugContent"
