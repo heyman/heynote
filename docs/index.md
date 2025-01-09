@@ -108,7 +108,7 @@ format(x) = x.toLocaleString('en-GB');
 See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
 
 
-## The notes library (only for Heynote 2.0, not yet released)
+## The notes library
 
 The notes library is a directory (with sub dirs) on the disk with a `.txt` file for each note. It's created the first time you start Heynote, with the default note file `scratch.txt` in it. The default location for the library is:
 
