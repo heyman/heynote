@@ -238,6 +238,13 @@ export class HeynoteEditor {
         return this.view.state.selection.main.head
     }
 
+    setCursorPosition(position) {
+        this.view.dispatch({
+            selection: {anchor: position, head: position},
+            scrollIntoView: true,
+        })
+    }
+
     focus() {
         this.view.focus()
     }

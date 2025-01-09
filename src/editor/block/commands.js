@@ -323,6 +323,46 @@ export function triggerCurrenciesLoaded(state, dispatch) {
 }
 
 export const deleteBlock = (editor) => ({state, dispatch}) => {
+    const range = state.selection.asSingle().ranges[0]
+    const blocks = state.facet(blockState)
+    let block
+    let nextBlock
+    for (let i = 0; i < blocks.length; i++) {
+        block = blocks[i]
+        if (block.range.from <= range.head && block.range.to >= range.head) {
+            if (i < blocks.length - 1) {
+                nextBlock = blocks[i + 1]
+            }
+            break
+        }
+    }
+    
+    let replace = ""
+    let newSelection
+
+    if (blocks.length == 1) {
+        replace = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
+        newSelection = replace.length
+    } else if (!nextBlock) {
+        // if it's the last block, the cursor should go at the en of the previous block
+        newSelection = block.delimiter.from
+    } else {
+        // if there is a next block, we want the cursor to be at the beginning of that block
+        newSelection = block.delimiter.from + (nextBlock.delimiter.to - nextBlock.delimiter.from)
+    }
+
+    dispatch(state.update({
+        changes: {
+            from: block.range.from,
+            to: block.range.to,
+            insert: replace,
+        },
+        selection: EditorSelection.cursor(newSelection),
+        annotations: [heynoteEvent.of(DELETE_BLOCK)],
+    }))
+}
+
+export const deleteBlockSetCursorPreviousBlock = (editor) => ({state, dispatch}) => {
     const block = getActiveNoteBlock(state)
     const blocks = state.facet(blockState)
     let replace = ""
