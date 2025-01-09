@@ -9,6 +9,7 @@ export const UNDO_EVENT = "undo"
 export const MOVE_BLOCK_EVENT = "move-block"
 export const DELETE_BLOCK_EVENT = "delete-block"
 export const CHANGE_BUFFER_EVENT = "change-buffer"
+export const SELECT_ALL_EVENT = "select-all"
 
 export const UPDATE_AVAILABLE_EVENT = "update-available"
 export const UPDATE_NOT_AVAILABLE_EVENT = "update-not-available"

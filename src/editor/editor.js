@@ -13,7 +13,7 @@ import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension, blockLineNumbers, blockState, getActiveNoteBlock, triggerCursorChange } from "./block/block.js"
 import { heynoteEvent, SET_CONTENT, DELETE_BLOCK, APPEND_BLOCK } from "./annotation.js";
-import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, getBlockDelimiter, deleteBlock } from "./block/commands.js"
+import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, getBlockDelimiter, deleteBlock, selectAll } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
 import { heynoteKeymap } from "./keymap.js"
 import { emacsKeymap } from "./emacs.js"
@@ -412,6 +412,10 @@ export class HeynoteEditor {
 
     redo() {
         redo(this.view)
+    }
+
+    selectAll() {
+        selectAll(this.view)
     }
 }
 

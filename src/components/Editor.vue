@@ -5,7 +5,7 @@
     import { useErrorStore } from "../stores/error-store"
     import { useHeynoteStore } from "../stores/heynote-store.js"
     import { useEditorCacheStore } from "../stores/editor-cache"
-    import { REDO_EVENT, WINDOW_CLOSE_EVENT, DELETE_BLOCK_EVENT, UNDO_EVENT } from '@/src/common/constants';
+    import { REDO_EVENT, WINDOW_CLOSE_EVENT, DELETE_BLOCK_EVENT, UNDO_EVENT, SELECT_ALL_EVENT } from '@/src/common/constants';
 
     const NUM_EDITOR_INSTANCES = 5
 
@@ -57,6 +57,12 @@
                 }
             })
 
+            window.heynote.mainProcess.on(SELECT_ALL_EVENT, () => {
+                if (this.editor) {
+                    toRaw(this.editor).selectAll()
+                }
+            })
+
             // if debugSyntaxTree prop is set, display syntax tree for debugging
             if (this.debugSyntaxTree) {
                 setInterval(() => {
@@ -82,6 +88,7 @@
             window.heynote.mainProcess.off(UNDO_EVENT)
             window.heynote.mainProcess.off(REDO_EVENT)
             window.heynote.mainProcess.off(DELETE_BLOCK_EVENT)
+            window.heynote.mainProcess.off(SELECT_ALL_EVENT)
             this.editorCacheStore.tearDown();
         },
 

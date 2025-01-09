@@ -1,5 +1,5 @@
 const { app, Menu } = require("electron")
-import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT } from '@/src/common/constants'
+import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, SELECT_ALL_EVENT } from '@/src/common/constants'
 import { openAboutWindow } from "./about";
 import { quit } from "./index"
 
@@ -19,6 +19,14 @@ const redoMenuItem = {
     accelerator: 'CommandOrControl+Shift+z',
     click: (menuItem, window, event) => {
         window?.webContents.send(REDO_EVENT)
+    },
+}
+
+const selectAllMenuItem = {
+    label: 'Select All',
+    accelerator: 'CommandOrControl+a',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(SELECT_ALL_EVENT)
     },
 }
 
@@ -117,7 +125,7 @@ const template = [
             ...(isMac ? [
                 { role: 'pasteAndMatchStyle' },
                 { role: 'delete' },
-                { role: 'selectAll' },
+                selectAllMenuItem,
                 { type: 'separator' },
                 {
                     label: 'Speech',
@@ -129,7 +137,7 @@ const template = [
             ] : [
                 { role: 'delete' },
                 { type: 'separator' },
-                { role: 'selectAll' }
+                selectAllMenuItem,
             ])
         ]
     },
@@ -226,7 +234,7 @@ export function getEditorContextMenu(win) {
         {role: 'copy'},
         {role: 'paste'},
         {type: 'separator'},
-        {role: 'selectAll'},
+        selectAllMenuItem,
         {type: 'separator'},
         deleteBlockMenuItem,
         moveBlockMenuItem,
