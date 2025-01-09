@@ -1,9 +1,50 @@
 const { app, Menu } = require("electron")
-import { OPEN_SETTINGS_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT } from '@/src/common/constants'
+import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT } from '@/src/common/constants'
 import { openAboutWindow } from "./about";
 import { quit } from "./index"
 
 const isMac = process.platform === "darwin"
+
+
+const undoMenuItem = {
+    label: 'Undo',
+    accelerator: 'CommandOrControl+z',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(UNDO_EVENT)
+    },
+}
+
+const redoMenuItem = {
+    label: 'Redo',
+    accelerator: 'CommandOrControl+Shift+z',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(REDO_EVENT)
+    },
+}
+
+const deleteBlockMenuItem = {
+    label: 'Delete block',
+    accelerator: 'CommandOrControl+Shift+D',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(DELETE_BLOCK_EVENT)
+    },
+}
+
+const moveBlockMenuItem = {
+    label: 'Move block to another buffer…',
+    accelerator: 'CommandOrControl+S',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(MOVE_BLOCK_EVENT)
+    },
+}
+
+const changeBufferMenuItem = {
+    label: 'Switch buffer…',
+    accelerator: 'CommandOrControl+P',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(CHANGE_BUFFER_EVENT)
+    },
+}
 
 const template = [
     // { role: 'appMenu' }
@@ -18,6 +59,7 @@ const template = [
                 },
             },
             { type: 'separator' },
+            changeBufferMenuItem,
             {
                 label: 'Settings',
                 click: (menuItem, window, event) => {
@@ -37,6 +79,7 @@ const template = [
     }] : [{
         role: 'fileMenu',
         submenu: [
+            changeBufferMenuItem,
             {
                 label: 'Settings',
                 click: (menuItem, window, event) => {
@@ -62,22 +105,11 @@ const template = [
     {
         label: 'Edit',
         submenu: [
-            { role: 'undo' },
-            {
-                label: 'Redo',
-                accelerator: 'CommandOrControl+Shift+z',
-                click: (menuItem, window, event) => {
-                    window?.webContents.send(REDO_EVENT)
-                },
-            },
+            undoMenuItem,
+            redoMenuItem,
             { type: 'separator' },
-            {
-                label: 'Move block to another buffer...',
-                accelerator: 'CommandOrControl+S',
-                click: (menuItem, window, event) => {
-                    window?.webContents.send(MOVE_BLOCK_EVENT)
-                },
-            },
+            deleteBlockMenuItem,
+            moveBlockMenuItem,
             { type: 'separator' },
             { role: 'cut' },
             { role: 'copy' },
@@ -185,3 +217,18 @@ export function getTrayMenu(win) {
     ])
 }
 
+export function getEditorContextMenu(win) {
+    return Menu.buildFromTemplate([
+        undoMenuItem,
+        redoMenuItem,
+        {type: 'separator'},
+        {role: 'cut'},
+        {role: 'copy'},
+        {role: 'paste'},
+        {type: 'separator'},
+        {role: 'selectAll'},
+        {type: 'separator'},
+        deleteBlockMenuItem,
+        moveBlockMenuItem,
+    ])
+}
