@@ -62,7 +62,7 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "codemirror-lang-elixir": "^4.0.0",
     "debounce": "^1.2.1",
-    "electron": "^31.1.0",
+    "electron": "^33.3.1",
     "electron-builder": "^23.6.0",
     "electron-builder-notarize": "^1.5.1",
     "electron-store": "^8.1.0",
