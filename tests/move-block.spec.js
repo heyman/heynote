@@ -25,15 +25,17 @@ Block C`)
 
     // check that visual block layers are created
     await expect(page.locator("css=.heynote-blocks-layer > div")).toHaveCount(3)
-});
 
-
-test("move block to other buffer", async ({page}) => {
+    // create secondary buffer
     await heynotePage.saveBuffer("other.txt", `
 ∞∞∞text-a
 First block
 ∞∞∞math
 Second block`)
+});
+
+
+test("move block to other buffer", async ({page}) => {
     await page.locator("body").press(heynotePage.agnosticKey("Mod+S"))
     await page.waitForTimeout(50)
     await page.locator("body").press("Enter")
@@ -62,11 +64,6 @@ Block C`)
 
 
 test("move block to other open/cached buffer", async ({page}) => {
-    await heynotePage.saveBuffer("other.txt", `
-∞∞∞text-a
-First block
-∞∞∞math
-Second block`)
     await page.locator("body").press(heynotePage.agnosticKey("Mod+P"))
     await page.locator("body").press("Enter")
     await page.waitForTimeout(50)
@@ -99,3 +96,30 @@ Block C`)
 
 })
 
+test("cursor position after moving first block", async ({page}) => {
+    await heynotePage.setCursorPosition(10)
+    expect(await heynotePage.getCursorPosition()).toBe(10)
+    await page.locator("body").press(heynotePage.agnosticKey("Mod+S"))
+    await page.waitForTimeout(50)
+    await page.locator("body").press("Enter")
+    await page.waitForTimeout(50)
+    expect(await heynotePage.getCursorPosition()).toBe(9)
+})
+
+test("cursor position after moving middle block", async ({page}) => {
+    await heynotePage.setCursorPosition(28)
+    await page.locator("body").press(heynotePage.agnosticKey("Mod+S"))
+    await page.waitForTimeout(50)
+    await page.locator("body").press("Enter")
+    await page.waitForTimeout(50)
+    expect(await heynotePage.getCursorPosition()).toBe(25)
+})
+
+test("cursor position after moving last block", async ({page}) => {
+    await heynotePage.setCursorPosition(48)
+    await page.locator("body").press(heynotePage.agnosticKey("Mod+S"))
+    await page.waitForTimeout(50)
+    await page.locator("body").press("Enter")
+    await page.waitForTimeout(50)
+    expect(await heynotePage.getCursorPosition()).toBe(32)
+})
