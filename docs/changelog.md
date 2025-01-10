@@ -3,9 +3,9 @@
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
 
-## 2.1.0 (not yet released)
+## 2.1.0
 
-- Added support for moving the current block to another (or new) buffer. Pressing `Ctrl/Cmd+S` will now pop up a dialog where you can search for and select another buffer to which the block will be moved. It's also possible to select to create a brand new buffer to which the block will be moved.
+- Added support for moving the current block to another (or new) buffer. Pressing `Ctrl/Cmd+S` will now pop up a dialog where you can search for and select another buffer to which the block will be moved. It's also possible to select to create a new buffer to which the block will be moved.
 - Add right click context menu with undo/redo/cut/copy/paste/select all as well as Delete Block and Move block to another buffer.
 - Add File menu item for switching buffer
 - When deleting a block, the cursor will now end up at the beginning of the next block, instead of at the end of the previous block.
