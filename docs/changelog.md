@@ -5,6 +5,8 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ## 2.1.0
 
+### New Features
+
 - Added support for moving the current block to another (or new) buffer. Pressing `Ctrl/Cmd+S` will now pop up a dialog where you can search for and select another buffer to which the block will be moved. It's also possible to select to create a new buffer to which the block will be moved.
 - Add right click context menu with undo/redo/cut/copy/paste/select all as well as Delete Block and Move block to another buffer.
 - Add File menu item for switching buffer
@@ -13,6 +15,11 @@ Here are the most notable changes in each release. For a more detailed list of c
   * Elixir
   * Scala
 - PHP blocks no longer requires `<?php` for syntax highlighting to work
+
+### Bug Fixes
+
+- MacOS: Clicking the Heynote icon in the dock when using menu bar mode didn't bring up the window
+- Redo from the application menu didn't work
 
 
 ## 2.0.0
