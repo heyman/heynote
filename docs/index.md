@@ -110,7 +110,7 @@ See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.ht
 
 ## The notes library
 
-The notes library is a directory (with sub dirs) on the disk with a `.txt` file for each note. It's created the first time you start Heynote, with the default note file `scratch.txt` in it. The default location for the library is:
+The notes library is a directory (with sub dirs) on the disk with a `.txt` file for each buffer. It's created the first time you start Heynote, with the default buffer file `scratch.txt` in it. The default location for the library is:
 
 -   Mac: `~/Library/Application Support/Heynote/notes/`
 -   Windows: `%APPDATA%\Heynote\notes\`
@@ -120,7 +120,7 @@ You can change the path of the notes library in the settings. Heynote expects re
 
 ### Synchronizing the notes library
 
-Heynote is built to support synchronizing the notes library (or buffer file in the case of Heynote 1.x) through file-syncing services like Dropbox, OneDrive, etc. However, note that the synchronization logic is quite simple, so editing the same note on two different machines at the same time might lead to conflicts and unexpected results.
+Heynote is built to support synchronizing the notes library (or buffer file in the case of Heynote 1.x) through file-syncing services like Dropbox, OneDrive, etc. However, note that the synchronization logic is quite simple, so editing the same buffer on two different machines at the same time might lead to conflicts and unexpected results.
 
 When using a file synching service that support "offloading" of files in the cloud (removing them from the disk), it's recommended to mark the notes library as "always available offline".
 
