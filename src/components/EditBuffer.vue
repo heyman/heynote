@@ -7,6 +7,8 @@
 
     import FolderSelector from './folder-selector/FolderSelector.vue'
 
+    const pathSep = window.heynote.buffer.pathSeparator
+
     export default {
         data() {
             return {
@@ -42,7 +44,7 @@
             const getNodeFromList = (list, part) => list.find(node => node.name === part)
                 
             directories.forEach((path) => {
-                const parts = path.split("/")
+                const parts = path.split(pathSep)
                 let currentLevel = rootNode
                 let currentParts = []
                 parts.forEach(part => {
@@ -51,7 +53,7 @@
                     if (node) {
                         currentLevel = node
                     } else {
-                        const currentPath = currentParts.join("/")
+                        const currentPath = currentParts.join(pathSep)
                         node = {
                             name: part,
                             children: [],
@@ -78,7 +80,7 @@
             },
 
             currentNoteDirectory() {
-                return this.currentBufferPath.split("/").slice(0, -1).join("/")
+                return this.currentBufferPath.split(pathSep).slice(0, -1).join(pathSep)
             },
 
             nameInputClass() {
@@ -132,7 +134,7 @@
                     this.errors.name = true
                     return
                 }
-                const parentPathPrefix = this.parentPath === "" ? "" : this.parentPath + "/"
+                const parentPathPrefix = this.parentPath === "" ? "" : this.parentPath + pathSep
                 let path;
                 for (let i=0; i<1000; i++) {
                     let filename = slug + ".txt"

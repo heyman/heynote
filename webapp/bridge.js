@@ -217,6 +217,8 @@ const Heynote = {
         removeOnChangeCallback(path, callback) {
             
         },
+
+        pathSeparator: "/",
     },
 
     mainProcess: {

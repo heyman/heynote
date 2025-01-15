@@ -1,4 +1,5 @@
 const { contextBridge } = require('electron')
+import { sep } from "path"
 import themeMode from "./theme-mode"
 import { isMac, isWindows, isLinux, isDev } from "../detect-platform"
 import { ipcRenderer } from "electron"
@@ -116,6 +117,8 @@ contextBridge.exposeInMainWorld("heynote", {
         setLibraryPathChangeCallback(callback) {
             ipcRenderer.on("library:pathChanged", callback)
         },
+
+        pathSeparator: sep,
     },
 
     settings: CONFIG.get("settings"),

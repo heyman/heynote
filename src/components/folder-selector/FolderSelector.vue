@@ -2,6 +2,8 @@
     import FolderItem from "./FolderItem.vue"
     import NewFolderItem from "./NewFolderItem.vue"
 
+    const pathSep = window.heynote.buffer.pathSeparator
+
     export default {
         props: {
             directoryTree: Object,
@@ -144,7 +146,7 @@
                 node.createNewFolder = false
                 node.children.unshift({
                     name: name,
-                    path: parentPath === "" ? name : parentPath + "/" + name,
+                    path: parentPath === "" ? name : parentPath + pathSep + name,
                     children: [],
                     newFolder: true,
                 })
@@ -163,7 +165,7 @@
                 //console.log("Remove newly created folder:", path)
                 const node = this.getNode(path)
                 if (node.newFolder && path) {
-                    const parentPath = path.split("/").slice(0, -1).join("/")
+                    const parentPath = path.split(pathSep).slice(0, -1).join(pathSep)
                     const parent = this.getNode(parentPath)
                     parent.children = parent.children.filter(child => child.path !== path)
                     this.selected--
@@ -173,7 +175,7 @@
 
             getNode(path) {
                 const getNodeFromList = (list, part) => list.find(node => node.name === part)
-                const parts = path.split("/")
+                const parts = path.split(pathSep)
                 let currentLevel = this.tree
                 for (const part of parts) {
                     const node = getNodeFromList(currentLevel.children, part)

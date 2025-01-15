@@ -5,6 +5,8 @@
     import { SCRATCH_FILE_NAME } from "../common/constants"
     import { useHeynoteStore } from "../stores/heynote-store"
 
+    const pathSep = window.heynote.buffer.pathSeparator
+
     export default {
         props: {
             headline: String,
@@ -47,8 +49,8 @@
                         return sortScore
                     } else {
                         // then notes in root
-                        const aIsRoot = a.path.indexOf("/") === -1
-                        const bIsRoot = b.path.indexOf("/") === -1
+                        const aIsRoot = a.path.indexOf(pathSep) === -1
+                        const bIsRoot = b.path.indexOf(pathSep) === -1
                         if (aIsRoot && !bIsRoot) {
                             return -1
                         } else if (!aIsRoot && bIsRoot) {
@@ -105,7 +107,7 @@
                     return {
                         "path": path,
                         "name": metadata?.name || path,
-                        "folder": path.split("/").slice(0, -1).join("/"),
+                        "folder": path.split(pathSep).slice(0, -1).join(pathSep),
                         "scratch": path === SCRATCH_FILE_NAME,
                     }
                 })
