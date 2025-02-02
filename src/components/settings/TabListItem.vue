@@ -18,6 +18,7 @@
     li
         padding: 9px 20px
         font-size: 13px
+        line-height: 1.3
         user-select: none
         cursor: pointer
         &:hover

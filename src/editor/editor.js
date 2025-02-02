@@ -29,6 +29,12 @@ import { useErrorStore } from "../stores/error-store.js";
 
 
 function getKeymapExtensions(editor, keymap) {
+    return heynoteKeymap(editor, [
+        {
+            key: "Mod-Enter",
+            command: "addNewBlockAfterCurrent",
+        },
+    ])
     if (keymap === "emacs") {
         return emacsKeymap(editor)
     } else {
