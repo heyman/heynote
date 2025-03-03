@@ -7,6 +7,15 @@
 
     const pathSep = window.heynote.buffer.pathSeparator
 
+    function escapeHTML(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;')
+    }
+
     export default {
         props: {
             headline: String,
@@ -106,8 +115,8 @@
                 this.items = Object.entries(this.buffers).map(([path, metadata]) => {
                     return {
                         "path": path,
-                        "name": metadata?.name || path,
-                        "folder": path.split(pathSep).slice(0, -1).join(pathSep),
+                        "name": escapeHTML(metadata?.name || path),
+                        "folder": escapeHTML(path.split(pathSep).slice(0, -1).join(pathSep)),
                         "scratch": path === SCRATCH_FILE_NAME,
                     }
                 })
@@ -263,8 +272,8 @@
                         @click="selectItem(item)"
                         ref="item"
                     >
-                        <span class="name">{{ item.name }}</span>
-                        <span class="path">{{ item.folder }}</span>
+                        <span class="name" v-html="item.name" />
+                        <span class="path" v-html="item.folder" />
                         <span :class="{'action-buttons':true, 'visible':actionButton > 0 && idx === selected}">
                             <button 
                                 v-if="actionButton > 0 && idx === selected"
