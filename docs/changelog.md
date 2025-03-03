@@ -2,7 +2,11 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.1.2
+## 2.1.3
+
+- Fix escaping issue in buffer selector (properly this time, hopefully)
+
+## 2.1.2 (yanked)
 
 - Fix issue where buffer name wasn't properly escaped in buffer selector
 
