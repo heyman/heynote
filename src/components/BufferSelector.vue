@@ -263,8 +263,8 @@
                         @click="selectItem(item)"
                         ref="item"
                     >
-                        <span class="name" v-html="item.name" />
-                        <span class="path" v-html="item.folder" />
+                        <span class="name">{{ item.name }}</span>
+                        <span class="path">{{ item.folder }}</span>
                         <span :class="{'action-buttons':true, 'visible':actionButton > 0 && idx === selected}">
                             <button 
                                 v-if="actionButton > 0 && idx === selected"
