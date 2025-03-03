@@ -2,6 +2,10 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## 2.1.2
+
+- Fix issue where buffer name wasn't properly escaped in buffer selector
+
 ## 2.1.1
 
 - Fix bug on Windows causing sub directories in the note library to not work correctly
