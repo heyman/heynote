@@ -15,7 +15,7 @@ import {
     cursorLineStart, selectLineStart,
     cursorLineEnd, selectLineEnd,
 } from "@codemirror/commands"
-import { heynoteKeymap, keymapFromSpec } from "./keymap.js"
+import { heynoteKeymap, keymapFromSpecOld } from "./keymap.js"
 
 import {
     gotoPreviousBlock, gotoNextBlock, 
@@ -79,7 +79,7 @@ function emacsMetaKeyCommand(key, editor, command) {
 export function emacsKeymap(editor) {
     return [
         heynoteKeymap(editor),
-        Prec.highest(keymapFromSpec([
+        Prec.highest(keymapFromSpecOld([
             ["Ctrl-Shift--", undo],
             ["Ctrl-.", redo],
             ["Ctrl-g", emacsCancel],
@@ -107,7 +107,7 @@ export function emacsKeymap(editor) {
             { key: "Ctrl-e", run: emacsMoveCommand(cursorLineEnd, selectLineEnd), shift: selectLineEnd },
         ])),
 
-        Prec.highest(keymapFromSpec([
+        Prec.highest(keymapFromSpecOld([
             ["Ctrl-Space", (view) => { emacsMarkMode = !emacsMarkMode }],
             ["Mod-a", emacsSelectAll],
             {key:"Mod-ArrowUp", run:emacsMoveCommand(gotoPreviousBlock, selectPreviousBlock), shift:selectPreviousBlock},

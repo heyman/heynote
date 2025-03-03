@@ -4,6 +4,7 @@
     import KeyboardHotkey from "./KeyboardHotkey.vue"
     import TabListItem from "./TabListItem.vue"
     import TabContent from "./TabContent.vue"
+    import KeyboardBindings from './KeyboardBindings.vue'
 
     const defaultFontFamily = window.heynote.defaultFontFamily
     const defaultFontSize = window.heynote.defaultFontSize
@@ -20,6 +21,7 @@
             KeyboardHotkey,
             TabListItem,
             TabContent,
+            KeyboardBindings,
         },
 
         data() {
@@ -158,6 +160,12 @@
                             tab="appearance"
                             :activeTab="activeTab" 
                             @click="activeTab = 'appearance'"
+                        />
+                        <TabListItem 
+                            name="Key Bindings" 
+                            tab="keyboard-bindings" 
+                            :activeTab="activeTab" 
+                            @click="activeTab = 'keyboard-bindings'"
                         />
                         <TabListItem 
                             :name="isWebApp ? 'Version' : 'Updates'" 
@@ -352,6 +360,10 @@
                                 </select>
                             </div>
                         </div>
+                    </TabContent>
+
+                    <TabContent tab="keyboard-bindings" :activeTab="activeTab">
+                        <KeyboardBindings />
                     </TabContent>
                     
                     <TabContent tab="updates" :activeTab="activeTab">
