@@ -35,6 +35,7 @@ const schema = {
             "showInMenu": {type: "boolean", default: false},
             "alwaysOnTop": {type: "boolean", default: false},
             "bracketClosing": {type: "boolean", default: false},
+            "tabSize": {type: "integer", default: 4},
             "defaultBlockLanguage": {type: "string"},
             "defaultBlockLanguageAutoDetect": {type: "boolean"},
 
@@ -72,6 +73,7 @@ const defaults = {
         showInMenu: false,
         alwaysOnTop: false,
         bracketClosing: false,
+        tabSize: 4,
     },
     theme: "system",
 }
