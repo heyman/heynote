@@ -4,7 +4,7 @@ import { RangeSetBuilder } from "@codemirror/state"
 import { WidgetType } from "@codemirror/view"
 
 import { getNoteBlockFromPos } from "./block"
-import { CURRENCIES_LOADED } from "../annotation"
+import { transactionsHasAnnotation, CURRENCIES_LOADED } from "../annotation"
 
 
 class MathResult extends WidgetType {
@@ -105,12 +105,6 @@ function mathDeco(view) {
         }
     }
     return builder.finish()
-}
-
-
-// This function checks if any of the transactions has the given annotation
-const transactionsHasAnnotation = (transactions, annotation) => {
-    return transactions.some(tr => tr.annotations.some(a => a.value === annotation))
 }
 
 export const mathBlock = ViewPlugin.fromClass(class {

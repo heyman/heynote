@@ -4,7 +4,7 @@ import { WidgetType } from "@codemirror/view"
 import { ViewUpdate, ViewPlugin, DecorationSet } from "@codemirror/view"
 
 import { isMonospaceFont } from "./theme/font-theme"
-import { SET_FONT } from "./annotation"
+import { transactionsHasAnnotation, SET_FONT } from "./annotation"
 
 
 class CheckboxWidget extends WidgetType {
@@ -111,7 +111,7 @@ export const todoCheckboxPlugin = [
         }
 
         update(update: ViewUpdate) {
-            if (update.docChanged || update.viewportChanged || update.transactions.some(tr => tr.annotations.some(a => a.value === SET_FONT))) {
+            if (update.docChanged || update.viewportChanged || transactionsHasAnnotation(update.transactions, SET_FONT)) {
                 this.decorations = checkboxes(update.view)
             }
         }
