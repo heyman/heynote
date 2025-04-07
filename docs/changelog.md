@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.1.4 (not released yet)
+## 2.1.4-beta
 
 - Fix issue with positioning and size of todo list checkboxes in Markdown blocks when using a non-default font size, or a non-monospaced font.
 - Fix issue when pressing `Ctrl/Cmd+A` in a text input inside a modal dialog (e.g. the buffer selector). Previously the select all command would be sent to the editor.
