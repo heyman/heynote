@@ -64,3 +64,51 @@ test("test custom font", async ({ page, browserName }) => {
         return el.clientHeight
     })).toBeGreaterThan(20)
 })
+
+test("markdown todo checkbox position with monospaced font", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞markdown
+- [ ] Test
+- [x] Test 2
+`)
+    expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]")).toHaveCount(2)
+    expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]").first()).toHaveCSS("position", "absolute")
+})
+
+test("markdown todo checkbox position with variable width font", async ({ page }) => {
+    await page.evaluate(() => {
+        window.queryLocalFonts = async () => {
+            return [
+                {
+                    family: "Arial",
+                    style: "Regular",
+                },
+                {
+                    family: "Hack",
+                    fullName: "Hack Regular",
+                    style: "Regular",
+                    postscriptName: "Hack-Regular",
+                },
+                {
+                    family: "Hack",
+                    fullName: "Hack Italic",
+                    style: "Italic",
+                    postscriptName: "Hack-Italic",
+                },
+            ]
+        }
+    })
+    await page.locator("css=.status-block.settings").click()
+    await page.locator("css=li.tab-appearance").click()
+    await page.locator("css=select.font-family").selectOption("Arial")
+    await page.locator("css=select.font-size").selectOption("20")
+    await page.locator("body").press("Escape")
+
+    await heynotePage.setContent(`
+∞∞∞markdown
+- [ ] Test
+- [x] Test 2
+`)
+    expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]")).toHaveCount(2)
+    expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]").first()).toHaveCSS("position", "relative")
+})
