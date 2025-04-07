@@ -12,7 +12,7 @@ import { getFontTheme } from "./theme/font-theme.js";
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
 import { noteBlockExtension, blockLineNumbers, blockState, getActiveNoteBlock, triggerCursorChange } from "./block/block.js"
-import { heynoteEvent, SET_CONTENT, DELETE_BLOCK, APPEND_BLOCK } from "./annotation.js";
+import { heynoteEvent, SET_CONTENT, DELETE_BLOCK, APPEND_BLOCK, SET_FONT } from "./annotation.js";
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, getBlockDelimiter, deleteBlock, selectAll } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
 import { heynoteKeymap } from "./keymap.js"
@@ -135,6 +135,11 @@ export class HeynoteEditor {
         if (focus) {
             this.view.focus()
         }
+
+        // trigger setFont once the fonts has loaded
+        document.fonts.ready.then(() => {
+            this.setFont(fontFamily, fontSize)
+        })
     }
 
     async save() {
@@ -258,6 +263,7 @@ export class HeynoteEditor {
     setFont(fontFamily, fontSize) {
         this.view.dispatch({
             effects: this.fontTheme.reconfigure(getFontTheme(fontFamily, fontSize)),
+            annotations: [heynoteEvent.of(SET_FONT), Transaction.addToHistory.of(false)],
         })
     }
 
