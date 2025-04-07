@@ -164,6 +164,9 @@ export const useEditorCacheStore = defineStore("editorCache", {
             }
 
             window.document.removeEventListener("currenciesLoaded", this.onCurrenciesLoaded)
+
+            this.editorCache.lru = []
+            this.editorCache.cache = {}
         },
 
         moveCurrentBlockToOtherEditor(targetPath) {
