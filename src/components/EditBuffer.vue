@@ -120,6 +120,12 @@
             },
 
             onInputKeydown(event) {
+                // support Ctrl/Cmd+A to select all
+                if (event.key === "a" && event[window.heynote.platform.isMac ? "metaKey" : "ctrlKey"]) {
+                    event.preventDefault()
+                    event.srcElement.select()
+                }
+                
                 // redirect arrow keys and page up/down to folder selector
                 const redirectKeys = ["ArrowDown", "ArrowUp", "PageDown", "PageUp"]
                 if (redirectKeys.includes(event.key)) {

@@ -50,6 +50,12 @@
 
         methods: {
             onKeydown(event) {
+                // support Ctrl/Cmd+A to select all
+                if (event.key === "a" && event[window.heynote.platform.isMac ? "metaKey" : "ctrlKey"]) {
+                    event.preventDefault()
+                    event.srcElement.select()
+                }
+
                 if (event.key === "ArrowDown") {
                     this.selected = Math.min(this.selected + 1, this.filteredItems.length - 1)
                     event.preventDefault()

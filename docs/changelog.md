@@ -5,6 +5,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 ## 2.1.4 (not released yet)
 
 - Fix issue with positioning and size of todo list checkboxes in Markdown blocks when using a non-default font size, or a non-monospaced font.
+- Fix issue when pressing `Ctrl/Cmd+A` in a text input inside a modal dialog (e.g. the buffer selector). Previously the select all command would be sent to the editor.
 
 ## 2.1.3
 
