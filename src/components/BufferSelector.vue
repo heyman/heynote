@@ -133,6 +133,12 @@
                     return
                 }
 
+                // support Ctrl/Cmd+A to select all
+                if (event.key === "a" && event[window.heynote.platform.isMac ? "metaKey" : "ctrlKey"]) {
+                    event.preventDefault()
+                    event.srcElement.select()
+                }
+
                 if (this.filteredItems.length === 0) {
                     return
                 }

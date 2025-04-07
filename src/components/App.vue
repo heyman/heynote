@@ -85,11 +85,14 @@
                 "showCreateBuffer",
                 "showEditBuffer",
                 "showMoveToBufferSelector",
-                "openMoveToBufferSelector",
             ]),
 
+            dialogVisible() {
+                return this.showLanguageSelector || this.showBufferSelector || this.showCreateBuffer || this.showEditBuffer || this.showMoveToBufferSelector
+            },
+
             editorInert() {
-                return this.showCreateBuffer || this.showSettings || this.showEditBuffer
+                return this.dialogVisible
             },
         },
 
