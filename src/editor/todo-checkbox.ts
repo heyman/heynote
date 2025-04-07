@@ -3,25 +3,44 @@ import { syntaxTree, ensureSyntaxTree } from "@codemirror/language"
 import { WidgetType } from "@codemirror/view"
 import { ViewUpdate, ViewPlugin, DecorationSet } from "@codemirror/view"
 
+import { isMonospaceFont } from "./theme/font-theme"
+import { SET_FONT } from "./annotation"
+
 
 class CheckboxWidget extends WidgetType {
-    constructor(readonly checked: boolean) { super() }
+    constructor(readonly checked: boolean, readonly monospace: boolean) { super() }
 
-    eq(other: CheckboxWidget) { return other.checked == this.checked }
+    eq(other: CheckboxWidget) { return other.checked == this.checked && other.monospace == this.monospace }
 
     toDOM() {
         let wrap = document.createElement("span")
         wrap.setAttribute("aria-hidden", "true")
         wrap.className = "cm-taskmarker-toggle"
-        wrap.style.position = "relative"
-        // Three spaces since it's the same width as [ ] and [x]
-        wrap.appendChild(document.createTextNode("   "))
-        let box = wrap.appendChild(document.createElement("input"))
+        
+        let box = document.createElement("input")
         box.type = "checkbox"
         box.checked = this.checked
-        box.style.position = "absolute"
-        box.style.top = "-3px"
-        box.style.left = "0"
+        box.style.margin = "0"
+        box.style.padding = "0"
+
+        if (this.monospace) {
+            // if the font is monospaced, we'll set the content of the wrapper to "   " and the 
+            // position of the checkbox to absolute, since three spaces will be the same width
+            // as "[ ]" and "[x]" so that characters on different lines will line up
+            wrap.appendChild(document.createTextNode("   "))
+            wrap.style.position = "relative"
+            box.style.position = "absolute"
+            box.style.top = "0"
+            box.style.left = "0.25em"
+            box.style.width = "1.1em"
+            box.style.height = "1.1em"
+        } else {
+            // if the font isn't monospaced, we'll let the checkbox take up as much space as needed
+            box.style.position = "relative"
+            box.style.top = "0.1em"
+            box.style.marginRight = "0.5em"
+        }
+        wrap.appendChild(box)
         return wrap
     }
 
@@ -52,7 +71,7 @@ function checkboxes(view: EditorView) {
                     if (view.state.doc.sliceString(nodeRef.to, nodeRef.to+1) === " ") {
                         let isChecked = view.state.doc.sliceString(nodeRef.from, nodeRef.to).toLowerCase() === "[x]"
                         let deco = Decoration.replace({
-                            widget: new CheckboxWidget(isChecked),
+                            widget: new CheckboxWidget(isChecked, view.state.facet(isMonospaceFont)),
                             inclusive: false,
                         })
                         widgets.push(deco.range(nodeRef.from, nodeRef.to))
@@ -92,8 +111,9 @@ export const todoCheckboxPlugin = [
         }
 
         update(update: ViewUpdate) {
-            if (update.docChanged || update.viewportChanged)
+            if (update.docChanged || update.viewportChanged || update.transactions.some(tr => tr.annotations.some(a => a.value === SET_FONT))) {
                 this.decorations = checkboxes(update.view)
+            }
         }
     }, {
         decorations: v => v.decorations,
