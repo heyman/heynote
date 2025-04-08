@@ -40,6 +40,7 @@
                 showInMenu: this.initialSettings.showInMenu,
                 alwaysOnTop: this.initialSettings.alwaysOnTop,
                 bracketClosing: this.initialSettings.bracketClosing,
+                tabSize: this.initialSettings.tabSize || 4,
                 autoUpdate: this.initialSettings.autoUpdate,
                 bufferPath: this.initialSettings.bufferPath,
                 fontFamily: this.initialSettings.fontFamily || defaultFontFamily,
@@ -102,6 +103,7 @@
                     alwaysOnTop: this.alwaysOnTop,
                     autoUpdate: this.autoUpdate,
                     bracketClosing: this.bracketClosing,
+                    tabSize: this.tabSize,
                     bufferPath: this.bufferPath,
                     fontFamily: this.fontFamily === defaultFontFamily ? undefined : this.fontFamily,
                     fontSize: this.fontSize === defaultFontSize ? undefined : this.fontSize,
@@ -275,6 +277,19 @@
                                     Auto-close brackets and quotation marks
                                 </label>
                             </div>  
+                        </div>
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Tab Size</h2>
+                                <select v-model="tabSize" @change="updateSettings" class="tab-size">
+                                    <option
+                                        v-for="size in [1, 2, 3, 4, 5, 6, 7, 8]"
+                                        :key="size"
+                                        :selected="tabSize === size"
+                                        :value="size"
+                                    >{{ size }} {{ size === 1 ? 'space' : 'spaces' }}</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="entry">

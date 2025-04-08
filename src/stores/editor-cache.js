@@ -36,6 +36,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
                     bracketClosing: settingsStore.settings.bracketClosing,
                     fontFamily: settingsStore.settings.fontFamily,
                     fontSize: settingsStore.settings.fontSize,
+                    tabSize: settingsStore.settings.tabSize,
                     defaultBlockToken: settingsStore.settings.defaultBlockLanguage,
                     defaultBlockAutoDetect: settingsStore.settings.defaultBlockLanguageAutoDetect,
                 })
@@ -136,6 +137,9 @@ export const useEditorCacheStore = defineStore("editorCache", {
                             case "fontFamily":
                             case "fontSize":
                                 editor.setFont(newSettings.fontFamily, newSettings.fontSize)
+                                break
+                            case "tabSize":
+                                editor.setTabSize(newSettings.tabSize)
                                 break
                             case "defaultBlockLanguage":
                             case "defaultBlockLanguageAutoDetect":
