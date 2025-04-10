@@ -1,4 +1,4 @@
-import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction } from "@codemirror/state"
+import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction, Prec } from "@codemirror/state"
 import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
 import { indentUnit, forceParsing, foldGutter, ensureSyntaxTree } from "@codemirror/language"
 import { markdown } from "@codemirror/lang-markdown"
@@ -11,12 +11,12 @@ import { heynoteBase } from "./theme/base.js"
 import { getFontTheme } from "./theme/font-theme.js";
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
+import { getCloseBracketsExtensions } from "./close-brackets.js"
 import { noteBlockExtension, blockLineNumbers, blockState, getActiveNoteBlock, triggerCursorChange } from "./block/block.js"
 import { heynoteEvent, SET_CONTENT, DELETE_BLOCK, APPEND_BLOCK, SET_FONT } from "./annotation.js";
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, getBlockDelimiter, deleteBlock, selectAll } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
-import { heynoteKeymap } from "./keymap.js"
-import { emacsKeymap } from "./emacs.js"
+import { heynoteKeymap, DEFAULT_KEYMAP, EMACS_KEYMAP } from "./keymap.js"
 import { heynoteCopyCut } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
@@ -28,12 +28,12 @@ import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useErrorStore } from "../stores/error-store.js";
 
 
-function getKeymapExtensions(editor, keymap) {
-    if (keymap === "emacs") {
-        return emacsKeymap(editor)
-    } else {
-        return heynoteKeymap(editor)
-    }
+function getKeymapExtensions(editor, keymap, keyBindings) {
+    return heynoteKeymap(
+        editor, 
+        keymap === "emacs" ? EMACS_KEYMAP : DEFAULT_KEYMAP,
+        keyBindings,
+    )
 }
 
 
@@ -53,6 +53,7 @@ export class HeynoteEditor {
         fontSize,
         defaultBlockToken,
         defaultBlockAutoDetect,
+        keyBindings,
     }) {
         this.element = element
         this.path = path
@@ -71,20 +72,20 @@ export class HeynoteEditor {
         this.notesStore = useHeynoteStore()
         this.errorStore = useErrorStore()
         this.name = ""
+        this.emacsMarkMode = false
         
 
         const state = EditorState.create({
             doc: "",
             extensions: [
-                this.keymapCompartment.of(getKeymapExtensions(this, keymap)),
+                this.keymapCompartment.of(getKeymapExtensions(this, keymap, keyBindings)),
                 heynoteCopyCut(this),
 
                 //minimalSetup,
                 this.lineNumberCompartment.of(showLineNumberGutter ? [lineNumbers(), blockLineNumbers] : []),
                 customSetup, 
                 this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
-
-                this.closeBracketsCompartment.of(bracketClosing ? [closeBrackets()] : []),
+                this.closeBracketsCompartment.of(bracketClosing ? [getCloseBracketsExtensions()] : []),
 
                 this.readOnlyCompartment.of([]),
                 
@@ -273,11 +274,11 @@ export class HeynoteEditor {
         })
     }
 
-    setKeymap(keymap, emacsMetaKey) {
+    setKeymap(keymap, emacsMetaKey, keyBindings) {
         this.deselectOnCopy = keymap === "emacs"
         this.emacsMetaKey = emacsMetaKey
         this.view.dispatch({
-            effects: this.keymapCompartment.reconfigure(getKeymapExtensions(this, keymap)),
+            effects: this.keymapCompartment.reconfigure(getKeymapExtensions(this, keymap, keyBindings)),
         })
     }
 
@@ -371,7 +372,7 @@ export class HeynoteEditor {
 
     setBracketClosing(value) {
         this.view.dispatch({
-            effects: this.closeBracketsCompartment.reconfigure(value ? [closeBrackets()] : []),
+            effects: this.closeBracketsCompartment.reconfigure(value ? [getCloseBracketsExtensions()] : []),
         })
     }
 
