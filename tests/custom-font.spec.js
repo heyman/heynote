@@ -71,6 +71,7 @@ test("markdown todo checkbox position with monospaced font", async ({ page }) =>
 - [ ] Test
 - [x] Test 2
 `)
+    await page.waitForTimeout(100);
     expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]")).toHaveCount(2)
     expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]").first()).toHaveCSS("position", "absolute")
 })
