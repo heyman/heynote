@@ -1,7 +1,7 @@
 import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction, Prec } from "@codemirror/state"
-import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
+import { EditorView, keymap as cmKeymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
 import { indentUnit, forceParsing, foldGutter, ensureSyntaxTree } from "@codemirror/language"
-import { markdown } from "@codemirror/lang-markdown"
+import { markdown, markdownKeymap } from "@codemirror/lang-markdown"
 import { closeBrackets } from "@codemirror/autocomplete";
 import { undo, redo } from "@codemirror/commands"
 
@@ -110,8 +110,12 @@ export class HeynoteEditor {
 
                 autoSaveContent(this, AUTO_SAVE_INTERVAL),
 
+                // Markdown extensions, we need to add markdownKeymap manually with the highest precedence
+                // so that it takes precedence over the default keymap
                 todoCheckboxPlugin,
-                markdown(),
+                markdown({addKeymap: false}),
+                Prec.highest(cmKeymap.of(markdownKeymap)),
+
                 links,
             ],
         })

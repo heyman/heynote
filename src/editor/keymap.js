@@ -40,6 +40,8 @@ const isLinux = window.heynote.platform.isLinux
 const isWindows = window.heynote.platform.isWindows
 
 export const DEFAULT_KEYMAP = [
+    cmd("Enter", "insertNewlineAndIndent"),
+    
     cmd("Mod-a", "selectAll"),
     cmd("Mod-Enter", "addNewBlockAfterCurrent"),
     cmd("Mod-Shift-Enter", "addNewBlockAfterLast"),
@@ -149,6 +151,13 @@ export const EMACS_KEYMAP = [
 
 
 export function heynoteKeymap(editor, keymap, userKeymap) {
+    //return [
+    //    keymapFromSpec([
+    //        ...Object.entries(userKeymap).map(([key, command]) => cmd(key, command)),
+    //        ...keymap,
+    //    ], editor),
+    //]
+
     // merge the default keymap with the custom keymap
     const defaultKeys = Object.fromEntries(keymap.map(km => [km.key, km.command]))
     //let mergedKeys = Object.entries({...defaultKeys, ...Object.fromEntries(userKeymap.map(km => [km.key, km.command]))}).map(([key, command]) => cmd(key, command))

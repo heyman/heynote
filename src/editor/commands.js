@@ -8,9 +8,11 @@ import {
     deleteToLineEnd, deleteToLineStart,
     simplifySelection,
     splitLine,
+    insertNewlineAndIndent,
 } from "@codemirror/commands"
 import { foldCode, unfoldCode } from "@codemirror/language"
 import { selectNextOccurrence } from "@codemirror/search"
+import { insertNewlineContinueMarkup } from "@codemirror/lang-markdown"
 
 import { 
     addNewBlockAfterCurrent, addNewBlockBeforeCurrent, addNewBlockAfterLast, addNewBlockBeforeFirst, insertNewBlockAtCursor, 
@@ -113,6 +115,8 @@ const NON_EDITOR_CONTEXT_COMMANDS = {
     simplifySelection,
     splitLine,
     transposeChars,
+    insertNewlineAndIndent,
+    insertNewlineContinueMarkup,
 }
 
 for (const [key, cmCommand] of Object.entries(NON_EDITOR_CONTEXT_COMMANDS)) {
