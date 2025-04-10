@@ -65,6 +65,7 @@
             showCreateBuffer(value) { this.dialogWatcher(value) },
             showEditBuffer(value) { this.dialogWatcher(value) },
             showMoveToBufferSelector(value) { this.dialogWatcher(value) },
+            showCommandPalette(value) { this.dialogWatcher(value) },
 
             currentBufferPath() {
                 this.focusEditor()
@@ -85,10 +86,11 @@
                 "showCreateBuffer",
                 "showEditBuffer",
                 "showMoveToBufferSelector",
+                "showCommandPalette",
             ]),
 
             dialogVisible() {
-                return this.showLanguageSelector || this.showBufferSelector || this.showCreateBuffer || this.showEditBuffer || this.showMoveToBufferSelector
+                return this.showLanguageSelector || this.showBufferSelector || this.showCreateBuffer || this.showEditBuffer || this.showMoveToBufferSelector || this.showCommandPalette
             },
 
             editorInert() {
@@ -176,7 +178,9 @@
                 @close="closeDialog"
             />
             <BufferSelector 
-                v-if="showBufferSelector" 
+                v-if="showBufferSelector || showCommandPalette" 
+                :initialFilter="showCommandPalette ? '>' : ''"
+                :commandsEnabled="true"
                 @openBuffer="openBuffer"
                 @openCreateBuffer="(nameSuggestion) => openCreateBuffer('new', nameSuggestion)"
                 @close="closeBufferSelector"
@@ -184,6 +188,7 @@
             <BufferSelector 
                 v-if="showMoveToBufferSelector" 
                 headline="Move block to..."
+                :commandsEnabled="false"
                 @openBuffer="onMoveCurrentBlockToOtherEditor"
                 @openCreateBuffer="(nameSuggestion) => openCreateBuffer('currentBlock', nameSuggestion)"
                 @close="closeMoveToBufferSelector"

@@ -22,6 +22,7 @@ import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
+import { HEYNOTE_COMMANDS } from "./commands.js";
 import { NoteFormat } from "../common/note-format.js"
 import { AUTO_SAVE_INTERVAL } from "../common/constants.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
@@ -294,6 +295,10 @@ export class HeynoteEditor {
         this.notesStore.openBufferSelector()
     }
 
+    openCommandPalette() {
+        this.notesStore.openCommandPalette()
+    }
+
     openCreateBuffer(createMode) {
         this.notesStore.openCreateBuffer(createMode)
     }
@@ -427,6 +432,15 @@ export class HeynoteEditor {
 
     selectAll() {
         selectAll(this.view)
+    }
+
+    executeCommand(command) {
+        const cmd = HEYNOTE_COMMANDS[command]
+        if (!cmd) {
+            console.error(`Command not found: ${command}`)
+            return
+        }
+        cmd(this)(this.view)
     }
 }
 
