@@ -65,9 +65,13 @@
             window.heynote.mainProcess.on(DELETE_BLOCK_EVENT, this.onDeleteBlock)
 
             this.onSelectAll = () => {
-                if (this.editor) {
+                const activeEl = document.activeElement
+                if (activeEl && activeEl.tagName === "INPUT") {
+                    // if the active element is an input, select all text in it
+                    activeEl.select()
+                } else if (this.editor) {
                     // make sure the editor is focused
-                    if (this.$refs.editor.contains(document.activeElement)) {
+                    if (this.$refs.editor.contains(activeEl)) {
                         toRaw(this.editor).selectAll()
                     }
                 }
