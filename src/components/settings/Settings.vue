@@ -1,9 +1,11 @@
 <script>
+    import { toRaw} from 'vue';
     import { LANGUAGES } from '../../editor/languages.js'
 
     import KeyboardHotkey from "./KeyboardHotkey.vue"
     import TabListItem from "./TabListItem.vue"
     import TabContent from "./TabContent.vue"
+    import KeyboardBindings from './KeyboardBindings.vue'
 
     const defaultFontFamily = window.heynote.defaultFontFamily
     const defaultFontSize = window.heynote.defaultFontSize
@@ -20,15 +22,18 @@
             KeyboardHotkey,
             TabListItem,
             TabContent,
+            KeyboardBindings,
         },
 
         data() {
+            console.log("settings:", this.initialSettings)
             return {
                 keymaps: [
                     { name: "Default", value: "default" },
                     { name: "Emacs", value: "emacs" },
                 ],
                 keymap: this.initialSettings.keymap,
+                keyBindings: this.initialSettings.keyBindings,
                 metaKey: this.initialSettings.emacsMetaKey,
                 isMac: window.heynote.platform.isMac,
                 showLineNumberGutter: this.initialSettings.showLineNumberGutter,
@@ -93,6 +98,7 @@
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                     keymap: this.keymap,
+                    keyBindings: toRaw(this.keyBindings),
                     emacsMetaKey: window.heynote.platform.isMac ? this.metaKey : "alt",
                     allowBetaVersions: this.allowBetaVersions,
                     enableGlobalHotkey: this.enableGlobalHotkey,
@@ -160,6 +166,12 @@
                             @click="activeTab = 'appearance'"
                         />
                         <TabListItem 
+                            name="Key Bindings" 
+                            tab="keyboard-bindings" 
+                            :activeTab="activeTab" 
+                            @click="activeTab = 'keyboard-bindings'"
+                        />
+                        <TabListItem 
                             :name="isWebApp ? 'Version' : 'Updates'" 
                             tab="updates" 
                             :activeTab="activeTab" 
@@ -169,23 +181,6 @@
                 </nav>
                 <div class="settings-content">
                     <TabContent tab="general" :activeTab="activeTab">
-                        <div class="row">
-                            <div class="entry">
-                                <h2>Keymap</h2>
-                                <select ref="keymapSelector" v-model="keymap" @change="updateSettings" class="keymap">
-                                    <template v-for="km in keymaps" :key="km.value">
-                                        <option :selected="km.value === keymap" :value="km.value">{{ km.name }}</option>
-                                    </template>
-                                </select>
-                            </div>
-                            <div class="entry" v-if="keymap === 'emacs' && isMac">
-                                <h2>Meta Key</h2>
-                                <select v-model="metaKey" @change="updateSettings" class="metaKey">
-                                    <option :selected="metaKey === 'meta'" value="meta">Command</option>
-                                    <option :selected="metaKey === 'alt'" value="alt">Option</option>
-                                </select>
-                            </div>
-                        </div>
                         <div class="row" v-if="!isWebApp">
                             <div class="entry">
                                 <h2>Global Keyboard Shortcut</h2>
@@ -353,6 +348,29 @@
                             </div>
                         </div>
                     </TabContent>
+
+                    <TabContent tab="keyboard-bindings" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Keymap</h2>
+                                <select ref="keymapSelector" v-model="keymap" @change="updateSettings" class="keymap">
+                                    <template v-for="km in keymaps" :key="km.value">
+                                        <option :selected="km.value === keymap" :value="km.value">{{ km.name }}</option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="entry" v-if="keymap === 'emacs' && isMac">
+                                <h2>Meta Key</h2>
+                                <select v-model="metaKey" @change="updateSettings" class="metaKey">
+                                    <option :selected="metaKey === 'meta'" value="meta">Command</option>
+                                    <option :selected="metaKey === 'alt'" value="alt">Option</option>
+                                </select>
+                            </div>
+                        </div>
+                        <KeyboardBindings 
+                            :userKeys="keyBindings ? keyBindings : {}"
+                        />
+                    </TabContent>
                     
                     <TabContent tab="updates" :activeTab="activeTab">
                         <div class="row">
@@ -421,6 +439,8 @@
             background: rgba(0, 0, 0, 0.5)
         
         .dialog
+            --dialog-height: 560px
+            --bottom-bar-height: 48px
             box-sizing: border-box
             z-index: 2
             position: absolute
@@ -428,7 +448,7 @@
             top: 50%
             transform: translate(-50%, -50%)
             width: 700px
-            height: 560px
+            height: var(--dialog-height)
             max-width: 100%
             max-height: 100%
             display: flex
@@ -448,6 +468,7 @@
             .dialog-content
                 flex-grow: 1
                 display: flex
+                height: calc(var(--dialog-height) - var(--bottom-bar-height))
                 .sidebar
                     box-sizing: border-box
                     width: 140px
@@ -521,6 +542,8 @@
                                         background: #222
                                         color: #aaa
             .bottom-bar
+                box-sizing: border-box
+                height: var(--bottom-bar-height)
                 border-radius: 0 0 5px 5px
                 background: #eee
                 text-align: right
