@@ -5,8 +5,6 @@ import { keymap } from "@codemirror/view"
 export function getCloseBracketsExtensions() {
     return [
         closeBrackets(),
-        Prec.highest(keymap.of([
-            ...closeBracketsKeymap,
-        ])),
+        Prec.highest(keymap.of(closeBracketsKeymap)),
     ]
 }
