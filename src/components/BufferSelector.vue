@@ -4,6 +4,7 @@
     import { mapState, mapActions } from 'pinia'
     import { SCRATCH_FILE_NAME } from "../common/constants"
     import { useHeynoteStore } from "../stores/heynote-store"
+    import { HEYNOTE_COMMANDS } from '../editor/commands'
 
     const pathSep = window.heynote.buffer.pathSeparator
 
@@ -19,13 +20,15 @@
     export default {
         props: {
             headline: String,
+            initialFilter: String,
+            commandsEnabled: Boolean,
         },
         
         data() {
             return {
                 selected: 0,
                 actionButton: 0,
-                filter: "",
+                filter: this.initialFilter || "",
                 items: [],
                 SCRATCH_FILE_NAME: SCRATCH_FILE_NAME,
                 deleteConfirm: false,
@@ -47,6 +50,14 @@
                 "buffers",
                 "recentBufferPaths",
             ]),
+
+            commands() {
+                return Object.keys(HEYNOTE_COMMANDS).map(cmd => ({
+                    name: cmd,
+                    cmd: cmd,
+                    isCommand: true,
+                }))
+            },
 
             orderedItems() {
                 const sortKeys = Object.fromEntries(this.recentBufferPaths.map((item, idx) => [item, idx]))
@@ -74,32 +85,47 @@
             },
 
             filteredItems() {
-                let items
-                if (this.filter === "") {
-                    items = this.orderedItems
-                    
-                } else {
-                    const searchResults = fuzzysort.go(this.filter, this.items, {
-                        keys: ["name", "folder"],
+                if (this.commandsEnabled && this.filter.startsWith(">")) {
+                    // command mode if the first character is ">"
+                    if (this.filter.length < 2) {
+                        return this.commands
+                    }
+                    const searchResults = fuzzysort.go(this.filter.slice(1), this.commands, {
+                        keys: ["name"],
                     })
-                    items = searchResults.map((result) => {
+                    return searchResults.map((result) => {
                         const obj = {...result.obj}
                         const nameHighlight = result[0].highlight("<b>", "</b>")
-                        const folderHighlight = result[1].highlight("<b>", "</b>")
                         obj.name = nameHighlight !== "" ? nameHighlight : obj.name
-                        obj.folder = folderHighlight !== "" ? folderHighlight : obj.folder
                         return obj
                     })
+                } else {
+                    let items
+                    if (this.filter === "") {
+                        items = this.orderedItems
+                    } else {
+                        const searchResults = fuzzysort.go(this.filter, this.items, {
+                            keys: ["name", "folder"],
+                        })
+                        items = searchResults.map((result) => {
+                            const obj = {...result.obj}
+                            const nameHighlight = result[0].highlight("<b>", "</b>")
+                            const folderHighlight = result[1].highlight("<b>", "</b>")
+                            obj.name = nameHighlight !== "" ? nameHighlight : obj.name
+                            obj.folder = folderHighlight !== "" ? folderHighlight : obj.folder
+                            return obj
+                        })
+                    }
+                    
+                    const newNoteItem = {
+                        name: "Create new…", 
+                        createNew:true,
+                    }
+                    return [
+                        ...items,
+                        newNoteItem,
+                    ]
                 }
-                
-                const newNoteItem = {
-                    name: "Create new…", 
-                    createNew:true,
-                }
-                return [
-                    ...items,
-                    newNoteItem,
-                ]
             },
         },
 
@@ -108,6 +134,7 @@
                 "updateBuffers",
                 "editBufferMetadata",
                 "deleteBuffer",
+                "executeCommand",
             ]),
 
             buildItems() {
@@ -187,13 +214,18 @@
                     } else {
                         this.$emit("openCreateBuffer", "")
                     }
+                } else if (item.isCommand) {
+                    this.$emit("close")
+                    this.$nextTick(() => {
+                        this.executeCommand(item.cmd)
+                    })
                 } else {
                     this.$emit("openBuffer", item.path)
                 }
             },
 
             itemHasActionButtons(item) {
-                return !item.createNew && item.path !== SCRATCH_FILE_NAME
+                return !item.createNew && item.path !== SCRATCH_FILE_NAME && !item.isCommand
             },
 
             onInput(event) {
@@ -248,7 +280,7 @@
 </script>
 
 <template>
-    <form class="note-selector" tabindex="-1" @focusout="onFocusOut" ref="container">
+    <form class="note-selector" tabindex="-1" @focusout="onFocusOut" ref="container" @submit.prevent>
         <div class="input-container">
             <h1 v-if="headline">{{headline}}</h1>
             <input 

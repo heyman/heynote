@@ -46,6 +46,10 @@ const openBufferSelector = (editor) => () => {
     editor.openBufferSelector()
     return true
 }
+const openCommandPalette = (editor) => () => {
+    editor.openCommandPalette()
+    return true
+}
 const openMoveToBuffer = (editor) => () => {
     editor.openMoveToBufferSelector()
     return true
@@ -69,6 +73,7 @@ const HEYNOTE_COMMANDS = {
 
     openLanguageSelector,
     openBufferSelector,
+    openCommandPalette,
     openMoveToBuffer,
     openCreateNewBuffer,
 
