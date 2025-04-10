@@ -22,7 +22,7 @@ test("test default font is Hack", async ({ page }) => {
     })).toBeLessThan(20)
 })
 
-test("test custom font", async ({ page, browserName }) => {
+test("test custom font", async ({ page }) => {
     // monkey patch window.queryLocalFonts because it's not available in Playwright
     await page.evaluate(() => {
         window.queryLocalFonts = async () => {
@@ -71,9 +71,10 @@ test("markdown todo checkbox position with monospaced font", async ({ page }) =>
 - [ ] Test
 - [x] Test 2
 `)
-    await page.waitForTimeout(100);
-    expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]")).toHaveCount(2)
-    expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]").first()).toHaveCSS("position", "absolute")
+    
+    await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]").first().waitFor()
+    await expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]")).toHaveCount(2)
+    await expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]").first()).toHaveCSS("position", "absolute")
 })
 
 test("markdown todo checkbox position with variable width font", async ({ page }) => {
@@ -110,6 +111,8 @@ test("markdown todo checkbox position with variable width font", async ({ page }
 - [ ] Test
 - [x] Test 2
 `)
-    expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]")).toHaveCount(2)
-    expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]").first()).toHaveCSS("position", "relative")
+    
+    await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]").first().waitFor()
+    await expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]")).toHaveCount(2)
+    await expect(await page.locator("css=.cm-taskmarker-toggle input[type=checkbox]").first()).toHaveCSS("position", "relative")
 })
