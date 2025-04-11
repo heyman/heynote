@@ -237,14 +237,14 @@
                         </div>
                         <div class="row" v-if="!isWebApp">
                             <div class="entry buffer-location">
-                                <h2>Buffer File Path</h2>
+                                <h2>Buffer Files Path</h2>
                                 <label class="keyboard-shortcut-label">
                                     <input 
                                         type="checkbox" 
                                         v-model="customBufferLocation" 
                                         @change="onCustomBufferLocationChange"
                                     />
-                                    Use custom buffer file location
+                                    Use custom location for the buffer files
                                 </label>
                                 <div class="file-path">
                                     <button
