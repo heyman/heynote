@@ -20,6 +20,7 @@ export class HeynotePage {
     async goto() {
         await this.page.goto("/")
         await expect(this.page).toHaveTitle(/Heynote/)
+        await expect(this.page.locator(".cm-editor")).toBeVisible()
         expect(this.getErrors()).toStrictEqual([])
     }
 

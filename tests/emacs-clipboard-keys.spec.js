@@ -13,6 +13,7 @@ test.beforeEach(async ({ page, browserName }) => {
         test.skip()
     }
     await page.locator("css=.status-block.settings").click()
+    await page.locator("css=li.tab-keyboard-bindings").click()
     //await page.locator("css=li.tab-editing").click()
     await page.locator("css=select.keymap").selectOption("emacs")
     if (heynotePage.isMac) {

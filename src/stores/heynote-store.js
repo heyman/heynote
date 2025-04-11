@@ -28,6 +28,7 @@ export const useHeynoteStore = defineStore("heynote", {
         showCreateBuffer: false,
         showEditBuffer: false,
         showMoveToBufferSelector: false,
+        showCommandPalette: false,
     }),
 
     actions: {
@@ -58,6 +59,11 @@ export const useHeynoteStore = defineStore("heynote", {
         openBufferSelector() {
             this.closeDialog()
             this.showBufferSelector = true
+            
+        },
+        openCommandPalette() {
+            this.closeDialog()
+            this.showCommandPalette = true
         },
         openMoveToBufferSelector() {
             this.closeDialog()
@@ -78,10 +84,12 @@ export const useHeynoteStore = defineStore("heynote", {
             this.showLanguageSelector = false
             this.showEditBuffer = false
             this.showMoveToBufferSelector = false
+            this.showCommandPalette = false
         },
 
         closeBufferSelector() {
             this.showBufferSelector = false
+            this.showCommandPalette = false
         },
 
         closeMoveToBufferSelector() {
@@ -94,6 +102,13 @@ export const useHeynoteStore = defineStore("heynote", {
             }
             this.closeDialog()
             this.showEditBuffer = true
+        },
+
+
+        executeCommand(command) {
+            if (this.currentEditor) {
+                toRaw(this.currentEditor).executeCommand(command)
+            }
         },
 
         /**

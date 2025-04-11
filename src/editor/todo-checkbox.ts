@@ -20,6 +20,7 @@ class CheckboxWidget extends WidgetType {
         let box = document.createElement("input")
         box.type = "checkbox"
         box.checked = this.checked
+        box.tabIndex = -1
         box.style.margin = "0"
         box.style.padding = "0"
 

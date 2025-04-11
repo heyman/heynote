@@ -64,8 +64,6 @@ const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 
-let currentKeymap = CONFIG.get("settings.keymap")
-
 // if this version is a beta version, set the release channel to beta
 const isBetaVersion = app.getVersion().includes("beta")
 if (isBetaVersion) {
@@ -409,9 +407,6 @@ ipcMain.handle("getInitErrors", () => {
 
 
 ipcMain.handle('settings:set', async (event, settings) => {
-    if (settings.keymap !== CONFIG.get("settings.keymap")) {
-        currentKeymap = settings.keymap
-    }
     let globalHotkeyChanged = settings.enableGlobalHotkey !== CONFIG.get("settings.enableGlobalHotkey") || settings.globalHotkey !== CONFIG.get("settings.globalHotkey")
     let showInDockChanged = settings.showInDock !== CONFIG.get("settings.showInDock");
     let showInMenuChanged = settings.showInMenu !== CONFIG.get("settings.showInMenu");

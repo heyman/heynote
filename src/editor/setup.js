@@ -68,11 +68,12 @@ const customSetup = /*@__PURE__*/(() => [
     EditorView.lineWrapping,
     scrollPastEnd(),
     keymap.of([
-        ...closeBracketsKeymap,
-        ...defaultKeymap,
+        //...closeBracketsKeymap,
+        //...defaultKeymap,
         ...searchKeymap,
-        ...historyKeymap,
-        ...foldKeymap,
+        //...historyKeymap,
+        //...foldKeymap,
+
         //...completionKeymap,
         //...lintKeymap
     ])
