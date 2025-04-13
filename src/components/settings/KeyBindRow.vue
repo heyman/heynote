@@ -4,7 +4,7 @@
             "keys", 
             "command", 
             "isDefault",
-            "isOverridden",
+            "source",
         ],
 
         computed: {
@@ -19,9 +19,9 @@
 </script>
 
 <template>
-    <tr :class="{overridden:isOverridden}">
+    <tr>
         <td class="source">
-            {{ isDefault ? "Heynote" : "User" }}
+            {{ source }}
         </td>
         <td class="key">
             <template v-if="keys">
@@ -37,6 +37,9 @@
                 <button class="delete">Delete</button>
             </template>
         </td>
+
+        <td v-if="!isDefault" class="drag-handle"></td>
+        <td v-else></td>
     </tr>
 </template>
 
@@ -57,6 +60,19 @@
                 .unbound
                     font-style: italic
                     color: #999
+            &.drag-handle
+                width: 24px
+                padding: 0
+                cursor: ns-resize
+                background-color: rgba(0,0,0, 0.02)
+                background-size: 20px
+                background-repeat: no-repeat
+                background-position: center center
+                background-image: url(@/assets/icons/drag-vertical-light.svg)
+
+                +dark-mode
+                    background-color: rgba(0,0,0, 0.08)
+                    background-image: url(@/assets/icons/drag-vertical-dark.svg)
     button
         padding: 0 10px
         height: 22px

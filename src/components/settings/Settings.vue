@@ -86,6 +86,12 @@
             window.removeEventListener("keydown", this.onKeyDown);
         },
 
+        watch: {
+            keyBindings(newKeyBindings) {
+                this.updateSettings()
+            }
+        },
+
         methods: {
             onKeyDown(event) {
                 if (event.key === "Escape") {
@@ -98,7 +104,7 @@
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                     keymap: this.keymap,
-                    keyBindings: toRaw(this.keyBindings),
+                    keyBindings: this.keyBindings.map((kb) => toRaw(kb)),
                     emacsMetaKey: window.heynote.platform.isMac ? this.metaKey : "alt",
                     allowBetaVersions: this.allowBetaVersions,
                     enableGlobalHotkey: this.enableGlobalHotkey,
@@ -369,6 +375,7 @@
                         </div>
                         <KeyboardBindings 
                             :userKeys="keyBindings ? keyBindings : {}"
+                            v-model="keyBindings"
                         />
                     </TabContent>
                     

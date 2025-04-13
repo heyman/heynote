@@ -3,30 +3,6 @@ import { Prec } from "@codemirror/state"
 
 import { HEYNOTE_COMMANDS } from "./commands.js"
 
-
-function keymapFromSpec(specs, editor) {
-    return keymap.of(specs.map((spec) => {
-        let key = spec.key
-        if (key.indexOf("EmacsMeta") != -1) {
-            key = key.replace("EmacsMeta", editor.emacsMetaKey === "alt" ? "Alt" : "Meta")
-        }
-        return {
-            key: key,
-            //preventDefault: true,
-            preventDefault: false,
-            run: (view) => {
-                //console.log("run()", spec.key, spec.command)
-                const command = HEYNOTE_COMMANDS[spec.command]
-                if (!command) {
-                    console.error(`Command not found: ${spec.command} (${spec.key})`)
-                    return false
-                }
-                return command(editor)(view)
-            },
-        }
-    }))
-}
-
 const cmd = (key, command) => ({key, command})
 const cmdShift = (key, command, shiftCommand) => {
     return [
@@ -99,8 +75,6 @@ export const DEFAULT_KEYMAP = [
     cmd("Shift-Tab", "indentLess"),
     //cmd("Alt-ArrowLeft", "cursorSubwordBackward"),
     //cmd("Alt-ArrowRight", "cursorSubwordForward"),
-    cmd("Ctrl-Space", "toggleEmacsMarkMode"),
-    cmd("Ctrl-g", "emacsCancel"),
 
     cmd("Mod-l", "openLanguageSelector"),
     cmd("Mod-p", "openBufferSelector"),
@@ -146,27 +120,46 @@ export const EMACS_KEYMAP = [
     ...cmdShift("Ctrl-f", "cursorCharRight", "selectCharRight"),
     ...cmdShift("Ctrl-a", "cursorLineStart", "selectLineStart"),
     ...cmdShift("Ctrl-e", "cursorLineEnd", "selectLineEnd"),
-    ...DEFAULT_KEYMAP,
 ]
 
 
+function keymapFromSpec(specs, editor) {
+    return keymap.of(specs.map((spec) => {
+        let key = spec.key
+        if (key.indexOf("EmacsMeta") != -1) {
+            key = key.replace("EmacsMeta", editor.emacsMetaKey === "alt" ? "Alt" : "Meta")
+        }
+        return {
+            key: key,
+            //preventDefault: true,
+            preventDefault: false,
+            run: (view) => {
+                //console.log("run()", spec.key, spec.command)
+                const command = HEYNOTE_COMMANDS[spec.command]
+                if (!command) {
+                    console.error(`Command not found: ${spec.command} (${spec.key})`)
+                    return false
+                }
+                return command(editor)(view)
+            },
+        }
+    }))
+}
+
 
 export function heynoteKeymap(editor, keymap, userKeymap) {
-    //return [
-    //    keymapFromSpec([
-    //        ...Object.entries(userKeymap).map(([key, command]) => cmd(key, command)),
-    //        ...keymap,
-    //    ], editor),
-    //]
-
-    // merge the default keymap with the custom keymap
-    const defaultKeys = Object.fromEntries(keymap.map(km => [km.key, km.command]))
-    //let mergedKeys = Object.entries({...defaultKeys, ...Object.fromEntries(userKeymap.map(km => [km.key, km.command]))}).map(([key, command]) => cmd(key, command))
-    let mergedKeys = Object.entries({...defaultKeys, ...userKeymap}).map(([key, command]) => cmd(key, command))
-    //console.log("userKeys:", userKeymap)
-    //console.log("mergedKeys:", mergedKeys)
-
     return [
-        Prec.high(keymapFromSpec(mergedKeys, editor)),
+        keymapFromSpec([
+            ...userKeymap,
+            ...keymap,
+        ], editor),
     ]
+}
+
+export function getKeymapExtensions(editor, keymap, keyBindings) {
+    return heynoteKeymap(
+        editor, 
+        keymap === "emacs" ? EMACS_KEYMAP.concat(DEFAULT_KEYMAP) : DEFAULT_KEYMAP,
+        keyBindings,
+    )
 }
