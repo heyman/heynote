@@ -26,6 +26,7 @@ export function emacsMoveCommand(defaultCmd, markModeCmd) {
 export function toggleEmacsMarkMode(editor) {
     return (view) => {
         editor.emacsMarkMode = !editor.emacsMarkMode
+        return true
     }
 }
 
@@ -33,5 +34,6 @@ export function emacsCancel(editor) {
     return (view) => {
         simplifySelection(view)
         editor.emacsMarkMode = false
+        return true
     }
 }
