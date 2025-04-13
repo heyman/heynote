@@ -16,7 +16,7 @@ import { noteBlockExtension, blockLineNumbers, blockState, getActiveNoteBlock, t
 import { heynoteEvent, SET_CONTENT, DELETE_BLOCK, APPEND_BLOCK, SET_FONT } from "./annotation.js";
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, getBlockDelimiter, deleteBlock, selectAll } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
-import { heynoteKeymap, DEFAULT_KEYMAP, EMACS_KEYMAP } from "./keymap.js"
+import { getKeymapExtensions } from "./keymap.js"
 import { heynoteCopyCut } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
@@ -27,15 +27,6 @@ import { NoteFormat } from "../common/note-format.js"
 import { AUTO_SAVE_INTERVAL } from "../common/constants.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useErrorStore } from "../stores/error-store.js";
-
-
-function getKeymapExtensions(editor, keymap, keyBindings) {
-    return heynoteKeymap(
-        editor, 
-        keymap === "emacs" ? EMACS_KEYMAP : DEFAULT_KEYMAP,
-        keyBindings,
-    )
-}
 
 
 export class HeynoteEditor {
