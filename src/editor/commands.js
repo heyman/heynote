@@ -58,6 +58,9 @@ const openCreateNewBuffer = (editor) => () => {
     editor.openCreateBuffer("new")
     return true
 }
+const nothing = (view) => {
+    return true
+}
 
 const HEYNOTE_COMMANDS = {
     //undo,
@@ -107,6 +110,7 @@ const NON_EDITOR_CONTEXT_COMMANDS = {
     selectPreviousParagraph, selectNextParagraph,
     selectPreviousBlock, selectNextBlock,
     paste: pasteCommand,
+    nothing,
 
     // directly from CodeMirror
     undo, redo,
