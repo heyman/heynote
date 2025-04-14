@@ -84,7 +84,7 @@ const HEYNOTE_COMMANDS = {
     copy: copyCommand,
 }
 
-// emacs-mode:ify all cursor/select commands from CodeMirror
+// selection mark-mode:ify all cursor/select commands from CodeMirror
 for (let commandSuffix of [
     "CharLeft", "CharRight",
     "CharBackward", "CharForward",
