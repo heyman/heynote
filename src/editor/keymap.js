@@ -140,7 +140,7 @@ function keymapFromSpec(specs, editor) {
                     console.error(`Command not found: ${spec.command} (${spec.key})`)
                     return false
                 }
-                return command(editor)(view)
+                return command.run(editor)(view)
             },
         }
     }))

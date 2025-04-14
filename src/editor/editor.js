@@ -431,7 +431,7 @@ export class HeynoteEditor {
             console.error(`Command not found: ${command}`)
             return
         }
-        cmd(this)(this.view)
+        cmd.run(this)(this.view)
     }
 }
 

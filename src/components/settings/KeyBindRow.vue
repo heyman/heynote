@@ -1,4 +1,6 @@
 <script>
+    import { HEYNOTE_COMMANDS } from '@/src/editor/commands'
+    
     export default {
         props: [
             "keys", 
@@ -13,6 +15,14 @@
                     "Mod", 
                     window.heynote.platform.isMac ? "⌘" : "Ctrl",
                 )
+            },
+
+            commandLabel() {
+                const cmd = HEYNOTE_COMMANDS[this.command]
+                if (cmd) {
+                    return `${cmd.category}: ${cmd.description}`
+                }
+                return HEYNOTE_COMMANDS[this.command]?.description ||this.command
             },
         },
     }
@@ -29,8 +39,7 @@
             </template>
         </td>
         <td class="command">
-            <span v-if="!command" class="unbound">Unbound</span>
-            <span class="command-name">{{ command }}</span>
+            <span class="command-name">{{ commandLabel }}</span>
         </td>
         <td class="actions">
             <template v-if="!isDefault">
@@ -54,12 +63,7 @@
             &.key
                 //letter-spacing: 1px
             &.command
-                .command-name
-                    font-family: monospace
-                    margin-right: 10px
-                .unbound
-                    font-style: italic
-                    color: #999
+                //
             &.drag-handle
                 width: 24px
                 padding: 0
@@ -69,10 +73,13 @@
                 background-repeat: no-repeat
                 background-position: center center
                 background-image: url(@/assets/icons/drag-vertical-light.svg)
-
                 +dark-mode
                     background-color: rgba(0,0,0, 0.08)
                     background-image: url(@/assets/icons/drag-vertical-dark.svg)
+                &:hover
+                    background-color: rgba(0,0,0, 0.05)
+                    +dark-mode
+                        background-color: rgba(0,0,0, 0.25)
     button
         padding: 0 10px
         height: 22px
