@@ -446,7 +446,7 @@
             background: rgba(0, 0, 0, 0.5)
         
         .dialog
-            --dialog-height: 560px
+            --dialog-height: 600px
             --bottom-bar-height: 48px
             box-sizing: border-box
             z-index: 2
@@ -454,7 +454,7 @@
             left: 50%
             top: 50%
             transform: translate(-50%, -50%)
-            width: 700px
+            width: 820px
             height: var(--dialog-height)
             max-width: 100%
             max-height: 100%
