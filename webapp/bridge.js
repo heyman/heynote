@@ -89,6 +89,7 @@ let initialSettings = {
     showLineNumberGutter: true,
     showFoldGutter: true,
     bracketClosing: false,
+    keyBindings: [],
 }
 if (settingsData !== null) {
     initialSettings = Object.assign(initialSettings, JSON.parse(settingsData))

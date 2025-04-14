@@ -160,6 +160,6 @@ export function getKeymapExtensions(editor, keymap, keyBindings) {
     return heynoteKeymap(
         editor, 
         keymap === "emacs" ? EMACS_KEYMAP.concat(DEFAULT_KEYMAP) : DEFAULT_KEYMAP,
-        keyBindings,
+        keyBindings || [],
     )
 }
