@@ -60,7 +60,7 @@ export const heynoteCopyCut = (editor) => {
         }
         
         // if we're in Emacs mode, we want to exit mark mode in case we're in it
-        editor.emacsMarkMode = false
+        editor.selectionMarkMode = false
 
         // if Editor.deselectOnCopy is set (e.g. we're in Emacs mode), we want to remove the selection after we've copied the text
         if (editor.deselectOnCopy && event.type == "copy") {
@@ -94,7 +94,7 @@ const copyCut = (view, cut, editor) => {
     }
 
     // if we're in Emacs mode, we want to exit mark mode in case we're in it
-    editor.emacsMarkMode = false
+    editor.selectionMarkMode = false
 
     // if Editor.deselectOnCopy is set (e.g. we're in Emacs mode), we want to remove the selection after we've copied the text
     if (editor.deselectOnCopy && !cut) {
