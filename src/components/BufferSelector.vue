@@ -52,9 +52,20 @@
             ]),
 
             commands() {
-                return Object.keys(HEYNOTE_COMMANDS).map(cmd => ({
-                    name: cmd,
-                    cmd: cmd,
+                const commands = Object.entries(HEYNOTE_COMMANDS)
+                // sort array first by category, then by description
+                commands.sort((a, b) => {
+                    const aCategory = a[1].category || ""
+                    const bCategory = b[1].category || ""
+                    if (aCategory === bCategory) {
+                        return a[1].description.localeCompare(b[1].description)
+                    } else {
+                        return aCategory.localeCompare(bCategory)
+                    }
+                })
+                return commands.map(([cmdKey, cmd]) => ({
+                    name: `${cmd.category}: ${cmd.description}`,
+                    cmd: cmdKey,
                     isCommand: true,
                 }))
             },

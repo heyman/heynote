@@ -88,10 +88,10 @@
         <h2>Keyboard Bindings</h2>
         <table>
             <tr>
-                <th></th>
                 <th>Source</th>
                 <th>Key</th>
                 <th>Command</th>
+                <th></th>
                 <th></th>
             </tr>
             <draggable 
