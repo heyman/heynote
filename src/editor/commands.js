@@ -29,7 +29,7 @@ import { transposeChars } from "./block/transpose-chars.js"
 
 import { cutCommand, copyCommand, pasteCommand } from "./copy-paste.js"
 
-import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel } from "./emacs-mode.js"
+import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel } from "./mark-mode.js"
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
