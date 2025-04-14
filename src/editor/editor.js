@@ -64,7 +64,7 @@ export class HeynoteEditor {
         this.notesStore = useHeynoteStore()
         this.errorStore = useErrorStore()
         this.name = ""
-        this.emacsMarkMode = false
+        this.selectionMarkMode = false
         
 
         const state = EditorState.create({

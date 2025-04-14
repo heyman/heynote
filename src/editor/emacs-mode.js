@@ -6,9 +6,9 @@ import {
  * Takes a command that moves the cursor and a command that marks the selection, and returns a new command that
  * will run the mark command if we're in Emacs mark mode, or the move command otherwise.
  */
-export function emacsMoveCommand(defaultCmd, markModeCmd) {
+export function markModeMoveCommand(defaultCmd, markModeCmd) {
     return (editor) => {
-        if (editor.emacsMarkMode) {
+        if (editor.selectionMarkMode) {
             return (view) => {
                 markModeCmd(view)
                 // we need to return true here instead of returning what the default command returns, since the default 
@@ -23,17 +23,17 @@ export function emacsMoveCommand(defaultCmd, markModeCmd) {
 }
 
 
-export function toggleEmacsMarkMode(editor) {
+export function toggleSelectionMarkMode(editor) {
     return (view) => {
-        editor.emacsMarkMode = !editor.emacsMarkMode
+        editor.selectionMarkMode = !editor.selectionMarkMode
         return true
     }
 }
 
-export function emacsCancel(editor) {
+export function selectionMarkModeCancel(editor) {
     return (view) => {
         simplifySelection(view)
-        editor.emacsMarkMode = false
+        editor.selectionMarkMode = false
         return true
     }
 }

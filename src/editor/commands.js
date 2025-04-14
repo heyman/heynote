@@ -29,13 +29,13 @@ import { transposeChars } from "./block/transpose-chars.js"
 
 import { cutCommand, copyCommand, pasteCommand } from "./copy-paste.js"
 
-import { emacsMoveCommand, toggleEmacsMarkMode, emacsCancel } from "./emacs-mode.js"
+import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel } from "./emacs-mode.js"
 
 
-const cursorPreviousBlock = emacsMoveCommand(gotoPreviousBlock, selectPreviousBlock)
-const cursorNextBlock = emacsMoveCommand(gotoNextBlock, selectNextBlock)
-const cursorPreviousParagraph = emacsMoveCommand(gotoPreviousParagraph, selectPreviousParagraph)
-const cursorNextParagraph = emacsMoveCommand(gotoNextParagraph, selectNextParagraph)
+const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
+const cursorNextBlock = markModeMoveCommand(gotoNextBlock, selectNextBlock)
+const cursorPreviousParagraph = markModeMoveCommand(gotoPreviousParagraph, selectPreviousParagraph)
+const cursorNextParagraph = markModeMoveCommand(gotoNextParagraph, selectNextParagraph)
 
 
 const openLanguageSelector = (editor) => () => {
@@ -71,8 +71,8 @@ const HEYNOTE_COMMANDS = {
     cursorPreviousParagraph, cursorNextParagraph,
     deleteBlock, deleteBlockSetCursorPreviousBlock,
 
-    toggleEmacsMarkMode,
-    emacsCancel,
+    toggleSelectionMarkMode,
+    selectionMarkModeCancel,
 
     openLanguageSelector,
     openBufferSelector,
@@ -97,7 +97,7 @@ for (let commandSuffix of [
     "SubwordBackward", "SubwordForward",
     "LineBoundaryBackward", "LineBoundaryForward",
 ]) {
-    HEYNOTE_COMMANDS[`cursor${commandSuffix}`] = emacsMoveCommand(codeMirrorCommands[`cursor${commandSuffix}`], codeMirrorCommands[`select${commandSuffix}`])
+    HEYNOTE_COMMANDS[`cursor${commandSuffix}`] = markModeMoveCommand(codeMirrorCommands[`cursor${commandSuffix}`], codeMirrorCommands[`select${commandSuffix}`])
     HEYNOTE_COMMANDS[`select${commandSuffix}`] = (editor) => codeMirrorCommands[`select${commandSuffix}`]
 }
 
