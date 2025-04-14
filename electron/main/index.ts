@@ -83,8 +83,8 @@ export function quit() {
 async function createWindow() {
     // read any stored window settings from config, or use defaults
     let windowConfig = {
-        width: CONFIG.get("windowConfig.width", 900) as number,
-        height: CONFIG.get("windowConfig.height", 680) as number,
+        width: CONFIG.get("windowConfig.width", 940) as number,
+        height: CONFIG.get("windowConfig.height", 720) as number,
         isMaximized: CONFIG.get("windowConfig.isMaximized", false) as boolean,
         isFullScreen: CONFIG.get("windowConfig.isFullScreen", false) as boolean,
         x: CONFIG.get("windowConfig.x"),
