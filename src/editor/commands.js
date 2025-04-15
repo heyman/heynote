@@ -134,7 +134,7 @@ const HEYNOTE_COMMANDS = {
     splitLine: cmdLessContext(splitLine, "Edit", "Split line"),
     transposeChars: cmdLessContext(transposeChars, "Edit", "Transpose characters"),
     insertNewlineAndIndent: cmdLessContext(insertNewlineAndIndent, "Edit", "Insert newline and indent"),
-    insertNewlineContinueMarkup: cmdLessContext(insertNewlineContinueMarkup, "Markdown", "Insert newline and continue markup"),
+    insertNewlineContinueMarkup: cmdLessContext(insertNewlineContinueMarkup, "Markdown", "Insert newline and continue todo lists/block quotes"),
 }
 
 // selection mark-mode:ify all cursor/select commands from CodeMirror
