@@ -351,7 +351,6 @@
 <style scoped lang="sass">
     .note-selector
         font-size: 13px
-        //background: #48b57e
         background: #efefef
         position: absolute
         top: 0

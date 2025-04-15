@@ -26,10 +26,11 @@
             +dark-mode
                 background: #292929
         &.active
-            background: #48b57e
+            background: var(--highlight-color)
             color: #fff
             cursor: default
             +dark-mode
-                background: #1b6540
+                // needed for specificity (to not be overridden by :hover in dark mode)
+                background: var(--highlight-color)
                 
 </style>
