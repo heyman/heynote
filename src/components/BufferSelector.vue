@@ -356,7 +356,7 @@
         position: absolute
         top: 0
         left: 50%
-        width: 420px
+        width: 440px
         transform: translateX(-50%)
         max-height: 100%
         box-sizing: border-box
