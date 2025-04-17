@@ -5,6 +5,7 @@
     import { DEFAULT_KEYMAP, EMACS_KEYMAP } from "@/src/editor/keymap"
     import { useSettingsStore } from "@/src/stores/settings-store"
     import KeyBindRow from "./KeyBindRow.vue"
+    import AddKeyBind from "./AddKeyBind.vue"
 
     export default {
         props: [
@@ -12,43 +13,26 @@
             "modelValue",
         ],
         components: {
-            KeyBindRow,
             draggable,
+            KeyBindRow,
+            AddKeyBind,
         },
 
         data() {
             return {
                 keymap: this.modelValue,
-                //fixedKeymap: [],
+                addKeyBinding: false,
             }
         },
 
         mounted() {
-            /*const defaultKeymap = this.settings.keymap === "emacs" ? EMACS_KEYMAP : DEFAULT_KEYMAP
-            this.fixedKeymap = defaultKeymap.map((km) => {
-                return {
-                    key: km.key,
-                    command: km.command,
-                    isDefault: true,
-                }
-            })*/
-            /*
-            const keymap = this.settings.keymap === "emacs" ? EMACS_KEYMAP : DEFAULT_KEYMAP
-            this.testKeymap = [
-                ...this.userKeys,
-                {"key": "Mod-Enter", command: "yay"},
-                {"key": "Mod-Enter n", command: "nay"},
-                {"key": "Ctrl-o", command: null},
-            ]
-             
-            this.fixedKeymap = keymap.map((km) => {
-                return {
-                    key: km.key,
-                    command: km.command,
-                    isDefault: true,
-                    isOverridden: km.key in this.userKeys,
-                }
-            })*/
+            
+        },
+
+        watch: {
+            addKeyBinding(newValue) {
+                this.$emit("addKeyBindingDialogVisible", newValue)
+            },
         },
 
         computed: {
@@ -76,7 +60,24 @@
 
         methods: {
             onDragEnd(event) {
-                console.log("onDragEnd", this.testKeymap)
+                this.$emit("update:modelValue", this.keymap)
+            },
+
+            onSaveKeyBinding(event) {
+                this.keymap = [
+                    {
+                        key: event.key,
+                        command: event.command,
+                    },
+                    ...this.keymap,
+                ]
+                //console.log("keymap", this.keymap)
+                this.$emit("update:modelValue", this.keymap)
+                this.addKeyBinding = false
+            },
+
+            deleteKeyBinding(index) {
+                this.keymap = this.keymap.toSpliced(index, 1)
                 this.$emit("update:modelValue", this.keymap)
             },
         },
@@ -85,15 +86,33 @@
 
 <template>
     <div class="container">
-        <h2>Keyboard Bindings</h2>
-        <table>
-            <tr>
-                <th>Source</th>
-                <th>Key</th>
-                <th>Command</th>
-                <th></th>
-                <th></th>
-            </tr>
+        <div class="header" :inert="addKeyBinding">
+            <h2>Keyboard Bindings</h2>
+            <!--<p>User key bindings can be reordered. Bindings that appear first take precedence</p>-->
+            <div class="button-container">
+                <button 
+                    class="add-keybinding"
+                    @click="addKeyBinding = !addKeyBinding"
+                >Add Keybinding</button>
+            </div>
+        </div>
+        
+        <AddKeyBind 
+            v-if="addKeyBinding" 
+            @close="addKeyBinding = false"
+            @save="onSaveKeyBinding"
+        />
+
+        <table :inert="addKeyBinding">
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Key</th>
+                    <th>Command</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
             <draggable 
                 v-model="keymap" 
                 tag="tbody"
@@ -104,11 +123,13 @@
                 @end="onDragEnd" 
                 item-key="key"
             >
-                <template #item="{element}">
+                <template #item="{element, index}">
                     <KeyBindRow 
                         :keys="element.key"
                         :command="element.command"
                         :isDefault="element.isDefault"
+                        :index="index"
+                        @delete="deleteKeyBinding(index)"
                         source="User"
                     />
                 </template>
@@ -128,10 +149,20 @@
 </template>
 
 <style lang="sass" scoped>
-    h2
-        font-weight: 600
-        margin-bottom: 20px
-        font-size: 14px
+    .header
+        display: flex
+        margin-bottom: 12px
+        h2
+            flex-grow: 1
+            font-weight: 600
+            font-size: 14px
+            margin: 0
+        .button-container
+            .add-keybinding
+                font-size: 12px
+                height: 26px
+                cursor: pointer
+                
     
     table
         width: 100%
