@@ -42,9 +42,11 @@
             <span class="command-name">{{ commandLabel }}</span>
         </td>
         <td class="actions">
-            <template v-if="!isDefault">
-                <button class="delete">Delete</button>
-            </template>
+            <button 
+                v-if="!isDefault"
+                @click="$emit('delete')"
+                class="delete"
+            >Delete</button>
         </td>
 
         <td v-if="!isDefault" class="drag-handle"></td>
@@ -80,14 +82,13 @@
                     background-color: rgba(0,0,0, 0.05)
                     +dark-mode
                         background-color: rgba(0,0,0, 0.25)
-    button
+    button.delete
         padding: 0 10px
         height: 22px
         font-size: 12px
         background: none
         border: none
         border-radius: 2px
-        margin-right: 2px
         cursor: pointer
         background: #ddd
         &:hover
@@ -96,13 +97,4 @@
             background: #555
             &:hover
                 background: #666
-        //&.delete
-        //    background: #e95050
-        //    &:hover
-        //        background: #ce4848
-        //    +dark-mode
-        //        &.delete
-        //            background: #ae1e1e
-        //            &:hover
-        //                background: #bf2222
 </style>

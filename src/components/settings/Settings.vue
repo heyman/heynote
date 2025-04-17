@@ -67,6 +67,9 @@
                 defaultFontSize: defaultFontSize,
                 appVersion: "",
                 theme: this.themeSetting,
+
+                // tracks if the add key binding dialog is visible (so that we can set inert on the save button)
+                addKeyBindingDialogVisible: false,
             }
         },
 
@@ -94,7 +97,7 @@
 
         methods: {
             onKeyDown(event) {
-                if (event.key === "Escape") {
+                if (event.key === "Escape" && !this.addKeyBindingDialogVisible) {
                     this.$emit("closeSettings")
                 }
             },
@@ -376,6 +379,7 @@
                         <KeyboardBindings 
                             :userKeys="keyBindings ? keyBindings : {}"
                             v-model="keyBindings"
+                            @addKeyBindingDialogVisible="addKeyBindingDialogVisible = $event"
                         />
                     </TabContent>
                     
@@ -417,7 +421,7 @@
                 </div>
             </div>
             
-            <div class="bottom-bar">
+            <div class="bottom-bar" :inert="addKeyBindingDialogVisible">
                 <button 
                     @click="$emit('closeSettings')"
                     class="close"
@@ -493,6 +497,7 @@
                     flex-grow: 1
                     padding: 40px
                     overflow-y: auto
+                    position: relative
                     select
                         height: 22px
                         margin: 4px 0
@@ -559,4 +564,5 @@
                     background: #222
                 .close
                     height: 28px
+                    cursor: pointer
 </style>
