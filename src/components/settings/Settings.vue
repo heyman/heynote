@@ -26,7 +26,7 @@
         },
 
         data() {
-            console.log("settings:", this.initialSettings)
+            //console.log("settings:", this.initialSettings)
             return {
                 keymaps: [
                     { name: "Default", value: "default" },

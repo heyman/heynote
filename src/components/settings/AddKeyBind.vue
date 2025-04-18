@@ -3,11 +3,13 @@
     import AutoComplete from 'primevue/autocomplete'
 
     import { HEYNOTE_COMMANDS } from '@/src/editor/commands'
+    import RecordKeyInput from './RecordKeyInput.vue'
     
     export default {
         name: "AddKeyBind",
         components: {
             AutoComplete,
+            RecordKeyInput,
         },
         data() {
             return {
@@ -34,6 +36,7 @@
 
         mounted() {
             window.addEventListener("keydown", this.onKeyDown)
+            this.$refs.keys.$el.focus()
         },
         beforeUnmount() {
             window.removeEventListener("keydown", this.onKeyDown)
@@ -41,7 +44,7 @@
 
         methods: {
             onKeyDown(event) {
-                if (event.key === "Escape") {
+                if (event.key === "Escape" && document.activeElement !== this.$refs.keys.$el) {
                     this.$emit("close")
                 }
             },
@@ -63,11 +66,18 @@
             },
 
             onSave() {
+                if (this.key === "" || this.command === "") {
+                    return
+                }
                 this.$emit("save", {
                     key: this.key,
                     command: this.command.name,
                 })
-            }
+            },
+
+            focusCommandSelector() {
+                this.$refs.autocomplete.$el.querySelector("input").focus()
+            },
         },
     }
 </script>
@@ -80,11 +90,12 @@
                 <div class="form">
                     <div class="field">
                         <label>Key</label>
-                        <input 
-                            type="text"
-                            v-model="key"
-                            class="keys"
-                        >
+                        <RecordKeyInput 
+                            v-model="key" 
+                            @enter="focusCommandSelector"
+                            @close="$emit('close')"
+                            ref="keys"
+                        />
                     </div>
                     <div class="field">
                         <label>Command</label>
@@ -93,9 +104,11 @@
                             forceSelection
                             v-model="command"
                             :suggestions="commandSuggestions"
+                            :autoOptionFocus="true"
                             optionLabel="key"
                             :delay="0"
                             @complete="onCommandSearch"
+                            ref="autocomplete"
                             emptySearchMessage="No commands found"
                             class="command-autocomplete"
                         >
@@ -163,6 +176,8 @@
                     .field
                         //width: 50%
                         margin-bottom: 20px
+                        &:last-child
+                            margin-bottom: 0
                         label
                             display: block
                             margin-bottom: 8px
