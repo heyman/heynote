@@ -69,7 +69,7 @@
                         key: event.key,
                         command: event.command,
                     },
-                    ...this.keymap,
+                    ...(this.keymap ? this.keymap : []),
                 ]
                 //console.log("keymap", this.keymap)
                 this.$emit("update:modelValue", this.keymap)
