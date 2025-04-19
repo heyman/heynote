@@ -95,6 +95,7 @@
             background: #ccc
         +dark-mode
             background: #555
+            color: #fff
             &:hover
                 background: #666
 </style>
