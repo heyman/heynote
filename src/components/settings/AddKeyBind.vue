@@ -192,6 +192,7 @@
                                 //border: 1px solid var(--highlight-color)
                             +dark-mode
                                 background: #202020
+                                color: #fff
                                 border: 1px solid #5a5a5a
                                 &:focus
                                     border: 1px solid rgba(0,0,0, 0)
