@@ -83,7 +83,7 @@
 </script>
 
 <template>
-    <div class="container">
+    <div class="container add-key-binding-dialog">
         <div class="dialog">
             <div class="dialog-content">
                 <h3>Add key binding</h3>
