@@ -24,12 +24,16 @@
                 }
                 return HEYNOTE_COMMANDS[this.command]?.description ||this.command
             },
+
+            className() {
+                return this.isDefault ? "keybind-default" : "keybind-user"
+            },
         },
     }
 </script>
 
 <template>
-    <tr>
+    <tr :class="className">
         <td class="source">
             {{ source }}
         </td>
