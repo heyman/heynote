@@ -137,7 +137,7 @@
             <tbody>
                 <KeyBindRow 
                     v-for="key in fixedKeymap" 
-                    :key="key.key" 
+                    :key="key.source + '_' + key.key" 
                     :keys="key.key"
                     :command="key.command"
                     :isDefault="key.isDefault"
