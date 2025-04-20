@@ -25,6 +25,7 @@ test("add custom key binding", async ({page}) => {
     await page.locator(".p-autocomplete-list li.p-autocomplete-option.p-focus").click()
     await page.locator("css=.settings .tab-content.tab-keyboard-bindings .add-key-binding-dialog .save").click()
     await expect(page.locator("css=.settings .tab-content.tab-keyboard-bindings table tr.keybind-user")).toHaveCount(1)
+    expect((await heynotePage.getSettings()).keyBindings).toEqual([{key:"Control-Shift-h", command:"openLanguageSelector"}])
     await page.locator("css=.overlay .settings .dialog .bottom-bar .close").click()
     await page.locator("body").press("Control+Shift+H")
     await expect(page.locator("css=.language-selector .items > li.selected")).toBeVisible()
@@ -43,6 +44,7 @@ test("delete custom key binding", async ({page}) => {
     await page.locator(".p-autocomplete-list li.p-autocomplete-option.p-focus").click()
     await page.locator("css=.settings .tab-content.tab-keyboard-bindings .add-key-binding-dialog .save").click()
     await expect(page.locator("css=.settings .tab-content.tab-keyboard-bindings table tr.keybind-user")).toHaveCount(1)
+    expect((await heynotePage.getSettings()).keyBindings).toEqual([{key:"Control-Shift-h", command:"openLanguageSelector"}])
     await page.locator("css=.overlay .settings .dialog .bottom-bar .close").click()
     await page.locator("body").press("Control+Shift+H")
     await expect(page.locator("css=.language-selector .items > li.selected")).toBeVisible()
@@ -54,5 +56,17 @@ test("delete custom key binding", async ({page}) => {
     await expect(page.locator("css=.settings .tab-content.tab-keyboard-bindings table tr.keybind-user")).toHaveCount(0)
     await page.locator("css=.overlay .settings .dialog .bottom-bar .close").click()
     await page.locator("body").press("Control+Shift+H")
+    await expect(page.locator("css=.language-selector .items > li.selected")).toHaveCount(0)
+})
+
+test("disable default key binding", async ({page}) => {
+    await page.locator("body").press("Meta+L")
+    await expect(page.locator("css=.language-selector .items > li.selected")).toBeVisible()
+    await page.locator("body").press("Escape")
+    await expect(page.locator("css=.language-selector .items > li.selected")).toHaveCount(0)
+    const settings = await heynotePage.getSettings()
+    settings.keyBindings = [{key:"Meta-L", command:"nothing"}]
+    await heynotePage.setSettings(settings)
+    await page.locator("body").press("Meta+L")
     await expect(page.locator("css=.language-selector .items > li.selected")).toHaveCount(0)
 })
