@@ -43,6 +43,7 @@ export class HeynoteEditor {
         bracketClosing=false,
         fontFamily,
         fontSize,
+        tabSize=4,
         defaultBlockToken,
         defaultBlockAutoDetect,
         keyBindings,
@@ -56,6 +57,7 @@ export class HeynoteEditor {
         this.foldGutterCompartment = new Compartment
         this.readOnlyCompartment = new Compartment
         this.closeBracketsCompartment = new Compartment
+        this.indentUnitCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
         this.emacsMetaKey = emacsMetaKey
         this.fontTheme = new Compartment
@@ -84,7 +86,7 @@ export class HeynoteEditor {
                 this.themeCompartment.of(theme === "dark" ? heynoteDark : heynoteLight),
                 heynoteBase,
                 this.fontTheme.of(getFontTheme(fontFamily, fontSize)),
-                indentUnit.of("    "),
+                this.indentUnitCompartment.of(indentUnit.of(" ".repeat(tabSize))),
                 EditorView.scrollMargins.of(f => {
                     return {top: 80, bottom: 80}
                 }),
@@ -425,6 +427,12 @@ export class HeynoteEditor {
         selectAll(this.view)
     }
 
+    setTabSize(tabSize) {
+        this.view.dispatch({
+            effects: this.indentUnitCompartment.reconfigure(indentUnit.of(" ".repeat(tabSize)))
+        })
+    }
+    
     executeCommand(command) {
         const cmd = HEYNOTE_COMMANDS[command]
         if (!cmd) {
