@@ -45,6 +45,7 @@
                 showInMenu: this.initialSettings.showInMenu,
                 alwaysOnTop: this.initialSettings.alwaysOnTop,
                 bracketClosing: this.initialSettings.bracketClosing,
+                indentType: this.initialSettings.indentType || "space",
                 tabSize: this.initialSettings.tabSize || 4,
                 autoUpdate: this.initialSettings.autoUpdate,
                 bufferPath: this.initialSettings.bufferPath,
@@ -117,6 +118,7 @@
                     alwaysOnTop: this.alwaysOnTop,
                     autoUpdate: this.autoUpdate,
                     bracketClosing: this.bracketClosing,
+                    indentType: this.indentType,
                     tabSize: this.tabSize,
                     bufferPath: this.bufferPath,
                     fontFamily: this.fontFamily === defaultFontFamily ? undefined : this.fontFamily,
@@ -291,6 +293,13 @@
                                         :selected="tabSize === size"
                                         :value="size"
                                     >{{ size }} {{ size === 1 ? 'space' : 'spaces' }}</option>
+                                </select>
+                            </div>
+                            <div class="entry">
+                                <h2>Indent Using</h2>
+                                <select v-model="indentType" @change="updateSettings" class="indent-type">
+                                    <option value="space" :selected="indentType === 'space'">Spaces</option>
+                                    <option value="tab" :selected="indentType === 'tab'">Tabs</option>
                                 </select>
                             </div>
                         </div>

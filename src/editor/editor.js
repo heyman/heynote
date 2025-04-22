@@ -1,8 +1,7 @@
 import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction, Prec } from "@codemirror/state"
 import { EditorView, keymap as cmKeymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
-import { indentUnit, forceParsing, foldGutter, ensureSyntaxTree } from "@codemirror/language"
+import { foldGutter, ensureSyntaxTree } from "@codemirror/language"
 import { markdown, markdownKeymap } from "@codemirror/lang-markdown"
-import { closeBrackets } from "@codemirror/autocomplete";
 import { undo, redo } from "@codemirror/commands"
 
 import { heynoteLight } from "./theme/light.js"
@@ -22,6 +21,7 @@ import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
+import { indentation } from "./indentation.js"
 import { HEYNOTE_COMMANDS } from "./commands.js";
 import { NoteFormat } from "../common/note-format.js"
 import { AUTO_SAVE_INTERVAL } from "../common/constants.js"
@@ -43,6 +43,7 @@ export class HeynoteEditor {
         bracketClosing=false,
         fontFamily,
         fontSize,
+        indentType="space",
         tabSize=4,
         defaultBlockToken,
         defaultBlockAutoDetect,
@@ -86,7 +87,7 @@ export class HeynoteEditor {
                 this.themeCompartment.of(theme === "dark" ? heynoteDark : heynoteLight),
                 heynoteBase,
                 this.fontTheme.of(getFontTheme(fontFamily, fontSize)),
-                this.indentUnitCompartment.of(indentUnit.of(" ".repeat(tabSize))),
+                this.indentUnitCompartment.of(indentation(indentType, tabSize)),
                 EditorView.scrollMargins.of(f => {
                     return {top: 80, bottom: 80}
                 }),
@@ -427,9 +428,9 @@ export class HeynoteEditor {
         selectAll(this.view)
     }
 
-    setTabSize(tabSize) {
+    setIndentSettings(indentType, tabSize) {
         this.view.dispatch({
-            effects: this.indentUnitCompartment.reconfigure(indentUnit.of(" ".repeat(tabSize)))
+            effects: this.indentUnitCompartment.reconfigure(indentation(indentType, tabSize))
         })
     }
     
