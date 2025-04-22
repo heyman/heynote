@@ -1,5 +1,6 @@
-import { EditorSelection } from "@codemirror/state"
-import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK, MOVE_BLOCK } from "../annotation.js";
+import { EditorSelection, Transaction } from "@codemirror/state"
+
+import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK, MOVE_BLOCK, DELETE_BLOCK } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos } from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
@@ -7,7 +8,11 @@ import { selectAll } from "./select-all.js";
 export { moveLineDown, moveLineUp, selectAll }
 
 
-export const insertNewBlockAtCursor = ({ state, dispatch }) => {
+export function getBlockDelimiter(defaultToken, autoDetect) {
+    return `\n∞∞∞${autoDetect ? defaultToken + '-a' : defaultToken}\n`
+}
+
+export const insertNewBlockAtCursor = (editor) => ({ state, dispatch }) => {
     if (state.readOnly)
         return false
 
@@ -16,7 +21,7 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     if (currentBlock) {
         delimText = `\n∞∞∞${currentBlock.language.name}${currentBlock.language.auto ? "-a" : ""}\n`
     } else {
-        delimText = "\n∞∞∞text-a\n"
+        delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
     }
     dispatch(state.replaceSelection(delimText),
         {
@@ -28,13 +33,12 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
     return true;
 }
 
-export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
-    console.log("addNewBlockBeforeCurrent")
+export const addNewBlockBeforeCurrent = (editor) =>  ({ state, dispatch }) => {
     if (state.readOnly)
         return false
 
     const block = getActiveNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
 
     dispatch(state.update({
         changes: {
@@ -50,12 +54,12 @@ export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
     return true;
 }
 
-export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
+export const addNewBlockAfterCurrent = (editor) => ({ state, dispatch }) => {
     if (state.readOnly)
         return false
 
     const block = getActiveNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
 
     dispatch(state.update({
         changes: {
@@ -70,12 +74,12 @@ export const addNewBlockAfterCurrent = ({ state, dispatch }) => {
     return true;
 }
 
-export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
+export const addNewBlockBeforeFirst = (editor) => ({ state, dispatch }) => {
     if (state.readOnly)
         return false
 
     const block = getFirstNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
 
     dispatch(state.update({
         changes: {
@@ -91,11 +95,11 @@ export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
     return true;
 }
 
-export const addNewBlockAfterLast = ({ state, dispatch }) => {
+export const addNewBlockAfterLast = (editor) => ({ state, dispatch }) => {
     if (state.readOnly)
         return false
     const block = getLastNoteBlock(state)
-    const delimText = "\n∞∞∞text-a\n"
+    const delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
 
     dispatch(state.update({
         changes: {
@@ -131,6 +135,10 @@ export function changeLanguageTo(state, dispatch, block, language, auto) {
 
 export function changeCurrentBlockLanguage(state, dispatch, language, auto) {
     const block = getActiveNoteBlock(state)
+    // if language is null, we only want to change the auto-detect flag
+    if (language === null) {
+        language = block.language.name
+    }
     changeLanguageTo(state, dispatch, block, language, auto)
 }
 
@@ -310,7 +318,7 @@ export function triggerCurrenciesLoaded(state, dispatch) {
     // This will make Math blocks re-render so that currency conversions are applied
     dispatch(state.update({
         changes:{from: 0, to: 0, insert:""},
-        annotations: [heynoteEvent.of(CURRENCIES_LOADED)],
+        annotations: [heynoteEvent.of(CURRENCIES_LOADED), Transaction.addToHistory.of(false)],
     }))
 }
 
@@ -366,6 +374,68 @@ function moveCurrentBlock(state, dispatch, up) {
     }, {
         scrollIntoView: true,
         userEvent: "input",
+    }))
+    return true
+}
+
+export const deleteBlock = (editor) => ({state, dispatch}) => {
+    const range = state.selection.asSingle().ranges[0]
+    const blocks = state.facet(blockState)
+    let block
+    let nextBlock
+    for (let i = 0; i < blocks.length; i++) {
+        block = blocks[i]
+        if (block.range.from <= range.head && block.range.to >= range.head) {
+            if (i < blocks.length - 1) {
+                nextBlock = blocks[i + 1]
+            }
+            break
+        }
+    }
+    
+    let replace = ""
+    let newSelection
+
+    if (blocks.length == 1) {
+        replace = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
+        newSelection = replace.length
+    } else if (!nextBlock) {
+        // if it's the last block, the cursor should go at the en of the previous block
+        newSelection = block.delimiter.from
+    } else {
+        // if there is a next block, we want the cursor to be at the beginning of that block
+        newSelection = block.delimiter.from + (nextBlock.delimiter.to - nextBlock.delimiter.from)
+    }
+
+    dispatch(state.update({
+        changes: {
+            from: block.range.from,
+            to: block.range.to,
+            insert: replace,
+        },
+        selection: EditorSelection.cursor(newSelection),
+        annotations: [heynoteEvent.of(DELETE_BLOCK)],
+    }))
+    return true
+}
+
+export const deleteBlockSetCursorPreviousBlock = (editor) => ({state, dispatch}) => {
+    const block = getActiveNoteBlock(state)
+    const blocks = state.facet(blockState)
+    let replace = ""
+    let newSelection = block.delimiter.from
+    if (blocks.length == 1) {
+        replace = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
+        newSelection = replace.length
+    }
+    dispatch(state.update({
+        changes: {
+            from: block.range.from,
+            to: block.range.to,
+            insert: replace,
+        },
+        selection: EditorSelection.cursor(newSelection),
+        annotations: [heynoteEvent.of(DELETE_BLOCK)],
     }))
     return true
 }

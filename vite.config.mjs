@@ -17,10 +17,8 @@ rmSync('dist-electron', { recursive: true, force: true })
 const isDevelopment = process.env.NODE_ENV === "development" || !!process.env.VSCODE_DEBUG
 const isProduction = process.env.NODE_ENV === "production"
 
-const updateReadmeKeybinds = async () => {
-	const readmePath = path.resolve(__dirname, 'README.md')
-	let readme = fs.readFileSync(readmePath, 'utf-8')
-	const keybindsRegex = /^(### What are the default keyboard shortcuts\?\s*).*?^(```\s+#)/gms
+const injectKeybindsInDocs = async () => {
+	const keybindsRegex = /^(<!-- keyboard_shortcuts -->\s*).*?^(```\s+#)/gms
 	const shortcuts = `$1**On Mac**
 
 \`\`\`
@@ -32,8 +30,10 @@ ${keyHelpStr('darwin')}
 \`\`\`
 ${keyHelpStr('win32')}
 $2`
-	readme = readme.replace(keybindsRegex, shortcuts)
-	fs.writeFileSync(readmePath, readme)
+	const docsPath = path.resolve(__dirname, 'docs', 'index.md')
+	let docs = fs.readFileSync(docsPath, 'utf-8')
+	docs = docs.replace(keybindsRegex, shortcuts)
+	fs.writeFileSync(docsPath, docs)
 }
 
 const updateGuesslangLanguagesInWebWorker = async () => {
@@ -46,17 +46,19 @@ const updateGuesslangLanguagesInWebWorker = async () => {
 }
 
 
+const resolveConfig = {
+	alias: {
+		'@': path.resolve(__dirname),
+	},
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
-	resolve: {
-        alias: {
-            '@': path.resolve(__dirname),
-        },
-    },
+	resolve: resolveConfig,
 
 	plugins: [
 		vue(),
-		updateReadmeKeybinds(),
+		injectKeybindsInDocs(),
 		updateGuesslangLanguagesInWebWorker(),
 		electron([
 			{
@@ -78,10 +80,11 @@ export default defineConfig({
 							external: Object.keys("dependencies" in pkg ? pkg.dependencies : {}),
 						},
 					},
+					resolve: resolveConfig,
 				},
 			},
 			{
-				entry: 'electron/preload/index.ts',
+				entry: 'electron/preload/index.js',
 				onstart(options) {
 					// Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete, 
 					// instead of restarting the entire Electron App.
@@ -96,6 +99,7 @@ export default defineConfig({
 							external: Object.keys("dependencies" in pkg ? pkg.dependencies : {}),
 						},
 					},
+					resolve: resolveConfig,
 				},
 			},
 			{
@@ -132,8 +136,9 @@ export default defineConfig({
 	css: {
 		preprocessorOptions: {
 			sass: {
+				api: "modern-compiler",
 				additionalData: `
-    @import "./src/css/include.sass"
+    @use "@/src/css/include.sass" as *
 `
 			}
 		}

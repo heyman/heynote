@@ -15,7 +15,6 @@ Block A
 Block B
 ∞∞∞text
 Block C`)
-
     // check that blocks are created
     expect((await heynotePage.getBlocks()).length).toBe(3)
 

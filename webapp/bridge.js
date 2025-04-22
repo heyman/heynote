@@ -1,4 +1,8 @@
-import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "../electron/constants";
+import { Exception } from "sass";
+import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "@/src/common/constants";
+import { NoteFormat } from "../src/common/note-format";
+
+const NOTE_KEY_PREFIX = "heynote-library__"
 
 const mediaMatch = window.matchMedia('(prefers-color-scheme: dark)')
 let themeCallback = null
@@ -14,24 +18,35 @@ let autoUpdateCallbacks = null
 let currencyData = null
 
 let platform
-const uaPlatform = window.navigator?.userAgentData?.platform || window.navigator.platform
-if (uaPlatform.indexOf("Win") !== -1) {
-    platform = {
-        isMac: false,
-        isWindows: true,
-        isLinux: false,
-    }
-}  else if (uaPlatform.indexOf("Linux") !== -1) {
-    platform = {
-        isMac: false,
-        isWindows: false,
-        isLinux: true,
-    }
-} else {
+
+// In the latest version of Playwright, the window.navigator.userAgentData.platform is not reported correctly on Mac,
+// wo we'll fallback to deprecated window.navigator.platform which still works
+if (__TESTS__ && window.navigator.platform.indexOf("Mac") !== -1) {
     platform = {
         isMac: true,
         isWindows: false,
         isLinux: false,
+    }
+} else {
+    const uaPlatform = window.navigator?.userAgentData?.platform || window.navigator.platform
+    if (uaPlatform.indexOf("Win") !== -1) {
+        platform = {
+            isMac: false,
+            isWindows: true,
+            isLinux: false,
+        }
+    }  else if (uaPlatform.indexOf("Linux") !== -1) {
+        platform = {
+            isMac: false,
+            isWindows: false,
+            isLinux: true,
+        }
+    } else {
+        platform = {
+            isMac: true,
+            isWindows: false,
+            isLinux: false,
+        }
     }
 }
 platform.isWebApp = true
@@ -47,6 +62,12 @@ class IpcRenderer {
             this.callbacks[event] = []
         }
         this.callbacks[event].push(callback)
+    }
+
+    off(event, callback) {
+        if (this.callbacks[event]) {
+            this.callbacks[event] = this.callbacks[event].filter(cb => cb !== callback)
+        }
     }
 
     send(event, ...args) {
@@ -68,11 +89,55 @@ let initialSettings = {
     showLineNumberGutter: true,
     showFoldGutter: true,
     bracketClosing: false,
+    keyBindings: [],
 }
 if (settingsData !== null) {
     initialSettings = Object.assign(initialSettings, JSON.parse(settingsData))
 }
 
+function noteKey(path) {
+    return NOTE_KEY_PREFIX + path
+}
+
+function getNoteMetadata(content) {
+    const firstSeparator = content.indexOf("\n∞∞∞")
+    if (firstSeparator === -1) {
+        return null
+    }
+    try {
+        const metadata = JSON.parse(content.slice(0, firstSeparator).trim())
+        return {"name": metadata.name}
+    } catch (e) {
+        return {}
+    }
+}
+
+// Migrate single buffer (Heynote pre 2.0) in localStorage to notes library
+// At some point we can remove this migration code
+function migrateBufferFileToLibrary() {
+    if (!("buffer" in localStorage)) {
+        // nothing to migrate
+        return
+    }
+    if (Object.keys(localStorage).filter(key => key.startsWith(NOTE_KEY_PREFIX)).length > 0) {
+        // already migrated
+        return
+    }
+
+    console.log("Migrating single buffer to notes library")
+
+    let content = localStorage.getItem("buffer")
+    const metadata = getNoteMetadata(content)
+    if (!metadata || !metadata.name) {
+        console.log("Adding metadata to Scratch note")
+        const note = NoteFormat.load(content)
+        note.metadata.name = "Scratch"
+        content = note.serialize()
+    }
+    localStorage.setItem("heynote-library__scratch.txt", content)
+    localStorage.removeItem("buffer")
+}
+migrateBufferFileToLibrary()
 
 const Heynote = {
     platform: platform,
@@ -80,37 +145,98 @@ const Heynote = {
     defaultFontSize: isMobileDevice ? 16 : 12,
 
     buffer: {
-        async load() {
-            const content = localStorage.getItem("buffer")
-            return content === null ? "\n∞∞∞text-a\n" : content
+        async load(path) {
+            //console.log("loading", path)
+            const content = localStorage.getItem(noteKey(path))
+            return content === null ? '{"formatVersion":"1.0.0","name":"Scratch"}\n∞∞∞text-a\n' : content
         },
 
-        async save(content) {
-            localStorage.setItem("buffer", content)
+        async save(path, content) {
+            //console.log("saving", path, content)
+            localStorage.setItem(noteKey(path), content)
         },
 
-        async saveAndQuit(content) {
+        async create(path, content) {
+            localStorage.setItem(noteKey(path), content)
+        },
+
+        async delete(path) {
+            localStorage.removeItem(noteKey(path))
+        },
+
+        async move(path, newPath) {
+            const content = localStorage.getItem(noteKey(path))
+            localStorage.setItem(noteKey(newPath), content)
+            localStorage.removeItem(noteKey(path))
+        },
+
+        async saveAndQuit(contents) {
             
         },
 
-        onChangeCallback(callback) {
+        async exists(path) {
+            return localStorage.getItem(noteKey(path)) !== null
+        },
+
+        async getList() {
+            //return {"scratch.txt": {name:"Scratch"}}
+            const notes = {}
+            for (let [key, content] of Object.entries(localStorage)) {
+                if (key.startsWith(NOTE_KEY_PREFIX)) {
+                    const path = key.slice(NOTE_KEY_PREFIX.length)
+                    notes[path] = getNoteMetadata(content)
+                }
+            }
+            return notes
+        },
+
+        async getDirectoryList() {
+            const directories = new Set()
+            for (let key in localStorage) {
+                if (key.startsWith(NOTE_KEY_PREFIX)) {
+                    const path = key.slice(NOTE_KEY_PREFIX.length)
+                    const parts = path.split("/")
+                    if (parts.length > 1) {
+                        for (let i = 1; i < parts.length; i++) {
+                            directories.add(parts.slice(0, i).join("/"))
+                        }
+                    }
+                }
+            }
+            //console.log("directories", directories)
+            return [...directories]
+        },
+
+        async close(path) {
             
         },
+
+        _onChangeCallbacks: {},
+        addOnChangeCallback(path, callback) {
+            
+        },
+        removeOnChangeCallback(path, callback) {
+            
+        },
+
+        pathSeparator: "/",
     },
 
-    onWindowClose(callback) {
-        //ipcRenderer.on(WINDOW_CLOSE_EVENT, callback)
+    mainProcess: {
+        on(event, callback) {
+            ipcRenderer.on(event, callback)
+        },
+        
+        off(event, callback) {
+            ipcRenderer.off(event, callback)
+        },
+
+        invoke(event, ...args) {
+            
+        }
     },
 
     settings: initialSettings,
-
-    onOpenSettings(callback) {
-        ipcRenderer.on(OPEN_SETTINGS_EVENT, callback)
-    },
-
-    onSettingsChange(callback) {
-        ipcRenderer.on(SETTINGS_CHANGE_EVENT, (event, settings) => callback(settings))
-    },
 
     setSettings(settings) {
         localStorage.setItem("settings", JSON.stringify(settings))
@@ -121,7 +247,7 @@ const Heynote = {
         set: (mode) => {
             localStorage.setItem("theme", mode)
             themeCallback(mode)
-            console.log("set theme to", mode)
+            //console.log("set theme to", mode)
         },
         get: async () => {
             const theme = localStorage.getItem("theme") || "system"
@@ -151,6 +277,14 @@ const Heynote = {
 
     async getVersion() {
         return __APP_VERSION__ + " (" + __GIT_HASH__ + ")"
+    },
+
+    async getInitErrors() {
+        
+    },
+
+    setWindowTitle(title) {
+        document.title = title + " - Heynote"
     },
 }
 

@@ -1,18 +1,22 @@
 import { ViewPlugin } from "@codemirror/view"
 import { debounce } from "debounce"
+import { SET_CONTENT }  from "./annotation"
 
 
-export const autoSaveContent = (saveFunction, interval) => {
-    const save = debounce((view) => {
+export const autoSaveContent = (editor, interval) => {
+    const save = debounce(() => {
         //console.log("saving buffer")
-        saveFunction(view.state.sliceDoc())
+        editor.save()
     }, interval);
 
     return ViewPlugin.fromClass(
         class {
             update(update) {
                 if (update.docChanged) {
-                    save(update.view)
+                    const initialSetContent = update.transactions.flatMap(t => t.annotations).some(a => a.value === SET_CONTENT)
+                    if (!initialSetContent) {
+                        save()
+                    }
                 }
             }
         }

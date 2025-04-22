@@ -1,63 +1,31 @@
 import { ViewPlugin, EditorView, Decoration, WidgetType, lineNumbers } from "@codemirror/view"
 import { layer, RectangleMarker } from "@codemirror/view"
-import { EditorState, RangeSetBuilder, StateField, Facet , StateEffect, RangeSet} from "@codemirror/state";
-import { syntaxTree, ensureSyntaxTree } from "@codemirror/language"
-import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
-import { IterMode } from "@lezer/common";
-import { heynoteEvent, LANGUAGE_CHANGE } from "../annotation.js";
-import { SelectionChangeEvent } from "../event.js"
+import { EditorState, RangeSetBuilder, StateField, RangeSet, Transaction} from "@codemirror/state";
+import { syntaxTreeAvailable } from "@codemirror/language"
+import { useHeynoteStore } from "../../stores/heynote-store.js"
+import { heynoteEvent, LANGUAGE_CHANGE, CURSOR_CHANGE } from "../annotation.js";
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
+import { firstBlockDelimiterSize, getBlocksFromSyntaxTree, getBlocksFromString } from "./block-parsing.js";
 
 
-// tracks the size of the first delimiter
-let firstBlockDelimiterSize
-
-function getBlocks(state, timeout=50) {
-    const blocks = [];  
-    const tree = ensureSyntaxTree(state, state.doc.length, timeout)
-    if (tree) {
-        tree.iterate({
-            enter: (type) => {
-                if (type.type.id == Document || type.type.id == Note) {
-                    return true
-                } else if (type.type.id === NoteDelimiter) {
-                    const langNode = type.node.getChild("NoteLanguage")
-                    const language = state.doc.sliceString(langNode.from, langNode.to)
-                    const isAuto = !!type.node.getChild("Auto")
-                    const contentNode = type.node.nextSibling
-                    blocks.push({
-                        language: {
-                            name: language,
-                            auto: isAuto,
-                        },
-                        content: {
-                            from: contentNode.from,
-                            to: contentNode.to,
-                        },
-                        delimiter: {
-                            from: type.from,
-                            to: type.to,
-                        },
-                        range: {
-                            from: type.node.from,
-                            to: contentNode.to,
-                        },
-                    })
-                    return false;
-                }
-                return false;
-            },
-            mode: IterMode.IgnoreMounts,
-        });
-        firstBlockDelimiterSize = blocks[0]?.delimiter.to
+/**
+ * Get the blocks from the document state.
+ * If the syntax tree is available, we'll extract the blocks from that. Otherwise 
+ * the blocks are parsed from the string contents of the document, which is much faster
+ * than waiting for the tree parsing to finish.
+ */
+export function getBlocks(state) {
+    if (syntaxTreeAvailable(state, state.doc.length)) {
+        return getBlocksFromSyntaxTree(state)
+    } else {
+        return getBlocksFromString(state)
     }
-    return blocks
 }
 
 export const blockState = StateField.define({
     create(state) {
-        return getBlocks(state, 1000);
+        return getBlocks(state);
     },
     update(blocks, transaction) {
         // if blocks are empty it likely means we didn't get a parsed syntax tree, and then we want to update
@@ -201,8 +169,9 @@ const blockLayer = layer({
                 idx++;
                 return
             }
-            const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from)).top
-            let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)).bottom
+            // view.coordsAtPos returns null if the editor is not visible
+            const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from))?.top
+            let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to))?.bottom
             if (idx === blocks.length - 1) {
                 // Calculate how much extra height we need to add to the last block
                 let extraHeight = view.viewState.editorHeight - (
@@ -313,32 +282,43 @@ function getSelectionSize(state, sel) {
     return count
 }
 
-const emitCursorChange = (editor) => ViewPlugin.fromClass(
-    class {
-        update(update) {
-            // if the selection changed or the language changed (can happen without selection change), 
-            // emit a selection change event
-            const langChange = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE))
-            if (update.selectionSet || langChange) {
-                const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
+export function triggerCursorChange({state, dispatch}) {
+    // Trigger empty change transaction that is annotated with CURRENCIES_LOADED
+    // This will make Math blocks re-render so that currency conversions are applied
+    dispatch(state.update({
+        changes:{from: 0, to: 0, insert:""},
+        annotations: [heynoteEvent.of(CURSOR_CHANGE), Transaction.addToHistory.of(false)],
+    }))
+}
 
-                const selectionSize = update.state.selection.ranges.map(
-                    (sel) => getSelectionSize(update.state, sel)
-                ).reduce((a, b) => a + b, 0)
+const emitCursorChange = (editor) => {
+    const heynoteStore = useHeynoteStore()
+    return ViewPlugin.fromClass(
+        class {
+            update(update) {
+                // if the selection changed or the language changed (can happen without selection change), 
+                // emit a selection change event
+                const shouldUpdate = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE || a.value == CURSOR_CHANGE))
+                if (update.selectionSet || shouldUpdate) {
+                    const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
 
-                const block = getActiveNoteBlock(update.state)
-                if (block && cursorLine) {
-                    editor.element.dispatchEvent(new SelectionChangeEvent({
-                        cursorLine,
-                        selectionSize,
-                        language: block.language.name,
-                        languageAuto: block.language.auto,
-                    }))
+                    const selectionSize = update.state.selection.ranges.map(
+                        (sel) => getSelectionSize(update.state, sel)
+                    ).reduce((a, b) => a + b, 0)
+
+                    const block = getActiveNoteBlock(update.state)
+                    if (block && cursorLine) {
+                        heynoteStore.currentCursorLine = cursorLine
+                        heynoteStore.currentSelectionSize = selectionSize
+                        heynoteStore.currentLanguage = block.language.name
+                        heynoteStore.currentLanguageAuto = block.language.auto
+                        heynoteStore.currentBufferName = editor.name
+                    }
                 }
             }
         }
-    }
-)
+    )
+}
 
 export const noteBlockExtension = (editor) => {
     return [

@@ -1,9 +1,58 @@
 const { app, Menu } = require("electron")
-import { OPEN_SETTINGS_EVENT } from "../constants";
+import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, SELECT_ALL_EVENT } from '@/src/common/constants'
 import { openAboutWindow } from "./about";
 import { quit } from "./index"
 
 const isMac = process.platform === "darwin"
+
+
+const undoMenuItem = {
+    label: 'Undo',
+    accelerator: 'CommandOrControl+z',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(UNDO_EVENT)
+    },
+}
+
+const redoMenuItem = {
+    label: 'Redo',
+    accelerator: 'CommandOrControl+Shift+z',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(REDO_EVENT)
+    },
+}
+
+const selectAllMenuItem = {
+    label: 'Select All',
+    accelerator: 'CommandOrControl+a',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(SELECT_ALL_EVENT)
+    },
+}
+
+const deleteBlockMenuItem = {
+    label: 'Delete block',
+    accelerator: 'CommandOrControl+Shift+D',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(DELETE_BLOCK_EVENT)
+    },
+}
+
+const moveBlockMenuItem = {
+    label: 'Move block to another buffer…',
+    accelerator: 'CommandOrControl+S',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(MOVE_BLOCK_EVENT)
+    },
+}
+
+const changeBufferMenuItem = {
+    label: 'Switch buffer…',
+    accelerator: 'CommandOrControl+P',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(CHANGE_BUFFER_EVENT)
+    },
+}
 
 const template = [
     // { role: 'appMenu' }
@@ -18,6 +67,7 @@ const template = [
                 },
             },
             { type: 'separator' },
+            changeBufferMenuItem,
             {
                 label: 'Settings',
                 click: (menuItem, window, event) => {
@@ -37,6 +87,7 @@ const template = [
     }] : [{
         role: 'fileMenu',
         submenu: [
+            changeBufferMenuItem,
             {
                 label: 'Settings',
                 click: (menuItem, window, event) => {
@@ -62,8 +113,11 @@ const template = [
     {
         label: 'Edit',
         submenu: [
-            { role: 'undo' },
-            { role: 'redo' },
+            undoMenuItem,
+            redoMenuItem,
+            { type: 'separator' },
+            deleteBlockMenuItem,
+            moveBlockMenuItem,
             { type: 'separator' },
             { role: 'cut' },
             { role: 'copy' },
@@ -71,7 +125,7 @@ const template = [
             ...(isMac ? [
                 { role: 'pasteAndMatchStyle' },
                 { role: 'delete' },
-                { role: 'selectAll' },
+                selectAllMenuItem,
                 { type: 'separator' },
                 {
                     label: 'Speech',
@@ -83,7 +137,7 @@ const template = [
             ] : [
                 { role: 'delete' },
                 { type: 'separator' },
-                { role: 'selectAll' }
+                selectAllMenuItem,
             ])
         ]
     },
@@ -131,7 +185,14 @@ const template = [
         role: 'help',
         submenu: [
             {
-                label: 'Learn More',
+                label: 'Documentation',
+                click: async () => {
+                    const { shell } = require('electron')
+                    await shell.openExternal('https://heynote.com/docs/')
+                }
+            },
+            {
+                label: 'Website',
                 click: async () => {
                     const { shell } = require('electron')
                     await shell.openExternal('https://heynote.com')
@@ -164,3 +225,18 @@ export function getTrayMenu(win) {
     ])
 }
 
+export function getEditorContextMenu(win) {
+    return Menu.buildFromTemplate([
+        undoMenuItem,
+        redoMenuItem,
+        {type: 'separator'},
+        {role: 'cut'},
+        {role: 'copy'},
+        {role: 'paste'},
+        {type: 'separator'},
+        selectAllMenuItem,
+        {type: 'separator'},
+        deleteBlockMenuItem,
+        moveBlockMenuItem,
+    ])
+}

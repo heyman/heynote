@@ -24,6 +24,19 @@ const schema = {
         properties: {
             "keymap": { "enum": ["default", "emacs"], default:"default" },
             "emacsMetaKey": { "enum": [null, "alt", "meta"], default: null },
+            "keyBindings": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": ["key", "command"],
+                    "properties": {
+                        "key": { "type": "string" },
+                        "command": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                }
+            },
+
             "showLineNumberGutter": {type: "boolean", default:true},
             "showFoldGutter": {type: "boolean", default:true},
             "autoUpdate": {type: "boolean", default: true},
@@ -35,6 +48,9 @@ const schema = {
             "showInMenu": {type: "boolean", default: false},
             "alwaysOnTop": {type: "boolean", default: false},
             "bracketClosing": {type: "boolean", default: false},
+            "tabSize": {type: "integer", default: 4},
+            "defaultBlockLanguage": {type: "string"},
+            "defaultBlockLanguageAutoDetect": {type: "boolean"},
 
             // when default font settings are used, fontFamily and fontSize is not specified in the 
             // settings file, so that it's possible for us to change the default settings in the 
@@ -59,6 +75,7 @@ const defaults = {
     settings: {
         keymap: "default",
         emacsMetaKey: isMac ? "meta" : "alt",
+        keyBindings: [],
         showLineNumberGutter: true,
         showFoldGutter: true,
         autoUpdate: true,
@@ -70,6 +87,7 @@ const defaults = {
         showInMenu: false,
         alwaysOnTop: false,
         bracketClosing: false,
+        tabSize: 4,
     },
     theme: "system",
 }

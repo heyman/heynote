@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 
 
 test("JSON formatting", async ({ page }) => {
-    heynotePage.setContent(`
+    await heynotePage.setContent(`
 ∞∞∞json
     {"test": 1, "key2": "hey!"}
 `)
@@ -25,7 +25,7 @@ test("JSON formatting", async ({ page }) => {
 })
 
 test("JSON formatting (cursor at start)", async ({ page }) => {
-    heynotePage.setContent(`
+    await heynotePage.setContent(`
 ∞∞∞json
     {"test": 1, "key2": "hey!"}
 `)

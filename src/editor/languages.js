@@ -12,6 +12,7 @@ import { cppLanguage } from "@codemirror/lang-cpp"
 import { xmlLanguage } from "@codemirror/lang-xml"
 import { rustLanguage } from "@codemirror/lang-rust"
 import { csharpLanguage } from "@replit/codemirror-lang-csharp"
+import { vueLanguage } from "@codemirror/lang-vue";
 
 import { StreamLanguage } from "@codemirror/language"
 import { ruby } from "@codemirror/legacy-modes/mode/ruby"
@@ -19,28 +20,29 @@ import { shell } from "@codemirror/legacy-modes/mode/shell"
 import { yaml } from "@codemirror/legacy-modes/mode/yaml"
 import { go } from "@codemirror/legacy-modes/mode/go"
 import { clojure } from "@codemirror/legacy-modes/mode/clojure"
+import { elixirLanguage } from "codemirror-lang-elixir"
 import { erlang } from "@codemirror/legacy-modes/mode/erlang"
 import { toml } from "@codemirror/legacy-modes/mode/toml"
 import { swift } from "@codemirror/legacy-modes/mode/swift"
-import { kotlin } from "@codemirror/legacy-modes/mode/clike"
+import { kotlin, dart, scala } from "@codemirror/legacy-modes/mode/clike"
 import { groovy } from "@codemirror/legacy-modes/mode/groovy"
 import { diff } from "@codemirror/legacy-modes/mode/diff";
 import { powerShell } from "@codemirror/legacy-modes/mode/powershell";
 
-import typescriptPlugin from "prettier/plugins/typescript.mjs"
-import babelPrettierPlugin from "prettier/plugins/babel.mjs"
-import htmlPrettierPlugin from "prettier/esm/parser-html.mjs"
-import cssPrettierPlugin from "prettier/esm/parser-postcss.mjs"
-import markdownPrettierPlugin from "prettier/esm/parser-markdown.mjs"
-import yamlPrettierPlugin from "prettier/plugins/yaml.mjs"
-import * as prettierPluginEstree from "prettier/plugins/estree.mjs";
+import typescriptPlugin from "prettier/plugins/typescript"
+import babelPrettierPlugin from "prettier/plugins/babel"
+import htmlPrettierPlugin from "prettier/plugins/html"
+import cssPrettierPlugin from "prettier/plugins/postcss"
+import markdownPrettierPlugin from "prettier/plugins/markdown"
+import yamlPrettierPlugin from "prettier/plugins/yaml"
+import * as prettierPluginEstree from "prettier/plugins/estree";
 
 
 class Language {
     /**
      * @param token: The token used to identify the language in the buffer content
      * @param name: The name of the language
-     * @param parser: The Lezer parser used to parse the language 
+     * @param parser: The Lezer parser used to parse the language
      * @param guesslang: The name of the language as used by the guesslang library
      * @param prettier: The prettier configuration for the language (if any)
      */
@@ -118,7 +120,7 @@ export const LANGUAGES = [
     new Language({
         token: "php",
         name: "PHP",
-        parser: phpLanguage.parser,
+        parser: phpLanguage.configure({top:"Program"}).parser,
         guesslang: "php",
     }),
     new Language({
@@ -190,6 +192,12 @@ export const LANGUAGES = [
         guesslang: "clj",
     }),
     new Language({
+        token: "elixir",
+        name: "Elixir",
+        parser: elixirLanguage.parser,
+        guesslang: "ex",
+    }),
+    new Language({
         token: "erlang",
         name: "Erlang",
         parser: StreamLanguage.define(erlang).parser,
@@ -253,6 +261,24 @@ export const LANGUAGES = [
         parser: StreamLanguage.define(powerShell).parser,
         guesslang: "ps1",
     }),
+    new Language({
+        token: "vue",
+        name: "Vue",
+        parser: vueLanguage.parser,
+        guesslang: null,
+    }),
+    new Language({
+        token: "dart",
+        name: "Dart",
+        parser: StreamLanguage.define(dart).parser,
+        guesslang: "dart",
+    }),
+    new Language({
+        token: "scala",
+        name: "Scala",
+        parser: StreamLanguage.define(scala).parser,
+        guesslang: "scala",
+    }), 
 ]
 
 

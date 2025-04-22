@@ -11,7 +11,7 @@ import {
     UPDATE_START_DOWNLOAD,
     UPDATE_INSTALL_AND_RESTART,
     UPDATE_CHECK_FOR_UPDATES,
-} from '../constants'
+} from '@/src/common/constants'
 import { setForceQuit } from "./index";
 
 

@@ -1,13 +1,14 @@
 import os from "os";
 import { keyHelpStr } from "../shared-utils/key-helper";
 
-export const eraseInitialContent = !!process.env.ERASE_INITIAL_CONTENT
-
 export const initialContent = `
-∞∞∞markdown
+{"formatVersion":"1.0.0","name":"Scratch"}
+∞∞∞text
 Welcome to Heynote! 👋
 
 ${keyHelpStr(os.platform())}
+∞∞∞markdown
+Read full documentation at https://heynote.com/docs
 ∞∞∞math
 This is a Math block. Here, rows are evaluated as math expressions. 
 

@@ -1,15 +1,21 @@
 <script>
+    import fuzzysort from 'fuzzysort'
     import { LANGUAGES } from '../editor/languages.js'
 
     const items = LANGUAGES.map(l => {
         return {
             "token": l.token, 
-            "name": l.name
+            "name": l.name,
+            "guesslang": l.guesslang,
         }
     }).sort((a, b) => {
         return a.name.localeCompare(b.name)
     })
     items.unshift({token: "auto", name:"Auto-detect"})
+
+    items.forEach((item, idx) => {
+        item.preparedName = fuzzysort.prepare(item.name)
+    })
 
     export default {
         data() {
@@ -26,8 +32,18 @@
 
         computed: {
             filteredItems() {
-                return items.filter((lang) => {
-                    return lang.name.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1
+                if (this.filter === "") {
+                    return items
+                }
+                const searchResults = fuzzysort.go(this.filter, items, {
+                    keys: ['name', 'guesslang'],
+                })
+                return searchResults.map(result => {
+                    const highlight = result[0].highlight("<b>", "</b>")
+                    return {
+                        "token": result.obj.token,
+                        "name": highlight || result.obj.name,
+                    }
                 })
             },
         },
@@ -96,9 +112,8 @@
                     :class="idx === selected ? 'selected' : ''"
                     @click="selectItem(item.token)"
                     ref="item"
-                >
-                    {{ item.name }}
-                </li>
+                    v-html="item.name"
+                />
             </ul>
         </form>
     </div>
@@ -106,12 +121,12 @@
 
 <style scoped lang="sass">    
     .scroller
-        overflow: auto
-        position: fixed
-        top: 0
-        left: 0
-        bottom: 0
-        right: 0
+        //overflow: auto
+        //position: fixed
+        //top: 0
+        //left: 0
+        //bottom: 0
+        //right: 0
     .language-selector
         font-size: 13px
         padding: 10px
@@ -121,6 +136,10 @@
         top: 0
         left: 50%
         transform: translateX(-50%)
+        max-height: 100%
+        box-sizing: border-box
+        display: flex
+        flex-direction: column
         border-radius: 0 0 5px 5px
         box-shadow: 0 0 10px rgba(0,0,0,0.3)
         +dark-mode
@@ -135,7 +154,7 @@
             border: 1px solid #ccc
             box-sizing: border-box
             border-radius: 2px
-            width: 400px
+            width: 300px
             margin-bottom: 10px
             &:focus
                 outline: none
@@ -152,6 +171,7 @@
                 max-width: 100%
         
         .items
+            overflow-y: auto
             > li
                 border-radius: 3px
                 padding: 5px 12px
@@ -162,10 +182,12 @@
                     background: #48b57e
                     color: #fff
                 +dark-mode
-                    color: rgba(255,255,255, 0.53)
+                    color: rgba(255,255,255, 0.65)
                     &:hover
                         background: #29292a
                     &.selected
                         background: #1b6540
                         color: rgba(255,255,255, 0.87)
+                ::v-deep(b)
+                    font-weight: 700
 </style>

@@ -1,19 +1,14 @@
 <script>
+    import { mapState } from 'pinia'
     import UpdateStatusItem from './UpdateStatusItem.vue'
     import { LANGUAGES } from '../editor/languages.js'
+    import { useHeynoteStore } from "../stores/heynote-store"
     
     const LANGUAGE_MAP = Object.fromEntries(LANGUAGES.map(l => [l.token, l]))
     const LANGUAGE_NAMES = Object.fromEntries(LANGUAGES.map(l => [l.token, l.name]))
 
     export default {
         props: [
-            "line", 
-            "column", 
-            "selectionSize",
-            "language", 
-            "languageAuto",
-            "theme",
-            "themeSetting",
             "autoUpdate",
             "allowBetaVersions",
         ],
@@ -33,8 +28,17 @@
         },
 
         computed: {
+            ...mapState(useHeynoteStore, [
+                "currentBufferName",
+                "currentCursorLine",
+                "currentLanguage", 
+                "currentSelectionSize", 
+                "currentLanguage",
+                "currentLanguageAuto",
+            ]),
+
             languageName() {
-                return LANGUAGE_NAMES[this.language] || this.language
+                return LANGUAGE_NAMES[this.currentLanguage] || this.currentLanguage
             },
 
             className() {
@@ -42,7 +46,7 @@
             },
 
             supportsFormat() {
-                const lang = LANGUAGE_MAP[this.language]
+                const lang = LANGUAGE_MAP[this.currentLanguage]
                 return !!lang ? lang.supportsFormat : false
             },
 
@@ -52,6 +56,10 @@
 
             formatBlockTitle() {
                 return `Format Block Content (Alt + Shift + F)`
+            },
+
+            changeNoteTitle() {
+                return `Change Note (${this.cmdKey} + P)`
             },
 
             changeLanguageTitle() {
@@ -68,24 +76,31 @@
 <template>
     <div :class="className">
         <div class="status-block line-number">
-            Ln <span class="num">{{ line }}</span>
-            Col <span class="num">{{ column }}</span>
-            <template v-if="selectionSize > 0">
-                Sel <span class="num">{{ selectionSize }}</span>
+            Ln <span class="num">{{ currentCursorLine?.line }}</span>
+            Col <span class="num">{{ currentCursorLine?.col }}</span>
+            <template v-if="currentSelectionSize > 0">
+                Sel <span class="num">{{ currentSelectionSize }}</span>
             </template>
         </div>
         <div class="spacer"></div>
         <div 
-            @click="$emit('openLanguageSelector')"
+            @click.stop="$emit('openBufferSelector')"
+            class="status-block note clickable"
+            :title="changeNoteTitle"
+        >
+            {{ currentBufferName }} 
+        </div>
+        <div 
+            @click.stop="$emit('openLanguageSelector')"
             class="status-block lang clickable"
             :title="changeLanguageTitle"
         >
             {{ languageName }} 
-            <span v-if="languageAuto" class="auto">(auto)</span>
+            <span v-if="currentLanguageAuto" class="auto">(auto)</span>
         </div>
         <div 
             v-if="supportsFormat"
-            @click="$emit('formatCurrentBlock')"
+            @click.stop="$emit('formatCurrentBlock')"
             class="status-block format clickable"
             :title="formatBlockTitle"
         >
@@ -96,11 +111,8 @@
             :autoUpdate="autoUpdate"
             :allowBetaVersions="allowBetaVersions"
         />
-        <div class="status-block theme clickable" @click="$emit('toggleTheme')" title="Toggle dark/light mode">
-            <span :class="'icon ' + themeSetting"></span>
-        </div>
         <div 
-            @click="$emit('openSettings')"
+            @click.stop="$emit('openSettings')"
             class="status-block settings clickable"
             title="Settings"
         >
@@ -159,19 +171,6 @@
             color: rgba(255, 255, 255, 0.7)
             +dark-mode
                 color: rgba(255, 255, 255, 0.55)
-        .theme
-            padding-top: 0
-            padding-bottom: 0
-            .icon
-                background-size: 14px
-                background-repeat: no-repeat
-                background-position: center center
-                &.dark
-                    background-image: url("@/assets/icons/dark-mode.png")
-                &.light
-                    background-image: url("@/assets/icons/light-mode.png")
-                &.system
-                    background-image: url("@/assets/icons/both-mode.png")
         
         .format
             padding-top: 0

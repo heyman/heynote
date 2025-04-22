@@ -1,11 +1,9 @@
 const { contextBridge } = require('electron')
+import { sep } from "path"
 import themeMode from "./theme-mode"
-import { isMac, isWindows, isLinux } from "../detect-platform"
+import { isMac, isWindows, isLinux, isDev } from "../detect-platform"
 import { ipcRenderer } from "electron"
-import { 
-    WINDOW_CLOSE_EVENT, 
-    OPEN_SETTINGS_EVENT, 
-    SETTINGS_CHANGE_EVENT, 
+import {
     UPDATE_AVAILABLE_EVENT, 
     UPDATE_ERROR, 
     UPDATE_DOWNLOAD_PROGRESS, 
@@ -14,7 +12,7 @@ import {
     UPDATE_INSTALL_AND_RESTART,
     UPDATE_DOWNLOADED,
     UPDATE_CHECK_FOR_UPDATES,
-} from "../constants"
+} from "@/src/common/constants"
 import CONFIG from "../config"
 import getCurrencyData from "./currency"
 
@@ -29,42 +27,98 @@ contextBridge.exposeInMainWorld("heynote", {
         isLinux,
         isWebApp: false,
     },
-
+    
+    isDev: isDev,
     themeMode: themeMode,
 
-    quit() {
-        console.log("quitting")
-        //ipcRenderer.invoke("app_quit")
+    init() {
+        ipcRenderer.on("buffer:change", (event, path, content) => {
+            // called on all changes to open buffer files
+            // go through all registered callbacks for this path and call them
+            if (this.buffer._onChangeCallbacks[path]) {
+                this.buffer._onChangeCallbacks[path].forEach(callback => callback(content))
+            }
+        })
     },
 
-    onWindowClose(callback) {
-        ipcRenderer.on(WINDOW_CLOSE_EVENT, callback)
-    },
+    mainProcess: {
+        on(event, callback) {
+            ipcRenderer.on(event, callback)
+        },
+        
+        off(event, callback) {
+            ipcRenderer.off(event, callback)
+        },
 
-    onOpenSettings(callback) {
-        ipcRenderer.on(OPEN_SETTINGS_EVENT, callback)
+        invoke(event, ...args) {
+            return ipcRenderer.invoke(event, ...args)
+        }
     },
 
     buffer: {
-        async load() {
-            return await ipcRenderer.invoke("buffer-content:load")
+        async exists(path) {
+            return await ipcRenderer.invoke("buffer:exists", path)
         },
 
-        async save(content) {
-            return await ipcRenderer.invoke("buffer-content:save", content)
+        async getList() {
+            return await ipcRenderer.invoke("buffer:getList")
         },
 
-        async saveAndQuit(content) {
-            return await ipcRenderer.invoke("buffer-content:saveAndQuit", content)
+        async getDirectoryList() {
+            return await ipcRenderer.invoke("buffer:getDirectoryList")
         },
 
-        onChangeCallback(callback) {
-            ipcRenderer.on("buffer-content:change", callback)
+        async load(path) {
+            return await ipcRenderer.invoke("buffer:load", path)
+        },
+
+        async save(path, content) {
+            return await ipcRenderer.invoke("buffer:save", path, content)
+        },
+
+        async delete(path) {
+            return await ipcRenderer.invoke("buffer:delete", path)
+        },
+
+        async move(path, newPath) {
+            return await ipcRenderer.invoke("buffer:move", path, newPath)
+        },
+
+        async create(path, content) {
+            return await ipcRenderer.invoke("buffer:create", path, content)
+        },
+
+        async saveAndQuit(contents) {
+            return await ipcRenderer.invoke("buffer:saveAndQuit", contents)
+        },
+
+        async close(path) {
+            return await ipcRenderer.invoke("buffer:close", path)
+        },
+
+        _onChangeCallbacks: {},
+        addOnChangeCallback(path, callback) {
+            // register a callback to be called when the buffer content changes for a specific file
+            if (!this._onChangeCallbacks[path]) {
+                this._onChangeCallbacks[path] = []
+            }
+            this._onChangeCallbacks[path].push(callback)
+        },
+        removeOnChangeCallback(path, callback) {
+            if (this._onChangeCallbacks[path]) {
+                this._onChangeCallbacks[path] = this._onChangeCallbacks[path].filter(cb => cb !== callback)
+            }
         },
 
         async selectLocation() {
-            return await ipcRenderer.invoke("buffer-content:selectLocation")
-        }
+            return await ipcRenderer.invoke("library:selectLocation")
+        },
+
+        setLibraryPathChangeCallback(callback) {
+            ipcRenderer.on("library:pathChanged", callback)
+        },
+
+        pathSeparator: sep,
     },
 
     settings: CONFIG.get("settings"),
@@ -75,10 +129,6 @@ contextBridge.exposeInMainWorld("heynote", {
 
     async getCurrencyData() {
         return await getCurrencyData()
-    },
-
-    onSettingsChange(callback) {
-        ipcRenderer.on(SETTINGS_CHANGE_EVENT, (event, settings) => callback(settings))
     },
 
     autoUpdate: {
@@ -103,11 +153,19 @@ contextBridge.exposeInMainWorld("heynote", {
 
     async getVersion() {
         return await ipcRenderer.invoke("getVersion")
-    }
+    },
+
+    async getInitErrors() {
+        return await ipcRenderer.invoke("getInitErrors")
+    },
+
+    setWindowTitle(title) {
+        ipcRenderer.invoke("setWindowTitle", title)
+    },
 })
 
 
-function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
+function domReady(condition=['complete', 'interactive']) {
     return new Promise((resolve) => {
         if (condition.includes(document.readyState)) {
             resolve(true)
@@ -122,12 +180,12 @@ function domReady(condition: DocumentReadyState[] = ['complete', 'interactive'])
 }
 
 const safeDOM = {
-    append(parent: HTMLElement, child: HTMLElement) {
+    append(parent, child) {
         if (!Array.from(parent.children).find(e => e === child)) {
             return parent.appendChild(child)
         }
     },
-    remove(parent: HTMLElement, child: HTMLElement) {
+    remove(parent, child) {
         if (Array.from(parent.children).find(e => e === child)) {
             return parent.removeChild(child)
         }

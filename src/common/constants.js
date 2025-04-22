@@ -1,6 +1,15 @@
+export const SCRATCH_FILE_NAME = "scratch.txt"
+export const AUTO_SAVE_INTERVAL = 2000
+
 export const WINDOW_CLOSE_EVENT = "window-close"
 export const OPEN_SETTINGS_EVENT = "open-settings"
 export const SETTINGS_CHANGE_EVENT = "settings-change"
+export const REDO_EVENT = "redo"
+export const UNDO_EVENT = "undo"
+export const MOVE_BLOCK_EVENT = "move-block"
+export const DELETE_BLOCK_EVENT = "delete-block"
+export const CHANGE_BUFFER_EVENT = "change-buffer"
+export const SELECT_ALL_EVENT = "select-all"
 
 export const UPDATE_AVAILABLE_EVENT = "update-available"
 export const UPDATE_NOT_AVAILABLE_EVENT = "update-not-available"
