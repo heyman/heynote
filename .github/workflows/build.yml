@@ -56,7 +56,7 @@ jobs:
           # macOS notarization API key
           APPLE_API_KEY: ~/private_keys/AuthKey.p8
           APPLE_API_KEY_ID: ${{ secrets.apple_api_key_id }}
-          APPLE_API_KEY_ISSUER: ${{ secrets.apple_api_key_issuer_id }}
+          APPLE_API_ISSUER: ${{ secrets.apple_api_key_issuer_id }}
       
       #- name: Print notarization-error.log
       #  if: ${{ matrix.os == 'macos-latest' }}
