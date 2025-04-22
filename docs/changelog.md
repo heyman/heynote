@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.2.0-beta.3
+## 2.2.0-beta.4
 
 ### New Features
 
@@ -14,7 +14,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ### Other changes
 
-- Upgraded to latest version of Electron, Vue, electron-builder and other dependencies.
+- Upgraded to latest version of Electron, CodeMirror, Vue, electron-builder and other dependencies.
 
 ## 2.1.4
 
