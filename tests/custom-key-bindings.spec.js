@@ -60,13 +60,14 @@ test("delete custom key binding", async ({page}) => {
 })
 
 test("disable default key binding", async ({page}) => {
-    await page.locator("body").press("Meta+L")
+    const langKey = heynotePage.isMac ? "Meta+L" : "Control+L"
+    await page.locator("body").press(langKey)
     await expect(page.locator("css=.language-selector .items > li.selected")).toBeVisible()
     await page.locator("body").press("Escape")
     await expect(page.locator("css=.language-selector .items > li.selected")).toHaveCount(0)
     const settings = await heynotePage.getSettings()
-    settings.keyBindings = [{key:"Meta-L", command:"nothing"}]
+    settings.keyBindings = [{key:"Mod-L", command:"nothing"}]
     await heynotePage.setSettings(settings)
-    await page.locator("body").press("Meta+L")
+    await page.locator("body").press(langKey)
     await expect(page.locator("css=.language-selector .items > li.selected")).toHaveCount(0)
 })
