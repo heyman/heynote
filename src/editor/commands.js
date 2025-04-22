@@ -22,6 +22,7 @@ import {
     selectAll,
     deleteBlock, deleteBlockSetCursorPreviousBlock,
     newCursorBelow, newCursorAbove,
+    moveCurrentBlockUp, moveCurrentBlockDown,
 } from "./block/commands.js"
 import { deleteLine } from "./block/delete-line.js"
 import { formatBlockContent } from "./block/format-code.js"
@@ -85,6 +86,8 @@ const HEYNOTE_COMMANDS = {
     insertNewBlockAtCursor: cmd(insertNewBlockAtCursor, "Block", "Insert new block at cursor"),
     deleteBlock: cmd(deleteBlock, "Block", "Delete block"),
     deleteBlockSetCursorPreviousBlock: cmd(deleteBlockSetCursorPreviousBlock, "Block", "Delete block and set cursor to previous block"),
+    moveCurrentBlockUp: cmdLessContext(moveCurrentBlockUp, "Block", "Move current block up"),
+    moveCurrentBlockDown: cmdLessContext(moveCurrentBlockDown, "Block", "Move current block down"),
     cursorPreviousBlock: cmd(cursorPreviousBlock, "Cursor", "Move cursor to previous block"),
     cursorNextBlock: cmd(cursorNextBlock, "Cursor", "Move cursor to next block"),
     cursorPreviousParagraph: cmd(cursorPreviousParagraph, "Cursor", "Move cursor to previous paragraph"),

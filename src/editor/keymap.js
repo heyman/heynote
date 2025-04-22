@@ -40,6 +40,8 @@ export const DEFAULT_KEYMAP = [
     ...cmdShift("PageDown", "cursorPageDown", "selectPageDown"),
     ...cmdShift("Home", "cursorLineBoundaryBackward", "selectLineBoundaryBackward"),
     ...cmdShift("End", "cursorLineBoundaryForward", "selectLineBoundaryForward"),
+    cmd("Alt-Mod-Shift-ArrowUp", "moveCurrentBlockUp"),
+    cmd("Alt-Mod-Shift-ArrowDown", "moveCurrentBlockDown"),
     cmd("Backspace", "deleteCharBackward"),
     cmd("Delete", "deleteCharForward"),
     cmd("Escape", "simplifySelection"),
