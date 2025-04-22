@@ -8,6 +8,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 - Added support for custom key bindings. See [the documentation](https://heynote.com/docs/#user-content-custom-key-bindings) for more info.
 - Added a "command palette" that can be accessed by pressing `Ctrl/Cmd+Shift+P`, or just typing `>` in the buffer selector. The command palette allows you to discover all available commands in the app, and to quickly execute them.
+- Added support for configuring the tab size.
 
 ### Other changes
 
