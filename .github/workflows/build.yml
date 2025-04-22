@@ -32,7 +32,7 @@ jobs:
 
       - name: Build/release Electron app
         #continue-on-error: true
-        uses: samuelmeuli/action-electron-builder@v1
+        uses: johannesjo/action-electron-builder@v1
         with:
           # Specify electron-builder config file
           args: -c electron-builder.json5
