@@ -31,6 +31,7 @@ import { transposeChars } from "./block/transpose-chars.js"
 import { cutCommand, copyCommand, pasteCommand } from "./copy-paste.js"
 
 import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel } from "./mark-mode.js"
+import { insertDateAndTime } from "./date-time.js"
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
@@ -116,6 +117,7 @@ const HEYNOTE_COMMANDS = {
     selectPreviousBlock: cmdLessContext(selectPreviousBlock, "Selection", "Select to previous block"),
     selectNextBlock: cmdLessContext(selectNextBlock, "Selection", "Select to next block"),
     nothing: cmdLessContext(nothing, "Misc", "Do nothing"),
+    insertDateAndTime: cmdLessContext(insertDateAndTime, "Misc", "Insert date and time"),
 
     // directly from CodeMirror
     undo: cmdLessContext(undo, "Edit", "Undo"),

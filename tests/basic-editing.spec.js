@@ -37,3 +37,12 @@ test("first block is protected", async ({ page }) => {
     expect(await heynotePage.getBlockContent(0)).toBe("")
     expect(await heynotePage.getContent()).toBe(initialContent)
 })
+
+test("insert current date and time", async ({ page }) => {
+    const expectedYear = new Date().toLocaleString(undefined, {
+        year: 'numeric',
+    })
+    await page.locator("body").press("Alt+Shift+D")
+    expect(await heynotePage.getBlockContent(0)).toContain(expectedYear)
+    expect((await heynotePage.getBlockContent(0)).length).toBeGreaterThan(0)
+})

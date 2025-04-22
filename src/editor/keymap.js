@@ -42,6 +42,7 @@ export const DEFAULT_KEYMAP = [
     ...cmdShift("End", "cursorLineBoundaryForward", "selectLineBoundaryForward"),
     cmd("Alt-Mod-Shift-ArrowUp", "moveCurrentBlockUp"),
     cmd("Alt-Mod-Shift-ArrowDown", "moveCurrentBlockDown"),
+    cmd("Alt-Shift-d", "insertDateAndTime"),
     cmd("Backspace", "deleteCharBackward"),
     cmd("Delete", "deleteCharForward"),
     cmd("Escape", "simplifySelection"),

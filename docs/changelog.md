@@ -10,6 +10,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 - Added a "command palette" that can be accessed by pressing `Ctrl/Cmd+Shift+P`, or just typing `>` in the buffer selector. The command palette allows you to discover all available commands in the app, and to quickly execute them.
 - Added support for configuring the tab size.
 - Added functionality for moving blocks up and down. Default key bindings are `Ctrl/Cmd+Alt+Shift+Up` and `Ctrl/Cmd+Alt+Shift+Down`.
+- Added functionality for inserting the current date and time. Default key binding is `Alt+Shift+D`.
 
 ### Other changes
 
