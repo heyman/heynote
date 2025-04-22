@@ -37,8 +37,9 @@ export default defineConfig({
     css: {
         preprocessorOptions: {
             sass: {
+                api: "modern-compiler",
                 additionalData: `
-    @use "../src/css/include.sass" as *
+    @use "@/src/css/include.sass" as *
     `
             },
         },
