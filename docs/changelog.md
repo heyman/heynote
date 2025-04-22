@@ -2,6 +2,22 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## 2.2.0-beta.2
+
+### New Features
+
+- Added support for custom key bindings. See [the documentation](https://heynote.com/docs/#user-content-custom-key-bindings) for more info.
+- Added a "command palette" that can be accessed by pressing `Ctrl/Cmd+Shift+P`, or just typing `>` in the buffer selector. The command palette allows you to discover all available commands in the app, and to quickly execute them.
+
+### Other changes
+
+- Upgraded to latest version of Electron, Vue, electron-builder and other dependencies.
+
+## 2.1.4
+
+- Fix issue with positioning and size of todo list checkboxes in Markdown blocks when using a non-default font size, or a non-monospaced font.
+- Fix issue when pressing `Ctrl/Cmd+A` in a text input inside a modal dialog (e.g. the buffer selector). Previously the select all command would be sent to the editor.
+
 ## 2.1.3
 
 - Fix escaping issue in buffer selector (properly this time, hopefully)

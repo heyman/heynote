@@ -32,7 +32,7 @@ jobs:
 
       - name: Build/release Electron app
         #continue-on-error: true
-        uses: samuelmeuli/action-electron-builder@v1
+        uses: johannesjo/action-electron-builder@v1
         with:
           # Specify electron-builder config file
           args: -c electron-builder.json5
@@ -56,7 +56,7 @@ jobs:
           # macOS notarization API key
           APPLE_API_KEY: ~/private_keys/AuthKey.p8
           APPLE_API_KEY_ID: ${{ secrets.apple_api_key_id }}
-          APPLE_API_KEY_ISSUER: ${{ secrets.apple_api_key_issuer_id }}
+          APPLE_API_ISSUER: ${{ secrets.apple_api_key_issuer_id }}
       
       #- name: Print notarization-error.log
       #  if: ${{ matrix.os == 'macos-latest' }}

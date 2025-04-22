@@ -24,6 +24,19 @@ const schema = {
         properties: {
             "keymap": { "enum": ["default", "emacs"], default:"default" },
             "emacsMetaKey": { "enum": [null, "alt", "meta"], default: null },
+            "keyBindings": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": ["key", "command"],
+                    "properties": {
+                        "key": { "type": "string" },
+                        "command": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                }
+            },
+
             "showLineNumberGutter": {type: "boolean", default:true},
             "showFoldGutter": {type: "boolean", default:true},
             "autoUpdate": {type: "boolean", default: true},
@@ -62,6 +75,7 @@ const defaults = {
     settings: {
         keymap: "default",
         emacsMetaKey: isMac ? "meta" : "alt",
+        keyBindings: [],
         showLineNumberGutter: true,
         showFoldGutter: true,
         autoUpdate: true,

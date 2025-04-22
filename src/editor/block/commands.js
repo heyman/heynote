@@ -360,6 +360,7 @@ export const deleteBlock = (editor) => ({state, dispatch}) => {
         selection: EditorSelection.cursor(newSelection),
         annotations: [heynoteEvent.of(DELETE_BLOCK)],
     }))
+    return true
 }
 
 export const deleteBlockSetCursorPreviousBlock = (editor) => ({state, dispatch}) => {
@@ -380,4 +381,5 @@ export const deleteBlockSetCursorPreviousBlock = (editor) => ({state, dispatch})
         selection: EditorSelection.cursor(newSelection),
         annotations: [heynoteEvent.of(DELETE_BLOCK)],
     }))
+    return true
 }

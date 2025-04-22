@@ -39,6 +39,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
                     tabSize: settingsStore.settings.tabSize,
                     defaultBlockToken: settingsStore.settings.defaultBlockLanguage,
                     defaultBlockAutoDetect: settingsStore.settings.defaultBlockLanguageAutoDetect,
+                    keyBindings: settingsStore.settings.keyBindings,
                 })
             } catch (e) {
                 errorStore.addError("Error! " + e.message)
@@ -123,7 +124,8 @@ export const useEditorCacheStore = defineStore("editorCache", {
                         switch (key) {
                             case "keymap":
                             case "emacsMetaKey":
-                                editor.setKeymap(newSettings.keymap, newSettings.emacsMetaKey)
+                            case "keyBindings":
+                                editor.setKeymap(newSettings.keymap, newSettings.emacsMetaKey, newSettings.keyBindings)
                                 break
                             case "showLineNumberGutter":
                                 editor.setLineNumberGutter(newSettings.showLineNumberGutter)
@@ -168,6 +170,9 @@ export const useEditorCacheStore = defineStore("editorCache", {
             }
 
             window.document.removeEventListener("currenciesLoaded", this.onCurrenciesLoaded)
+
+            this.editorCache.lru = []
+            this.editorCache.cache = {}
         },
 
         moveCurrentBlockToOtherEditor(targetPath) {

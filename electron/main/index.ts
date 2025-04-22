@@ -64,8 +64,6 @@ const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 
-let currentKeymap = CONFIG.get("settings.keymap")
-
 // if this version is a beta version, set the release channel to beta
 const isBetaVersion = app.getVersion().includes("beta")
 if (isBetaVersion) {
@@ -85,8 +83,8 @@ export function quit() {
 async function createWindow() {
     // read any stored window settings from config, or use defaults
     let windowConfig = {
-        width: CONFIG.get("windowConfig.width", 900) as number,
-        height: CONFIG.get("windowConfig.height", 680) as number,
+        width: CONFIG.get("windowConfig.width", 940) as number,
+        height: CONFIG.get("windowConfig.height", 720) as number,
         isMaximized: CONFIG.get("windowConfig.isMaximized", false) as boolean,
         isFullScreen: CONFIG.get("windowConfig.isFullScreen", false) as boolean,
         x: CONFIG.get("windowConfig.x"),
@@ -409,9 +407,6 @@ ipcMain.handle("getInitErrors", () => {
 
 
 ipcMain.handle('settings:set', async (event, settings) => {
-    if (settings.keymap !== CONFIG.get("settings.keymap")) {
-        currentKeymap = settings.keymap
-    }
     let globalHotkeyChanged = settings.enableGlobalHotkey !== CONFIG.get("settings.enableGlobalHotkey") || settings.globalHotkey !== CONFIG.get("settings.globalHotkey")
     let showInDockChanged = settings.showInDock !== CONFIG.get("settings.showInDock");
     let showInMenuChanged = settings.showInMenu !== CONFIG.get("settings.showInMenu");

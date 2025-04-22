@@ -1,0 +1,45 @@
+@use "@/src/css/include.sass" as *
+
+
+.p-component
+    --p-inputtext-background: #fff
+    --p-inputtext-border-color: #ccc
+    --p-inputtext-border-radius: 3px
+    --p-inputtext-padding-y: 4px
+    --p-inputtext-padding-x: 4px
+    --p-inputtext-focus-border-color: var(--p-inputtext-border-color)
+    --p-inputtext-hover-border-color: var(--p-inputtext-border-color)
+    --p-inputtext-active-border-color: var(--p-inputtext-border-color)
+
+    --p-autocomplete-dropdown-border-color: var(--p-inputtext-border-color)
+    --p-autocomplete-dropdown-border-radius: var(--p-inputtext-border-radius)
+    --p-autocomplete-dropdown-hover-border-color: var(--p-inputtext-hover-border-color)
+    --p-autocomplete-dropdown-active-border-color: var(--p-inputtext-active-border-color)
+    --p-autocomplete-dropdown-hover-background: #f1f1f1
+    --p-autocomplete-option-focus-background: var(--highlight-color)
+    --p-autocomplete-option-focus-color: #fff
+
+    +dark-mode
+        --p-inputtext-background: #202020
+        --p-inputtext-border-color: #444
+        --p-autocomplete-dropdown-hover-background: #2a2a2a
+
+.p-inputtext.p-inputtext
+    font-size: 12px
+
+.p-autocomplete-list-container
+    background: #fff
+    border: 1px solid #f1f1f1
+    padding: 6px 0
+    border-radius: 3px
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)
+    +dark-mode
+        color: rgba(255,255,255, 0.8)
+        background: #333
+        border: 1px solid #2a2a2a
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3)
+
+    .p-autocomplete-list > li
+        padding: 6px 10px
+        b
+            font-weight: bold

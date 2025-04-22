@@ -68,6 +68,12 @@ Alt + Shift + F        Format block content (works for JSON, JavaScript, HTML, C
 Alt                    Show menu
 ```
 
+## Custom Key Bindings
+
+Heynote supports custom key bindings which you can configure in the settings. The key bindings are evaluated from top to bottom, so a binding that comes before another one will take precedence. Most commands will stop the event from propagating, but some commands only applies in certain contexts and might not stop the event from propagating to a later key binding. 
+
+To disable one of the built in key bindings, you can add a new key binding with the same key combination for the command "Do nothing". This will stop the event from propagating to the built in key binding.
+
 ## Download/Installation
 
 Download the appropriate (Mac, Windows or Linux) version from [heynote.com](https://heynote.com). The Windows build is not signed, so you might see some scary warning (I can not justify paying a yearly fee for a certificate just to get rid of that).

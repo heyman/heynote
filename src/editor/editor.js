@@ -1,7 +1,7 @@
-import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction } from "@codemirror/state"
-import { EditorView, keymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
+import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction, Prec } from "@codemirror/state"
+import { EditorView, keymap as cmKeymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
 import { indentUnit, forceParsing, foldGutter, ensureSyntaxTree } from "@codemirror/language"
-import { markdown } from "@codemirror/lang-markdown"
+import { markdown, markdownKeymap } from "@codemirror/lang-markdown"
 import { closeBrackets } from "@codemirror/autocomplete";
 import { undo, redo } from "@codemirror/commands"
 
@@ -11,30 +11,22 @@ import { heynoteBase } from "./theme/base.js"
 import { getFontTheme } from "./theme/font-theme.js";
 import { customSetup } from "./setup.js"
 import { heynoteLang } from "./lang-heynote/heynote.js"
+import { getCloseBracketsExtensions } from "./close-brackets.js"
 import { noteBlockExtension, blockLineNumbers, blockState, getActiveNoteBlock, triggerCursorChange } from "./block/block.js"
-import { heynoteEvent, SET_CONTENT, DELETE_BLOCK, APPEND_BLOCK } from "./annotation.js";
+import { heynoteEvent, SET_CONTENT, DELETE_BLOCK, APPEND_BLOCK, SET_FONT } from "./annotation.js";
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, getBlockDelimiter, deleteBlock, selectAll } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
-import { heynoteKeymap } from "./keymap.js"
-import { emacsKeymap } from "./emacs.js"
+import { getKeymapExtensions } from "./keymap.js"
 import { heynoteCopyCut } from "./copy-paste"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
+import { HEYNOTE_COMMANDS } from "./commands.js";
 import { NoteFormat } from "../common/note-format.js"
 import { AUTO_SAVE_INTERVAL } from "../common/constants.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useErrorStore } from "../stores/error-store.js";
-
-
-function getKeymapExtensions(editor, keymap) {
-    if (keymap === "emacs") {
-        return emacsKeymap(editor)
-    } else {
-        return heynoteKeymap(editor)
-    }
-}
 
 
 export class HeynoteEditor {
@@ -54,6 +46,7 @@ export class HeynoteEditor {
         tabSize=4,
         defaultBlockToken,
         defaultBlockAutoDetect,
+        keyBindings,
     }) {
         this.element = element
         this.path = path
@@ -73,20 +66,20 @@ export class HeynoteEditor {
         this.notesStore = useHeynoteStore()
         this.errorStore = useErrorStore()
         this.name = ""
+        this.selectionMarkMode = false
         
 
         const state = EditorState.create({
             doc: "",
             extensions: [
-                this.keymapCompartment.of(getKeymapExtensions(this, keymap)),
+                this.keymapCompartment.of(getKeymapExtensions(this, keymap, keyBindings)),
                 heynoteCopyCut(this),
 
                 //minimalSetup,
                 this.lineNumberCompartment.of(showLineNumberGutter ? [lineNumbers(), blockLineNumbers] : []),
                 customSetup, 
                 this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
-
-                this.closeBracketsCompartment.of(bracketClosing ? [closeBrackets()] : []),
+                this.closeBracketsCompartment.of(bracketClosing ? [getCloseBracketsExtensions()] : []),
 
                 this.readOnlyCompartment.of([]),
                 
@@ -111,8 +104,12 @@ export class HeynoteEditor {
 
                 autoSaveContent(this, AUTO_SAVE_INTERVAL),
 
+                // Markdown extensions, we need to add markdownKeymap manually with the highest precedence
+                // so that it takes precedence over the default keymap
                 todoCheckboxPlugin,
-                markdown(),
+                markdown({addKeymap: false}),
+                Prec.highest(cmKeymap.of(markdownKeymap)),
+
                 links,
             ],
         })
@@ -137,6 +134,11 @@ export class HeynoteEditor {
         if (focus) {
             this.view.focus()
         }
+
+        // trigger setFont once the fonts has loaded
+        document.fonts.ready.then(() => {
+            this.setFont(fontFamily, fontSize)
+        })
     }
 
     async save() {
@@ -260,6 +262,7 @@ export class HeynoteEditor {
     setFont(fontFamily, fontSize) {
         this.view.dispatch({
             effects: this.fontTheme.reconfigure(getFontTheme(fontFamily, fontSize)),
+            annotations: [heynoteEvent.of(SET_FONT), Transaction.addToHistory.of(false)],
         })
     }
 
@@ -269,11 +272,11 @@ export class HeynoteEditor {
         })
     }
 
-    setKeymap(keymap, emacsMetaKey) {
+    setKeymap(keymap, emacsMetaKey, keyBindings) {
         this.deselectOnCopy = keymap === "emacs"
         this.emacsMetaKey = emacsMetaKey
         this.view.dispatch({
-            effects: this.keymapCompartment.reconfigure(getKeymapExtensions(this, keymap)),
+            effects: this.keymapCompartment.reconfigure(getKeymapExtensions(this, keymap, keyBindings)),
         })
     }
 
@@ -283,6 +286,10 @@ export class HeynoteEditor {
 
     openBufferSelector() {
         this.notesStore.openBufferSelector()
+    }
+
+    openCommandPalette() {
+        this.notesStore.openCommandPalette()
     }
 
     openCreateBuffer(createMode) {
@@ -367,7 +374,7 @@ export class HeynoteEditor {
 
     setBracketClosing(value) {
         this.view.dispatch({
-            effects: this.closeBracketsCompartment.reconfigure(value ? [closeBrackets()] : []),
+            effects: this.closeBracketsCompartment.reconfigure(value ? [getCloseBracketsExtensions()] : []),
         })
     }
 
@@ -424,6 +431,15 @@ export class HeynoteEditor {
         this.view.dispatch({
             effects: this.indentUnitCompartment.reconfigure(indentUnit.of(" ".repeat(tabSize)))
         })
+    }
+    
+    executeCommand(command) {
+        const cmd = HEYNOTE_COMMANDS[command]
+        if (!cmd) {
+            console.error(`Command not found: ${command}`)
+            return
+        }
+        cmd.run(this)(this.view)
     }
 }
 

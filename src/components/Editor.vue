@@ -22,6 +22,10 @@
                 syntaxTreeDebugContent: null,
                 editor: null,
                 onWindowClose: null,
+                onUndo: null,
+                onRedo: null,
+                onDeleteBlock: null,
+                onSelectAll: null,
             }
         },
 
@@ -39,29 +43,40 @@
             }
             window.heynote.mainProcess.on(WINDOW_CLOSE_EVENT, this.onWindowClose)
 
-            window.heynote.mainProcess.on(UNDO_EVENT, () => {
+            this.onUndo = () => {
                 if (this.editor) {
                     toRaw(this.editor).undo()
                 }
-            })
+            }
+            window.heynote.mainProcess.on(UNDO_EVENT, this.onUndo)
 
-            window.heynote.mainProcess.on(REDO_EVENT, () => {
+            this.onRedo = () => {
                 if (this.editor) {
                     toRaw(this.editor).redo()
                 }
-            })
+            }
+            window.heynote.mainProcess.on(REDO_EVENT, this.onRedo)
             
-            window.heynote.mainProcess.on(DELETE_BLOCK_EVENT, () => {
+            this.onDeleteBlock = () => {
                 if (this.editor) {
                     toRaw(this.editor).deleteActiveBlock()
                 }
-            })
+            }
+            window.heynote.mainProcess.on(DELETE_BLOCK_EVENT, this.onDeleteBlock)
 
-            window.heynote.mainProcess.on(SELECT_ALL_EVENT, () => {
-                if (this.editor) {
-                    toRaw(this.editor).selectAll()
+            this.onSelectAll = () => {
+                const activeEl = document.activeElement
+                if (activeEl && activeEl.tagName === "INPUT") {
+                    // if the active element is an input, select all text in it
+                    activeEl.select()
+                } else if (this.editor) {
+                    // make sure the editor is focused
+                    if (this.$refs.editor.contains(activeEl)) {
+                        toRaw(this.editor).selectAll()
+                    }
                 }
-            })
+            }
+            window.heynote.mainProcess.on(SELECT_ALL_EVENT, this.onSelectAll)
 
             // if debugSyntaxTree prop is set, display syntax tree for debugging
             if (this.debugSyntaxTree) {
@@ -85,10 +100,10 @@
 
         beforeUnmount() {
             window.heynote.mainProcess.off(WINDOW_CLOSE_EVENT, this.onWindowClose)
-            window.heynote.mainProcess.off(UNDO_EVENT)
-            window.heynote.mainProcess.off(REDO_EVENT)
-            window.heynote.mainProcess.off(DELETE_BLOCK_EVENT)
-            window.heynote.mainProcess.off(SELECT_ALL_EVENT)
+            window.heynote.mainProcess.off(UNDO_EVENT, this.onUndo)
+            window.heynote.mainProcess.off(REDO_EVENT, this.onRedo)
+            window.heynote.mainProcess.off(DELETE_BLOCK_EVENT, this.onDeleteBlock)
+            window.heynote.mainProcess.off(SELECT_ALL_EVENT, this.onSelectAll)
             this.editorCacheStore.tearDown();
         },
 

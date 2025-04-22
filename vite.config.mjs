@@ -136,8 +136,9 @@ export default defineConfig({
 	css: {
 		preprocessorOptions: {
 			sass: {
+				api: "modern-compiler",
 				additionalData: `
-    @import "./src/css/include.sass"
+    @use "@/src/css/include.sass" as *
 `
 			}
 		}

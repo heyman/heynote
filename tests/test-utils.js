@@ -20,6 +20,7 @@ export class HeynotePage {
     async goto() {
         await this.page.goto("/")
         await expect(this.page).toHaveTitle(/Heynote/)
+        await expect(this.page.locator(".cm-editor")).toBeVisible()
         expect(this.getErrors()).toStrictEqual([])
     }
 
@@ -76,6 +77,16 @@ export class HeynotePage {
         const format = new NoteFormat()
         format.content = content
         await this.page.evaluate(({path, content}) => window.heynote.buffer.save(path, content), {path, content:format.serialize()})
+    }
+
+    async getSettings() {
+        return await this.page.evaluate(() => {
+            return JSON.parse(window.localStorage.getItem("settings") || "{}")
+        })
+    }
+
+    async setSettings(settings) {
+        await this.page.evaluate((settings) => window.heynote.setSettings(settings), settings)
     }
 
     agnosticKey(key) {
