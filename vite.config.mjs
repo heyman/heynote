@@ -137,7 +137,7 @@ export default defineConfig({
 		preprocessorOptions: {
 			sass: {
 				additionalData: `
-    @import "./src/css/include.sass"
+    @use "./src/css/include.sass" as *
 `
 			}
 		}
