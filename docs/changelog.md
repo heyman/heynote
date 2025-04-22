@@ -2,12 +2,16 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.2.0-beta
+## 2.2.0-beta.2
 
 ### New Features
 
 - Added support for custom key bindings. See [the documentation](https://heynote.com/docs/#user-content-custom-key-bindings) for more info.
 - Added a "command palette" that can be accessed by pressing `Ctrl/Cmd+Shift+P`, or just typing `>` in the buffer selector. The command palette allows you to discover all available commands in the app, and to quickly execute them.
+
+### Other changes
+
+- Upgraded to latest version of Electron, Vue, electron-builder and other dependencies.
 
 ## 2.1.4
 
