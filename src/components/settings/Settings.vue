@@ -74,16 +74,15 @@
         },
 
         async mounted() {
+            window.addEventListener("keydown", this.onKeyDown);
+
+            this.appVersion = await window.heynote.getVersion()
+
             if (window.queryLocalFonts !== undefined) {
                 let localFonts = [... new Set((await window.queryLocalFonts()).map(f => f.family))].filter(f => f !== "Hack")
                 localFonts = [...new Set(localFonts)].map(f => [f, f])
                 this.systemFonts = [[defaultFontFamily, defaultFontFamily + " (default)"], ...localFonts]
             }
-
-            window.addEventListener("keydown", this.onKeyDown);
-            this.$refs.keymapSelector.focus()
-
-            this.appVersion = await window.heynote.getVersion()
         },
         beforeUnmount() {
             window.removeEventListener("keydown", this.onKeyDown);
@@ -362,7 +361,7 @@
                         <div class="row">
                             <div class="entry">
                                 <h2>Keymap</h2>
-                                <select ref="keymapSelector" v-model="keymap" @change="updateSettings" class="keymap">
+                                <select v-model="keymap" @change="updateSettings" class="keymap">
                                     <template v-for="km in keymaps" :key="km.value">
                                         <option :selected="km.value === keymap" :value="km.value">{{ km.name }}</option>
                                     </template>
