@@ -40,7 +40,7 @@
             this.$refs.container.focus()
             this.$refs.input.focus()
             this.buildItems()
-            if (this.items.length > 1) {
+            if (this.items.length > 1 && !this.initialFilter?.startsWith(">")) {
                 this.selected = 1
             }
         },

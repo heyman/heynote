@@ -2,6 +2,13 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## 2.2.1 (not released yet)
+
+### Bug Fixes
+
+- Fix issue where the second command in the command palette, instead of the first command, was selected when the palette is opened.
+
+
 ## 2.2.0
 
 ### New Features
