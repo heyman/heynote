@@ -55,7 +55,7 @@
                         keyCombo += "Alt-"
                     }
                     if (event.ctrlKey) {
-                        keyCombo += "Control-"
+                        keyCombo += "Ctrl-"
                     }
                     if (event.metaKey) {
                         keyCombo += "Meta-"
