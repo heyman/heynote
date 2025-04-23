@@ -102,7 +102,7 @@
                         return this.commands
                     }
                     const searchResults = fuzzysort.go(this.filter.slice(1), this.commands, {
-                        keys: ["name"],
+                        keys: ["name", "cmd"],
                     })
                     return searchResults.map((result) => {
                         const obj = {...result.obj}
