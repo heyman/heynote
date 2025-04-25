@@ -9,6 +9,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 - Fix issue where the second command in the command palette, instead of the first command, was selected when the palette is opened.
 - Change name/label of some commands in the command palette, and make commands searchable using their key names as well.
 - Fix key bindings for toggleComment and toggleBlockComment commands that were previously working.
+- Fix issue with lists in markdown blocks not automatically being continued when pressing enter.
 
 
 ## 2.2.0
