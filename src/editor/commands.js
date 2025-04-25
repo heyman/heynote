@@ -9,6 +9,7 @@ import {
     simplifySelection,
     splitLine,
     insertNewlineAndIndent,
+    toggleComment, toggleBlockComment, toggleLineComment,
 } from "@codemirror/commands"
 import { foldCode, unfoldCode } from "@codemirror/language"
 import { selectNextOccurrence } from "@codemirror/search"
@@ -140,6 +141,9 @@ const HEYNOTE_COMMANDS = {
     transposeChars: cmdLessContext(transposeChars, "Edit", "Transpose characters"),
     insertNewlineAndIndent: cmdLessContext(insertNewlineAndIndent, "Edit", "Insert newline and indent"),
     insertNewlineContinueMarkup: cmdLessContext(insertNewlineContinueMarkup, "Markdown", "Insert newline and continue todo lists/block quotes"),
+    toggleComment: cmdLessContext(toggleComment, "Edit", "Toggle comment"),
+    toggleBlockComment: cmdLessContext(toggleBlockComment, "Edit", "Toggle block comment"),
+    toggleLineComment: cmdLessContext(toggleLineComment, "Edit", "Toggle line comment"),
 }
 
 // selection mark-mode:ify all cursor/select commands from CodeMirror
