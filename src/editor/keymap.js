@@ -87,6 +87,9 @@ export const DEFAULT_KEYMAP = [
 
     cmd("Alt-Shift-f", "formatBlockContent"),
 
+    cmd("Mod-/", "toggleComment"),
+    cmd("Alt-Shift-a", "toggleBlockComment"),
+
     // search
     //cmd("Mod-f", "openSearchPanel"),
     //cmd("F3", "findNext"),
