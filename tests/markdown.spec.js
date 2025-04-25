@@ -33,3 +33,13 @@ test("checkbox toggle", async ({ page }) => {
     await checkbox.click()
     expect(await heynotePage.getBlockContent(0)).toBe("- [ ] todo\n")
 })
+
+test("todo list continue on enter", async ({ page }) => {
+    const content = `
+∞∞∞markdown
+- [ ] todo`
+    await heynotePage.setContent(content)
+    await heynotePage.setCursorPosition(content.length)
+    await page.locator("body").press("Enter")
+    expect(await heynotePage.getBlockContent(0)).toBe("- [ ] todo\n- [ ] ")
+})
