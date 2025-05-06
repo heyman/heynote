@@ -2,7 +2,11 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.2.1 (not released yet)
+## 2.2.2
+
+- Fix issue when changing settings after having upgraded to Heynote 2.2 from an earlier version
+
+## 2.2.1
 
 ### Bug Fixes
 
