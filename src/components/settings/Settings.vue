@@ -33,7 +33,7 @@
                     { name: "Emacs", value: "emacs" },
                 ],
                 keymap: this.initialSettings.keymap,
-                keyBindings: this.initialSettings.keyBindings,
+                keyBindings: this.initialSettings.keyBindings || [],
                 metaKey: this.initialSettings.emacsMetaKey,
                 isMac: window.heynote.platform.isMac,
                 showLineNumberGutter: this.initialSettings.showLineNumberGutter,
