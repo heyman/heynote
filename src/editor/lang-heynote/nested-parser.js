@@ -34,6 +34,7 @@ export function configureNesting() {
                 //console.log("found parser for language:", langName)
                 return {
                     parser:languageMapping[langName],
+                    overlay: [{from:node.from, to:node.to}],
                 }
             }
         }
