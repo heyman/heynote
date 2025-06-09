@@ -81,11 +81,16 @@
             // if debugSyntaxTree prop is set, display syntax tree for debugging
             if (this.debugSyntaxTree) {
                 setInterval(() => {
+                    const cursorPos = this.editor.view.state.selection.main.head
                     function render(tree) {
                         let lists = ''
                         tree.iterate({
                             enter(type) {
-                                lists += `<ul><li>${type.name} (${type.from},${type.to})`
+                                let className = ""
+                                if (type.from !== 0 && cursorPos > type.from && cursorPos <= type.to) {
+                                    className = "active"
+                                }
+                                lists += `<ul><li class="${className}">${type.name} (${type.from},${type.to})`
                             },
                             leave() {
                                 lists += '</ul>'
@@ -191,7 +196,7 @@
     </div>
 </template>
 
-<style lang="sass" scoped>
+<style lang="sass">
     .debug-syntax-tree
         position: absolute
         top: 0
@@ -204,6 +209,9 @@
         font-family: monospace
         padding: 10px
         overflow: auto
+
+        li.active
+            background-color: rgba(255, 255, 0, 0.5)
 
         ul
             padding-left: 20px
