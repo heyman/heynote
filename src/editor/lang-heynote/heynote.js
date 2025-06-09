@@ -26,7 +26,7 @@ export const HeynoteLanguage = LRLanguage.define({
                 //NoteContent: foldNode,
                 //NoteContent: foldInside,
                 NoteContent(node) {
-                    return {from:node.from, to:node.to-1}
+                    return {from:node.from, to:node.to}
                 },
             }),
         ],
