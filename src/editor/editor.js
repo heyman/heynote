@@ -83,7 +83,7 @@ export class HeynoteEditor {
                 heynoteCopyCut(this),
 
                 //minimalSetup,
-                this.lineNumberCompartment.of(showLineNumberGutter ? [lineNumbers(), blockLineNumbers] : []),
+                this.lineNumberCompartment.of(showLineNumberGutter ? blockLineNumbers : []),
                 customSetup, 
                 this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
                 this.closeBracketsCompartment.of(bracketClosing ? [getCloseBracketsExtensions()] : []),
@@ -369,7 +369,7 @@ export class HeynoteEditor {
 
     setLineNumberGutter(show) {
         this.view.dispatch({
-            effects: this.lineNumberCompartment.reconfigure(show ? [lineNumbers(), blockLineNumbers] : []),
+            effects: this.lineNumberCompartment.reconfigure(show ? blockLineNumbers : []),
         })
     }
 
