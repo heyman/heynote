@@ -11,7 +11,7 @@ import {
     insertNewlineAndIndent,
     toggleComment, toggleBlockComment, toggleLineComment,
 } from "@codemirror/commands"
-import { foldCode, unfoldCode } from "@codemirror/language"
+import { foldCode, unfoldCode, toggleFold } from "@codemirror/language"
 import { selectNextOccurrence } from "@codemirror/search"
 import { insertNewlineContinueMarkup } from "@codemirror/lang-markdown"
 
@@ -33,6 +33,7 @@ import { cutCommand, copyCommand, pasteCommand } from "./copy-paste.js"
 
 import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel } from "./mark-mode.js"
 import { insertDateAndTime } from "./date-time.js"
+import { foldBlock, unfoldBlock, toggleBlockFold } from "./fold-gutter.js"
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
@@ -101,6 +102,9 @@ const HEYNOTE_COMMANDS = {
     openCreateNewBuffer: cmd(openCreateNewBuffer, "Buffer", "Create new buffer…"),
     cut: cmd(cutCommand, "Clipboard", "Cut selection"),
     copy: cmd(copyCommand, "Clipboard", "Copy selection"),
+    foldBlock: cmd(foldBlock, "Block", "Fold block"),
+    unfoldBlock: cmd(unfoldBlock, "Block", "Unfold block"),
+    toggleBlockFold: cmd(toggleBlockFold, "Block", "Toggle block fold"),
 
     // commands without editor context
     paste: cmdLessContext(pasteCommand, "Clipboard", "Paste from clipboard"),
@@ -127,6 +131,7 @@ const HEYNOTE_COMMANDS = {
     indentLess: cmdLessContext(indentLess, "Edit", "Indent less"),
     foldCode: cmdLessContext(foldCode, "Edit", "Fold code"),
     unfoldCode: cmdLessContext(unfoldCode, "Edit", "Unfold code"),
+    toggleFold: cmdLessContext(toggleFold, "Edit", "Toggle fold"),
     selectNextOccurrence: cmdLessContext(selectNextOccurrence, "Cursor", "Select next occurrence"),
     deleteCharBackward: cmdLessContext(deleteCharBackward, "Edit", "Delete character backward"),
     deleteCharForward: cmdLessContext(deleteCharForward, "Edit", "Delete character forward"),

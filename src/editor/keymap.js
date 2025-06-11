@@ -89,6 +89,17 @@ export const DEFAULT_KEYMAP = [
 
     cmd("Mod-/", "toggleComment"),
     cmd("Alt-Shift-a", "toggleBlockComment"),
+    
+    // fold blocks
+    ...(isMac ? [
+        cmd("Alt-Mod-[", "foldBlock"),
+        cmd("Alt-Mod-]", "unfoldBlock"),
+        cmd("Alt-Mod-.", "toggleBlockFold")
+    ] : [
+        cmd("Ctrl-Shift-[", "foldBlock"),
+        cmd("Ctrl-Shift-]", "unfoldBlock"),
+        cmd("Ctrl-Shift-.", "toggleBlockFold")
+    ]),
 
     // search
     //cmd("Mod-f", "openSearchPanel"),

@@ -1,6 +1,6 @@
 import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction, Prec } from "@codemirror/state"
 import { EditorView, keymap as cmKeymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
-import { foldGutter, ensureSyntaxTree } from "@codemirror/language"
+import { ensureSyntaxTree } from "@codemirror/language"
 import { markdown, markdownKeymap } from "@codemirror/lang-markdown"
 import { undo, redo } from "@codemirror/commands"
 
@@ -27,6 +27,7 @@ import { NoteFormat } from "../common/note-format.js"
 import { AUTO_SAVE_INTERVAL } from "../common/constants.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useErrorStore } from "../stores/error-store.js";
+import { foldGutterExtension } from "./fold-gutter.js"
 
 
 // Turn off the use of EditContext, since Chrome has a bug (https://issues.chromium.org/issues/351029417) 
@@ -85,7 +86,7 @@ export class HeynoteEditor {
                 //minimalSetup,
                 this.lineNumberCompartment.of(showLineNumberGutter ? blockLineNumbers : []),
                 customSetup, 
-                this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
+                this.foldGutterCompartment.of(showFoldGutter ? [foldGutterExtension()] : []),
                 this.closeBracketsCompartment.of(bracketClosing ? [getCloseBracketsExtensions()] : []),
 
                 this.readOnlyCompartment.of([]),
@@ -375,7 +376,7 @@ export class HeynoteEditor {
 
     setFoldGutter(show) {
         this.view.dispatch({
-            effects: this.foldGutterCompartment.reconfigure(show ? [foldGutter()] : []),
+            effects: this.foldGutterCompartment.reconfigure(show ? foldGutterExtension : []),
         })
     }
 
