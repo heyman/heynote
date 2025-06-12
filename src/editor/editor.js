@@ -29,6 +29,12 @@ import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useErrorStore } from "../stores/error-store.js";
 
 
+// Turn off the use of EditContext, since Chrome has a bug (https://issues.chromium.org/issues/351029417) 
+// that causes it to position the IME interface (for chinese input) incorrectly. One the bug is fixed (in Electron) 
+// we should be able to remove this. For more details see: https://github.com/heyman/heynote/issues/343
+EditorView.EDIT_CONTEXT = false
+
+
 export class HeynoteEditor {
     constructor({
         element, 
