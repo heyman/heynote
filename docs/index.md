@@ -46,6 +46,9 @@ Available for Mac, Windows, and Linux.
 ⌘ + A               Select all text in a note block. Press again to select the whole buffer
 ⌘ + ⌥ + Up/Down     Add additional cursor above/below
 ⌥ + Shift + F       Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
+⌘ + ⌥ + [           Fold block(s)
+⌘ + ⌥ + ]           Unfold block(s)
+⌘ + ⌥ + .           Toggle block fold
 ```
 
 **On Windows and Linux**
@@ -65,7 +68,13 @@ Ctrl + Up              Goto previous block
 Ctrl + A               Select all text in a note block. Press again to select the whole buffer
 Ctrl + Alt + Up/Down   Add additional cursor above/below
 Alt + Shift + F        Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
+Ctrl + Shift + [       Fold block(s)
+Ctrl + Shift + ]       Unfold block(s)
+Ctrl + Shift + .       Toggle block fold
 Alt                    Show menu
+
+You can see all the default key bindings in Heynote's settings under Key Bindings.
+
 ```
 
 ## Custom Key Bindings

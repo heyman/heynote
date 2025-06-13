@@ -22,13 +22,16 @@ const injectKeybindsInDocs = async () => {
 	const shortcuts = `$1**On Mac**
 
 \`\`\`
-${keyHelpStr('darwin')}
+${keyHelpStr('darwin', true)}
 \`\`\`
 
 **On Windows and Linux**
 
 \`\`\`
-${keyHelpStr('win32')}
+${keyHelpStr('win32', true)}
+
+You can see all the default key bindings in Heynote's settings under Key Bindings.
+
 $2`
 	const docsPath = path.resolve(__dirname, 'docs', 'index.md')
 	let docs = fs.readFileSync(docsPath, 'utf-8')
