@@ -3,7 +3,7 @@ import { EditorView } from "@codemirror/view"
 import { RangeSet } from "@codemirror/state"
 
 import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
-import { getNoteBlockFromPos } from "./block/block.js"
+import { getNoteBlockFromPos, getNoteBlocksFromRangeSet } from "./block/block.js"
 import { transactionsHasAnnotation, ADD_NEW_BLOCK, transactionsHasHistoryEvent } from "./annotation.js"
 
 
@@ -35,7 +35,7 @@ const autoUnfoldOnEdit = () => {
         if (transactionsHasHistoryEvent(update.transactions)) {
             return
         }
-        
+
         // This fixes so that removing the previous block immediately after a folded block won't unfold the folded block
         // Since nothing was inserted, there is no risk of us putting extra characters into folded lines
         if (update.changes.inserted.length === 0) {
@@ -116,32 +116,38 @@ export function foldGutterExtension() {
 export const toggleBlockFold = (editor) => (view) => {
     const state = view.state
     const folds = state.field(foldState, false) || RangeSet.empty
-    const effects = []
 
-    state.selection.ranges.map(range => range.head).forEach((pos) => {
-        const block = getNoteBlockFromPos(state, pos)
+    const foldEffects = []
+    const unfoldEffects = []
+    let numFolded = 0, numUnfolded = 0
+
+    for (const block of getNoteBlocksFromRangeSet(state, state.selection.ranges)) {
         const firstLine = state.doc.lineAt(block.content.from)
+        let blockIsFolded = false
         const blockFolds = []
         folds.between(block.content.from, block.content.to, (from, to) => {
             if (from <= firstLine.to && to === block.content.to) {
+                blockIsFolded = true
                 blockFolds.push({from, to})
             }
         })
-        if (blockFolds.length > 0) {
-            for (const range of blockFolds) {
-                // If there are folds in the block, unfold them
-                effects.push(unfoldEffect.of(range))
-            }
+        if (blockIsFolded) {
+            unfoldEffects.push(...blockFolds.map(range => unfoldEffect.of(range)))
+            numFolded++
         } else {
-            // If there are no folds in the block, fold it
-            const line = state.doc.lineAt(block.content.from)
-            effects.push(foldEffect.of({from: Math.min(line.to, block.content.from + FOLD_LABEL_LENGTH), to: block.content.to}))
+            const range = {from: Math.min(firstLine.to, block.content.from + FOLD_LABEL_LENGTH), to: block.content.to}
+            if (range.to > range.from) {
+                foldEffects.push(foldEffect.of(range))
+            }
+            numUnfolded++
         }
-    })
+    }
 
-    if (effects.length > 0) {
+    if (foldEffects.length > 0 || unfoldEffects.length > 0) {
+        // if multiple blocks are selected, instead of flipping the fold state of all blocks,
+        // we'll fold all blocks if more blocks are unfolded than folded, and unfold all blocks otherwise
         view.dispatch({
-            effects: effects,
+            effects: [...(numUnfolded >= numFolded ? foldEffects : unfoldEffects)],
         })
     }
 }
@@ -150,18 +156,20 @@ export const toggleBlockFold = (editor) => (view) => {
 export const foldBlock = (editor) => (view) => {
     const state = view.state    
     const blockRanges = []
-    state.selection.ranges.map(range => range.head).forEach((pos) => {
-        const block = getNoteBlockFromPos(state, pos)
-        if (block) {
-            const line = state.doc.lineAt(block.content.from)
-            blockRanges.push({from: Math.min(line.to, block.content.from + FOLD_LABEL_LENGTH), to: block.content.to})
-        }
-    })
-    const uniqueBlockRanges = [...new Set(blockRanges.map(JSON.stringify))].map(JSON.parse);
 
-    if (uniqueBlockRanges.length > 0) {
+    for (const block of getNoteBlocksFromRangeSet(state, state.selection.ranges)) {
+        const line = state.doc.lineAt(block.content.from)
+        // fold the block content, but only the first line
+        const from = Math.min(line.to, block.content.from + FOLD_LABEL_LENGTH)
+        const to = block.content.to
+        if (from < to) {
+            // skip empty ranges
+            blockRanges.push({from, to})
+        }
+    }
+    if (blockRanges.length > 0) {
         view.dispatch({
-            effects: uniqueBlockRanges.map(range => foldEffect.of(range)),
+            effects: blockRanges.map(range => foldEffect.of(range)),
         })
     }
 }
@@ -171,16 +179,14 @@ export const unfoldBlock = (editor) => (view) => {
     const folds = state.field(foldState, false) || RangeSet.empty
     const blockFolds = []
 
-    state.selection.ranges.map(range => range.head).forEach((pos) => {
-        const block = getNoteBlockFromPos(state, pos)
+    for (const block of getNoteBlocksFromRangeSet(state, state.selection.ranges)) {
         const firstLine = state.doc.lineAt(block.content.from)
         folds.between(block.content.from, block.content.to, (from, to) => {
-            //console.log("Fold in block", from, to, "block", block.content.from, block.content.to, firstLine.to)
             if (from <= firstLine.to && to === block.content.to) {
                 blockFolds.push({from, to})
             }
         })
-    })
+    }
 
     if (blockFolds.length > 0) {
         view.dispatch({
