@@ -16,3 +16,7 @@ export const SET_FONT = "heynote-set-font"
 export function transactionsHasAnnotation(transactions, annotation) {
     return transactions.some(tr => tr.annotation(heynoteEvent) === annotation)
 }
+
+export function transactionsHasHistoryEvent(transactions) {
+    return transactions.some(tr => tr.isUserEvent("undo") || tr.isUserEvent("redo"))
+}

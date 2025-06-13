@@ -4,10 +4,15 @@ import { RangeSet } from "@codemirror/state"
 
 import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
 import { getNoteBlockFromPos } from "./block/block.js"
+import { transactionsHasAnnotation, ADD_NEW_BLOCK, transactionsHasHistoryEvent } from "./annotation.js"
 
 
 // This extension fixes so that a folded region is automatically unfolded if any changes happen 
 // on either the start line or the end line of the folded region (even if the change is not within the folded region)
+// except for if the change is an insertion of a new block, or if the change doesn't actually insert anything.
+// 
+// The purpose is to prevent extra characters to be inserted into a line that is folded, without the region
+// being unfolded.
 const autoUnfoldOnEdit = () => {
     return EditorView.updateListener.of((update) => {
         if (!update.docChanged){
@@ -18,6 +23,22 @@ const autoUnfoldOnEdit = () => {
         const foldRanges = state.field(foldState, false);
 
         if (!foldRanges || foldRanges.size === 0) {
+            return
+        }
+        
+        // we don't want to unfold a block/range if the user adds a new block
+        if (transactionsHasAnnotation(update.transactions, ADD_NEW_BLOCK)) {
+            return
+        }
+        // an undo/redo action should never be able to get characters into a folded line but if we don't have 
+        // this check an undo/redo of a block insertion before/after the region will unfold the folded block
+        if (transactionsHasHistoryEvent(update.transactions)) {
+            return
+        }
+        
+        // This fixes so that removing the previous block immediately after a folded block won't unfold the folded block
+        // Since nothing was inserted, there is no risk of us putting extra characters into folded lines
+        if (update.changes.inserted.length === 0) {
             return
         }
 
