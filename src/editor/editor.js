@@ -178,7 +178,6 @@ export class HeynoteEditor {
         //console.log("loading content", this.path)
         const content = await window.heynote.buffer.load(this.path)
         this.diskContent = content
-        this.contentLoaded = true
 
         // set up content change listener
         this.onChange = (content) => {
@@ -188,6 +187,7 @@ export class HeynoteEditor {
         window.heynote.buffer.addOnChangeCallback(this.path, this.onChange)
 
         await this.setContent(content)
+        this.contentLoaded = true
     }
 
     setContent(content) {
