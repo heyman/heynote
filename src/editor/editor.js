@@ -1,6 +1,6 @@
-import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction, Prec } from "@codemirror/state"
+import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction, Prec, RangeSet } from "@codemirror/state"
 import { EditorView, keymap as cmKeymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
-import { ensureSyntaxTree } from "@codemirror/language"
+import { ensureSyntaxTree, foldState, foldEffect } from "@codemirror/language"
 import { markdown, markdownKeymap } from "@codemirror/lang-markdown"
 import { undo, redo } from "@codemirror/commands"
 
@@ -165,6 +165,13 @@ export class HeynoteEditor {
     getContent() {
         this.note.content = this.view.state.sliceDoc()
         this.note.cursors = this.view.state.selection.toJSON()
+
+        // fold state
+        const foldedRanges = []
+        this.view.state.field(foldState, false)?.between(0, this.view.state.doc.length, (from, to) => {
+            foldedRanges.push({from, to})
+        })
+        this.note.foldedRanges = foldedRanges
         
         const ranges = this.note.cursors.ranges
         if (ranges.length == 1 && ranges[0].anchor == 0 && ranges[0].head == 0) {
@@ -231,6 +238,10 @@ export class HeynoteEditor {
                         scrollIntoView: true,
                     })
                 }
+                // set folded ranges
+                this.view.dispatch({
+                    effects: this.note.foldedRanges.map(range => foldEffect.of(range)),
+                })
                 resolve()
             })
         })

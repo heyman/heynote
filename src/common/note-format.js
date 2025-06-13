@@ -42,4 +42,11 @@ export class NoteFormat {
     get cursors() {
         return this.metadata.cursors
     }
+
+    set foldedRanges(foldState) {
+        this.metadata.foldedRanges = foldState
+    }
+    get foldedRanges() {
+        return this.metadata?.foldedRanges || []
+    }
 }
