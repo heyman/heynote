@@ -20,19 +20,11 @@ export const keyHelpStr = (platform: string, extended: boolean = false) => {
     ]
 
     if (extended) {
-        if (platform === "darwin") {
-            keyHelp.push(
-                [`${modChar} + ${altChar} + [`, "Fold block(s)"],
-                [`${modChar} + ${altChar} + ]`, "Unfold block(s)"],
-                [`${modChar} + ${altChar} + .`, "Toggle block fold"],
-            )
-        } else {
-            keyHelp.push(
-                [`${modChar} + Shift + [`, "Fold block(s)"],
-                [`${modChar} + Shift + ]`, "Unfold block(s)"],
-                [`${modChar} + Shift + .`, "Toggle block fold"],
-            )
-        }
+        keyHelp.push(
+            [`${modChar} + ${altChar} + [`, "Fold block(s)"],
+            [`${modChar} + ${altChar} + ]`, "Unfold block(s)"],
+            [`${modChar} + ${altChar} + .`, "Toggle block fold"],
+        )
     }
 
     if (platform === "win32" || platform === "linux") {
