@@ -72,10 +72,10 @@ Ctrl + Shift + [       Fold block(s)
 Ctrl + Shift + ]       Unfold block(s)
 Ctrl + Shift + .       Toggle block fold
 Alt                    Show menu
+```
 
 You can see all the default key bindings in Heynote's settings under Key Bindings.
 
-```
 
 ## Custom Key Bindings
 

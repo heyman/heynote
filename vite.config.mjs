@@ -18,7 +18,7 @@ const isDevelopment = process.env.NODE_ENV === "development" || !!process.env.VS
 const isProduction = process.env.NODE_ENV === "production"
 
 const injectKeybindsInDocs = async () => {
-	const keybindsRegex = /^(<!-- keyboard_shortcuts -->\s*).*?^(```\s+#)/gms
+	const keybindsRegex = /^(<!-- keyboard_shortcuts -->\s*).*?^(\s+#)/gms
 	const shortcuts = `$1**On Mac**
 
 \`\`\`
@@ -29,6 +29,7 @@ ${keyHelpStr('darwin', true)}
 
 \`\`\`
 ${keyHelpStr('win32', true)}
+\`\`\`
 
 You can see all the default key bindings in Heynote's settings under Key Bindings.
 
