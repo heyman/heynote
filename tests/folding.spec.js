@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { HeynotePage } from "./test-utils.js";
+import { NoteFormat } from "../src/common/note-format.js";
 
 let heynotePage
 
@@ -171,5 +172,115 @@ This is a markdown block
         
         // Verify all blocks are now unfolded
         await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
+    });
+
+    test("folded blocks are stored in buffer metadata", async ({ page }) => {
+        // Fold Block A (multi-line block)
+        await heynotePage.setCursorPosition(20) // Middle of Block A
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Ctrl+["
+        await page.locator("body").press(foldKey)
+        
+        // Verify block is folded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+        
+        // Trigger save to persist folded ranges
+        await page.evaluate(() => window._heynote_editor.save())
+        
+        // Get buffer data and parse metadata
+        const bufferData = await page.evaluate(() => window._heynote_editor.getContent())
+        const note = NoteFormat.load(bufferData)
+        
+        // Verify that foldedRanges is present in metadata and has one entry
+        expect(note.foldedRanges).toBeDefined()
+        expect(note.foldedRanges.length).toBe(1)
+        expect(note.foldedRanges[0]).toHaveProperty('from')
+        expect(note.foldedRanges[0]).toHaveProperty('to')
+        expect(typeof note.foldedRanges[0].from).toBe('number')
+        expect(typeof note.foldedRanges[0].to).toBe('number')
+        
+        // Fold Block B (javascript block) as well
+        await heynotePage.setCursorPosition(80) // Middle of Block B
+        await page.locator("body").press(foldKey)
+        
+        // Verify both blocks are folded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(2)
+        
+        // Trigger save again
+        await page.evaluate(() => window._heynote_editor.save())
+        
+        // Get updated buffer data and verify two folded ranges
+        const updatedBufferData = await page.evaluate(() => window._heynote_editor.getContent())
+        const updatedNote = NoteFormat.load(updatedBufferData)
+        
+        expect(updatedNote.foldedRanges.length).toBe(2)
+        
+        // Unfold all blocks
+        const unfoldKey = heynotePage.isMac ? "Alt+Meta+]" : "Alt+Ctrl+]"
+        await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Select all
+        await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Select entire buffer
+        await page.locator("body").press(unfoldKey)
+        
+        // Verify no blocks are folded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
+        
+        // Trigger save and verify foldedRanges is empty
+        await page.evaluate(() => window._heynote_editor.save())
+        const finalBufferData = await page.evaluate(() => window._heynote_editor.getContent())
+        const finalNote = NoteFormat.load(finalBufferData)
+        
+        expect(finalNote.foldedRanges.length).toBe(0)
+    });
+
+    test("folded blocks persist across page reloads", async ({ page }) => {
+        // Fold Block A (multi-line block)
+        await heynotePage.setCursorPosition(20) // Middle of Block A
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Ctrl+["
+        await page.locator("body").press(foldKey)
+        
+        // Verify block is folded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+        
+        // Explicitly trigger save to ensure folded state is persisted
+        await page.evaluate(() => window._heynote_editor.save())
+        
+        // Reload the page
+        await page.reload()
+        await expect(page.locator(".cm-editor")).toBeVisible()
+        
+        // Wait a moment for fold state to be restored
+        await page.waitForTimeout(100)
+        
+        // Check if the metadata still contains the folded range
+        const bufferData = await page.evaluate(() => window._heynote_editor.getContent())
+        const note = NoteFormat.load(bufferData)
+        expect(note.foldedRanges.length).toBe(1)
+        
+        // Verify the block is still folded after reload (visual state)
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+        
+        // Now unfold the block
+        const unfoldKey = heynotePage.isMac ? "Alt+Meta+]" : "Alt+Ctrl+]"
+        await page.locator("body").press(unfoldKey)
+        
+        // Verify block is unfolded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
+        
+        // Explicitly trigger save to ensure unfolded state is persisted
+        await page.evaluate(() => window._heynote_editor.save())
+        
+        // Reload the page again
+        await page.reload()
+        await expect(page.locator(".cm-editor")).toBeVisible()
+        
+        // Wait a moment for editor to fully load
+        await page.waitForTimeout(100)
+        
+        // Verify the block is still unfolded after reload
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
+        
+        // Also verify the metadata no longer contains folded ranges
+        const updatedBufferData = await page.evaluate(() => window._heynote_editor.getContent())
+        const updatedNote = NoteFormat.load(updatedBufferData)
+        expect(updatedNote.foldedRanges.length).toBe(0)
     });
 });
