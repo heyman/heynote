@@ -9,9 +9,9 @@ Here are the most notable changes in each release. For a more detailed list of c
 - Fixed an issue where some types of blocks could not be folded. 
 - The fold state is now stored in the buffer file so that it's persisted between sessions. 
 - Added three new commands for folding and unfolding blocks:
-  - `foldBlock` - Folds the current/selected block(s). Default key binding is `Ctrl-Shift-[` on Windows/Linux and `Cmd-Option-[` on Mac.
-  - `unfoldBlock` - Unfolds the current/selected block(s). Default key binding is `Ctrl-Shift-]` on Windows/Linux and `Cmd-Option-]` on Mac.
-  - `toggleFoldBlock` - Toggles the fold state of the current/selected block. Default key binding is `Ctrl-Shift-.` on Windows/Linux and `Cmd-Option-.` on Mac.
+  - `foldBlock` - Folds the current/selected block(s). Default key binding is `Ctrl-Alt-[` on Windows/Linux and `Cmd-Option-[` on Mac.
+  - `unfoldBlock` - Unfolds the current/selected block(s). Default key binding is `Ctrl-Alt-]` on Windows/Linux and `Cmd-Option-]` on Mac.
+  - `toggleFoldBlock` - Toggles the fold state of the current/selected block. Default key binding is `Ctrl-Alt-.` on Windows/Linux and `Cmd-Option-.` on Mac.
 - Folded blocks now display the first 50 characters of the block content, as well as the number of lines in the block.
 
 ## 2.2.2
