@@ -43,6 +43,11 @@ const lightTheme = EditorView.theme({
     ".cm-activeLine": {
         backgroundColor: "rgba(0,0,0, 0.04)",
     },
+    '.cm-foldPlaceholder': {
+        backgroundColor: 'transparent',
+        border: 'none',
+        color: 'rgba(0,0,0, 0.5)'
+    },
     ".cm-selectionBackground": {
         background: selectionBlur,
     },
