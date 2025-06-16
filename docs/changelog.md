@@ -13,6 +13,7 @@ Here are the most notable changes in each release. For a more detailed list of c
   - `unfoldBlock` - Unfolds the current/selected block(s). Default key binding is `Ctrl-Alt-]` on Windows/Linux and `Cmd-Option-]` on Mac.
   - `toggleFoldBlock` - Toggles the fold state of the current/selected block. Default key binding is `Ctrl-Alt-.` on Windows/Linux and `Cmd-Option-.` on Mac.
 - Folded blocks now display the first 50 characters of the block content, as well as the number of lines in the block.
+- Default key bindings for folding code on Mac changed from `Cmd-Option-[` and `Cmd-Option-]` to `Cmd-Shift-[` and `Cmd-Shift-]` (to avoid conflicts with the new block folding commands)
 
 ## 2.2.2
 
