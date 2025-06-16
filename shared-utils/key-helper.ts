@@ -1,4 +1,4 @@
-export const keyHelpStr = (platform: string) => {
+export const keyHelpStr = (platform: string, extended: boolean = false) => {
     const modChar = platform === "darwin" ? "⌘" : "Ctrl"
     const altChar = platform === "darwin" ? "⌥" : "Alt"
 
@@ -18,6 +18,22 @@ export const keyHelpStr = (platform: string) => {
         [`${modChar} + ${altChar} + Up/Down`, "Add additional cursor above/below"],
         [`${altChar} + Shift + F`, "Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)"],
     ]
+
+    if (extended) {
+        if (platform === "darwin") {
+            keyHelp.push(
+                [`${modChar} + ${altChar} + [`, "Fold block(s)"],
+                [`${modChar} + ${altChar} + ]`, "Unfold block(s)"],
+                [`${modChar} + ${altChar} + .`, "Toggle block fold"],
+            )
+        } else {
+            keyHelp.push(
+                [`${modChar} + Shift + [`, "Fold block(s)"],
+                [`${modChar} + Shift + ]`, "Unfold block(s)"],
+                [`${modChar} + Shift + .`, "Toggle block fold"],
+            )
+        }
+    }
 
     if (platform === "win32" || platform === "linux") {
         keyHelp.push([altChar, "Show menu"])

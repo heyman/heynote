@@ -62,8 +62,8 @@ export const DEFAULT_KEYMAP = [
     cmd("Mod-Alt-ArrowUp", "newCursorAbove"),
     cmd("Mod-Shift-d", "deleteBlock"),
     cmd("Mod-d", "selectNextOccurrence"),
-    cmd(isMac ? "Cmd-Alt-[" : "Ctrl-Shift-[", "foldCode"),
-    cmd(isMac ? "Cmd-Alt-]" : "Ctrl-Shift-]", "unfoldCode"),
+    cmd(isMac ? "Cmd-Shift-[" : "Ctrl-Shift-[", "foldCode"),
+    cmd(isMac ? "Cmd-Shift-]" : "Ctrl-Shift-]", "unfoldCode"),
 
     cmd("Mod-c", "copy"),
     cmd("Mod-v", "paste"),
@@ -89,6 +89,17 @@ export const DEFAULT_KEYMAP = [
 
     cmd("Mod-/", "toggleComment"),
     cmd("Alt-Shift-a", "toggleBlockComment"),
+    
+    // fold blocks
+    ...(isMac ? [
+        cmd("Alt-Cmd-[", "foldBlock"),
+        cmd("Alt-Cmd-]", "unfoldBlock"),
+        cmd("Alt-Cmd-.", "toggleBlockFold")
+    ] : [
+        cmd("Alt-Ctrl-[", "foldBlock"),
+        cmd("Alt-Ctrl-]", "unfoldBlock"),
+        cmd("Alt-Ctrl-.", "toggleBlockFold")
+    ]),
 
     // search
     //cmd("Mod-f", "openSearchPanel"),

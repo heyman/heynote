@@ -55,6 +55,22 @@ export function getNoteBlockFromPos(state, pos) {
     return state.facet(blockState).find(block => block.range.from <= pos && block.range.to >= pos)
 }
 
+export function getNoteBlocksBetween(state, from, to) {
+    return state.facet(blockState).filter(block => block.range.from < to && block.range.to >= from)
+}
+
+export function getNoteBlocksFromRangeSet(state, ranges) {
+    const blocks = []
+    const seenBlockStarts = new Set()
+    for (const range of ranges) {
+        if (!seenBlockStarts.has(range.from)) {
+            blocks.push(...getNoteBlocksBetween(state, range.from, range.to))
+            seenBlockStarts.add(range.from)
+        }
+    }
+    return blocks
+}
+
 
 class NoteBlockStart extends WidgetType {
     constructor(isFirst) {
@@ -265,7 +281,13 @@ export const blockLineNumbers = lineNumbers({
             }
         }
         return ""
-    }
+    },
+    domEventHandlers: {
+        click(view, line, event) {
+            // editor should not loose focus when clicking on the line numbers
+            view.docView.dom.focus()
+        },
+    },
 })
 
 

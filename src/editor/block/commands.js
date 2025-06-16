@@ -66,7 +66,8 @@ export const addNewBlockAfterCurrent = (editor) => ({ state, dispatch }) => {
             from: block.content.to,
             insert: delimText,
         },
-        selection: EditorSelection.cursor(block.content.to + delimText.length)
+        selection: EditorSelection.cursor(block.content.to + delimText.length),
+        annotations: [heynoteEvent.of(ADD_NEW_BLOCK)],
     }, {
         scrollIntoView: true,
         userEvent: "input",
@@ -106,7 +107,8 @@ export const addNewBlockAfterLast = (editor) => ({ state, dispatch }) => {
             from: block.content.to,
             insert: delimText,
         },
-        selection: EditorSelection.cursor(block.content.to + delimText.length)
+        selection: EditorSelection.cursor(block.content.to + delimText.length),
+        annotations: [heynoteEvent.of(ADD_NEW_BLOCK)],
     }, {
         scrollIntoView: true,
         userEvent: "input",

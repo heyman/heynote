@@ -7,6 +7,8 @@ import {styleTags, tags as t} from "@lezer/highlight"
 import { json } from "@codemirror/lang-json"
 import { javascript } from "@codemirror/lang-javascript"
 
+import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
+
 
 function foldNode(node) {
     //console.log("foldNode", node);
@@ -25,8 +27,9 @@ export const HeynoteLanguage = LRLanguage.define({
             foldNodeProp.add({
                 //NoteContent: foldNode,
                 //NoteContent: foldInside,
-                NoteContent(node) {
-                    return {from:node.from, to:node.to-1}
+                NoteContent(node, state) {
+                    //return {from:node.from, to:node.to}
+                    return {from: Math.min(state.doc.lineAt(node.from).to, node.from + FOLD_LABEL_LENGTH), to: node.to}
                 },
             }),
         ],
