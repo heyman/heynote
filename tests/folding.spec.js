@@ -72,7 +72,7 @@ This is a markdown block
         await expect(page.locator(".cm-foldPlaceholder")).not.toBeVisible()
         
         // Fold block using keyboard shortcut
-        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Ctrl+["
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
         await page.locator("body").press(foldKey)
         
         // Verify block is folded by checking for fold placeholder
@@ -88,7 +88,7 @@ This is a markdown block
         await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
         
         // Fold multiple blocks using keyboard shortcut
-        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Ctrl+["
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
         await page.locator("body").press(foldKey)
         
         // Verify multiple blocks are folded (should see multiple fold placeholders)
@@ -96,7 +96,7 @@ This is a markdown block
         await expect(foldPlaceholders).toHaveCount(3) // Block A, B, and D should be folded (C is single line so won't fold)
         
         // Unfold all blocks using keyboard shortcut
-        const unfoldKey = heynotePage.isMac ? "Alt+Meta+]" : "Alt+Ctrl+]"
+        const unfoldKey = heynotePage.isMac ? "Alt+Meta+]" : "Alt+Control+]"
         await page.locator("body").press(unfoldKey)
         
         // Verify all blocks are unfolded (no fold placeholders should remain)
@@ -111,7 +111,7 @@ This is a markdown block
         await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
         
         // Toggle fold to fold the block
-        const toggleKey = heynotePage.isMac ? "Alt+Meta+." : "Alt+Ctrl+."
+        const toggleKey = heynotePage.isMac ? "Alt+Meta+." : "Alt+Control+."
         await page.locator("body").press(toggleKey)
         
         // Verify block is folded
@@ -133,7 +133,7 @@ This is a markdown block
         await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
         
         // Toggle fold to fold multiple blocks
-        const toggleKey = heynotePage.isMac ? "Alt+Meta+." : "Alt+Ctrl+."
+        const toggleKey = heynotePage.isMac ? "Alt+Meta+." : "Alt+Control+."
         await page.locator("body").press(toggleKey)
         
         // Verify multiple blocks are folded
@@ -150,7 +150,7 @@ This is a markdown block
     test("toggleBlockFold with mixed folded/unfolded state", async ({ page }) => {
         // Fold Block A first
         await heynotePage.setCursorPosition(20) // Middle of Block A
-        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Ctrl+["
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
         await page.locator("body").press(foldKey)
         
         // Verify Block A is folded
@@ -161,7 +161,7 @@ This is a markdown block
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Second press selects entire buffer
         
         // Toggle fold on mixed state - should fold all unfolded blocks (since more are unfolded than folded)
-        const toggleKey = heynotePage.isMac ? "Alt+Meta+." : "Alt+Ctrl+."
+        const toggleKey = heynotePage.isMac ? "Alt+Meta+." : "Alt+Control+."
         await page.locator("body").press(toggleKey)
         
         // Verify all foldable blocks are now folded (A was already folded, B and D should now be folded too)
@@ -177,7 +177,7 @@ This is a markdown block
     test("folded blocks are stored in buffer metadata", async ({ page }) => {
         // Fold Block A (multi-line block)
         await heynotePage.setCursorPosition(20) // Middle of Block A
-        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Ctrl+["
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
         await page.locator("body").press(foldKey)
         
         // Verify block is folded
@@ -215,7 +215,7 @@ This is a markdown block
         expect(updatedNote.foldedRanges.length).toBe(2)
         
         // Unfold all blocks
-        const unfoldKey = heynotePage.isMac ? "Alt+Meta+]" : "Alt+Ctrl+]"
+        const unfoldKey = heynotePage.isMac ? "Alt+Meta+]" : "Alt+Control+]"
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Select all
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Select entire buffer
         await page.locator("body").press(unfoldKey)
@@ -234,7 +234,7 @@ This is a markdown block
     test("folded blocks persist across page reloads", async ({ page }) => {
         // Fold Block A (multi-line block)
         await heynotePage.setCursorPosition(20) // Middle of Block A
-        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Ctrl+["
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
         await page.locator("body").press(foldKey)
         
         // Verify block is folded
@@ -259,7 +259,7 @@ This is a markdown block
         await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
         
         // Now unfold the block
-        const unfoldKey = heynotePage.isMac ? "Alt+Meta+]" : "Alt+Ctrl+]"
+        const unfoldKey = heynotePage.isMac ? "Alt+Meta+]" : "Alt+Control+]"
         await page.locator("body").press(unfoldKey)
         
         // Verify block is unfolded
