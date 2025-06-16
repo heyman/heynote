@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.3.0-beta (not released yet)
+## 2.3.0-beta
 
 ### Improved support for folding blocks
 
@@ -14,6 +14,11 @@ Here are the most notable changes in each release. For a more detailed list of c
   - `toggleFoldBlock` - Toggles the fold state of the current/selected block. Default key binding is `Ctrl-Alt-.` on Windows/Linux and `Cmd-Option-.` on Mac.
 - Folded blocks now display the first 50 characters of the block content, as well as the number of lines in the block.
 - Default key bindings for folding code on Mac changed from `Cmd-Option-[` and `Cmd-Option-]` to `Cmd-Shift-[` and `Cmd-Shift-]` (to avoid conflicts with the new block folding commands)
+
+### Bug fixes
+
+- Fix wrong positioning if IME interface (for Chinese input)
+- Prevent editor from loosing focus when line number/fold gutter is clicked
 
 ## 2.2.2
 
