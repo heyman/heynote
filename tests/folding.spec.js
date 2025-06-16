@@ -65,4 +65,20 @@ This is a markdown block
         const content = await heynotePage.getContent()
         expect(content).toContain("abc test")
     });
+
+    test("block can be folded", async ({ page }) => {
+        // Position cursor in first block (which has multiple lines)
+        await heynotePage.setCursorPosition(20) // Middle of Block A
+        
+        // Verify no fold placeholder exists initially
+        await expect(page.locator(".cm-foldPlaceholder")).not.toBeVisible()
+        
+        // Fold block using keyboard shortcut
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Ctrl+Shift+["
+        await page.locator("body").press(foldKey)
+        await page.waitForTimeout(100)
+        
+        // Verify block is folded by checking for fold placeholder
+        await expect(page.locator(".cm-foldPlaceholder")).toBeVisible()
+    });
 });
