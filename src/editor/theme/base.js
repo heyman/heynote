@@ -65,11 +65,14 @@ export const heynoteBase = EditorView.theme({
     '.cm-foldGutter': {
         marginLeft: '0px',
     },
-    '.cm-foldGutter .cm-gutterElement': {
-        opacity: 0,
-        transition: "opacity 400ms",
+    '.cm-gutters .cm-gutterElement span': {
+        opacity: 1,
+        transition: "opacity 200ms",
     },
-    '.cm-gutters:hover .cm-gutterElement': {
+    '.cm-foldGutter .cm-gutterElement span[title*="Fold"]': {
+        opacity: 0,
+    },
+    '.cm-gutters:hover .cm-gutterElement span[title*="Fold"]': {
         opacity: 1,
     },
     '.cm-cursor, .cm-dropCursor': {
