@@ -92,9 +92,9 @@ export const DEFAULT_KEYMAP = [
     
     // fold blocks
     ...(isMac ? [
-        cmd("Alt-Mod-[", "foldBlock"),
-        cmd("Alt-Mod-]", "unfoldBlock"),
-        cmd("Alt-Mod-.", "toggleBlockFold")
+        cmd("Alt-Cmd-[", "foldBlock"),
+        cmd("Alt-Cmd-]", "unfoldBlock"),
+        cmd("Alt-Cmd-.", "toggleBlockFold")
     ] : [
         cmd("Alt-Ctrl-[", "foldBlock"),
         cmd("Alt-Ctrl-]", "unfoldBlock"),
