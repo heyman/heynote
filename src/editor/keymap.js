@@ -40,6 +40,8 @@ export const DEFAULT_KEYMAP = [
     ...cmdShift("PageDown", "cursorPageDown", "selectPageDown"),
     ...cmdShift("Home", "cursorLineBoundaryBackward", "selectLineBoundaryBackward"),
     ...cmdShift("End", "cursorLineBoundaryForward", "selectLineBoundaryForward"),
+    ...cmdShift("Ctrl-Home", "cursorDocStart", "selectDocStart"),
+    ...cmdShift("Ctrl-End", "cursorDocEnd", "selectDocEnd"),
     cmd("Alt-Mod-Shift-ArrowUp", "moveCurrentBlockUp"),
     cmd("Alt-Mod-Shift-ArrowDown", "moveCurrentBlockDown"),
     cmd("Alt-Shift-d", "insertDateAndTime"),
