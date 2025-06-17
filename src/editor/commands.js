@@ -163,6 +163,7 @@ for (let commandSuffix of [
     "SyntaxLeft", "SyntaxRight",
     "SubwordBackward", "SubwordForward",
     "LineBoundaryBackward", "LineBoundaryForward",
+    "DocStart", "DocEnd",
 ]) {
     HEYNOTE_COMMANDS[`cursor${commandSuffix}`] = {
         run: markModeMoveCommand(codeMirrorCommands[`cursor${commandSuffix}`], codeMirrorCommands[`select${commandSuffix}`]),
