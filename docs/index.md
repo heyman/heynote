@@ -2,15 +2,15 @@
 
 [Changelog](/docs/changelog/)
 
-Heynote is a dedicated scratchpad for developers. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
+Heynote is a dedicated scratchpad. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
 
-The Heynote buffer is divided into blocks, and each block can have its own Language set (e.g. JavaScript, JSON, Markdown, etc.). This gives you syntax highlighting and lets you auto-format that JSON response.
+The Heynote buffer is divided into blocks, and each block can have its own mode set (e.g. JavaScript, JSON, Markdown, etc.). This gives you syntax highlighting and lets you auto-format that JSON response.
 
 Available for Mac, Windows, and Linux.
 
 ## Features
 
--   Persistent text buffer
+-   Persistent text buffer(s)
 -   Block-based
 -   Syntax highlighting:
 
@@ -20,10 +20,11 @@ Available for Mac, Windows, and Linux.
 -   Auto-formatting
 -   Math/Calculator mode
 -   Currency conversion
+-   Multiple buffers
 -   Multi-cursor editing
 -   Dark & Light themes
 -   Option to set a global hotkey to show/hide the app
--   Default or Emacs-like key bindings
+-   Default, Emacs-like or custom key bindings
 
 ## Default Key Bindings
 

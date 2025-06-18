@@ -19,7 +19,7 @@ Available for Mac, Windows, and Linux.
 
 ## Features
 
--   Persistent text buffer
+-   Persistent text buffer(s)
 -   Block-based
 -   Syntax highlighting:
 
@@ -29,10 +29,11 @@ Available for Mac, Windows, and Linux.
 -   Auto-formatting
 -   Math/Calculator mode
 -   Currency conversion
+-   Multiple buffers
 -   Multi-cursor editing
 -   Dark & Light themes
 -   Option to set a global hotkey to show/hide the app
--   Default or Emacs-like key bindings
+-   Default, Emacs-like or custom key bindings
 
 
 ## Documentation
@@ -81,6 +82,7 @@ No, at the moment this is out of scope, sorry.
 ### What are the default keyboard shortcuts?
 
 See the [documentation](https://heynote.com/docs/#user-content-default-key-bindings).
+
 
 ## Thanks!
 
