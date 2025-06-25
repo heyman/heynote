@@ -29,6 +29,13 @@
                 "PageDown",
                 "Escape",
                 "PrintScreen",
+                "VolumeUp",
+                "VolumeDown",
+                "VolumeMute",
+                "MediaNextTrack",
+                "MediaPreviousTrack",
+                "MediaStop",
+                "MediaPlayPause",
             ])
             for (let i=1; i<=12; i++) {
                 keys.push("F" + i)
