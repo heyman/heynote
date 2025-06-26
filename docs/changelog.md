@@ -2,6 +2,10 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## 2.3.1
+
+- Fix issue with the cursor being a few pixels too short
+
 ## 2.3.0
 
 ### Improved support for folding blocks
