@@ -1,6 +1,5 @@
-import { codeFolding, foldGutter, foldState, unfoldEffect, foldEffect } from "@codemirror/language"
+import { codeFolding, foldGutter, unfoldEffect, foldEffect, foldedRanges } from "@codemirror/language"
 import { EditorView } from "@codemirror/view"
-import { RangeSet } from "@codemirror/state"
 
 import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
 import { getNoteBlockFromPos, getNoteBlocksFromRangeSet } from "./block/block.js"
@@ -20,7 +19,7 @@ const autoUnfoldOnEdit = () => {
         }
 
         const { state, view } = update;
-        const foldRanges = state.field(foldState, false);
+        const foldRanges = foldedRanges(state, false)
 
         if (!foldRanges || foldRanges.size === 0) {
             return
@@ -118,7 +117,7 @@ export function foldGutterExtension() {
 
 export const toggleBlockFold = (editor) => (view) => {
     const state = view.state
-    const folds = state.field(foldState, false) || RangeSet.empty
+    const folds = foldedRanges(state)
 
     const foldEffects = []
     const unfoldEffects = []
@@ -179,7 +178,7 @@ export const foldBlock = (editor) => (view) => {
 
 export const unfoldBlock = (editor) => (view) => {
     const state = view.state
-    const folds = state.field(foldState, false) || RangeSet.empty
+    const folds = foldedRanges(state)
     const blockFolds = []
 
     for (const block of getNoteBlocksFromRangeSet(state, state.selection.ranges)) {
