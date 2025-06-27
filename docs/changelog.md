@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## In main, not yet released
+## 2.3.2
 
 - Improve folding to be less aggressive with the unfolding (e.g. when creating a new block after a folded block, and then immediately pressing backspace to remove the new block)
 
