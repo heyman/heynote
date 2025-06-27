@@ -317,8 +317,6 @@
                 position: relative
                 flex-grow: 1
                 margin-right: 4px
-                input[type="text"]
-                    
                 .input-buttons
                     position: absolute
                     top: 0
@@ -354,7 +352,6 @@
                 background-image: url('@/assets/icons/search-icons/find-next.svg')
                 +dark-mode
                     background-image: url('@/assets/icons/search-icons/find-next-dark.svg')
-                    &.find-next
             &.find-previous
                 background-image: url('@/assets/icons/search-icons/find-previous.svg')
                 +dark-mode
