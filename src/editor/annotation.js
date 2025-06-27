@@ -17,6 +17,10 @@ export function transactionsHasAnnotation(transactions, annotation) {
     return transactions.some(tr => tr.annotation(heynoteEvent) === annotation)
 }
 
+export function transactionsHasAnnotationsAny(transactions, annotations) {
+    return transactions.some(tr => annotations.includes(tr.annotation(heynoteEvent)))
+}
+
 export function transactionsHasHistoryEvent(transactions) {
     return transactions.some(tr => tr.isUserEvent("undo") || tr.isUserEvent("redo"))
 }

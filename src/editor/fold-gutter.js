@@ -3,7 +3,7 @@ import { EditorView } from "@codemirror/view"
 
 import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
 import { getNoteBlockFromPos, getNoteBlocksFromRangeSet, delimiterRegexWithoutNewline } from "./block/block.js"
-import { transactionsHasAnnotation, ADD_NEW_BLOCK, transactionsHasHistoryEvent } from "./annotation.js"
+import { transactionsHasAnnotationsAny, ADD_NEW_BLOCK, LANGUAGE_CHANGE, transactionsHasHistoryEvent } from "./annotation.js"
 
 
 // This extension fixes so that a folded region is automatically unfolded if any changes happen 
@@ -25,8 +25,8 @@ const autoUnfoldOnEdit = () => {
             return
         }
         
-        // we don't want to unfold a block/range if the user adds a new block
-        if (transactionsHasAnnotation(update.transactions, ADD_NEW_BLOCK)) {
+        // we don't want to unfold a block/range if the user adds a new block, or changes language of the block
+        if (transactionsHasAnnotationsAny(update.transactions, [ADD_NEW_BLOCK, LANGUAGE_CHANGE])) {
             return
         }
         // an undo/redo action should never be able to get characters into a folded line but if we don't have 

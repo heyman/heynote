@@ -485,4 +485,49 @@ Block A line 3`)
         const content = await heynotePage.getContent()
         expect(content).toContain("Block A line 3Y")
     });
+
+    test("folded block does not unfold when language changes", async ({ page }) => {
+        // Set up test content with a multi-line block
+        await heynotePage.setContent(`
+∞∞∞text
+Block A line 1
+Block A line 2
+Block A line 3`)
+        
+        // Fold the block
+        await heynotePage.setCursorPosition(20) // Middle of Block A
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
+        await page.locator("body").press(foldKey)
+        
+        // Verify block is folded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+        
+        // Get the initial block to verify language change
+        const initialBlocks = await heynotePage.getBlocks()
+        expect(initialBlocks[0].language.name).toBe("text")
+        
+        // Position cursor at the beginning of the folded block and open language selector
+        await heynotePage.setCursorPosition(initialBlocks[0].content.from)
+        await page.locator("body").press(heynotePage.agnosticKey("Mod+L"))
+        
+        // Select JavaScript language
+        await page.locator("body").pressSequentially("javascript")
+        await page.locator("body").press("Enter")
+        
+        // Wait for language change to apply
+        await page.waitForTimeout(100)
+        
+        // Verify the block is still folded (should not unfold due to language change)
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+        
+        // Verify the language actually changed
+        const updatedBlocks = await heynotePage.getBlocks()
+        expect(updatedBlocks[0].language.name).toBe("javascript")
+        
+        // Verify the content is unchanged
+        const content = await heynotePage.getContent()
+        expect(content).toContain("Block A line 1")
+        expect(content).toContain("Block A line 2")
+        expect(content).toContain("Block A line 3")
+    });
 });
