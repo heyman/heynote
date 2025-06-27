@@ -363,6 +363,7 @@
         flex-direction: column
         border-radius: 0 0 5px 5px
         box-shadow: 0 0 10px rgba(0,0,0,0.3)
+        z-index: 400 // above the search panel which have z-index 300
         +dark-mode
             background: #151516
             box-shadow: 0 0 10px rgba(0,0,0,0.5)

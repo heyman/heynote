@@ -204,6 +204,7 @@
 
 <style scoped lang="sass">    
     .fader
+        z-index: 400 // above the search panel which have z-index 300
         position: fixed
         top: 0
         left: 0
