@@ -423,4 +423,66 @@ Block B line 3
         await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
         await expect(await heynotePage.getBlocks()).toHaveLength(1) // Should now have 1 block
     });
+
+    test("typing at the beginning of a folded block unfolds it", async ({ page }) => {
+        // Set up test content with a multi-line block
+        await heynotePage.setContent(`
+∞∞∞text
+Block A line 1
+Block A line 2
+Block A line 3`)
+        
+        // Fold the block
+        await heynotePage.setCursorPosition(20) // Middle of Block A
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
+        await page.locator("body").press(foldKey)
+        
+        // Verify block is folded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+        
+        // Position cursor at the very beginning of the folded block (right after the delimiter)
+        const blocks = await heynotePage.getBlocks()
+        await heynotePage.setCursorPosition(blocks[0].content.from)
+        
+        // Type a character - this should unfold the block
+        await page.locator("body").pressSequentially("X")
+        
+        // Verify the block is now unfolded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
+        
+        // Verify the character was inserted at the beginning
+        const content = await heynotePage.getContent()
+        expect(content).toContain("XBlock A line 1")
+    });
+
+    test("typing at the end of a folded block unfolds it", async ({ page }) => {
+        // Set up test content with a multi-line block
+        await heynotePage.setContent(`
+∞∞∞text
+Block A line 1
+Block A line 2
+Block A line 3`)
+        
+        // Fold the block
+        await heynotePage.setCursorPosition(20) // Middle of Block A
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
+        await page.locator("body").press(foldKey)
+        
+        // Verify block is folded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+        
+        // Position cursor at the very end of the folded block (end of last line, not including newline)
+        const blocks = await heynotePage.getBlocks()
+        await heynotePage.setCursorPosition(blocks[0].content.to)
+        
+        // Type a character - this should unfold the block
+        await page.locator("body").pressSequentially("Y")
+        
+        // Verify the block is now unfolded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
+        
+        // Verify the character was inserted at the end
+        const content = await heynotePage.getContent()
+        expect(content).toContain("Block A line 3Y")
+    });
 });
