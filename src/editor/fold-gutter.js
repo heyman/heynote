@@ -2,7 +2,7 @@ import { codeFolding, foldGutter, unfoldEffect, foldEffect, foldedRanges } from 
 import { EditorView } from "@codemirror/view"
 
 import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
-import { getNoteBlockFromPos, getNoteBlocksFromRangeSet } from "./block/block.js"
+import { getNoteBlockFromPos, getNoteBlocksFromRangeSet, delimiterRegexWithoutNewline } from "./block/block.js"
 import { transactionsHasAnnotation, ADD_NEW_BLOCK, transactionsHasHistoryEvent } from "./annotation.js"
 
 
@@ -50,6 +50,24 @@ const autoUnfoldOnEdit = () => {
                 const lineTo = state.doc.lineAt(to).to;
 
                 //console.log("lineFrom:", lineFrom, "lineTo:", lineTo, "fromA:", fromA, "toA:", toA, "fromB:", fromB, "toB:", toB);
+
+                if (
+                    fromB === toB && fromB === lineFrom &&
+                    (state.doc.length === 0 || state.doc.lineAt(lineFrom - 1).text.match(delimiterRegexWithoutNewline))
+                ) {
+                    // if the change is the beginning of the folded line, we'll check if a block separator is
+                    // immediately before the folded range (or beginning of document), and we if so, we don't unfold it
+                    return
+                }
+
+                if (
+                    fromB === toB && fromB === lineTo &&
+                    (state.doc.length === toB || state.doc.lineAt(toB + 1).text.match(delimiterRegexWithoutNewline))
+                ) {
+                    // If the change is at the end of the folded line, we'll check what comes after the folded range,
+                    // and if it's a new block, or the end of the document, we don't unfold it
+                    return
+                }
 
                 if ((fromB >= lineFrom && fromB <= lineTo) || (toB >= lineFrom && toB <= lineTo)) {
                     unfoldRanges.push({ from, to });

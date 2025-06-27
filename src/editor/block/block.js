@@ -8,6 +8,10 @@ import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
 import { firstBlockDelimiterSize, getBlocksFromSyntaxTree, getBlocksFromString } from "./block-parsing.js";
 
+export const delimiterRegex = /^\n∞∞∞[a-z]+?(-a)?\n$/
+export const delimiterRegexWithoutNewline = /^∞∞∞[a-z]+?(-a)?$/
+
+
 
 /**
  * Get the blocks from the document state.

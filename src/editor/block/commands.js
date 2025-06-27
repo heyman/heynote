@@ -1,7 +1,7 @@
 import { EditorSelection, Transaction } from "@codemirror/state"
 
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK, MOVE_BLOCK, DELETE_BLOCK } from "../annotation.js";
-import { blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos } from "./block"
+import { blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos, delimiterRegex } from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
 
@@ -119,8 +119,7 @@ export const addNewBlockAfterLast = (editor) => ({ state, dispatch }) => {
 export function changeLanguageTo(state, dispatch, block, language, auto) {
     if (state.readOnly)
         return false
-    const delimRegex = /^\n∞∞∞[a-z]+?(-a)?\n/g
-    if (state.doc.sliceString(block.delimiter.from, block.delimiter.to).match(delimRegex)) {
+    if (state.doc.sliceString(block.delimiter.from, block.delimiter.to).match(delimiterRegex)) {
         //console.log("changing language to", language)
         dispatch(state.update({
             changes: {
