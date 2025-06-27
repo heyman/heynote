@@ -226,6 +226,7 @@
         bottom: 0
         right: 0
         background: rgba(0,0,0, 0.2)
+        z-index: 400 // above the search panel which have z-index 300
     .new-buffer
         font-size: 13px
         //background: #48b57e

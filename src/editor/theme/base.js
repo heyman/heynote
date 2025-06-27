@@ -5,9 +5,11 @@ export const heynoteBase = EditorView.theme({
     ".cm-panels": {
         fontSize: "12px",
     },
+    ".cm-panels.cm-panels-top": {
+        borderBottom: "none",
+    },
     ".cm-panels .cm-panel": {
-        boxShadow: "0 0 10px rgba(0,0,0,0.15)",
-        padding: "8px 12px",
+        
     },
     '.cm-panels .cm-textfield': {
         fontSize: "1em",
@@ -125,5 +127,11 @@ export const heynoteBase = EditorView.theme({
     },
     '.heynote-link': {
         textDecoration: "underline",
+    },
+
+    ".cm-searchMatch": { backgroundColor: "#ffff00" },
+    ".cm-searchMatch-selected": {
+        backgroundColor: "#ffaa20",
+        outline: "1px solid #e46d00",
     },
 })

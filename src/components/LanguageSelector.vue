@@ -96,38 +96,30 @@
 </script>
 
 <template>
-    <div class="scroller">
-        <form class="language-selector" tabindex="-1" @focusout="onFocusOut" ref="container">
-            <input 
-                type="text" 
-                ref="input"
-                @keydown="onKeydown"
-                @input="onInput"
-                v-model="filter"
+    <form class="language-selector" tabindex="-1" @focusout="onFocusOut" ref="container">
+        <input 
+            type="text" 
+            ref="input"
+            @keydown="onKeydown"
+            @input="onInput"
+            v-model="filter"
+        />
+        <ul class="items">
+            <li
+                v-for="item, idx in filteredItems"
+                :key="item.token"
+                :class="idx === selected ? 'selected' : ''"
+                @click="selectItem(item.token)"
+                ref="item"
+                v-html="item.name"
             />
-            <ul class="items">
-                <li
-                    v-for="item, idx in filteredItems"
-                    :key="item.token"
-                    :class="idx === selected ? 'selected' : ''"
-                    @click="selectItem(item.token)"
-                    ref="item"
-                    v-html="item.name"
-                />
-            </ul>
-        </form>
-    </div>
+        </ul>
+    </form>
 </template>
 
 <style scoped lang="sass">    
-    .scroller
-        //overflow: auto
-        //position: fixed
-        //top: 0
-        //left: 0
-        //bottom: 0
-        //right: 0
     .language-selector
+        z-index: 400 // above the search panel which have z-index 300
         font-size: 13px
         padding: 10px
         //background: #48b57e

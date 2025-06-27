@@ -457,6 +457,7 @@
 
 <style lang="sass" scoped>
     .settings
+        z-index: 500 // above the search panel and other overlays
         position: fixed
         top: 0
         left: 0
