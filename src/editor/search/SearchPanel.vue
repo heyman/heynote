@@ -38,6 +38,7 @@
         mounted() {
             this.$nextTick(() => {
                 this.$refs.input.focus()
+                this.$refs.input.select()
                 this.search()
             });
         },
