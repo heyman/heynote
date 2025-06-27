@@ -38,9 +38,10 @@ const autoUnfoldOnEdit = () => {
 
         // This fixes so that removing the previous block immediately after a folded block won't unfold the folded block
         // Since nothing was inserted, there is no risk of us putting extra characters into folded lines
-        if (update.changes.inserted.length === 0) {
-            return
-        }
+        // Commented out, because it DOES NOT WORK, since it allows removing characters within the folded region, without unfolding it
+        //if (update.changes.inserted.length === 0) {
+        //    return
+        //}
 
         const unfoldRanges = []
 
@@ -49,7 +50,9 @@ const autoUnfoldOnEdit = () => {
                 const lineFrom = state.doc.lineAt(from).from
                 const lineTo = state.doc.lineAt(to).to;
 
-                if ((fromA >= lineFrom && fromA <= lineTo) || (toA >= lineFrom && toA <= lineTo)) {
+                //console.log("lineFrom:", lineFrom, "lineTo:", lineTo, "fromA:", fromA, "toA:", toA, "fromB:", fromB, "toB:", toB);
+
+                if ((fromB >= lineFrom && fromB <= lineTo) || (toB >= lineFrom && toB <= lineTo)) {
                     unfoldRanges.push({ from, to });
                 }
             });

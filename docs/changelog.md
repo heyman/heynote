@@ -5,6 +5,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 ## 2.3.1
 
 - Fix issue with the cursor being a few pixels too short
+- Fix issue where one could remove characters within a folded block without it getting unfolded
 
 ## 2.3.0
 
