@@ -32,7 +32,6 @@ ${keyHelpStr('win32', true)}
 \`\`\`
 
 You can see all the default key bindings in Heynote's settings under Key Bindings.
-
 $2`
 	const docsPath = path.resolve(__dirname, 'docs', 'index.md')
 	let docs = fs.readFileSync(docsPath, 'utf-8')
