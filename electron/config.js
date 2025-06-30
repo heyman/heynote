@@ -57,7 +57,17 @@ const schema = {
             // settings file, so that it's possible for us to change the default settings in the 
             // future and have it apply to existing users
             "fontFamily": {type: "string"}, 
-            "fontSize": {type: "integer"},  
+            "fontSize": {type: "integer"}, 
+
+            "searchSettings": {
+                type: "object",
+                properties: {
+                    onlyCurrentBlock: {type: "boolean"},
+                    caseSensitive: {type: "boolean"},
+                    wholeWord: {type: "boolean"},
+                    regexp: {type: "boolean"},
+                },
+            },
         },
     },
 
@@ -90,6 +100,12 @@ const defaults = {
         bracketClosing: false,
         indentType: "space",
         tabSize: 4,
+        searchSettings: {
+            onlyCurrentBlock: true,
+            caseSensitive: false,
+            wholeWord: false,
+            regexp: false,
+        },
     },
     theme: "system",
 }

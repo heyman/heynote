@@ -11,6 +11,8 @@
         selectMatches,
         setSearchQuery,
     } from "../codemirror-search/search.ts"
+    import { mapStores } from 'pinia'
+    import { useSettingsStore } from "@/src/stores/settings-store.js"
     import { getActiveNoteBlock } from "../block/block.js"
     import InputToggle from "./InputToggle.vue"
     import { delimiterRegexWithoutNewline } from "../block/block.js"
@@ -25,9 +27,9 @@
             const query = getSearchQuery(this.view.state)
             return {
                 queryStr: query.search,
-                caseSensitive: query.caseSensitive,
-                regexp: query.regexp,
-                wholeWord: query.wholeWord,
+                caseSensitive: false,
+                regexp: false,
+                wholeWord: false,
                 onlyCurrentBlock: true,
                 currentBlock: getActiveNoteBlock(this.view.state),
                 replaceVisible: false,
@@ -36,6 +38,14 @@
         },
 
         mounted() {
+            console.log("search settings:", this.settingsStore.settings.searchSettings)
+            if (this.settingsStore.settings.searchSettings) {
+                this.caseSensitive = this.settingsStore.settings.searchSettings.caseSensitive
+                this.regexp = this.settingsStore.settings.searchSettings.regexp
+                this.wholeWord = this.settingsStore.settings.searchSettings.wholeWord
+                this.onlyCurrentBlock = this.settingsStore.settings.searchSettings.onlyCurrentBlock
+            }
+
             this.$nextTick(() => {
                 this.$refs.input.focus()
                 this.$refs.input.select()
@@ -48,6 +58,8 @@
         },
 
         computed: {
+            ...mapStores(useSettingsStore),
+
             searchParams() {
                 return [
                     this.queryStr,
@@ -138,6 +150,14 @@
                 if (event.detail > 0) {
                     this.$refs.input.focus()
                 }
+                this.settingsStore.updateSettings({
+                    searchSettings: {
+                        onlyCurrentBlock: this.onlyCurrentBlock,
+                        caseSensitive: this.caseSensitive,
+                        regexp: this.regexp,
+                        wholeWord: this.wholeWord,
+                    },
+                })
             },
 
             findNext() {
