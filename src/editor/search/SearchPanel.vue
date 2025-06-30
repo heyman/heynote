@@ -63,10 +63,6 @@
             searchParams() {
                 return [
                     this.queryStr,
-                    this.caseSensitive,
-                    this.regexp,
-                    this.wholeWord,
-                    this.onlyCurrentBlock,
                     this.replaceStr,
                 ]
             },
@@ -158,6 +154,7 @@
                         wholeWord: this.wholeWord,
                     },
                 })
+                this.search()
             },
 
             findNext() {
