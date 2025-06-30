@@ -5,6 +5,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 ## main (next release)
 
 - Prevent blocks from unfolding when changing the block language
+- Fix issue toggling the fold gutter setting
 
 ## 2.3.2
 

@@ -387,7 +387,7 @@ export class HeynoteEditor {
 
     setFoldGutter(show) {
         this.view.dispatch({
-            effects: this.foldGutterCompartment.reconfigure(show ? foldGutterExtension : []),
+            effects: this.foldGutterCompartment.reconfigure(show ? foldGutterExtension() : []),
         })
     }
 
