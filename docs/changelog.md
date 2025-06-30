@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## main (next release)
+## 2.3.3
 
 - Prevent blocks from unfolding when changing the block language
 - Fix issue toggling the fold gutter setting
