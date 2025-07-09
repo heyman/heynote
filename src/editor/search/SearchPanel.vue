@@ -16,6 +16,7 @@
     import { getActiveNoteBlock } from "../block/block.js"
     import InputToggle from "./InputToggle.vue"
     import { delimiterRegexWithoutNewline } from "../block/block.js"
+    import { heynoteEvent, SEARCH_SETTINGS_UPDATED } from "../annotation.js"
 
     export default {
         name: "SearchPanel",
@@ -152,6 +153,9 @@
                         regexp: this.regexp,
                         wholeWord: this.wholeWord,
                     },
+                })
+                this.view.dispatch({
+                    annotations: [heynoteEvent.of(SEARCH_SETTINGS_UPDATED)],//, Transaction.addToHistory.of(false)],
                 })
                 this.search()
             },

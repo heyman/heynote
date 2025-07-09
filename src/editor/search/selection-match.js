@@ -7,7 +7,7 @@ import { SearchCursor } from "../codemirror-search/search.ts"
 import { useSettingsStore } from "@/src/stores/settings-store.js"
 import { getActiveNoteBlock } from "../block/block.js"
 import { delimiterRegexWithoutNewline } from "../block/block.js"
-
+import { transactionsHasAnnotation, SEARCH_SETTINGS_UPDATED } from "../annotation.js"
 
 
 
@@ -61,7 +61,9 @@ const matchHighlighter = ViewPlugin.fromClass(class {
     }
 
     update(update) {
-        if (update.selectionSet || update.docChanged || update.viewportChanged) this.decorations = this.getDeco(update.view)
+        if (update.selectionSet || update.docChanged || update.viewportChanged || transactionsHasAnnotation(update.transactions, SEARCH_SETTINGS_UPDATED)) {
+            this.decorations = this.getDeco(update.view)
+        }
     }
 
     getDeco(view) {
@@ -105,10 +107,8 @@ const matchHighlighter = ViewPlugin.fromClass(class {
             let cursor = new SearchCursor(state.doc, query, part.from, part.to, normalizeFunc(), currentBlockTestFilter(view.state))
             while (!cursor.next().done) {
                 let { from, to } = cursor.value
-                if (isSelection(from, to)){
-                    // skip if the match is already selected
-                    continue
-                }
+                // Skip selected matches to prevent styling conflicts
+                if (isSelection(from, to)) continue
                 if (fullWord) {
                     let word = state.wordAt(from);
                     if (!word || word.from != from || word.to != to)
