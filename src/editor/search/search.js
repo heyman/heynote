@@ -1,6 +1,8 @@
-import { search, SearchQuery } from "../codemirror-search/search.ts"
+import { search } from "../codemirror-search/search.ts"
 
 import { createApp } from "vue"
+
+import { highlightSelectionMatches } from "./selection-match.js"
 import SearchPanel from "./SearchPanel.vue"
 
 function createSearchPanel(view) {
@@ -25,6 +27,9 @@ function createSearchPanel(view) {
     }
 } 
 
-export const heynoteSearch = search({
-    createPanel: createSearchPanel,
-})
+export const heynoteSearch = [
+    search({
+        createPanel: createSearchPanel,
+    }),
+    highlightSelectionMatches(),
+]

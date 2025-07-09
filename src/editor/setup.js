@@ -65,13 +65,13 @@ const customSetup = /*@__PURE__*/(() => [
     rectangularSelection(),
     crosshairCursor(),
     highlightActiveLine(),
-    highlightSelectionMatches(),
+    //highlightSelectionMatches(),
     EditorView.lineWrapping,
     scrollPastEnd(),
     keymap.of([
         //...closeBracketsKeymap,
         //...defaultKeymap,
-        ...searchKeymap,
+        //...searchKeymap,
         //...historyKeymap,
         //...foldKeymap,
 

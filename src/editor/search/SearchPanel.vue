@@ -38,7 +38,6 @@
         },
 
         mounted() {
-            console.log("search settings:", this.settingsStore.settings.searchSettings)
             if (this.settingsStore.settings.searchSettings) {
                 this.caseSensitive = this.settingsStore.settings.searchSettings.caseSensitive
                 this.regexp = this.settingsStore.settings.searchSettings.regexp
