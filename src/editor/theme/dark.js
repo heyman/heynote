@@ -86,7 +86,7 @@ const darkTheme = EditorView.theme({
 
     '.cm-activeLine': { backgroundColor: highlightBackground },
     '.cm-selectionMatch': {
-        backgroundColor: "#50606D",
+        backgroundColor: "#506d69ad",
     },
     '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
         outline: `0.5px solid ${base07}`
