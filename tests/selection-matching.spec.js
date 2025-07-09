@@ -191,7 +191,7 @@ test("select all selection matches with Mod-Shift-l", async ({ page }) => {
     await expect(page.locator(".cm-selectionMatch")).toHaveCount(2)
     
     // Press Mod-Shift-l to select all matches
-    await page.locator("body").press(heynotePage.agnosticKey("Mod+Shift+l"))
+    await page.locator("body").press(heynotePage.agnosticKey("Mod+Shift+L"))
     await page.waitForTimeout(100)
     
     // Should have 3 cursors/selections now

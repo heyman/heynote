@@ -324,7 +324,7 @@ test("search navigation commands", async ({ page }) => {
     
     // Test Shift+Ctrl/Cmd+G (find previous) - should move to previous match
     initialIndex = newIndex
-    await page.locator("body").press(heynotePage.agnosticKey("Shift+Mod+g"))
+    await page.locator("body").press(heynotePage.agnosticKey("Shift+Mod+G"))
     await page.waitForTimeout(100)
     newIndex = await getSelectedMatchIndex()
     expect(newIndex).toBe((initialIndex - 1 + 3) % 3)
