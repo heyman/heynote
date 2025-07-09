@@ -224,28 +224,28 @@ Third block with Test`)
     await page.locator(".search-panel input[main-field]").fill("test")
     
     // Should find only 1 match: "test" in current block (case-sensitive, whole word)
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     await expect(page.locator(".cm-searchMatch")).toHaveCount(1)
     
     // Disable within current block
     await page.locator(".search-panel .input-toggle.block").click()
     
     // Should still find only 1 match: "test" in second block (case-sensitive, whole word)
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     await expect(page.locator(".cm-searchMatch")).toHaveCount(1)
     
     // Disable case sensitivity
     await page.locator(".search-panel .input-toggle.case-sensitive").click()
     
     // Should find 3 matches: "TEST", "test", "Test" (case-insensitive, whole word)
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     await expect(page.locator(".cm-searchMatch")).toHaveCount(3)
     
     // Disable whole words
     await page.locator(".search-panel .input-toggle.whole-words").click()
     
     // Should find 4 matches: "TEST", "test", "testing", "Test" (case-insensitive, partial)
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     await expect(page.locator(".cm-searchMatch")).toHaveCount(4)
 })
 
@@ -267,7 +267,7 @@ test("search navigation commands", async ({ page }) => {
     
     // Navigate to first match to start selection
     await page.locator("body").press("F3")
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Now a match should be selected
     await expect(page.locator(".cm-searchMatch.cm-searchMatch-selected")).toHaveCount(1)
@@ -297,35 +297,35 @@ test("search navigation commands", async ({ page }) => {
     // Test F3 (find next) - should move to next match
     let initialIndex = await getSelectedMatchIndex()
     await page.locator("body").press("F3")
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     let newIndex = await getSelectedMatchIndex()
     expect(newIndex).toBe((initialIndex + 1) % 3) // Should cycle through matches
     
     // Test F3 again - should move to next match
     initialIndex = newIndex
     await page.locator("body").press("F3")
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     newIndex = await getSelectedMatchIndex()
     expect(newIndex).toBe((initialIndex + 1) % 3)
     
     // Test Shift+F3 (find previous) - should move to previous match
     initialIndex = newIndex
     await page.locator("body").press("Shift+F3")
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     newIndex = await getSelectedMatchIndex()
     expect(newIndex).toBe((initialIndex - 1 + 3) % 3) // Should cycle backwards
     
     // Test Ctrl/Cmd+G (find next) - should move to next match
     initialIndex = newIndex
     await page.locator("body").press(heynotePage.agnosticKey("Mod+g"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     newIndex = await getSelectedMatchIndex()
     expect(newIndex).toBe((initialIndex + 1) % 3)
     
     // Test Shift+Ctrl/Cmd+G (find previous) - should move to previous match
     initialIndex = newIndex
     await page.locator("body").press(heynotePage.agnosticKey("Shift+Mod+g"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     newIndex = await getSelectedMatchIndex()
     expect(newIndex).toBe((initialIndex - 1 + 3) % 3)
     

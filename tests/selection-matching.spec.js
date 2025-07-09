@@ -39,7 +39,7 @@ test("Mod-d selects next occurrence", async ({ page }) => {
     
     // Press Mod-d to select next occurrence
     await page.locator("body").press(heynotePage.agnosticKey("Mod+d"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should have 1 match highlighted (3 total - 2 selected = 1 highlighted)
     await expect(page.locator(".cm-selectionMatch")).toHaveCount(1)
@@ -52,7 +52,7 @@ test("Mod-d selects next occurrence", async ({ page }) => {
     
     // Press Mod-d again to select third occurrence
     await page.locator("body").press(heynotePage.agnosticKey("Mod+d"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should have 3 cursors/selections now
     const finalSelections = await page.evaluate(() => {
@@ -70,7 +70,7 @@ test("Mod-d expands selection to word when nothing is selected", async ({ page }
     
     // Press Mod-d to expand selection to word
     await page.locator("body").press(heynotePage.agnosticKey("Mod+d"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should have selected the word "hello" and highlighted other occurrences (2 total - 1 selected = 1 highlighted)
     await expect(page.locator(".cm-selectionMatch")).toHaveCount(1)
@@ -97,7 +97,7 @@ Third block with hello`)
     // Position cursor in second block and select "hello"
     await heynotePage.setCursorPosition(50)
     await page.locator("body").press(heynotePage.agnosticKey("Mod+d"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // By default, "Within Current Block" should be enabled
     // Should only highlight "hello" in the current block (1 total - 1 selected = 0 highlighted)
@@ -108,11 +108,11 @@ Third block with hello`)
     
     // Toggle off "Within Current Block"
     await page.locator(".search-panel .input-toggle.block").click()
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Close search panel (settings update automatically)
     await page.locator("body").press("Escape")
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should now highlight occurrences across all blocks (3 total - 1 selected = 2 highlighted)
     await expect(page.locator(".cm-selectionMatch")).toHaveCount(2)
@@ -137,11 +137,11 @@ test("selection matching case sensitivity setting", async ({ page }) => {
     
     // Toggle case sensitivity on
     await page.locator(".search-panel .input-toggle.case-sensitive").click()
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Close search panel (settings update automatically)
     await page.locator("body").press("Escape")
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should now only match exact case (1 total - 1 selected = 0 highlighted)
     await expect(page.locator(".cm-selectionMatch")).toHaveCount(0)
@@ -166,11 +166,11 @@ test("selection matching whole words setting", async ({ page }) => {
     
     // Toggle whole words on
     await page.locator(".search-panel .input-toggle.whole-words").click()
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Close search panel (settings update automatically)
     await page.locator("body").press("Escape")
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should now only match whole words (1 total - 1 selected = 0 highlighted)
     await expect(page.locator(".cm-selectionMatch")).toHaveCount(0)
@@ -192,7 +192,7 @@ test("select all selection matches with Mod-Shift-l", async ({ page }) => {
     
     // Press Mod-Shift-l to select all matches
     await page.locator("body").press(heynotePage.agnosticKey("Mod+Shift+l"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should have 3 cursors/selections now
     const selections = await page.evaluate(() => {
@@ -221,7 +221,7 @@ Third block with testing`)
     // Position cursor in second block and select "test" (lowercase)
     await heynotePage.setCursorPosition(60)
     await page.locator("body").press(heynotePage.agnosticKey("Mod+d"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // By default: case-insensitive, partial matching, within current block
     // Should match in current block (1 total - 1 selected = 0 highlighted)
@@ -233,11 +233,11 @@ Third block with testing`)
     // Enable case sensitivity and whole words
     await page.locator(".search-panel .input-toggle.case-sensitive").click()
     await page.locator(".search-panel .input-toggle.whole-words").click()
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Close search panel (settings update automatically)
     await page.locator("body").press("Escape")
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should now only match exact case, whole word, in current block (1 total - 1 selected = 0 highlighted)
     await expect(page.locator(".cm-selectionMatch")).toHaveCount(0)
@@ -247,11 +247,11 @@ Third block with testing`)
     
     // Disable "Within Current Block"
     await page.locator(".search-panel .input-toggle.block").click()
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Close search panel (settings update automatically)
     await page.locator("body").press("Escape")
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should now match exact case, whole word, across all blocks (3 total - 1 selected = 2 highlighted)  
     // The matches are: "test" in first block, "test" in second block (selected), and partial "test" in "testing"
@@ -286,9 +286,9 @@ test("Mod-d cycling behavior", async ({ page }) => {
     
     // Use Mod-d to select all three occurrences
     await page.locator("body").press(heynotePage.agnosticKey("Mod+d"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     await page.locator("body").press(heynotePage.agnosticKey("Mod+d"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should have 3 selections
     let selections = await page.evaluate(() => {
@@ -298,7 +298,7 @@ test("Mod-d cycling behavior", async ({ page }) => {
     
     // Press Mod-d again - should cycle back to first occurrence
     await page.locator("body").press(heynotePage.agnosticKey("Mod+d"))
-    await page.waitForTimeout(100)
+    await page.waitForTimeout(300)
     
     // Should still have 3 selections (cycling behavior)
     selections = await page.evaluate(() => {
