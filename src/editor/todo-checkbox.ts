@@ -52,6 +52,7 @@ const checkboxRegex = /^([\t\f\v ]*-[\t\f\v ]*)\[( |x|X)\] /gm
 
 function checkboxes(view: EditorView) {
     let widgets: any = []
+
     for (let { from, to } of view.visibleRanges) {
         let range = view.state.sliceDoc(from, to)
         let match
@@ -102,6 +103,10 @@ export const todoCheckboxPlugin = [
         }
     }, {
         decorations: v => v.decorations,
+
+        provide: plugin => EditorView.atomicRanges.of(view => {
+            return view.plugin(plugin)?.decorations || Decoration.none
+        }),
 
         eventHandlers: {
             mousedown: (e, view) => {
