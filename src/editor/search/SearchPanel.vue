@@ -197,6 +197,7 @@
                         ref="input"
                         @keydown="onQueryKeyDown"
                         placeholder="Find…"
+                        class="search-query"
                         main-field
                     />
                     <div class="input-buttons">
@@ -338,6 +339,8 @@
                 position: relative
                 flex-grow: 1
                 margin-right: 4px
+                input.search-query
+                    padding-right: 100px
                 .input-buttons
                     position: absolute
                     top: 0
