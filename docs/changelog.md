@@ -2,6 +2,12 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## 2.4.0-beta.2 (not yet released)
+
+### Other fixes and improvements
+
+- Fix issue with incorrect syntax for todo lists in Markdown blocks still getting replaced with checkboxes
+
 ## 2.4.0-beta
 
 ### Improved  search functionality
