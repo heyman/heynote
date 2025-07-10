@@ -6,7 +6,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ### Other fixes and improvements
 
-- Fix issue with incorrect syntax for todo lists in Markdown blocks still getting replaced with checkboxes
+- Fix issues with todo lists checkboxes in Markdown blocks
 
 ## 2.4.0-beta
 
