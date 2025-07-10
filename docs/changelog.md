@@ -2,17 +2,15 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.4.0-beta.2 (not yet released)
-
-### Other fixes and improvements
-
-- Fix issues with todo lists checkboxes in Markdown blocks
-
-## 2.4.0-beta
+## 2.4.0-beta.2
 
 ### Improved  search functionality
 
 The new search (and replace) dialog has an improved UI and is now "block aware", meaning that one can choose to search within the current block or across all blocks. The search settings (within the current block, case sensitivity, whole words) also affects the `Cmd/Ctrl-D` command for selecting the next occurrence of the current selection.
+
+### Other fixes and improvements
+
+- Fix issues with todo lists checkboxes in Markdown blocks
 
 ## 2.3.3
 
