@@ -195,10 +195,6 @@ function stringCursor(spec: SearchQuery, state: EditorState, from: number, to: n
   return new SearchCursor(
     state.doc, spec.unquoted, from, to, spec.caseSensitive ? undefined : x => x.toLowerCase(), 
     spec.wholeWord || spec.test ? test : undefined)
-  
-  //return new SearchCursor(
-  //  state.doc, spec.unquoted, from, to, spec.caseSensitive ? undefined : x => x.toLowerCase(),
-  //  spec.wholeWord ? stringWordTest(state.doc, state.charCategorizer(state.selection.main.head)) : undefined)
 }
 
 function stringWordTest(doc: Text, categorizer: (ch: string) => CharCategory) {
@@ -282,11 +278,6 @@ function regexpCursor(spec: SearchQuery, state: EditorState, from: number, to: n
     ignoreCase: !spec.caseSensitive,
     test: spec.wholeWord || spec.regexpTest ? test : undefined
   }, from, to)
-
-  //return new RegExpCursor(state.doc, spec.search, {
-  //  ignoreCase: !spec.caseSensitive,
-  //  test: spec.wholeWord ? regexpWordTest(state.charCategorizer(state.selection.main.head)) : undefined
-  //}, from, to)
 }
 
 function charBefore(str: string, index: number) {
