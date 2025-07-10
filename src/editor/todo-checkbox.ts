@@ -48,7 +48,7 @@ class CheckboxWidget extends WidgetType {
     ignoreEvent() { return false }
 }
 
-const checkboxRegex = /^([\t\f\v ]*-[\t\f\v ]*)\[( |x|X)\]/gm
+const checkboxRegex = /^([\t\f\v ]*-[\t\f\v ]*)\[( |x|X)\] /gm
 
 function checkboxes(view: EditorView) {
     let widgets: any = []
@@ -70,12 +70,12 @@ function checkboxes(view: EditorView) {
 
 
 function toggleBoolean(view: EditorView, pos: number) {
-    let before = view.state.doc.sliceString(pos-3, pos).toLowerCase()
+    let before = view.state.doc.sliceString(pos-4, pos).toLowerCase()
     let change
-    if (before === "[x]") {
-        change = { from: pos - 3, to: pos, insert: "[ ]" }
-    } else if (before === "[ ]") {
-        change = { from: pos - 3, to: pos, insert: "[x]" }
+    if (before === "[x] ") {
+        change = { from: pos - 4, to: pos, insert: "[ ] " }
+    } else if (before === "[ ] ") {
+        change = { from: pos - 4, to: pos, insert: "[x] " }
     } else {
         return false
     }
