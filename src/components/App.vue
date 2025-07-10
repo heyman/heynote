@@ -198,7 +198,6 @@
                 :initialSettings="settingsStore.settings"
                 :themeSetting="settingsStore.themeSetting"
                 @closeSettings="closeSettings"
-                @setTheme="settingsStore.setTheme"
             />
             <NewBuffer 
                 v-if="showCreateBuffer"

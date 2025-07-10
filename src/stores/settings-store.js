@@ -1,3 +1,4 @@
+import { toRaw } from 'vue'
 import { defineStore } from "pinia"
 
 import { SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
@@ -13,7 +14,15 @@ export const useSettingsStore = defineStore("settings", {
 
     actions: {
         onSettingsChange(settings) {
+            //console.log("settings updated", settings)
             this.settings = settings
+        },
+
+        updateSettings(settings) {
+            window.heynote.setSettings({
+                ...toRaw(this.settings),
+                ...settings,
+            })
         },
 
         setTheme(theme) {

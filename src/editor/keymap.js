@@ -3,7 +3,7 @@ import { Prec } from "@codemirror/state"
 
 import { HEYNOTE_COMMANDS } from "./commands.js"
 
-const cmd = (key, command) => ({key, command})
+const cmd = (key, command, scope) => ({key, command, scope})
 const cmdShift = (key, command, shiftCommand) => {
     return [
         cmd(key, command),
@@ -63,9 +63,20 @@ export const DEFAULT_KEYMAP = [
     cmd("Mod-Alt-ArrowDown", "newCursorBelow"),
     cmd("Mod-Alt-ArrowUp", "newCursorAbove"),
     cmd("Mod-Shift-d", "deleteBlock"),
-    cmd("Mod-d", "selectNextOccurrence"),
     cmd(isMac ? "Cmd-Shift-[" : "Ctrl-Shift-[", "foldCode"),
     cmd(isMac ? "Cmd-Shift-]" : "Ctrl-Shift-]", "unfoldCode"),
+
+    // search keymap
+    cmd("Mod-d", "selectNextOccurrence"),
+    cmd("Mod-f", "openSearchPanel", "editor search-panel"),
+    cmd("F3", "findNext", "editor search-panel"),
+    cmd("Mod-g", "findNext", "editor search-panel"),
+    cmd("Shift-F3", "findPrevious", "editor search-panel"),
+    cmd("Shift-Mod-g", "findPrevious", "editor search-panel"),
+    cmd("Escape", "closeSearchPanel", "editor search-panel"),
+    cmd("Mod-Shift-l", "selectSelectionMatches"),
+    cmd("Mod-Shift-l", "nothing"), // prevent default Electron behavior when selectSelectionMatches doesn't match anything
+    //cmd("Mod-Alt-g", "gotoLine"),
 
     cmd("Mod-c", "copy"),
     cmd("Mod-v", "paste"),
@@ -134,6 +145,8 @@ export const EMACS_KEYMAP = [
     cmd("Ctrl-t", "transposeChars"),
     cmd("Ctrl-Shift--", "undo"),
     cmd("Ctrl-.", "redo"),
+    cmd("Ctrl-s", "findNext", "editor search-panel"),
+    cmd("Ctrl-g", "closeSearchPanel", "search-panel"),
     ...cmdShift("Ctrl-v", "cursorPageDown", "selectPageDown"),
     ...cmdShift("Ctrl-b", "cursorCharLeft", "selectCharLeft"),
     ...cmdShift("Ctrl-f", "cursorCharRight", "selectCharRight"),
@@ -161,6 +174,7 @@ function keymapFromSpec(specs, editor) {
                 }
                 return command.run(editor)(view)
             },
+            scope: spec.scope,
         }
     }))
 }

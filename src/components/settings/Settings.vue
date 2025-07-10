@@ -1,7 +1,9 @@
 <script>
     import { toRaw} from 'vue';
-    import { LANGUAGES } from '../../editor/languages.js'
+    import { mapStores, mapState } from 'pinia'
+    import { useSettingsStore } from "@/src/stores/settings-store.js"
 
+    import { LANGUAGES } from '../../editor/languages.js'
     import KeyboardHotkey from "./KeyboardHotkey.vue"
     import TabListItem from "./TabListItem.vue"
     import TabContent from "./TabContent.vue"
@@ -96,6 +98,10 @@
             }
         },
 
+        computed: {
+            ...mapStores(useSettingsStore),
+        },
+
         methods: {
             onKeyDown(event) {
                 if (event.key === "Escape" && !this.addKeyBindingDialogVisible) {
@@ -104,7 +110,7 @@
             },
 
             updateSettings() {
-                window.heynote.setSettings({
+                this.settingsStore.updateSettings({
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                     keymap: this.keymap,
@@ -130,7 +136,7 @@
                     this.showInMenu = true
                 }
                 if (this.theme != this.themeSetting) {
-                    this.$emit("setTheme", this.theme)
+                    this.settingsStore.setTheme(this.theme)
                 }
             },
 
@@ -457,6 +463,7 @@
 
 <style lang="sass" scoped>
     .settings
+        z-index: 500 // above the search panel and other overlays
         position: fixed
         top: 0
         left: 0

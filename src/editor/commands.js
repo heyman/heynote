@@ -12,7 +12,11 @@ import {
     toggleComment, toggleBlockComment, toggleLineComment,
 } from "@codemirror/commands"
 import { foldCode, unfoldCode, toggleFold } from "@codemirror/language"
-import { selectNextOccurrence } from "@codemirror/search"
+import { 
+    openSearchPanel, closeSearchPanel, findNext, findPrevious, 
+    selectMatches, replaceNext, replaceAll, 
+} from "./codemirror-search/search.js"
+import { selectNextOccurrence, selectSelectionMatches } from "./search/selection-match.js"
 import { insertNewlineContinueMarkup } from "@codemirror/lang-markdown"
 
 import { 
@@ -133,6 +137,14 @@ const HEYNOTE_COMMANDS = {
     unfoldCode: cmdLessContext(unfoldCode, "Edit", "Unfold code"),
     toggleFold: cmdLessContext(toggleFold, "Edit", "Toggle fold"),
     selectNextOccurrence: cmdLessContext(selectNextOccurrence, "Cursor", "Select next occurrence"),
+    selectSelectionMatches: cmdLessContext(selectSelectionMatches, "Cursor", "Select all selection matches"),
+    openSearchPanel: cmdLessContext(openSearchPanel, "Search", "Open search panel"), 
+    closeSearchPanel: cmdLessContext(closeSearchPanel, "Search", "Close search panel"),
+    findNext: cmdLessContext(findNext, "Search", "Find next"),
+    findPrevious: cmdLessContext(findPrevious, "Search", "Find previous"),
+    selectMatches: cmdLessContext(selectMatches, "Search", "Select all matches"),
+    replaceNext: cmdLessContext(replaceNext, "Search", "Replace next"),
+    replaceAll: cmdLessContext(replaceAll, "Search", "Replace all"),
     deleteCharBackward: cmdLessContext(deleteCharBackward, "Edit", "Delete character backward"),
     deleteCharForward: cmdLessContext(deleteCharForward, "Edit", "Delete character forward"),
     deleteGroupBackward: cmdLessContext(deleteGroupBackward, "Edit", "Delete group backward"),

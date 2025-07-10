@@ -56,7 +56,7 @@ const darkTheme = EditorView.theme({
         color: "#9c9c9c",
     },
     ".cm-panels .cm-panel": {
-        boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+        //boxShadow: "0 0 10px rgba(0,0,0,0.3)",
     },
     '.cm-panels .cm-textfield': {
         backgroundColor: "#3b3b3b",
@@ -75,20 +75,18 @@ const darkTheme = EditorView.theme({
     ".cm-panel.cm-search [name=close]" : {
         color: "rgba(255,255,255, 0.8)",
     },
-    '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
-    
-    '.cm-searchMatch': {
-        backgroundColor: 'transparent',
-        outline: `1px solid ${base07}`
+
+    ".cm-searchMatch": {
+        backgroundColor: "#a55748",
     },
-    '.cm-searchMatch.cm-searchMatch-selected': {
-        backgroundColor: base04,
-        color: base00
+    ".cm-searchMatch-selected": {
+        backgroundColor: "#c70c0c",
+        outline: "1px solid #ff2e2e",
     },
+
     '.cm-activeLine': { backgroundColor: highlightBackground },
     '.cm-selectionMatch': {
-        backgroundColor: "#50606D",
-        //color: base01
+        backgroundColor: "#506d69ad",
     },
     '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
         outline: `0.5px solid ${base07}`

@@ -28,6 +28,7 @@ import { AUTO_SAVE_INTERVAL } from "../common/constants.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useErrorStore } from "../stores/error-store.js";
 import { foldGutterExtension } from "./fold-gutter.js"
+import { heynoteSearch } from "./search/search.js"
 
 
 // Turn off the use of EditContext, since Chrome has a bug (https://issues.chromium.org/issues/351029417) 
@@ -98,6 +99,7 @@ export class HeynoteEditor {
                 EditorView.scrollMargins.of(f => {
                     return {top: 80, bottom: 80}
                 }),
+                heynoteSearch,
                 heynoteLang(),
                 noteBlockExtension(this),
                 languageDetection(path, () => this),
