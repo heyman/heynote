@@ -102,6 +102,7 @@
 
         methods: {
             ...mapActions(useHeynoteStore, [
+                "openMoveToBufferSelector",
                 "openLanguageSelector",
                 "openBufferSelector",
                 "openCreateBuffer",
