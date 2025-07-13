@@ -135,9 +135,14 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: true,
         },
-        titleBarStyle: "hidden" as const, // customButtonsOnHover
+        titleBarStyle: isMac ? "hidden" as const : "default" as const, // customButtonsOnHover
         trafficLightPosition: { x: 7, y: 7 },
-        ...(!isMac ? { titleBarOverlay: true } : {})
+        //...(!isMac ? {
+        //    titleBarOverlay: {
+        //        color: nativeTheme.shouldUseDarkColors ? '#1b1c1d' : '#e1e2e2',
+        //        symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
+        //    }, 
+        //} : {})
     }, windowConfig))
 
     // maximize window if it was maximized last time

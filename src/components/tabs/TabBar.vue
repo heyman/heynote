@@ -10,6 +10,13 @@
         components: {
             TabItem,
         },
+
+        data() {
+            return {
+                isMac: window.heynote.platform.isMac,
+            }
+        },
+
         computed: {
             ...mapStores(useEditorCacheStore, useHeynoteStore),
             ...mapState(useHeynoteStore, [
@@ -31,6 +38,7 @@
                 return {
                     "tab-bar": true,
                     "fullscreen": this.isFullscreen,
+                    "mac": this.isMac,
                 }
             },
         },
@@ -74,14 +82,16 @@
         //align-items: center
         height: var(--tab-bar-height)
         padding: 0
-        padding-left: 90px
+        padding-left: 38px
         background-color: #e1e2e2
         border-bottom: 1px solid var(--tab-bar-border-bottom-color)
         box-shadow: var(--tab-bar-inset-shadow)
         +dark-mode
             background-color: #1b1c1d
-        &.fullscreen
-            padding-left: 38px
+        &.mac
+            padding-left: 90px
+            &.fullscreen
+                padding-left: 38px
         .scroller
             margin-top: 5px
             //flex-grow: 1
