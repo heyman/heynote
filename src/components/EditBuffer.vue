@@ -30,7 +30,6 @@
             this.$refs.nameInput.focus()
             this.updateBuffers()
 
-            console.log("EditNote mounted", this.currentNote)
             this.name = this.currentNote.name
 
             // build directory tree
