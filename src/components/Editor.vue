@@ -140,14 +140,10 @@
                     this.editor.hide()
                 }
 
-                let cachedEditor = this.editorCacheStore.getEditor(path)
-                if (cachedEditor) {
-                    //console.log("show cached editor")
-                    this.editor = cachedEditor
-                    toRaw(this.editor).show()
-                } else {
-                    //console.log("create new editor")
-                    this.editor = this.editorCacheStore.createEditor(path)
+                const [editor, created] = this.editorCacheStore.getOrCreateEditor(path, true)
+                this.editor = editor
+                if (!created) {
+                    toRaw(editor).show()
                 }
 
                 this.currentEditor = toRaw(this.editor)

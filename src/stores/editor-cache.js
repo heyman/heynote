@@ -56,14 +56,14 @@ export const useEditorCacheStore = defineStore("editorCache", {
                 this.lru.push(path)
             }
             if (this.cache[path]) {
-                return this.cache[path]
+                return [this.cache[path], false]
             } else {
                 const editor = this.createEditor(path)
                 if (!updateLru) {
                     // add the editor to the LRU, but at the top so that it is the first to be removed
                     this.lru.unshift(path)
                 }
-                return editor
+                return [editor, true]
             }
         },
 
@@ -74,6 +74,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
             if (this.cache[path]) {
                 return this.cache[path]
             }
+            //console.log("LRU:", this.lru)
         },
 
         addEditor(path, editor) {
@@ -83,6 +84,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
             }
 
             this.cache[path] = editor
+            //console.log("LRU (add):", this.lru)
         },
 
         freeEditor(pathToFree) {
@@ -181,7 +183,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
             const heynoteStore = useHeynoteStore()
 
             const editor = toRaw(this.getEditor(heynoteStore.currentBufferPath))
-            let otherEditor = toRaw(this.getOrCreateEditor(targetPath, false))
+            let otherEditor = toRaw(this.getOrCreateEditor(targetPath, false)[0])
             otherEditor.hide()
 
             const content = editor.getActiveBlockContent()
