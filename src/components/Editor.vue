@@ -1,13 +1,11 @@
 <script>
     import { syntaxTree } from "@codemirror/language"
     import { toRaw } from 'vue';
-    import { mapState, mapWritableState, mapActions, mapStores } from 'pinia'
-    import { useErrorStore } from "../stores/error-store"
+    import { mapState, mapWritableState, mapStores } from 'pinia'
     import { useHeynoteStore } from "../stores/heynote-store.js"
     import { useEditorCacheStore } from "../stores/editor-cache"
     import { REDO_EVENT, WINDOW_CLOSE_EVENT, DELETE_BLOCK_EVENT, UNDO_EVENT, SELECT_ALL_EVENT } from '@/src/common/constants';
 
-    const NUM_EDITOR_INSTANCES = 5
 
     export default {
         props: {
