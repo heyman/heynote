@@ -17,6 +17,7 @@
     import ErrorMessages from './ErrorMessages.vue'
     import NewBuffer from './NewBuffer.vue'
     import EditBuffer from './EditBuffer.vue'
+    import TabBar from './tabs/TabBar.vue'
 
     export default {
         components: {
@@ -28,6 +29,7 @@
             ErrorMessages,
             NewBuffer,
             EditBuffer,
+            TabBar,
         },
 
         data() {
@@ -152,6 +154,7 @@
 </script>
 
 <template>
+    <TabBar />
     <div class="container">
         <Editor 
             :theme="settingsStore.theme"
@@ -215,7 +218,7 @@
 <style scoped lang="sass">
     .container
         width: 100%
-        height: 100%
+        height: calc(100% - var(--tab-bar-height))
         position: relative
         .editor
             height: calc(100% - 21px)
