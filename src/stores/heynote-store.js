@@ -1,4 +1,4 @@
-import { toRaw } from 'vue';
+import { toRaw, nextTick } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../common/note-format"
 import { useEditorCacheStore } from "./editor-cache"
@@ -9,6 +9,7 @@ export const useHeynoteStore = defineStore("heynote", {
     state: () => ({
         buffers: {},
         recentBufferPaths: [SCRATCH_FILE_NAME],
+        openTabs: [SCRATCH_FILE_NAME],
 
         currentEditor: null,
         currentBufferPath: SCRATCH_FILE_NAME,
@@ -46,6 +47,39 @@ export const useHeynoteStore = defineStore("heynote", {
             this.closeDialog()
             this.currentBufferPath = path
             this.addRecentBuffer(path)
+
+            // add to tabs if it's not already open
+            if (!this.openTabs.includes(path)) {
+                this.openTabs.push(path)
+            }
+        },
+
+        closeTab(path) {
+            if (path === SCRATCH_FILE_NAME && this.openTabs.length === 1) {
+                // don't close the scratch file if it's the only open tab
+                return
+            }
+            const editorCacheStore = useEditorCacheStore()
+            this.openTabs = this.openTabs.filter((p) => p !== path)
+            if (this.currentBufferPath === path) {
+                this.currentEditor = null
+                editorCacheStore.freeEditor(path)
+                // if the current tab is closed, switch to the most recently used buffer that is open
+                const recentBuffers = this.recentBufferPaths.filter((p) => p !== path && this.openTabs.includes(p))
+                if (recentBuffers.length > 0) {
+                    //console.log("opening:", recentBuffers[0])
+                    this.openBuffer(recentBuffers[0])
+                } else {
+                    this.openBuffer(SCRATCH_FILE_NAME)
+                }
+            }
+        },
+
+        getBufferTitle(path) {
+            if (this.buffers[path]) {
+                return this.buffers[path].name || path
+            }
+            return path
         },
 
         addRecentBuffer(path) {
@@ -172,9 +206,16 @@ export const useHeynoteStore = defineStore("heynote", {
             const editorCacheStore = useEditorCacheStore()
             if (this.currentEditor.path === path) {
                 this.currentEditor = null
-                this.currentBufferPath = SCRATCH_FILE_NAME
+                const recentBuffers = this.recentBufferPaths.filter((p) => p !== path && this.openTabs.includes(p))
+                if (recentBuffers.length > 0) {
+                    this.currentBufferPath = recentBuffers[0]
+                } else {
+                    this.currentBufferPath = SCRATCH_FILE_NAME
+                }
             }
             editorCacheStore.freeEditor(path)
+            this.recentBufferPaths = this.recentBufferPaths.filter((p) => p !== path)
+            this.openTabs = this.openTabs.filter((p) => p !== path)
             await window.heynote.buffer.delete(path)
             await this.updateBuffers()
         },

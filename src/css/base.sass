@@ -1,16 +1,25 @@
 @use "include" as *
 
+:root
+    --tab-bar-height: 30px
+
 :root[theme='light']
     --status-bar-background: #48b57e
     --status-bar-color: #fff
     --highlight-color: #48b57e
     --panel-background: #efefef
+    --tab-bar-inset-shadow: inset 0 -1px 3px rgba(0, 0, 0, 0.05)
+    --tab-bar-border-bottom-color: #bebebe
+    --tab-active-bg: #fff
 
 :root[theme='dark']
     --status-bar-background: #0e1217
     --status-bar-color: rgba(255, 255, 255, 0.75)
     --highlight-color: #1b6540
     --panel-background: #151516
+    --tab-bar-inset-shadow: inset 0 -1px 3px rgba(0,0,0,0.2)
+    --tab-bar-border-bottom-color: #161616
+    --tab-active-bg: #213644
     
 html
     margin: 0

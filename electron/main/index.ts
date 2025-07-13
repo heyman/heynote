@@ -135,6 +135,9 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: true,
         },
+        titleBarStyle: "hidden" as const, // customButtonsOnHover
+        trafficLightPosition: { x: 7, y: 7 },
+        ...(!isMac ? { titleBarOverlay: true } : {})
     }, windowConfig))
 
     // maximize window if it was maximized last time
