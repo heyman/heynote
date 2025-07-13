@@ -150,7 +150,6 @@
                 } else {
                     //console.log("create new editor")
                     this.editor = this.editorCacheStore.createEditor(path)
-                    this.editorCacheStore.addEditor(path, toRaw(this.editor))
                 }
 
                 this.currentEditor = toRaw(this.editor)
