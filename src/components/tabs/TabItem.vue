@@ -29,7 +29,7 @@
             className() {
                 return [
                     ...(this.active ? ["active"] : []),
-                    ...[this.textWidth > 200 ? "long" : "short"],
+                    ...[this.textWidth > 120 ? "long" : "short"],
                 ]
             },
         },
