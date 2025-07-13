@@ -11,21 +11,20 @@ const NUM_EDITOR_INSTANCES = 5
 
 export const useEditorCacheStore = defineStore("editorCache", {
     state: () => ({
-        editorCache: {
-            lru: [],
-            cache: {},
-            watchHandler: null,
-            themeWatchHandler: null,
-            containerElement: null,
-        },
+        lru: [],
+        cache: {},
+        watchHandler: null,
+        themeWatchHandler: null,
+        containerElement: null,
     }),
 
     actions: {
         createEditor(path) {
             const settingsStore = useSettingsStore()
             const errorStore = useErrorStore()
+            let editor
             try {
-                return new HeynoteEditor({
+                editor = new HeynoteEditor({
                     element: this.containerElement,
                     path: path,
                     theme: settingsStore.theme,
@@ -46,22 +45,23 @@ export const useEditorCacheStore = defineStore("editorCache", {
                 errorStore.addError("Error! " + e.message)
                 throw e
             }
+            this.addEditor(path, editor)
+            return editor
         },
 
         getOrCreateEditor(path, updateLru) {
             if (updateLru) {
                 // move to end of LRU
-                this.editorCache.lru = this.editorCache.lru.filter(p => p !== path)
-                this.editorCache.lru.push(path)
+                this.lru = this.lru.filter(p => p !== path)
+                this.lru.push(path)
             }
-            if (this.editorCache.cache[path]) {
-                return this.editorCache.cache[path]
+            if (this.cache[path]) {
+                return this.cache[path]
             } else {
                 const editor = this.createEditor(path)
-                this.addEditor(path, editor)
                 if (!updateLru) {
-                    // if need to add the editor to the LRU, but at the top so that it is the first to be removed
-                    this.editorCache.lru.unshift(path)
+                    // add the editor to the LRU, but at the top so that it is the first to be removed
+                    this.lru.unshift(path)
                 }
                 return editor
             }
@@ -69,33 +69,33 @@ export const useEditorCacheStore = defineStore("editorCache", {
 
         getEditor(path) {
             // move to end of LRU
-            this.editorCache.lru = this.editorCache.lru.filter(p => p !== path)
-            this.editorCache.lru.push(path)
-            if (this.editorCache.cache[path]) {
-                return this.editorCache.cache[path]
+            this.lru = this.lru.filter(p => p !== path)
+            this.lru.push(path)
+            if (this.cache[path]) {
+                return this.cache[path]
             }
         },
 
         addEditor(path, editor) {
-            if (this.editorCache.lru.length >= NUM_EDITOR_INSTANCES) {
-                const pathToFree = this.editorCache.lru.shift()
+            if (this.lru.length >= NUM_EDITOR_INSTANCES) {
+                const pathToFree = this.lru.shift()
                 this.freeEditor(pathToFree)
             }
 
-            this.editorCache.cache[path] = editor
+            this.cache[path] = editor
         },
 
         freeEditor(pathToFree) {
-            if (!this.editorCache.cache[pathToFree]) {
+            if (!this.cache[pathToFree]) {
                 return
             }
-            this.editorCache.cache[pathToFree].destroy()
-            delete this.editorCache.cache[pathToFree]
-            this.editorCache.lru = this.editorCache.lru.filter(p => p !== pathToFree)
+            this.cache[pathToFree].destroy()
+            delete this.cache[pathToFree]
+            this.lru = this.lru.filter(p => p !== pathToFree)
         },
 
         eachEditor(fn) {
-            Object.values(toRaw(this.editorCache.cache)).forEach(fn)
+            Object.values(toRaw(this.cache)).forEach(fn)
         },
 
         clearCache(save=true) {
@@ -103,8 +103,8 @@ export const useEditorCacheStore = defineStore("editorCache", {
             this.eachEditor((editor) => {
                 editor.destroy(save=save)
             })
-            this.editorCache.cache = {}
-            this.editorCache.lru = []
+            this.cache = {}
+            this.lru = []
         },
 
         onCurrenciesLoaded() {
@@ -173,8 +173,8 @@ export const useEditorCacheStore = defineStore("editorCache", {
 
             window.document.removeEventListener("currenciesLoaded", this.onCurrenciesLoaded)
 
-            this.editorCache.lru = []
-            this.editorCache.cache = {}
+            this.lru = []
+            this.cache = {}
         },
 
         moveCurrentBlockToOtherEditor(targetPath) {
@@ -194,7 +194,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
                 heynoteStore.addRecentBuffer(heynoteStore.currentBufferPath)
             })
 
-            //console.log("LRU", this.editorCache.lru)
+            //console.log("LRU", this.lru)
         }
     },
 })
