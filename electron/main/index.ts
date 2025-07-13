@@ -3,7 +3,7 @@ import { release } from 'node:os'
 import { join } from 'node:path'
 import fs from "fs"
 
-import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
+import { WINDOW_CLOSE_EVENT, WINDOW_ENTER_FULLSCREEN, WINDOW_LEAVE_FULLSCREEN, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
 
 import { menu, getTrayMenu, getEditorContextMenu } from './menu'
 import CONFIG from "../config"
@@ -176,6 +176,13 @@ async function createWindow() {
         if (isWindows && CONFIG.get("settings.showInMenu")) {
             win.setSkipTaskbar(false)
         }
+    })
+    
+    win.on("enter-full-screen", () => {
+        win?.webContents.send(WINDOW_ENTER_FULLSCREEN)
+    })
+    win.on("leave-full-screen", () => {
+        win?.webContents.send(WINDOW_LEAVE_FULLSCREEN)
     })
 
     nativeTheme.themeSource = CONFIG.get("theme")
