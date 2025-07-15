@@ -2,7 +2,7 @@ import { toRaw, nextTick } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../common/note-format"
 import { useEditorCacheStore } from "./editor-cache"
-import { SCRATCH_FILE_NAME, WINDOW_ENTER_FULLSCREEN, WINDOW_LEAVE_FULLSCREEN } from "../common/constants"
+import { SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE } from "../common/constants"
 
 
 export const useHeynoteStore = defineStore("heynote", {
@@ -240,11 +240,8 @@ export async function initHeynoteStore() {
     window.heynote.buffer.setLibraryPathChangeCallback(() => {
         heynoteStore.reloadLibrary()
     })
-    window.heynote.mainProcess.on(WINDOW_ENTER_FULLSCREEN, () => {
-        heynoteStore.setFullscreen(true)
-    })
-    window.heynote.mainProcess.on(WINDOW_LEAVE_FULLSCREEN, () => {
-        heynoteStore.setFullscreen(false)
+    window.heynote.mainProcess.on(WINDOW_FULLSCREEN_STATE, (event, state) => {
+        heynoteStore.setFullscreen(state)
     })
     await heynoteStore.updateBuffers()
 }
