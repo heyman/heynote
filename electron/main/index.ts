@@ -383,6 +383,14 @@ app.on('activate', (event, hasVisibleWindows) => {
 ipcMain.handle('dark-mode:set', (event, mode) => {
     CONFIG.set("theme", mode)
     nativeTheme.themeSource = mode
+
+    // update titleBarOverlay colors on Windows/Linux
+    if (!isMac) {
+        win?.setTitleBarOverlay({
+            color: nativeTheme.shouldUseDarkColors ? '#1b1c1d' : '#e1e2e2',
+            symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
+        })
+    }
 })
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
