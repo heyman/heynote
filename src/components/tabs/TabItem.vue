@@ -118,6 +118,8 @@
             padding: 5px 19px 0px 19px
             box-shadow: var(--tab-bar-inset-shadow)
             transition: none
+            .blurred &
+                background: var(--tab-active-bg-blurred)
             +dark-mode
                 color: rgba(255, 255, 255, 0.8)
                 border: none

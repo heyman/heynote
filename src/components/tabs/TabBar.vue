@@ -1,8 +1,10 @@
 <script>
     import { mapStores, mapState } from 'pinia'
 
+    import { TITLE_BAR_BG_LIGHT, TITLE_BAR_BG_DARK, TITLE_BAR_BG_LIGHT_BLURRED, TITLE_BAR_BG_DARK_BLURRED } from "@/src/common/constants"
     import { useEditorCacheStore } from "@/src/stores/editor-cache"
     import { useHeynoteStore } from "@/src/stores/heynote-store"
+    import { useSettingsStore } from "@/src/stores/settings-store"
 
     import TabItem from './TabItem.vue'
 
@@ -18,6 +20,12 @@
         },
 
         computed: {
+            ...mapState(useHeynoteStore, [
+                "isFocused",
+            ]),
+            ...mapState(useSettingsStore, [
+                "theme",
+            ]),
             ...mapStores(useEditorCacheStore, useHeynoteStore),
 
             tabs() {
@@ -34,6 +42,21 @@
             className() {
                 return {
                     "tab-bar": true,
+                    "blurred": !this.isFocused,
+                }
+            },
+
+            backgroundColor() {
+                if (this.theme === "dark") {
+                    return this.isFocused ? TITLE_BAR_BG_DARK : TITLE_BAR_BG_DARK_BLURRED
+                } else {
+                    return this.isFocused ? TITLE_BAR_BG_LIGHT : TITLE_BAR_BG_LIGHT_BLURRED
+                }
+            },
+
+            style() {
+                return {
+                    backgroundColor: this.backgroundColor,
                 }
             },
         },
@@ -53,7 +76,7 @@
 </script>
 
 <template>
-    <nav :class="className">
+    <nav :class="className" :style="style">
         <div class="main-menu-container">
             <button class="main-menu"
                 @click="onMainMenuClick"
@@ -87,11 +110,8 @@
         display: flex
         height: var(--tab-bar-height)
         padding: 0
-        background-color: #f3f2f2
         border-bottom: 1px solid var(--tab-bar-border-bottom-color)
         box-shadow: var(--tab-bar-inset-shadow)
-        +dark-mode
-            background-color: #1b1c1d
         
         +platform-windows-linux
             padding-right: 140px
