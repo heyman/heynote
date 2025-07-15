@@ -28,9 +28,9 @@ html
     padding: 0
     height: 100%
     overscroll-behavior-y: none
-    +platform-windows-linux
+    &[platform=windows], &[platform=linux]
         border: 1px solid var(--window-border-color)
-    +fullscreen
+    &[fullscreen=true]
         border: none
 body
     margin: 0
