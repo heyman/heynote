@@ -10,3 +10,15 @@
     @media (max-width: 600px)
         html[webapp] &
             @content
+
+=platform-mac()
+    html[platform=mac] &
+        @content
+
+=platform-windows()
+    html[platform=windows] &
+        @content
+
+=platform-linux()
+    html[platform=linux] &
+        @content
