@@ -38,8 +38,19 @@
                 return {
                     "tab-bar": true,
                     "fullscreen": this.isFullscreen,
-                    "mac": this.isMac,
                 }
+            },
+        },
+
+        methods: {
+            onMainMenuClick(event) {
+                const x = event.target.offsetLeft
+                const y = event.target.offsetTop + event.target.offsetHeight + 6
+                window.heynote.mainProcess.invoke("showMainMenu", x, y)
+            },
+
+            openBufferSelector() {
+                this.heynoteStore.openBufferSelector()
             },
         },
     }
@@ -47,6 +58,13 @@
 
 <template>
     <nav :class="className">
+        <div 
+            :class="{'main-menu-container': true, 'fullscreen': isFullscreen}"
+        >
+            <button class="main-menu"
+                @click="onMainMenuClick"
+            ></button>
+        </div>
         <div class="scroller">
             <ol>
                 <!--<TabItem
@@ -68,7 +86,7 @@
         </div>
         <div class="button-container">
             <button 
-                @click="heynoteStore.openBufferSelector"
+                @click="openBufferSelector"
                 class="add-tab"
             ></button>
         </div>
@@ -79,19 +97,44 @@
     .tab-bar
         app-region: drag
         display: flex
-        //align-items: center
         height: var(--tab-bar-height)
         padding: 0
-        padding-left: 38px
         background-color: #e1e2e2
         border-bottom: 1px solid var(--tab-bar-border-bottom-color)
         box-shadow: var(--tab-bar-inset-shadow)
         +dark-mode
             background-color: #1b1c1d
-        &.mac
-            padding-left: 90px
-            &.fullscreen
-                padding-left: 38px
+        
+        .main-menu-container
+            width: 38px
+            text-align: center
+            button
+                app-region: none
+                border: none
+                padding: 0
+                margin: 0
+                width: 18px
+                height: 20px
+                margin-top: 6px
+                background: none
+                background-image: url("@/assets/icons/vertical-dots-light.svg")
+                background-repeat: no-repeat
+                background-position: center
+                background-size: 14px
+                border-radius: 3px
+                +dark-mode
+                    background-image: url("@/assets/icons/vertical-dots-dark.svg")
+                &:hover
+                    background-color: #ccc
+                    +dark-mode
+                        background-color: #3a3a3a
+            +platform-mac
+                width: 80px
+                button
+                    display: none
+                &.fullscreen
+                    width: 38px
+
         .scroller
             margin-top: 5px
             //flex-grow: 1

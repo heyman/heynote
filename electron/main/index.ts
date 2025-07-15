@@ -121,6 +121,9 @@ async function createWindow() {
             : "favicon.ico",
     )
 
+    // set initial theme mode
+    nativeTheme.themeSource = CONFIG.get("theme")
+
     win = new BrowserWindow(Object.assign({
         title: 'heynote',
         icon,
@@ -135,14 +138,14 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: true,
         },
-        titleBarStyle: isMac ? "hidden" as const : "default" as const, // customButtonsOnHover
+        titleBarStyle: "hidden" as const, // customButtonsOnHover
         trafficLightPosition: { x: 7, y: 7 },
-        //...(!isMac ? {
-        //    titleBarOverlay: {
-        //        color: nativeTheme.shouldUseDarkColors ? '#1b1c1d' : '#e1e2e2',
-        //        symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
-        //    }, 
-        //} : {})
+        ...(!isMac ? {
+            titleBarOverlay: {
+                color: nativeTheme.shouldUseDarkColors ? '#1b1c1d' : '#e1e2e2',
+                symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
+            }, 
+        } : {})
     }, windowConfig))
 
     // maximize window if it was maximized last time
@@ -192,8 +195,6 @@ async function createWindow() {
     win.on("leave-full-screen", () => {
         win?.webContents.send(WINDOW_FULLSCREEN_STATE, false)
     })
-
-    nativeTheme.themeSource = CONFIG.get("theme")
 
     if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
         win.loadURL(url + '?dev=1')
@@ -392,6 +393,15 @@ ipcMain.handle("setWindowTitle", (event, title) => {
 
 ipcMain.handle("showEditorContextMenu", () =>  {
     getEditorContextMenu(win).popup({window:win});
+})
+
+ipcMain.handle("showMainMenu", (event, x, y) =>  {
+    console.log("showMainMenu", x , y)
+    menu.popup({
+        window: win,
+        x: x,
+        y: y,
+    });
 })
 
 // Initialize note/file library
