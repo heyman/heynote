@@ -87,7 +87,7 @@
         display: flex
         height: var(--tab-bar-height)
         padding: 0
-        background-color: #e1e2e2
+        background-color: #f3f2f2
         border-bottom: 1px solid var(--tab-bar-border-bottom-color)
         box-shadow: var(--tab-bar-inset-shadow)
         +dark-mode
