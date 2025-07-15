@@ -11,6 +11,7 @@
     --tab-bar-inset-shadow: inset 0 -1px 3px rgba(0, 0, 0, 0.05)
     --tab-bar-border-bottom-color: #bebebe
     --tab-active-bg: #fff
+    --window-border-color: #b3b3b3
 
 :root[theme='dark']
     --status-bar-background: #0e1217
@@ -20,13 +21,17 @@
     --tab-bar-inset-shadow: inset 0 -1px 3px rgba(0,0,0,0.2)
     --tab-bar-border-bottom-color: #161616
     --tab-active-bg: #213644
+    --window-border-color: #000
     
 html
     margin: 0
     padding: 0
     height: 100%
     overscroll-behavior-y: none
-    
+    +platform-windows-linux
+        border: 1px solid var(--window-border-color)
+    +fullscreen
+        border: none
 body
     margin: 0
     padding: 0

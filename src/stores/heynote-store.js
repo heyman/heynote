@@ -242,6 +242,7 @@ export async function initHeynoteStore() {
     })
     window.heynote.mainProcess.on(WINDOW_FULLSCREEN_STATE, (event, state) => {
         heynoteStore.setFullscreen(state)
+        document.documentElement.setAttribute("fullscreen", state ? "true" : "false")
     })
     await heynoteStore.updateBuffers()
 }

@@ -19,9 +19,6 @@
 
         computed: {
             ...mapStores(useEditorCacheStore, useHeynoteStore),
-            ...mapState(useHeynoteStore, [
-                "isFullscreen",
-            ]),
 
             tabs() {
                 return this.heynoteStore.openTabs.map((path) => {
@@ -37,7 +34,6 @@
             className() {
                 return {
                     "tab-bar": true,
-                    "fullscreen": this.isFullscreen,
                 }
             },
         },
@@ -58,9 +54,7 @@
 
 <template>
     <nav :class="className">
-        <div 
-            :class="{'main-menu-container': true, 'fullscreen': isFullscreen}"
-        >
+        <div class="main-menu-container">
             <button class="main-menu"
                 @click="onMainMenuClick"
             ></button>
@@ -99,14 +93,10 @@
         +dark-mode
             background-color: #1b1c1d
         
-        +platform-windows
+        +platform-windows-linux
             padding-right: 140px
-            &.fullscreen
-                padding-right: 0
-        +platform-linux
-            padding-right: 140px
-            &.fullscreen
-                padding-right: 0
+        +platform-windows-linux-fullscreen
+            padding-right: 0
         
         .main-menu-container
             width: 37px
@@ -136,8 +126,8 @@
                 width: 80px
                 button
                     display: none
-                &.fullscreen
-                    width: 16px
+            +platform-mac-fullscreen
+                width: 16px
 
         .scroller
             margin-top: 5px
