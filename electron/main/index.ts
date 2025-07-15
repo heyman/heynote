@@ -3,7 +3,10 @@ import { release } from 'node:os'
 import { join } from 'node:path'
 import fs from "fs"
 
-import { WINDOW_CLOSE_EVENT, WINDOW_FULLSCREEN_STATE, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
+import { 
+    WINDOW_CLOSE_EVENT, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, SETTINGS_CHANGE_EVENT,
+    TITLE_BAR_BG_LIGHT, TITLE_BAR_BG_LIGHT_BLURRED, TITLE_BAR_BG_DARK, TITLE_BAR_BG_DARK_BLURRED,
+} from '@/src/common/constants'
 
 import { menu, getTrayMenu, getEditorContextMenu } from './menu'
 import CONFIG from "../config"
@@ -142,7 +145,7 @@ async function createWindow() {
         trafficLightPosition: { x: 7, y: 7 },
         ...(!isMac ? {
             titleBarOverlay: {
-                color: nativeTheme.shouldUseDarkColors ? '#1b1c1d' : '#f3f2f2',
+                color: nativeTheme.shouldUseDarkColors ? TITLE_BAR_BG_DARK : TITLE_BAR_BG_LIGHT,
                 symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
             }, 
         } : {})
@@ -196,6 +199,31 @@ async function createWindow() {
         win?.webContents.send(WINDOW_FULLSCREEN_STATE, false)
     })
 
+    win.on("focus", () => {
+        // send a message to the renderer to update the window title
+        win?.webContents.send(WINDOW_FOCUS_STATE, true)
+
+        // update titleBarOverlay colors on Windows/Linux
+        if (!isMac) {
+            win?.setTitleBarOverlay({
+                color: nativeTheme.shouldUseDarkColors ? TITLE_BAR_BG_DARK : TITLE_BAR_BG_LIGHT,
+                symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
+            })
+        }
+    })
+    win.on("blur", () => {
+        // send a message to the renderer to update the window title
+        win?.webContents.send(WINDOW_FOCUS_STATE, false)
+
+        // update titleBarOverlay colors on Windows/Linux
+        if (!isMac) {
+            win?.setTitleBarOverlay({
+                color: nativeTheme.shouldUseDarkColors ? TITLE_BAR_BG_DARK_BLURRED : TITLE_BAR_BG_LIGHT_BLURRED,
+                symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
+            })
+        }
+    })
+
     if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
         win.loadURL(url + '?dev=1')
         // Open devTool if the app is not packaged
@@ -209,6 +237,7 @@ async function createWindow() {
     win.webContents.on('did-finish-load', () => {
         win?.webContents.send('main-process-message', new Date().toLocaleString())
         win?.webContents.send(WINDOW_FULLSCREEN_STATE, win?.isFullScreen())
+        win?.webContents.send(WINDOW_FOCUS_STATE, win?.isFocused())
     })
 
     // Make all links open with the browser, not with the application
@@ -387,7 +416,7 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
     // update titleBarOverlay colors on Windows/Linux
     if (!isMac) {
         win?.setTitleBarOverlay({
-            color: nativeTheme.shouldUseDarkColors ? '#1b1c1d' : '#f3f2f2',
+            color: nativeTheme.shouldUseDarkColors ? TITLE_BAR_BG_DARK : TITLE_BAR_BG_LIGHT,
             symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
         })
     }
