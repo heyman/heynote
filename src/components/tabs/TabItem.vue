@@ -22,6 +22,20 @@
             title() {
                 this.measureTextWidth()
             },
+
+            active: {
+                handler(isActive) {
+                    if (isActive) {
+                        this.$nextTick(() => {
+                            this.$el.scrollIntoView({
+                                inline: "nearest",
+                                block: "nearest",
+                            })
+                        })
+                    }
+                },
+                immediate: true,
+            },
         },
         computed: {
             ...mapStores(useHeynoteStore),
