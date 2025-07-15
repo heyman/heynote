@@ -32,6 +32,13 @@ contextBridge.exposeInMainWorld("heynote", {
     themeMode: themeMode,
 
     init() {
+        if (isMac) {
+            document.documentElement.setAttribute("platform", "mac")
+        } else if (isWindows) {
+            document.documentElement.setAttribute("platform", "windows")
+        } else if (isLinux) {
+            document.documentElement.setAttribute("platform", "linux")
+        }
         ipcRenderer.on("buffer:change", (event, path, content) => {
             // called on all changes to open buffer files
             // go through all registered callbacks for this path and call them
