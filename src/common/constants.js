@@ -2,8 +2,7 @@ export const SCRATCH_FILE_NAME = "scratch.txt"
 export const AUTO_SAVE_INTERVAL = 2000
 
 export const WINDOW_CLOSE_EVENT = "window-close"
-export const WINDOW_ENTER_FULLSCREEN = "window-enter-fullscreen"
-export const WINDOW_LEAVE_FULLSCREEN = "window-leave-fullscreen"
+export const WINDOW_FULLSCREEN_STATE = "window-fullscreen-state"
 export const OPEN_SETTINGS_EVENT = "open-settings"
 export const SETTINGS_CHANGE_EVENT = "settings-change"
 export const REDO_EVENT = "redo"

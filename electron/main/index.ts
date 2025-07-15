@@ -3,7 +3,7 @@ import { release } from 'node:os'
 import { join } from 'node:path'
 import fs from "fs"
 
-import { WINDOW_CLOSE_EVENT, WINDOW_ENTER_FULLSCREEN, WINDOW_LEAVE_FULLSCREEN, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
+import { WINDOW_CLOSE_EVENT, WINDOW_FULLSCREEN_STATE, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
 
 import { menu, getTrayMenu, getEditorContextMenu } from './menu'
 import CONFIG from "../config"
@@ -187,10 +187,10 @@ async function createWindow() {
     })
     
     win.on("enter-full-screen", () => {
-        win?.webContents.send(WINDOW_ENTER_FULLSCREEN)
+        win?.webContents.send(WINDOW_FULLSCREEN_STATE, true)
     })
     win.on("leave-full-screen", () => {
-        win?.webContents.send(WINDOW_LEAVE_FULLSCREEN)
+        win?.webContents.send(WINDOW_FULLSCREEN_STATE, false)
     })
 
     nativeTheme.themeSource = CONFIG.get("theme")
@@ -207,6 +207,7 @@ async function createWindow() {
     // Test actively push message to the Electron-Renderer
     win.webContents.on('did-finish-load', () => {
         win?.webContents.send('main-process-message', new Date().toLocaleString())
+        win?.webContents.send(WINDOW_FULLSCREEN_STATE, win?.isFullScreen())
     })
 
     // Make all links open with the browser, not with the application
