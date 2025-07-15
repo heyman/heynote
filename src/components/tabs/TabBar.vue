@@ -41,7 +41,7 @@
         methods: {
             onMainMenuClick(event) {
                 const x = event.target.offsetLeft
-                const y = event.target.offsetTop + event.target.offsetHeight + 6
+                const y = event.target.offsetTop + event.target.offsetHeight
                 window.heynote.mainProcess.invoke("showMainMenu", x, y)
             },
 
