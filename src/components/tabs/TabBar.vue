@@ -67,13 +67,6 @@
         </div>
         <div class="scroller">
             <ol>
-                <!--<TabItem
-                    title="Scratch"
-                    :active="true"
-                />
-                <TabItem
-                    title="Climbing"
-                />-->
                 <TabItem
                     v-for="tab in tabs"
                     :key="tab.path"
@@ -82,6 +75,7 @@
                     :active="tab.active"
                     @click="heynoteStore.openBuffer(tab.path)"
                 />
+                <li class="spacer"></li>
             </ol>
         </div>
         <div class="button-container">
@@ -105,8 +99,18 @@
         +dark-mode
             background-color: #1b1c1d
         
+        +platform-windows
+            padding-right: 140px
+            &.fullscreen
+                padding-right: 0
+        +platform-linux
+            padding-right: 140px
+            &.fullscreen
+                padding-right: 0
+        
         .main-menu-container
-            width: 38px
+            width: 16px
+            flex-shrink: 0
             text-align: center
             button
                 app-region: none
@@ -133,21 +137,23 @@
                 button
                     display: none
                 &.fullscreen
-                    width: 38px
+                    width: 16px
 
         .scroller
             margin-top: 5px
             //flex-grow: 1
-            //app-region: none
             //width: 100%
             overflow-x: auto
             scrollbar-width: none
+            app-region: none
             ol
-                app-region: none
                 display: flex
                 list-style: none
                 margin: 0
                 padding: 0
+                > li.spacer
+                    flex-shrink: 0
+                    width: 7px
         .button-container
             app-region: drag
             border-left: 1px solid #dbdbdb

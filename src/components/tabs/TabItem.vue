@@ -91,8 +91,6 @@
             height: 23px
             margin-top: 1px
             padding-top: 5px
-        &:last-child
-            margin-right: 10px
         &.short
             width: 120px
         &.long
