@@ -109,7 +109,7 @@
                 padding-right: 0
         
         .main-menu-container
-            width: 16px
+            width: 37px
             flex-shrink: 0
             text-align: center
             button
