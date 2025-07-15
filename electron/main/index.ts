@@ -142,7 +142,7 @@ async function createWindow() {
         trafficLightPosition: { x: 7, y: 7 },
         ...(!isMac ? {
             titleBarOverlay: {
-                color: nativeTheme.shouldUseDarkColors ? '#1b1c1d' : '#e1e2e2',
+                color: nativeTheme.shouldUseDarkColors ? '#f3f2f2' : '#e1e2e2',
                 symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
             }, 
         } : {})
@@ -387,7 +387,7 @@ ipcMain.handle('dark-mode:set', (event, mode) => {
     // update titleBarOverlay colors on Windows/Linux
     if (!isMac) {
         win?.setTitleBarOverlay({
-            color: nativeTheme.shouldUseDarkColors ? '#1b1c1d' : '#e1e2e2',
+            color: nativeTheme.shouldUseDarkColors ? '#f3f2f2' : '#e1e2e2',
             symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
         })
     }
