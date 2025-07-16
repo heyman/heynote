@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.4.0-beta.2
+## 2.4.0-beta.3
 
 ### Improved  search functionality
 
@@ -11,6 +11,7 @@ The new search (and replace) dialog has an improved UI and is now "block aware",
 ### Other fixes and improvements
 
 - Fix issues with todo lists checkboxes in Markdown blocks
+- Fix issue with markdown blocks sometimes not being fully folded
 
 ## 2.3.3
 

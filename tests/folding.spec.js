@@ -530,4 +530,73 @@ Block A line 3`)
         expect(content).toContain("Block A line 2")
         expect(content).toContain("Block A line 3")
     });
+
+    test("markdown block with trailing empty lines can be fully folded by clicking fold gutter", async ({ page }) => {
+        // Set up test content with a markdown block that has several empty lines at the end
+        await heynotePage.setContent(`
+∞∞∞markdown
+# Markdown Header
+This is some markdown content
+- List item 1
+- List item 2
+
+Another paragraph here
+
+
+
+`)
+        
+        // Verify we have one block
+        expect((await heynotePage.getBlocks()).length).toBe(1)
+        
+        // Count the visible lines before folding
+        const linesBeforeFold = await page.locator(".cm-line").count()
+        expect(linesBeforeFold).toBeGreaterThan(1) // Should have multiple lines
+        
+        // Position cursor in the markdown block
+        await heynotePage.setCursorPosition(30) // Middle of the markdown content
+        
+        // Verify no fold placeholder exists initially
+        await expect(page.locator(".cm-foldPlaceholder")).not.toBeVisible()
+        
+        // Click on the fold gutter to fold the block
+        await page.locator(".cm-foldGutter span[title='Fold line']").first().click()
+        
+        // Verify block is folded by checking for fold placeholder
+        await expect(page.locator(".cm-foldPlaceholder")).toBeVisible()
+        
+        // Verify that only a single line is visible after folding (the first line with fold placeholder)
+        const linesAfterFold = await page.locator(".cm-line").count()
+        expect(linesAfterFold).toBe(1)
+        
+        
+        // The fold should include all content including the trailing empty lines
+        // We'll verify this by checking that the fold placeholder is present and the content is not visible
+        const visibleText = await page.locator(".cm-content").textContent()
+        
+        // The visible text should not contain the actual markdown content when folded
+        expect(visibleText).not.toContain("This is some markdown content")
+        expect(visibleText).not.toContain("List item 1")
+        expect(visibleText).not.toContain("Another paragraph here")
+        
+        // The visible text should contain the first line and fold indicator
+        expect(visibleText).toContain("# Markdown Header")
+        expect(visibleText).toContain("…") // Fold indicator
+        
+        // Unfold the block by clicking the fold placeholder
+        await page.locator(".cm-foldPlaceholder").click()
+        
+        // Verify the block is unfolded and all content is visible again
+        await expect(page.locator(".cm-foldPlaceholder")).not.toBeVisible()
+        
+        // Verify all lines are visible again
+        const linesAfterUnfold = await page.locator(".cm-line").count()
+        expect(linesAfterUnfold).toBe(linesBeforeFold)
+        
+        const unfoldedVisibleText = await page.locator(".cm-content").textContent()
+        expect(unfoldedVisibleText).toContain("# Markdown Header")
+        expect(unfoldedVisibleText).toContain("This is some markdown content")
+        expect(unfoldedVisibleText).toContain("List item 1")
+        expect(unfoldedVisibleText).toContain("Another paragraph here")
+    });
 });
