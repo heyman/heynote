@@ -117,7 +117,8 @@ export class HeynoteEditor {
                 // Markdown extensions, we need to add markdownKeymap manually with the highest precedence
                 // so that it takes precedence over the default keymap
                 todoCheckboxPlugin,
-                markdown({addKeymap: false}),
+                // don't use the markdown extension, because it messes up the block folding
+                //markdown({addKeymap: false}),
                 Prec.highest(cmKeymap.of(markdownKeymap)),
 
                 links,
