@@ -63,6 +63,7 @@ console.log("second block")
 # Third block
 Some markdown content
 `)
+    await page.waitForTimeout(100)
     
     // Position cursor in the middle of the document (in the second block)
     await page.locator("body").press("Control+Home")
@@ -70,7 +71,7 @@ Some markdown content
         await page.locator("body").press("ArrowRight")
     }
     await page.waitForTimeout(100)
-    
+
     // Select from cursor to beginning of document
     await page.locator("body").press("Control+Shift+Home")
     await page.waitForTimeout(100)
