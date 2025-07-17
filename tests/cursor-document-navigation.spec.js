@@ -72,6 +72,7 @@ Some markdown content
     
     // Select from cursor to beginning of document
     await page.locator("body").press("Control+Shift+Home")
+    await page.waitForTimeout(100)
     
     // Get selected text
     const selectedText = await page.evaluate(() => {
