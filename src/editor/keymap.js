@@ -55,6 +55,8 @@ export const DEFAULT_KEYMAP = [
         cmd("Alt-Delete", "deleteGroupForward"),
         cmd("Mod-Backspace", "deleteLineBoundaryBackward"),
         cmd("Mod-Delete", "deleteLineBoundaryForward"),
+        ...cmdShift("Mod-ArrowLeft", "cursorLineBoundaryBackward", "selectLineBoundaryBackward"),
+        ...cmdShift("Mod-ArrowRight", "cursorLineBoundaryForward", "selectLineBoundaryForward"),
     ] : []),
     
     cmd("Alt-ArrowUp", "moveLineUp"),
