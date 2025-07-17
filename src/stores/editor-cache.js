@@ -7,19 +7,24 @@ import { useErrorStore } from './error-store'
 import { useHeynoteStore } from './heynote-store'
 import { HeynoteEditor } from '../editor/editor'
 
+// keep max 5 editor instances that are stale in memory
 const NUM_EDITOR_INSTANCES = 5
+// always keep an editor in memory if it was accessed in the last hour
+const EDITOR_STALE_TIME = 1000 * 3600
 
 export const useEditorCacheStore = defineStore("editorCache", {
     state: () => ({
         lru: [],
+        accessTimes: {},
         cache: {},
         watchHandler: null,
         themeWatchHandler: null,
         containerElement: null,
+        cleanupTimer: null,
     }),
 
     actions: {
-        createEditor(path) {
+        _createEditorInstance(path) {
             const settingsStore = useSettingsStore()
             const errorStore = useErrorStore()
             let editor
@@ -45,55 +50,76 @@ export const useEditorCacheStore = defineStore("editorCache", {
                 errorStore.addError("Error! " + e.message)
                 throw e
             }
-            this.addEditor(path, editor)
+
             return editor
         },
 
-        getOrCreateEditor(path, updateLru) {
-            if (updateLru) {
-                // move to end of LRU
-                this.lru = this.lru.filter(p => p !== path)
-                this.lru.push(path)
-            }
+        getOrCreateEditor(path) {
             if (this.cache[path]) {
+                this.updateLru(path)
+                this.freeStaleEditors()
                 return [this.cache[path], false]
             } else {
-                const editor = this.createEditor(path)
-                if (!updateLru) {
-                    // add the editor to the LRU, but at the top so that it is the first to be removed
-                    this.lru.unshift(path)
-                }
+                const editor = this._createEditorInstance(path)
+                this.cache[path] = editor
+
+                // add the editor to the LRU
+                this.updateLru(path)
+
+                this.freeStaleEditors()
                 return [editor, true]
             }
         },
 
-        getEditor(path) {
-            // move to end of LRU
+        updateLru(path, addLast=false) {
             this.lru = this.lru.filter(p => p !== path)
-            this.lru.push(path)
-            if (this.cache[path]) {
-                return this.cache[path]
+            if (addLast) {
+                // add to LRU, but as the first item to be removed
+                this.lru.unshift(path)
+                this.accessTimes[path] = new Date((new Date())-(3600*24*365*1000))
+            } else {
+                this.lru.push(path)
+                this.accessTimes[path] = Date.now()
             }
-            //console.log("LRU:", this.lru)
-        },
-
-        addEditor(path, editor) {
-            if (this.lru.length >= NUM_EDITOR_INSTANCES) {
-                const pathToFree = this.lru.shift()
-                this.freeEditor(pathToFree)
-            }
-
-            this.cache[path] = editor
-            //console.log("LRU (add):", this.lru)
         },
 
         freeEditor(pathToFree) {
+            //console.log("Freeing:", pathToFree)
             if (!this.cache[pathToFree]) {
                 return
             }
             this.cache[pathToFree].destroy()
             delete this.cache[pathToFree]
             this.lru = this.lru.filter(p => p !== pathToFree)
+            delete this.accessTimes[pathToFree]
+        },
+
+        freeStaleEditors() {
+            let pathsToFree = []
+            for (let i=0; i<this.lru.length-NUM_EDITOR_INSTANCES; i++) {
+                let path = this.lru[i]
+                if (Date.now() - this.accessTimes[path] > EDITOR_STALE_TIME) {
+                    pathsToFree.push(path)
+                }
+            }
+
+            // Debug LRU
+            //console.log("--- LRU ---")
+            //for (let i=0; i<this.lru.length; i++) {
+            //    let path = this.lru[i]
+            //    if (pathsToFree.includes(path)) {
+            //        console.log("---", path)
+            //    } else if (i < this.lru.length - NUM_EDITOR_INSTANCES) {
+            //        console.log("*  ", path, i)
+            //    } else {
+            //        console.log("    ", path)
+            //    }
+            //}
+            //console.log("")
+
+            for (let path of pathsToFree) {
+                this.freeEditor(path)
+            }
         },
 
         eachEditor(fn) {
@@ -106,6 +132,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
                 editor.destroy(save=save)
             })
             this.cache = {}
+            this.accessTimes = {}
             this.lru = []
         },
 
@@ -162,6 +189,10 @@ export const useEditorCacheStore = defineStore("editorCache", {
                 })
             })
 
+            this.cleanupTimer = setInterval(() => {
+                this.freeStaleEditors()
+            }, 1000 * 60 * 10) // every 10 minutes
+
             window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
         },
 
@@ -172,6 +203,10 @@ export const useEditorCacheStore = defineStore("editorCache", {
             if (this.themeWatchHandler) {
                 this.themeWatchHandler()
             }
+            if (this.cleanupTimer) {
+                clearInterval(this.cleanupTimer)
+                this.cleanupTimer = null
+            }
 
             window.document.removeEventListener("currenciesLoaded", this.onCurrenciesLoaded)
 
@@ -181,9 +216,9 @@ export const useEditorCacheStore = defineStore("editorCache", {
 
         moveCurrentBlockToOtherEditor(targetPath) {
             const heynoteStore = useHeynoteStore()
-
-            const editor = toRaw(this.getEditor(heynoteStore.currentBufferPath))
-            let otherEditor = toRaw(this.getOrCreateEditor(targetPath, false)[0])
+            const editor = toRaw(this.cache[heynoteStore.currentBufferPath])
+            let [otherEditor, created] = this.getOrCreateEditor(targetPath)
+            otherEditor = toRaw(otherEditor)
             otherEditor.hide()
 
             const content = editor.getActiveBlockContent()
@@ -194,6 +229,11 @@ export const useEditorCacheStore = defineStore("editorCache", {
                 // add the target buffer to recent buffers so that it shows up at the top of the buffer selector
                 heynoteStore.addRecentBuffer(targetPath)
                 heynoteStore.addRecentBuffer(heynoteStore.currentBufferPath)
+
+                // if otherEditor was just created, we can move it to the end of the LRU so that it's the first to be cleaned up
+                if (created) {
+                    this.updateLru(targetPath, true)
+                }
             })
 
             //console.log("LRU", this.lru)
