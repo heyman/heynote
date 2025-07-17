@@ -69,6 +69,7 @@ Some markdown content
     for (let i = 0; i < 30; i++) {
         await page.locator("body").press("ArrowRight")
     }
+    await page.waitForTimeout(100)
     
     // Select from cursor to beginning of document
     await page.locator("body").press("Control+Shift+Home")
