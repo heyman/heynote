@@ -73,6 +73,9 @@ export const useHeynoteStore = defineStore("heynote", {
                 } else {
                     this.openBuffer(SCRATCH_FILE_NAME)
                 }
+            } else {
+                // if the current tab is not the one being closed, just free the editor
+                editorCacheStore.freeEditor(path)
             }
         },
 
