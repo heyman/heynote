@@ -64,12 +64,9 @@ console.log("second block")
 Some markdown content
 `)
     await page.waitForTimeout(100)
-    
+
     // Position cursor in the middle of the document (in the second block)
-    await page.locator("body").press("Control+Home")
-    for (let i = 0; i < 30; i++) {
-        await page.locator("body").press("ArrowRight")
-    }
+    await heynotePage.setCursorPosition(55)
     await page.waitForTimeout(100)
 
     // Select from cursor to beginning of document
