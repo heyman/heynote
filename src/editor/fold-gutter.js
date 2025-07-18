@@ -155,11 +155,15 @@ export const toggleBlockFold = (editor) => (view) => {
             unfoldEffects.push(...blockFolds.map(range => unfoldEffect.of(range)))
             numFolded++
         } else {
-            const range = {from: Math.min(firstLine.to, block.content.from + FOLD_LABEL_LENGTH), to: block.content.to}
-            if (range.to > range.from) {
-                foldEffects.push(foldEffect.of(range))
+            const lastLine = state.doc.lineAt(block.content.to)
+            // skip single-line blocks, since they are not folded
+            if (firstLine.from !== lastLine.from) {
+                const range = {from: Math.min(firstLine.to, block.content.from + FOLD_LABEL_LENGTH), to: block.content.to}
+                if (range.to > range.from) {
+                    foldEffects.push(foldEffect.of(range))
+                }
+                numUnfolded++
             }
-            numUnfolded++
         }
     }
 
