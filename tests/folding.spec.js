@@ -158,14 +158,13 @@ This is a markdown block
         
         // Now select all blocks (some folded, some unfolded)
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // First press selects current block
-        await page.waitForTimeout(100)
+        await page.waitForTimeout(200)
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Second press selects entire buffer
-        await page.waitForTimeout(100)
+        await page.waitForTimeout(200)
         
         // Toggle fold on mixed state - should fold all unfolded blocks (since more are unfolded than folded)
         const toggleKey = heynotePage.isMac ? "Alt+Meta+." : "Alt+Control+."
         await page.locator("body").press(toggleKey)
-        await page.waitForTimeout(300)
         
         // Verify all foldable blocks are now folded (A was already folded, B and D should now be folded too)
         await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(3) // Block A, B, and D
