@@ -38,6 +38,7 @@ import { cutCommand, copyCommand, pasteCommand } from "./copy-paste.js"
 import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel } from "./mark-mode.js"
 import { insertDateAndTime } from "./date-time.js"
 import { foldBlock, unfoldBlock, toggleBlockFold } from "./fold-gutter.js"
+import { useHeynoteStore } from "../stores/heynote-store.js";
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
@@ -47,23 +48,23 @@ const cursorNextParagraph = markModeMoveCommand(gotoNextParagraph, selectNextPar
 
 
 const openLanguageSelector = (editor) => () => {
-    editor.openLanguageSelector()
+    useHeynoteStore().openLanguageSelector()
     return true
 }
 const openBufferSelector = (editor) => () => {
-    editor.openBufferSelector()
+    useHeynoteStore().openBufferSelector()
     return true
 }
 const openCommandPalette = (editor) => () => {
-    editor.openCommandPalette()
+    useHeynoteStore().openCommandPalette()
     return true
 }
 const openMoveToBuffer = (editor) => () => {
-    editor.openMoveToBufferSelector()
+    useHeynoteStore().openMoveToBufferSelector()
     return true
 }
 const openCreateNewBuffer = (editor) => () => {
-    editor.openCreateBuffer("new")
+    useHeynoteStore().openCreateBuffer("new")
     return true
 }
 const nothing = (view) => {
