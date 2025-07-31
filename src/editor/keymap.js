@@ -118,6 +118,18 @@ export const DEFAULT_KEYMAP = [
 
     // tabs
     cmd("Mod-w", "closeCurrentTab"),
+    cmd("Ctrl-Tab", "nextTab"),
+    cmd("Ctrl-Shift-Tab", "previousTab"),
+    cmd("Mod-1", "switchToTab1"),
+    cmd("Mod-2", "switchToTab2"),
+    cmd("Mod-3", "switchToTab3"),
+    cmd("Mod-4", "switchToTab4"),
+    cmd("Mod-5", "switchToTab5"),
+    cmd("Mod-6", "switchToTab6"),
+    cmd("Mod-7", "switchToTab7"),
+    cmd("Mod-8", "switchToTab8"),
+    cmd("Mod-9", "switchToTab9"),
+    cmd("Mod-0", "switchToLastTab"),
 
     // search
     //cmd("Mod-f", "openSearchPanel"),

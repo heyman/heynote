@@ -83,6 +83,42 @@ export const useHeynoteStore = defineStore("heynote", {
             this.closeTab(this.currentBufferPath)
         },
 
+        switchToTabIndex(index) {
+            if (index < 0 || index >= this.openTabs.length) {
+                return
+            }
+            const path = this.openTabs[index]
+            this.openBuffer(path)
+        },
+
+        switchToLastTab() {
+            if (this.openTabs.length === 0) {
+                return
+            }
+            const path = this.openTabs[this.openTabs.length - 1]
+            this.openBuffer(path)
+        },
+
+        previousTab() {
+            // get current tab index
+            const idx = this.openTabs.indexOf(this.currentBufferPath)
+            if (idx <= 0) {
+                this.switchToTabIndex(this.openTabs.length - 1)
+            } else {
+                this.switchToTabIndex(idx - 1)
+            }
+        },
+
+        nextTab() {
+            // get current tab index
+            const idx = this.openTabs.indexOf(this.currentBufferPath)
+            if (idx === this.openTabs.length - 1) {
+                this.switchToTabIndex(0)
+            } else {
+                this.switchToTabIndex(idx + 1)
+            }
+        },
+
         getBufferTitle(path) {
             if (this.buffers[path]) {
                 return this.buffers[path].name || path

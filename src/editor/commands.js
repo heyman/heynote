@@ -67,10 +67,22 @@ const openCreateNewBuffer = (editor) => () => {
     useHeynoteStore().openCreateBuffer("new")
     return true
 }
+
 const closeCurrentTab = (editor) => () => {
     useHeynoteStore().closeCurrentTab()
     return true
 }
+const switchToLastTab = (editor) => () => {
+    useHeynoteStore().switchToLastTab()
+    return true
+}
+const nextTab = (editor) => () => {
+    useHeynoteStore().nextTab()
+}
+const previousTab = (editor) => () => {
+    useHeynoteStore().previousTab()
+}
+
 const nothing = (view) => {
     return true
 }
@@ -109,12 +121,23 @@ const HEYNOTE_COMMANDS = {
     openCommandPalette: cmd(openCommandPalette, "Editor", "Open command palette…"),
     openMoveToBuffer: cmd(openMoveToBuffer, "Block", "Move block to another buffer…"),
     openCreateNewBuffer: cmd(openCreateNewBuffer, "Buffer", "Create new buffer…"),
-    closeCurrentTab: cmd(closeCurrentTab, "Buffer", "Close current tab"),
     cut: cmd(cutCommand, "Clipboard", "Cut selection"),
     copy: cmd(copyCommand, "Clipboard", "Copy selection"),
     foldBlock: cmd(foldBlock, "Block", "Fold block"),
     unfoldBlock: cmd(unfoldBlock, "Block", "Unfold block"),
     toggleBlockFold: cmd(toggleBlockFold, "Block", "Toggle block fold"),
+
+    // tab commands
+    closeCurrentTab: cmd(closeCurrentTab, "Buffer", "Close current tab"),
+    switchToLastTab: cmd(switchToLastTab, "Buffer", "Switch to last tab"),
+    previousTab: cmd(previousTab, "Buffer", "Switch to previous tab"),
+    nextTab: cmd(nextTab, "Buffer", "Switch to next tab"),
+    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [
+        "switchToTab" + (i+1), 
+        cmdLessContext(() => {
+            useHeynoteStore().switchToTabIndex(i)
+        }, "Buffer", `Switch to tab ${i+1}`),
+    ])),
 
     // commands without editor context
     paste: cmdLessContext(pasteCommand, "Clipboard", "Paste from clipboard"),
