@@ -67,6 +67,10 @@ const openCreateNewBuffer = (editor) => () => {
     useHeynoteStore().openCreateBuffer("new")
     return true
 }
+const closeCurrentTab = (editor) => () => {
+    useHeynoteStore().closeCurrentTab()
+    return true
+}
 const nothing = (view) => {
     return true
 }
@@ -105,6 +109,7 @@ const HEYNOTE_COMMANDS = {
     openCommandPalette: cmd(openCommandPalette, "Editor", "Open command palette…"),
     openMoveToBuffer: cmd(openMoveToBuffer, "Block", "Move block to another buffer…"),
     openCreateNewBuffer: cmd(openCreateNewBuffer, "Buffer", "Create new buffer…"),
+    closeCurrentTab: cmd(closeCurrentTab, "Buffer", "Close current tab"),
     cut: cmd(cutCommand, "Clipboard", "Cut selection"),
     copy: cmd(copyCommand, "Clipboard", "Copy selection"),
     foldBlock: cmd(foldBlock, "Block", "Fold block"),

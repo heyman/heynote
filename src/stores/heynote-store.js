@@ -79,6 +79,10 @@ export const useHeynoteStore = defineStore("heynote", {
             }
         },
 
+        closeCurrentTab() {
+            this.closeTab(this.currentBufferPath)
+        },
+
         getBufferTitle(path) {
             if (this.buffers[path]) {
                 return this.buffers[path].name || path

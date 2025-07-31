@@ -116,6 +116,9 @@ export const DEFAULT_KEYMAP = [
         cmd("Alt-Ctrl-.", "toggleBlockFold")
     ]),
 
+    // tabs
+    cmd("Mod-w", "closeCurrentTab"),
+
     // search
     //cmd("Mod-f", "openSearchPanel"),
     //cmd("F3", "findNext"),
@@ -154,6 +157,8 @@ export const EMACS_KEYMAP = [
     ...cmdShift("Ctrl-f", "cursorCharRight", "selectCharRight"),
     ...cmdShift("Ctrl-a", "cursorLineStart", "selectLineStart"),
     ...cmdShift("Ctrl-e", "cursorLineEnd", "selectLineEnd"),
+    // tabs
+    cmd("Ctrl-x k", "closeCurrentTab"),
 ]
 
 
