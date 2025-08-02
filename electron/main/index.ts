@@ -132,6 +132,7 @@ async function createWindow() {
         title: 'heynote',
         icon,
         backgroundColor: nativeTheme.shouldUseDarkColors ? '#262B37' : '#FFFFFF',
+        accentColor: undefined,
         //titleBarStyle: 'customButtonsOnHover',
         autoHideMenuBar: true,
         webPreferences: {
