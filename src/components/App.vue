@@ -36,7 +36,6 @@
             return {
                 development: window.location.href.indexOf("dev=1") !== -1,
                 showSettings: false,
-                settings: window.heynote.settings,
             }
         },
 
@@ -89,6 +88,10 @@
                 "showEditBuffer",
                 "showMoveToBufferSelector",
                 "showCommandPalette",
+                "isFullscreen",
+            ]),
+            ...mapState(useSettingsStore, [
+                "settings",
             ]),
 
             dialogVisible() {
@@ -97,6 +100,14 @@
 
             editorInert() {
                 return this.dialogVisible
+            },
+
+            showTabBar() {
+                if (this.isFullscreen) {
+                    return this.settings.showTabs && this.settings.showTabsInFullscreen
+                } else {
+                    return true
+                }
             },
         },
 
@@ -155,8 +166,11 @@
 </script>
 
 <template>
-    <TabBar />
-    <div class="container">
+    <TabBar v-if="showTabBar" />
+    <div 
+        class="container" 
+        :class="{'tab-bar-visible':showTabBar}"
+    >
         <Editor 
             v-if="currentBufferPath"
             :theme="settingsStore.theme"
@@ -220,8 +234,10 @@
 <style scoped lang="sass">
     .container
         width: 100%
-        height: calc(100% - var(--tab-bar-height))
+        height: 100%
         position: relative
+        &.tab-bar-visible
+            height: calc(100% - var(--tab-bar-height))
         .editor
             height: calc(100% - 21px)
         .status

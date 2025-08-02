@@ -22,9 +22,11 @@
         computed: {
             ...mapState(useHeynoteStore, [
                 "isFocused",
+                "currentBufferName",
             ]),
             ...mapState(useSettingsStore, [
                 "theme",
+                "settings",
             ]),
             ...mapStores(useEditorCacheStore, useHeynoteStore),
 
@@ -59,6 +61,10 @@
                     backgroundColor: this.backgroundColor,
                 }
             },
+
+            showTabs() {
+                return this.settings.showTabs
+            },
         },
 
         methods: {
@@ -82,24 +88,32 @@
                 @click="onMainMenuClick"
             ></button>
         </div>
-        <div class="scroller">
-            <ol>
-                <TabItem
-                    v-for="tab in tabs"
-                    :key="tab.path"
-                    :path="tab.path"
-                    :title="tab.title"
-                    :active="tab.active"
-                    @click="heynoteStore.openBuffer(tab.path)"
-                />
-                <li class="spacer"></li>
-            </ol>
-        </div>
-        <div class="button-container">
-            <button 
-                @click="openBufferSelector"
-                class="add-tab"
-            ></button>
+        <template v-if="showTabs">
+            <div class="scroller">
+                <ol>
+                    <TabItem
+                        v-for="tab in tabs"
+                        :key="tab.path"
+                        :path="tab.path"
+                        :title="tab.title"
+                        :active="tab.active"
+                        @click="heynoteStore.openBuffer(tab.path)"
+                    />
+                    <li class="spacer"></li>
+                </ol>
+            </div>
+            <div class="button-container">
+                <button 
+                    @click="openBufferSelector"
+                    class="add-tab"
+                ></button>
+            </div>
+        </template>
+        <div 
+            v-else
+            class="title"
+        >
+            {{ currentBufferName }}
         </div>
     </nav>
 </template>
@@ -194,5 +208,26 @@
                     background-color: #ccc
                     +dark-mode
                         background-color: #3a3a3a
+        
+        .title
+            text-align: center
+            position: absolute
+            left: 0
+            top: 0
+            right: 0
+            height: var(--tab-bar-height)
+            line-height: var(--tab-bar-height)
+            padding: 0 80px
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
+            font-family: var(--system-font)
+            font-size: 13px
+            font-weight: bold
+            color: #444
+            +dark-mode
+                color: #aaa
+            +platform-windows-linux
+                padding: 0 140px
 
 </style>

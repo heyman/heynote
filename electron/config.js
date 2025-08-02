@@ -39,6 +39,8 @@ const schema = {
 
             "showLineNumberGutter": {type: "boolean", default:true},
             "showFoldGutter": {type: "boolean", default:true},
+            "showTabs": {type: "boolean", default: true},
+            "showTabsInFullscreen": {type: "boolean", default: true},
             "autoUpdate": {type: "boolean", default: true},
             "allowBetaVersions": {type: "boolean", default: false},
             "enableGlobalHotkey": {type: "boolean", default: false},
