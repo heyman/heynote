@@ -11,6 +11,10 @@
         html[webapp] &
             @content
 
+=platform-webapp()
+    html[webapp=true] &
+        @content
+
 =platform-mac()
     html[platform=mac] &
         @content

@@ -163,6 +163,9 @@
                     display: none
             +platform-mac-fullscreen
                 width: 16px
+            +platform-webapp
+                button
+                    display: none
 
         .scroller
             margin-top: 5px
