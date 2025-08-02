@@ -70,6 +70,8 @@ export const useHeynoteStore = defineStore("heynote", {
                 if (recentBuffers.length > 0) {
                     //console.log("opening:", recentBuffers[0])
                     this.openBuffer(recentBuffers[0])
+                } else if (this.openTabs.length > 0) {
+                    this.openBuffer(this.openTabs[0])
                 } else {
                     this.openBuffer(SCRATCH_FILE_NAME)
                 }
@@ -248,18 +250,24 @@ export const useHeynoteStore = defineStore("heynote", {
                 throw new Error("Can't delete scratch file")
             }
             const editorCacheStore = useEditorCacheStore()
+            editorCacheStore.freeEditor(path)
+            this.recentBufferPaths = this.recentBufferPaths.filter((p) => p !== path)
+            this.openTabs = this.openTabs.filter((p) => p !== path)
+
+            // if the active buffer is deleted, we need to select a new tab
             if (this.currentEditor.path === path) {
                 this.currentEditor = null
                 const recentBuffers = this.recentBufferPaths.filter((p) => p !== path && this.openTabs.includes(p))
                 if (recentBuffers.length > 0) {
-                    this.currentBufferPath = recentBuffers[0]
+                    this.openBuffer(recentBuffers[0])
+                } else if (this.openTabs.length > 0) {
+                    this.openBuffer(this.openTabs[0])
                 } else {
                     this.currentBufferPath = SCRATCH_FILE_NAME
+                    this.openBuffer(SCRATCH_FILE_NAME)
                 }
             }
-            editorCacheStore.freeEditor(path)
-            this.recentBufferPaths = this.recentBufferPaths.filter((p) => p !== path)
-            this.openTabs = this.openTabs.filter((p) => p !== path)
+
             await window.heynote.buffer.delete(path)
             await this.updateBuffers()
         },
@@ -321,5 +329,5 @@ export async function initHeynoteStore() {
     heynoteStore.loadTabsState()
 
     watch(() => heynoteStore.currentBufferPath, () => heynoteStore.saveTabsState())
-    watch(heynoteStore.openTabs, () => heynoteStore.saveTabsState())
+    watch(() => heynoteStore.openTabs, () => heynoteStore.saveTabsState())
 }
