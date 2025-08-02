@@ -1,23 +1,40 @@
 @use "include" as *
 
+:root
+    --tab-bar-height: 30px
+    --system-font: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif
+
 :root[theme='light']
     --status-bar-background: #48b57e
     --status-bar-color: #fff
     --highlight-color: #48b57e
     --panel-background: #efefef
+    //--tab-bar-inset-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.05)
+    --tab-bar-border-bottom-color: #d4d4d4
+    --tab-active-bg: #fff
+    --tab-active-bg-blurred: #f4f4f4
+    --window-border-color: #6b6b6b
 
 :root[theme='dark']
     --status-bar-background: #0e1217
     --status-bar-color: rgba(255, 255, 255, 0.75)
     --highlight-color: #1b6540
     --panel-background: #151516
+    --tab-bar-inset-shadow: inset 0 -1px 3px rgba(0,0,0,0.2)
+    --tab-bar-border-bottom-color: #161616
+    --tab-active-bg: #213644
+    --tab-active-bg-blurred: #1b2b36
+    --window-border-color: #000
     
 html
     margin: 0
     padding: 0
     height: 100%
     overscroll-behavior-y: none
-    
+    //&[platform=windows], &[platform=linux]
+    //    border: 1px solid var(--window-border-color)
+    //&[fullscreen=true]
+    //    border: none
 body
     margin: 0
     padding: 0

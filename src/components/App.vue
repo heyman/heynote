@@ -17,6 +17,7 @@
     import ErrorMessages from './ErrorMessages.vue'
     import NewBuffer from './NewBuffer.vue'
     import EditBuffer from './EditBuffer.vue'
+    import TabBar from './tabs/TabBar.vue'
 
     export default {
         components: {
@@ -28,13 +29,13 @@
             ErrorMessages,
             NewBuffer,
             EditBuffer,
+            TabBar,
         },
 
         data() {
             return {
                 development: window.location.href.indexOf("dev=1") !== -1,
                 showSettings: false,
-                settings: window.heynote.settings,
             }
         },
 
@@ -87,6 +88,10 @@
                 "showEditBuffer",
                 "showMoveToBufferSelector",
                 "showCommandPalette",
+                "isFullscreen",
+            ]),
+            ...mapState(useSettingsStore, [
+                "settings",
             ]),
 
             dialogVisible() {
@@ -96,10 +101,19 @@
             editorInert() {
                 return this.dialogVisible
             },
+
+            showTabBar() {
+                if (this.isFullscreen) {
+                    return this.settings.showTabs && this.settings.showTabsInFullscreen
+                } else {
+                    return true
+                }
+            },
         },
 
         methods: {
             ...mapActions(useHeynoteStore, [
+                "openMoveToBufferSelector",
                 "openLanguageSelector",
                 "openBufferSelector",
                 "openCreateBuffer",
@@ -121,7 +135,7 @@
                 // we need to wait for the next tick for the cases when we set the inert attribute on the editor
                 // in which case issuing a focus() call immediately would not work 
                 this.$nextTick(() => {
-                    this.$refs.editor.focus()
+                    this.$refs.editor?.focus()
                 })
             },
 
@@ -152,8 +166,13 @@
 </script>
 
 <template>
-    <div class="container">
+    <TabBar v-if="showTabBar" />
+    <div 
+        class="container" 
+        :class="{'tab-bar-visible':showTabBar}"
+    >
         <Editor 
+            v-if="currentBufferPath"
             :theme="settingsStore.theme"
             :development="development"
             :debugSyntaxTree="false"
@@ -217,6 +236,8 @@
         width: 100%
         height: 100%
         position: relative
+        &.tab-bar-visible
+            height: calc(100% - var(--tab-bar-height))
         .editor
             height: calc(100% - 21px)
         .status

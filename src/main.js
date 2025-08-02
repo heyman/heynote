@@ -8,7 +8,7 @@ import PrimeVue from 'primevue/config';
 import App from './components/App.vue'
 import { loadCurrencies } from './currency'
 import { useErrorStore } from './stores/error-store'
-import { useHeynoteStore, initHeynoteStore } from './stores/heynote-store'
+import { initHeynoteStore } from './stores/heynote-store'
 
 
 const pinia = createPinia()

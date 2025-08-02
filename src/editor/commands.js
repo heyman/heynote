@@ -38,6 +38,7 @@ import { cutCommand, copyCommand, pasteCommand } from "./copy-paste.js"
 import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel } from "./mark-mode.js"
 import { insertDateAndTime } from "./date-time.js"
 import { foldBlock, unfoldBlock, toggleBlockFold } from "./fold-gutter.js"
+import { useHeynoteStore } from "../stores/heynote-store.js";
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
@@ -47,25 +48,41 @@ const cursorNextParagraph = markModeMoveCommand(gotoNextParagraph, selectNextPar
 
 
 const openLanguageSelector = (editor) => () => {
-    editor.openLanguageSelector()
+    useHeynoteStore().openLanguageSelector()
     return true
 }
 const openBufferSelector = (editor) => () => {
-    editor.openBufferSelector()
+    useHeynoteStore().openBufferSelector()
     return true
 }
 const openCommandPalette = (editor) => () => {
-    editor.openCommandPalette()
+    useHeynoteStore().openCommandPalette()
     return true
 }
 const openMoveToBuffer = (editor) => () => {
-    editor.openMoveToBufferSelector()
+    useHeynoteStore().openMoveToBufferSelector()
     return true
 }
 const openCreateNewBuffer = (editor) => () => {
-    editor.openCreateBuffer("new")
+    useHeynoteStore().openCreateBuffer("new")
     return true
 }
+
+const closeCurrentTab = (editor) => () => {
+    useHeynoteStore().closeCurrentTab()
+    return true
+}
+const switchToLastTab = (editor) => () => {
+    useHeynoteStore().switchToLastTab()
+    return true
+}
+const nextTab = (editor) => () => {
+    useHeynoteStore().nextTab()
+}
+const previousTab = (editor) => () => {
+    useHeynoteStore().previousTab()
+}
+
 const nothing = (view) => {
     return true
 }
@@ -109,6 +126,18 @@ const HEYNOTE_COMMANDS = {
     foldBlock: cmd(foldBlock, "Block", "Fold block"),
     unfoldBlock: cmd(unfoldBlock, "Block", "Unfold block"),
     toggleBlockFold: cmd(toggleBlockFold, "Block", "Toggle block fold"),
+
+    // tab commands
+    closeCurrentTab: cmd(closeCurrentTab, "Buffer", "Close current tab"),
+    switchToLastTab: cmd(switchToLastTab, "Buffer", "Switch to last tab"),
+    previousTab: cmd(previousTab, "Buffer", "Switch to previous tab"),
+    nextTab: cmd(nextTab, "Buffer", "Switch to next tab"),
+    ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [
+        "switchToTab" + (i+1), 
+        cmdLessContext(() => {
+            useHeynoteStore().switchToTabIndex(i)
+        }, "Buffer", `Switch to tab ${i+1}`),
+    ])),
 
     // commands without editor context
     paste: cmdLessContext(pasteCommand, "Clipboard", "Paste from clipboard"),
