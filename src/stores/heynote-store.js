@@ -1,18 +1,18 @@
-import { toRaw, nextTick } from 'vue';
+import { toRaw, nextTick, watch } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../common/note-format"
 import { useEditorCacheStore } from "./editor-cache"
-import { SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE } from "../common/constants"
+import { SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, SAVE_TABS_STATE, LOAD_TABS_STATE } from "../common/constants"
 
 
 export const useHeynoteStore = defineStore("heynote", {
     state: () => ({
         buffers: {},
         recentBufferPaths: [SCRATCH_FILE_NAME],
-        openTabs: [SCRATCH_FILE_NAME],
+        openTabs: [],
 
         currentEditor: null,
-        currentBufferPath: SCRATCH_FILE_NAME,
+        currentBufferPath: null,
         currentBufferName: null,
         currentLanguage: null,
         currentLanguageAuto: null,
@@ -272,6 +272,36 @@ export const useHeynoteStore = defineStore("heynote", {
             this.currentBufferPath = SCRATCH_FILE_NAME
             this.libraryId++
         },
+
+        async saveTabsState() {
+            //console.log("saving tabs state", this.currentBufferPath, this.openTabs)
+            await window.heynote.mainProcess.invoke(SAVE_TABS_STATE, {
+                currentBufferPath: this.currentBufferPath,
+                openTabs: toRaw(this.openTabs),
+            })
+        },
+        
+        async loadTabsState() {
+            // this function 
+            const state = await window.heynote.mainProcess.invoke(LOAD_TABS_STATE)
+            //console.log("tabs state:", state)
+
+            if (!!state) {
+                // make sure all open tabs still exist
+                const openTabs = state.openTabs.filter((path) => this.buffers[path])
+
+                this.openTabs = openTabs
+                if (this.buffers[state.currentBufferPath]) {
+                    this.openBuffer(state.currentBufferPath)
+                } else {
+                    this.openBuffer(SCRATCH_FILE_NAME)
+                }
+            } else {
+                // no saved state, just open the scratch file
+                //console.log("No saved tabs state, opening scratch file")
+                this.openBuffer(SCRATCH_FILE_NAME)
+            }
+        },
     },
 })
 
@@ -286,6 +316,10 @@ export async function initHeynoteStore() {
     })
     window.heynote.mainProcess.on(WINDOW_FOCUS_STATE, (event, state) => {
         heynoteStore.isFocused = state
-      })
+    })
     await heynoteStore.updateBuffers()
+    heynoteStore.loadTabsState()
+
+    watch(() => heynoteStore.currentBufferPath, () => heynoteStore.saveTabsState())
+    watch(heynoteStore.openTabs, () => heynoteStore.saveTabsState())
 }

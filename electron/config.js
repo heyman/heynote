@@ -73,6 +73,19 @@ const schema = {
 
     theme: {type: "string", default: "system"},
 
+    openTabsState: {
+        type: "object",
+        properties: {
+            currentBufferPath: {type: "string"},
+            openTabs: {
+                type: "array",
+                items: {
+                    type: "string",
+                },
+            },
+        },
+    },
+
     currency: {
         type: "object",
         properties: {

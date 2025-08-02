@@ -124,7 +124,7 @@
                 // we need to wait for the next tick for the cases when we set the inert attribute on the editor
                 // in which case issuing a focus() call immediately would not work 
                 this.$nextTick(() => {
-                    this.$refs.editor.focus()
+                    this.$refs.editor?.focus()
                 })
             },
 
@@ -158,6 +158,7 @@
     <TabBar />
     <div class="container">
         <Editor 
+            v-if="currentBufferPath"
             :theme="settingsStore.theme"
             :development="development"
             :debugSyntaxTree="false"

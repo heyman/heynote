@@ -6,6 +6,7 @@ import fs from "fs"
 import { 
     WINDOW_CLOSE_EVENT, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, SETTINGS_CHANGE_EVENT,
     TITLE_BAR_BG_LIGHT, TITLE_BAR_BG_LIGHT_BLURRED, TITLE_BAR_BG_DARK, TITLE_BAR_BG_DARK_BLURRED,
+    SCRATCH_FILE_NAME, SAVE_TABS_STATE, LOAD_TABS_STATE,
 } from '@/src/common/constants'
 
 import { menu, getTrayMenu, getEditorContextMenu } from './menu'
@@ -498,4 +499,12 @@ ipcMain.handle('settings:set', async (event, settings) => {
         initFileLibrary(win)
         await win.webContents.send("library:pathChanged")
     }
+})
+
+ipcMain.handle(SAVE_TABS_STATE, async (event, tabsState) => {
+    CONFIG.set("openTabsState", tabsState)
+})
+
+ipcMain.handle(LOAD_TABS_STATE, async (event) => {
+    return CONFIG.get("openTabsState")
 })
