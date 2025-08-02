@@ -231,4 +231,9 @@
             +platform-windows-linux
                 padding: 0 140px
 
+        &.blurred .title
+            color: #888
+            +dark-mode
+                color: #666
+
 </style>
