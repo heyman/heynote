@@ -6,7 +6,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ### Tabs
 
-You now get a visual representation of open buffers in the form of tabs. The tabs are integrated in the menu bar to take up as little screen real estate as possible, and they can also be turned off - completely or just in fullscreen mode - in the settings.
+You now get a visual representation of open buffers in the form of tabs. The tabs are integrated in the menu bar to take up as little screen real estate as possible, and they can also be turned off - completely or just in fullscreen mode - in the settings. 
 
 
 ## 2.4.0
