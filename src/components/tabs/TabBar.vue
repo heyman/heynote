@@ -166,14 +166,14 @@
                     width: 7px
         .button-container
             app-region: drag
-            border-left: 1px solid #dbdbdb
+            border-left: 1px solid #e6e6e6
             padding-top: 4px
             padding-left: 8px
             padding-right: 8px
             display: flex
             align-items: center
             +dark-mode
-                border-left: 1px solid #282828
+                border-left: 1px solid #242424
             .add-tab
                 app-region: none
                 width: 20px
