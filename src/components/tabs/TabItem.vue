@@ -75,6 +75,7 @@
         <span class="title">{{ title }}</span>
         <button
             @click.stop="onClose"
+            @mousedown.prevent
             class="close"
         ></button>
     </li>

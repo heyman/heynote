@@ -97,7 +97,8 @@
                         :path="tab.path"
                         :title="tab.title"
                         :active="tab.active"
-                        @click="heynoteStore.openBuffer(tab.path)"
+                        @click.prevent="heynoteStore.openBuffer(tab.path)"
+                        @mousedown.prevent
                     />
                     <li class="spacer"></li>
                 </ol>
