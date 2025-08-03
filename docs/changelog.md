@@ -11,6 +11,7 @@ You now get a visual representation of open buffers in the form of tabs. The tab
 ### Other fixes and improvements
 
 - Remember the open buffer(s) between program restarts
+- Update to latest version of Electron
 
 
 ## 2.4.0
