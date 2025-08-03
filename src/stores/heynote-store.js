@@ -238,11 +238,11 @@ export const useHeynoteStore = defineStore("heynote", {
             await (toRaw(this.currentEditor)).save()
             if (newPath && path !== newPath) {
                 //console.log("moving note", path, newPath)
-                editorCacheStore.freeEditor(path)
+                this.closeTab(path)
                 await window.heynote.buffer.move(path, newPath)
                 this.openBuffer(newPath)
-                this.updateBuffers()
             }
+            this.updateBuffers()
         },
 
         async deleteBuffer(path) {
