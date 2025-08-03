@@ -82,7 +82,6 @@ export const DEFAULT_KEYMAP = [
 
     cmd("Mod-c", "copy"),
     cmd("Mod-v", "paste"),
-    cmd("Mod-x", "cut"),
     cmd("Mod-z", "undo"),
     cmd("Mod-Shift-z", "redo"),
     ...(isWindows || isLinux ? [
@@ -148,6 +147,10 @@ export const DEFAULT_KEYMAP = [
     */
 ]
 
+export const DEFAULT_NOT_EMACS_KEYMAP = [
+    cmd("Mod-x", "cut"),
+]
+
 export const EMACS_KEYMAP = [
     cmd("Ctrl-w", "cut"),
     cmd("Ctrl-y", "paste"),
@@ -211,7 +214,7 @@ export function heynoteKeymap(editor, keymap, userKeymap) {
 export function getKeymapExtensions(editor, keymap, keyBindings) {
     return heynoteKeymap(
         editor, 
-        keymap === "emacs" ? EMACS_KEYMAP.concat(DEFAULT_KEYMAP) : DEFAULT_KEYMAP,
+        keymap === "emacs" ? [...EMACS_KEYMAP, ...DEFAULT_KEYMAP] : [...DEFAULT_NOT_EMACS_KEYMAP, ...DEFAULT_KEYMAP],
         keyBindings || [],
     )
 }

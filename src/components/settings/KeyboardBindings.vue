@@ -2,7 +2,7 @@
     import { mapState} from 'pinia'
     import draggable from 'vuedraggable'
 
-    import { DEFAULT_KEYMAP, EMACS_KEYMAP } from "@/src/editor/keymap"
+    import { DEFAULT_KEYMAP, EMACS_KEYMAP, DEFAULT_NOT_EMACS_KEYMAP } from "@/src/editor/keymap"
     import { useSettingsStore } from "@/src/stores/settings-store"
     import KeyBindRow from "./KeyBindRow.vue"
     import AddKeyBind from "./AddKeyBind.vue"
@@ -41,12 +41,13 @@
             ]),
 
             fixedKeymap() {
-                const defaultKeymap = (this.settings.keymap === "emacs" ? EMACS_KEYMAP : []).map((km) => ({
+                const defaultKeymap = (this.settings.keymap === "emacs" ? EMACS_KEYMAP : DEFAULT_NOT_EMACS_KEYMAP).map((km) => ({
                     key: km.key,
                     command: km.command,
                     isDefault: true,
-                    source: "Emacs",
+                    source: this.settings.keymap === "emacs" ? "Emacs" : "Default",
                 }))
+
                 return defaultKeymap.concat(
                     DEFAULT_KEYMAP.map((km) => ({
                         key: km.key,
