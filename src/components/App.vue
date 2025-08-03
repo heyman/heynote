@@ -53,6 +53,29 @@
             window.heynote.mainProcess.on(CHANGE_BUFFER_EVENT, () => {
                 this.openBufferSelector()
             })
+
+            // Tab context menu events
+            window.heynote.mainProcess.on('tab:close', (event, tabPath) => {
+                this.heynoteStore.closeTab(tabPath)
+            })
+
+            window.heynote.mainProcess.on('tab:openNew', () => {
+                this.openBufferSelector()
+            })
+
+            window.heynote.mainProcess.on('tab:createNew', () => {
+                this.openCreateBuffer()
+            })
+
+            window.heynote.mainProcess.on('tab:editBuffer', (event, tabPath) => {
+                this.heynoteStore.editBufferMetadata(tabPath)
+            })
+
+            window.heynote.mainProcess.on('tab:deleteBuffer', (event, tabPath) => {
+                if (confirm(`Are you sure you want to delete the buffer "${this.heynoteStore.getBufferTitle(tabPath)}"?`)) {
+                    this.deleteBuffer(tabPath)
+                }
+            })
         },
 
         beforeUnmount() {
@@ -78,7 +101,7 @@
         },
 
         computed: {
-            ...mapStores(useSettingsStore, useEditorCacheStore),
+            ...mapStores(useSettingsStore, useEditorCacheStore, useHeynoteStore),
             ...mapState(useHeynoteStore, [
                 "currentBufferPath",
                 "currentBufferName",
@@ -121,6 +144,7 @@
                 "closeBufferSelector",
                 "openBuffer",
                 "closeMoveToBufferSelector",
+                "deleteBuffer",
             ]),
 
             // Used as a watcher for the booleans that control the visibility of editor dialogs. 

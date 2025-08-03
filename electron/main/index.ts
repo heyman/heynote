@@ -9,7 +9,7 @@ import {
     SCRATCH_FILE_NAME, SAVE_TABS_STATE, LOAD_TABS_STATE,
 } from '@/src/common/constants'
 
-import { menu, getTrayMenu, getEditorContextMenu } from './menu'
+import { menu, getTrayMenu, getEditorContextMenu, getTabContextMenu } from './menu'
 import CONFIG from "../config"
 import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
@@ -441,6 +441,10 @@ ipcMain.handle("showMainMenu", (event, x, y) =>  {
         x: x,
         y: y,
     });
+})
+
+ipcMain.handle("showTabContextMenu", (event, tabPath) =>  {
+    getTabContextMenu(win, tabPath).popup({window: win});
 })
 
 // Initialize note/file library

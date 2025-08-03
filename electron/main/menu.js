@@ -1,5 +1,5 @@
 const { app, Menu } = require("electron")
-import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, SELECT_ALL_EVENT } from '@/src/common/constants'
+import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, SELECT_ALL_EVENT, SCRATCH_FILE_NAME } from '@/src/common/constants'
 import { openAboutWindow } from "./about";
 import { quit } from "./index"
 
@@ -239,4 +239,51 @@ export function getEditorContextMenu(win) {
         deleteBlockMenuItem,
         moveBlockMenuItem,
     ])
+}
+
+export function getTabContextMenu(win, tabPath) {
+    const isScratchFile = tabPath === SCRATCH_FILE_NAME
+    
+    const menuItems = []
+    
+    if (!isScratchFile) {
+        menuItems.push(
+            {
+                label: 'Edit Buffer',
+                click: () => {
+                    win?.webContents.send('tab:editBuffer', tabPath)
+                },
+            },
+            {
+                label: 'Delete Buffer',
+                click: () => {
+                    win?.webContents.send('tab:deleteBuffer', tabPath)
+                },
+            }
+        )
+    }
+
+    menuItems.push(
+        {
+            label: 'Open Buffer…',
+            click: () => {
+                win?.webContents.send('tab:openNew')
+            },
+        },
+        {
+            label: 'New Buffer…',
+            click: () => {
+                win?.webContents.send('tab:createNew')
+            },
+        },
+        {type: 'separator'},
+        {
+            label: 'Close Tab',
+            click: () => {
+                win?.webContents.send('tab:close', tabPath)
+            },
+        },
+    )
+    
+    return Menu.buildFromTemplate(menuItems)
 }

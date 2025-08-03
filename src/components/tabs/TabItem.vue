@@ -67,12 +67,17 @@
             onClose() {
                 this.heynoteStore.closeTab(this.path)
             },
+
+            onContextMenu(event) {
+                event.preventDefault()
+                window.heynote.mainProcess.invoke('showTabContextMenu', this.path)
+            },
         },
     }
 </script>
 
 <template>
-    <li :class="className" :title="title">
+    <li :class="className" :title="title" @contextmenu="onContextMenu">
         <span class="title">{{ title }}</span>
         <button
             @click.stop="onClose"
