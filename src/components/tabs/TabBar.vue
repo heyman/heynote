@@ -45,6 +45,7 @@
                 return {
                     "tab-bar": true,
                     "blurred": !this.isFocused,
+                    "show-tabs": this.showTabs,
                 }
             },
 
@@ -126,12 +127,14 @@
         height: var(--tab-bar-height)
         padding: 0
         border-bottom: 1px solid var(--tab-bar-border-bottom-color)
-        box-shadow: var(--tab-bar-inset-shadow)
         
         +platform-windows-linux
             padding-right: 140px
         +platform-windows-linux-fullscreen
             padding-right: 0
+        
+        &.show-tabs
+            box-shadow: var(--tab-bar-inset-shadow)
         
         .main-menu-container
             width: 37px
