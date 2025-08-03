@@ -214,6 +214,7 @@
                         background-color: #3a3a3a
         
         .title
+            pointer-events: none
             text-align: center
             position: absolute
             left: 0
