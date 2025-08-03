@@ -89,6 +89,8 @@ let initialSettings = {
     showFoldGutter: true,
     bracketClosing: false,
     keyBindings: [],
+    showTabs: true,
+    showTabsInFullscreen: true,
 }
 if (settingsData !== null) {
     initialSettings = Object.assign(initialSettings, JSON.parse(settingsData))

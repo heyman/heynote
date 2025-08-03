@@ -42,6 +42,7 @@
 
             className() {
                 return [
+                    "tab-item",
                     ...(this.active ? ["active"] : []),
                     ...[this.textWidth > 120 ? "long" : "short"],
                 ]
