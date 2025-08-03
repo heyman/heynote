@@ -179,6 +179,9 @@ export const useHeynoteStore = defineStore("heynote", {
         },
 
         editBufferMetadata(path) {
+            if (path === SCRATCH_FILE_NAME) {
+                throw new Error("Can't edit scratch file metadata")
+            }
             if (this.currentBufferPath !== path) {
                 this.openBuffer(path)
             }
