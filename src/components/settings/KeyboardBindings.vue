@@ -46,6 +46,7 @@
                     command: km.command,
                     isDefault: true,
                     source: this.settings.keymap === "emacs" ? "Emacs" : "Default",
+                    scope: km.scope,
                 }))
 
                 return defaultKeymap.concat(
@@ -54,6 +55,7 @@
                         command: km.command,
                         isDefault: true,
                         source: "Default",
+                        scope: km.scope,
                     }))
                 )
             },
@@ -138,7 +140,7 @@
             <tbody>
                 <KeyBindRow 
                     v-for="key in fixedKeymap" 
-                    :key="key.source + '_' + key.key" 
+                    :key="key.source + '_' + key.key + '_' + key.scope" 
                     :keys="key.key"
                     :command="key.command"
                     :isDefault="key.isDefault"
