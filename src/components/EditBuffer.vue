@@ -30,7 +30,6 @@
             this.$refs.nameInput.focus()
             this.updateBuffers()
 
-            console.log("EditNote mounted", this.currentNote)
             this.name = this.currentNote.name
 
             // build directory tree
@@ -169,7 +168,7 @@
     <div class="fader" @keydown.stop="onKeydown" tabindex="-1">
         <form class="new-note" tabindex="-1" @focusout="onFocusOut" ref="container" @submit.prevent="submit">
             <div class="container">
-                <h1>Edit Note</h1>
+                <h1>Edit Buffer</h1>
                 <input 
                     placeholder="Name"
                     type="text" 
@@ -191,7 +190,7 @@
                 />
             </div>
             <div class="bottom-bar">
-                <button type="submit">Update Note</button>
+                <button type="submit">Update Buffer</button>
                 <button 
                     class="cancel"
                     @keydown="onCancelKeydown"

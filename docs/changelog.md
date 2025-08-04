@@ -2,6 +2,18 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## 2.5.0 (not yet released)
+
+### Tabs
+
+You now get a visual representation of open buffers in the form of tabs. The tabs are integrated in the menu bar to take up as little screen real estate as possible, and they can also be turned off - completely or just in fullscreen mode - in the settings. 
+
+### Other fixes and improvements
+
+- Remember the open buffer(s) between program restarts
+- Update to latest version of Electron
+
+
 ## 2.4.0
 
 ### Improved  search functionality

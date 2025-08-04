@@ -10,3 +10,35 @@
     @media (max-width: 600px)
         html[webapp] &
             @content
+
+=platform-webapp()
+    html[webapp=true] &
+        @content
+
+=platform-mac()
+    html[platform=mac] &
+        @content
+
+=platform-mac-fullscreen()
+    html[platform=mac][fullscreen=true] &
+        @content
+
+=platform-windows()
+    html[platform=windows] &
+        @content
+
+=platform-linux()
+    html[platform=linux] &
+        @content
+
+=platform-windows-linux()
+    html[platform=windows] &, html[platform=linux] &
+        @content
+
+=platform-windows-linux-fullscreen()
+    html[platform=windows][fullscreen=true] &, html[platform=linux][fullscreen=true] &
+        @content
+
+=fullscreen()
+    html[fullscreen=true] &
+        @content

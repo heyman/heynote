@@ -17,6 +17,7 @@
     import ErrorMessages from './ErrorMessages.vue'
     import NewBuffer from './NewBuffer.vue'
     import EditBuffer from './EditBuffer.vue'
+    import TabBar from './tabs/TabBar.vue'
 
     export default {
         components: {
@@ -28,13 +29,13 @@
             ErrorMessages,
             NewBuffer,
             EditBuffer,
+            TabBar,
         },
 
         data() {
             return {
                 development: window.location.href.indexOf("dev=1") !== -1,
                 showSettings: false,
-                settings: window.heynote.settings,
             }
         },
 
@@ -51,6 +52,29 @@
 
             window.heynote.mainProcess.on(CHANGE_BUFFER_EVENT, () => {
                 this.openBufferSelector()
+            })
+
+            // Tab context menu events
+            window.heynote.mainProcess.on('tab:close', (event, tabPath) => {
+                this.heynoteStore.closeTab(tabPath)
+            })
+
+            window.heynote.mainProcess.on('tab:openNew', () => {
+                this.openBufferSelector()
+            })
+
+            window.heynote.mainProcess.on('tab:createNew', () => {
+                this.openCreateBuffer()
+            })
+
+            window.heynote.mainProcess.on('tab:editBuffer', (event, tabPath) => {
+                this.heynoteStore.editBufferMetadata(tabPath)
+            })
+
+            window.heynote.mainProcess.on('tab:deleteBuffer', (event, tabPath) => {
+                if (confirm(`Are you sure you want to delete the buffer "${this.heynoteStore.getBufferTitle(tabPath)}"?`)) {
+                    this.deleteBuffer(tabPath)
+                }
             })
         },
 
@@ -77,7 +101,7 @@
         },
 
         computed: {
-            ...mapStores(useSettingsStore, useEditorCacheStore),
+            ...mapStores(useSettingsStore, useEditorCacheStore, useHeynoteStore),
             ...mapState(useHeynoteStore, [
                 "currentBufferPath",
                 "currentBufferName",
@@ -87,6 +111,10 @@
                 "showEditBuffer",
                 "showMoveToBufferSelector",
                 "showCommandPalette",
+                "isFullscreen",
+            ]),
+            ...mapState(useSettingsStore, [
+                "settings",
             ]),
 
             dialogVisible() {
@@ -96,10 +124,19 @@
             editorInert() {
                 return this.dialogVisible
             },
+
+            showTabBar() {
+                if (this.isFullscreen) {
+                    return this.settings.showTabs && this.settings.showTabsInFullscreen
+                } else {
+                    return true
+                }
+            },
         },
 
         methods: {
             ...mapActions(useHeynoteStore, [
+                "openMoveToBufferSelector",
                 "openLanguageSelector",
                 "openBufferSelector",
                 "openCreateBuffer",
@@ -107,6 +144,7 @@
                 "closeBufferSelector",
                 "openBuffer",
                 "closeMoveToBufferSelector",
+                "deleteBuffer",
             ]),
 
             // Used as a watcher for the booleans that control the visibility of editor dialogs. 
@@ -121,7 +159,7 @@
                 // we need to wait for the next tick for the cases when we set the inert attribute on the editor
                 // in which case issuing a focus() call immediately would not work 
                 this.$nextTick(() => {
-                    this.$refs.editor.focus()
+                    this.$refs.editor?.focus()
                 })
             },
 
@@ -152,8 +190,13 @@
 </script>
 
 <template>
-    <div class="container">
+    <TabBar v-if="showTabBar" />
+    <div 
+        class="container" 
+        :class="{'tab-bar-visible':showTabBar}"
+    >
         <Editor 
+            v-if="currentBufferPath"
             :theme="settingsStore.theme"
             :development="development"
             :debugSyntaxTree="false"
@@ -217,6 +260,8 @@
         width: 100%
         height: 100%
         position: relative
+        &.tab-bar-visible
+            height: calc(100% - var(--tab-bar-height))
         .editor
             height: calc(100% - 21px)
         .status

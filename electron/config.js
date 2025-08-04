@@ -39,6 +39,8 @@ const schema = {
 
             "showLineNumberGutter": {type: "boolean", default:true},
             "showFoldGutter": {type: "boolean", default:true},
+            "showTabs": {type: "boolean", default: true},
+            "showTabsInFullscreen": {type: "boolean", default: true},
             "autoUpdate": {type: "boolean", default: true},
             "allowBetaVersions": {type: "boolean", default: false},
             "enableGlobalHotkey": {type: "boolean", default: false},
@@ -72,6 +74,25 @@ const schema = {
     },
 
     theme: {type: "string", default: "system"},
+
+    openTabsState: {
+        type: "object",
+        properties: {
+            currentBufferPath: {type: "string"},
+            openTabs: {
+                type: "array",
+                items: {
+                    type: "string",
+                },
+            },
+            recentBuffers: {
+                type: "array",
+                items: {
+                    type: "string",
+                },
+            },
+        },
+    },
 
     currency: {
         type: "object",

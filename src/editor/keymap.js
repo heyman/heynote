@@ -82,7 +82,6 @@ export const DEFAULT_KEYMAP = [
 
     cmd("Mod-c", "copy"),
     cmd("Mod-v", "paste"),
-    cmd("Mod-x", "cut"),
     cmd("Mod-z", "undo"),
     cmd("Mod-Shift-z", "redo"),
     ...(isWindows || isLinux ? [
@@ -116,6 +115,21 @@ export const DEFAULT_KEYMAP = [
         cmd("Alt-Ctrl-.", "toggleBlockFold")
     ]),
 
+    // tabs
+    cmd("Mod-w", "closeCurrentTab"),
+    cmd("Ctrl-Tab", "nextTab"),
+    cmd("Ctrl-Shift-Tab", "previousTab"),
+    cmd("Mod-1", "switchToTab1"),
+    cmd("Mod-2", "switchToTab2"),
+    cmd("Mod-3", "switchToTab3"),
+    cmd("Mod-4", "switchToTab4"),
+    cmd("Mod-5", "switchToTab5"),
+    cmd("Mod-6", "switchToTab6"),
+    cmd("Mod-7", "switchToTab7"),
+    cmd("Mod-8", "switchToTab8"),
+    cmd("Mod-9", "switchToTab9"),
+    cmd("Mod-0", "switchToLastTab"),
+
     // search
     //cmd("Mod-f", "openSearchPanel"),
     //cmd("F3", "findNext"),
@@ -131,6 +145,10 @@ export const DEFAULT_KEYMAP = [
     - Mod-Alt-g: [`gotoLine`](https://codemirror.net/6/docs/ref/#search.gotoLine)
     - Mod-d: [`selectNextOccurrence`](https://codemirror.net/6/docs/ref/#search.selectNextOccurrence)
     */
+]
+
+export const DEFAULT_NOT_EMACS_KEYMAP = [
+    cmd("Mod-x", "cut"),
 ]
 
 export const EMACS_KEYMAP = [
@@ -154,6 +172,8 @@ export const EMACS_KEYMAP = [
     ...cmdShift("Ctrl-f", "cursorCharRight", "selectCharRight"),
     ...cmdShift("Ctrl-a", "cursorLineStart", "selectLineStart"),
     ...cmdShift("Ctrl-e", "cursorLineEnd", "selectLineEnd"),
+    // tabs
+    cmd("Ctrl-x k", "closeCurrentTab"),
 ]
 
 
@@ -194,7 +214,7 @@ export function heynoteKeymap(editor, keymap, userKeymap) {
 export function getKeymapExtensions(editor, keymap, keyBindings) {
     return heynoteKeymap(
         editor, 
-        keymap === "emacs" ? EMACS_KEYMAP.concat(DEFAULT_KEYMAP) : DEFAULT_KEYMAP,
+        keymap === "emacs" ? [...EMACS_KEYMAP, ...DEFAULT_KEYMAP] : [...DEFAULT_NOT_EMACS_KEYMAP, ...DEFAULT_KEYMAP],
         keyBindings || [],
     )
 }

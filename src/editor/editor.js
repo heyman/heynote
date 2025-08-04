@@ -302,26 +302,6 @@ export class HeynoteEditor {
         })
     }
 
-    openLanguageSelector() {
-        this.notesStore.openLanguageSelector()
-    }
-
-    openBufferSelector() {
-        this.notesStore.openBufferSelector()
-    }
-
-    openCommandPalette() {
-        this.notesStore.openCommandPalette()
-    }
-
-    openCreateBuffer(createMode) {
-        this.notesStore.openCreateBuffer(createMode)
-    }
-
-    openMoveToBufferSelector() {
-        this.notesStore.openMoveToBufferSelector()
-    }
-
     async createNewBuffer(path, name) {
         const data = getBlockDelimiter(this.defaultBlockToken, this.defaultBlockAutoDetect)
         await this.notesStore.saveNewBuffer(path, name, data)

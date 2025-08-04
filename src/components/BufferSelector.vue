@@ -455,6 +455,7 @@
                 &.new-note
                     //font-size: 12px
                 .name
+                    max-width: 100%
                     margin-right: 12px
                     flex-shrink: 0
                     overflow: hidden

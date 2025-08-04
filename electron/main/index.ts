@@ -3,9 +3,13 @@ import { release } from 'node:os'
 import { join } from 'node:path'
 import fs from "fs"
 
-import { WINDOW_CLOSE_EVENT, SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
+import { 
+    WINDOW_CLOSE_EVENT, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, SETTINGS_CHANGE_EVENT,
+    TITLE_BAR_BG_LIGHT, TITLE_BAR_BG_LIGHT_BLURRED, TITLE_BAR_BG_DARK, TITLE_BAR_BG_DARK_BLURRED,
+    SCRATCH_FILE_NAME, SAVE_TABS_STATE, LOAD_TABS_STATE,
+} from '@/src/common/constants'
 
-import { menu, getTrayMenu, getEditorContextMenu } from './menu'
+import { menu, getTrayMenu, getEditorContextMenu, getTabContextMenu } from './menu'
 import CONFIG from "../config"
 import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
@@ -121,10 +125,14 @@ async function createWindow() {
             : "favicon.ico",
     )
 
+    // set initial theme mode
+    nativeTheme.themeSource = CONFIG.get("theme")
+
     win = new BrowserWindow(Object.assign({
         title: 'heynote',
         icon,
         backgroundColor: nativeTheme.shouldUseDarkColors ? '#262B37' : '#FFFFFF',
+        accentColor: undefined,
         //titleBarStyle: 'customButtonsOnHover',
         autoHideMenuBar: true,
         webPreferences: {
@@ -135,6 +143,14 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: true,
         },
+        titleBarStyle: "hidden" as const, // customButtonsOnHover
+        trafficLightPosition: { x: 7, y: 7 },
+        ...(!isMac ? {
+            titleBarOverlay: {
+                color: nativeTheme.shouldUseDarkColors ? TITLE_BAR_BG_DARK : TITLE_BAR_BG_LIGHT,
+                symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
+            }, 
+        } : {})
     }, windowConfig))
 
     // maximize window if it was maximized last time
@@ -177,8 +193,38 @@ async function createWindow() {
             win.setSkipTaskbar(false)
         }
     })
+    
+    win.on("enter-full-screen", () => {
+        win?.webContents.send(WINDOW_FULLSCREEN_STATE, true)
+    })
+    win.on("leave-full-screen", () => {
+        win?.webContents.send(WINDOW_FULLSCREEN_STATE, false)
+    })
 
-    nativeTheme.themeSource = CONFIG.get("theme")
+    win.on("focus", () => {
+        // send a message to the renderer to update the window title
+        win?.webContents.send(WINDOW_FOCUS_STATE, true)
+
+        // update titleBarOverlay colors on Windows/Linux
+        if (!isMac) {
+            win?.setTitleBarOverlay({
+                color: nativeTheme.shouldUseDarkColors ? TITLE_BAR_BG_DARK : TITLE_BAR_BG_LIGHT,
+                symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
+            })
+        }
+    })
+    win.on("blur", () => {
+        // send a message to the renderer to update the window title
+        win?.webContents.send(WINDOW_FOCUS_STATE, false)
+
+        // update titleBarOverlay colors on Windows/Linux
+        if (!isMac) {
+            win?.setTitleBarOverlay({
+                color: nativeTheme.shouldUseDarkColors ? TITLE_BAR_BG_DARK_BLURRED : TITLE_BAR_BG_LIGHT_BLURRED,
+                symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
+            })
+        }
+    })
 
     if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
         win.loadURL(url + '?dev=1')
@@ -192,6 +238,8 @@ async function createWindow() {
     // Test actively push message to the Electron-Renderer
     win.webContents.on('did-finish-load', () => {
         win?.webContents.send('main-process-message', new Date().toLocaleString())
+        win?.webContents.send(WINDOW_FULLSCREEN_STATE, win?.isFullScreen())
+        win?.webContents.send(WINDOW_FOCUS_STATE, win?.isFocused())
     })
 
     // Make all links open with the browser, not with the application
@@ -366,6 +414,14 @@ app.on('activate', (event, hasVisibleWindows) => {
 ipcMain.handle('dark-mode:set', (event, mode) => {
     CONFIG.set("theme", mode)
     nativeTheme.themeSource = mode
+
+    // update titleBarOverlay colors on Windows/Linux
+    if (!isMac) {
+        win?.setTitleBarOverlay({
+            color: nativeTheme.shouldUseDarkColors ? TITLE_BAR_BG_DARK : TITLE_BAR_BG_LIGHT,
+            symbolColor: nativeTheme.shouldUseDarkColors ? '#aaa' : '#333',
+        })
+    }
 })
 
 ipcMain.handle('dark-mode:get', () => nativeTheme.themeSource)
@@ -376,6 +432,19 @@ ipcMain.handle("setWindowTitle", (event, title) => {
 
 ipcMain.handle("showEditorContextMenu", () =>  {
     getEditorContextMenu(win).popup({window:win});
+})
+
+ipcMain.handle("showMainMenu", (event, x, y) =>  {
+    console.log("showMainMenu", x , y)
+    menu.popup({
+        window: win,
+        x: x,
+        y: y,
+    });
+})
+
+ipcMain.handle("showTabContextMenu", (event, tabPath) =>  {
+    getTabContextMenu(win, tabPath).popup({window: win});
 })
 
 // Initialize note/file library
@@ -435,4 +504,12 @@ ipcMain.handle('settings:set', async (event, settings) => {
         initFileLibrary(win)
         await win.webContents.send("library:pathChanged")
     }
+})
+
+ipcMain.handle(SAVE_TABS_STATE, async (event, tabsState) => {
+    CONFIG.set("openTabsState", tabsState)
+})
+
+ipcMain.handle(LOAD_TABS_STATE, async (event) => {
+    return CONFIG.get("openTabsState")
 })

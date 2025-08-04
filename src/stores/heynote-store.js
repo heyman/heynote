@@ -1,17 +1,18 @@
-import { toRaw } from 'vue';
+import { toRaw, nextTick, watch } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../common/note-format"
 import { useEditorCacheStore } from "./editor-cache"
-import { SCRATCH_FILE_NAME } from "../common/constants"
+import { SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, SAVE_TABS_STATE, LOAD_TABS_STATE } from "../common/constants"
 
 
 export const useHeynoteStore = defineStore("heynote", {
     state: () => ({
         buffers: {},
         recentBufferPaths: [SCRATCH_FILE_NAME],
+        openTabs: [],
 
         currentEditor: null,
-        currentBufferPath: SCRATCH_FILE_NAME,
+        currentBufferPath: null,
         currentBufferName: null,
         currentLanguage: null,
         currentLanguageAuto: null,
@@ -29,6 +30,9 @@ export const useHeynoteStore = defineStore("heynote", {
         showEditBuffer: false,
         showMoveToBufferSelector: false,
         showCommandPalette: false,
+
+        isFullscreen: false,
+        isFocused: true,
     }),
 
     actions: {
@@ -44,6 +48,84 @@ export const useHeynoteStore = defineStore("heynote", {
             this.closeDialog()
             this.currentBufferPath = path
             this.addRecentBuffer(path)
+
+            // add to tabs if it's not already open
+            if (!this.openTabs.includes(path)) {
+                this.openTabs.push(path)
+            }
+        },
+
+        closeTab(path) {
+            if (path === SCRATCH_FILE_NAME && this.openTabs.length === 1) {
+                // don't close the scratch file if it's the only open tab
+                return
+            }
+            const editorCacheStore = useEditorCacheStore()
+            this.openTabs = this.openTabs.filter((p) => p !== path)
+            if (this.currentBufferPath === path) {
+                this.currentEditor = null
+                editorCacheStore.freeEditor(path)
+                // if the current tab is closed, switch to the most recently used buffer that is open
+                const recentBuffers = this.recentBufferPaths.filter((p) => p !== path && this.openTabs.includes(p))
+                if (recentBuffers.length > 0) {
+                    //console.log("opening:", recentBuffers[0])
+                    this.openBuffer(recentBuffers[0])
+                } else if (this.openTabs.length > 0) {
+                    this.openBuffer(this.openTabs[0])
+                } else {
+                    this.openBuffer(SCRATCH_FILE_NAME)
+                }
+            } else {
+                // if the current tab is not the one being closed, just free the editor
+                editorCacheStore.freeEditor(path)
+            }
+        },
+
+        closeCurrentTab() {
+            this.closeTab(this.currentBufferPath)
+        },
+
+        switchToTabIndex(index) {
+            if (index < 0 || index >= this.openTabs.length) {
+                return
+            }
+            const path = this.openTabs[index]
+            this.openBuffer(path)
+        },
+
+        switchToLastTab() {
+            if (this.openTabs.length === 0) {
+                return
+            }
+            const path = this.openTabs[this.openTabs.length - 1]
+            this.openBuffer(path)
+        },
+
+        previousTab() {
+            // get current tab index
+            const idx = this.openTabs.indexOf(this.currentBufferPath)
+            if (idx <= 0) {
+                this.switchToTabIndex(this.openTabs.length - 1)
+            } else {
+                this.switchToTabIndex(idx - 1)
+            }
+        },
+
+        nextTab() {
+            // get current tab index
+            const idx = this.openTabs.indexOf(this.currentBufferPath)
+            if (idx === this.openTabs.length - 1) {
+                this.switchToTabIndex(0)
+            } else {
+                this.switchToTabIndex(idx + 1)
+            }
+        },
+
+        getBufferTitle(path) {
+            if (this.buffers[path]) {
+                return this.buffers[path].name || path
+            }
+            return path
         },
 
         addRecentBuffer(path) {
@@ -97,6 +179,9 @@ export const useHeynoteStore = defineStore("heynote", {
         },
 
         editBufferMetadata(path) {
+            if (path === SCRATCH_FILE_NAME) {
+                throw new Error("Can't edit scratch file metadata")
+            }
             if (this.currentBufferPath !== path) {
                 this.openBuffer(path)
             }
@@ -156,11 +241,11 @@ export const useHeynoteStore = defineStore("heynote", {
             await (toRaw(this.currentEditor)).save()
             if (newPath && path !== newPath) {
                 //console.log("moving note", path, newPath)
-                editorCacheStore.freeEditor(path)
+                this.closeTab(path)
                 await window.heynote.buffer.move(path, newPath)
                 this.openBuffer(newPath)
-                this.updateBuffers()
             }
+            this.updateBuffers()
         },
 
         async deleteBuffer(path) {
@@ -168,11 +253,24 @@ export const useHeynoteStore = defineStore("heynote", {
                 throw new Error("Can't delete scratch file")
             }
             const editorCacheStore = useEditorCacheStore()
+            editorCacheStore.freeEditor(path)
+            this.recentBufferPaths = this.recentBufferPaths.filter((p) => p !== path)
+            this.openTabs = this.openTabs.filter((p) => p !== path)
+
+            // if the active buffer is deleted, we need to select a new tab
             if (this.currentEditor.path === path) {
                 this.currentEditor = null
-                this.currentBufferPath = SCRATCH_FILE_NAME
+                const recentBuffers = this.recentBufferPaths.filter((p) => p !== path && this.openTabs.includes(p))
+                if (recentBuffers.length > 0) {
+                    this.openBuffer(recentBuffers[0])
+                } else if (this.openTabs.length > 0) {
+                    this.openBuffer(this.openTabs[0])
+                } else {
+                    this.currentBufferPath = SCRATCH_FILE_NAME
+                    this.openBuffer(SCRATCH_FILE_NAME)
+                }
             }
-            editorCacheStore.freeEditor(path)
+
             await window.heynote.buffer.delete(path)
             await this.updateBuffers()
         },
@@ -182,8 +280,41 @@ export const useHeynoteStore = defineStore("heynote", {
             await this.updateBuffers()
             editorCacheStore.clearCache(false)
             this.currentEditor = null
-            this.currentBufferPath = SCRATCH_FILE_NAME
+            this.openTabs = []
+            this.recentBufferPaths = []
+            this.openBuffer(SCRATCH_FILE_NAME)
             this.libraryId++
+        },
+
+        async saveTabsState() {
+            //console.log("saving tabs state", this.currentBufferPath, this.openTabs)
+            await window.heynote.mainProcess.invoke(SAVE_TABS_STATE, {
+                currentBufferPath: this.currentBufferPath,
+                openTabs: toRaw(this.openTabs),
+                recentBuffers: toRaw(this.recentBufferPaths),
+            })
+        },
+        
+        async loadTabsState() {
+            // this function 
+            const state = await window.heynote.mainProcess.invoke(LOAD_TABS_STATE)
+            //console.log("tabs state:", state)
+
+            if (!!state) {
+                // make sure all open tabs still exist
+                this.openTabs = state.openTabs?.filter((path) => this.buffers[path]) || []
+                this.recentBufferPaths = state.recentBuffers?.filter((path) => this.buffers[path]) || [SCRATCH_FILE_NAME]
+
+                if (this.buffers[state.currentBufferPath]) {
+                    this.openBuffer(state.currentBufferPath)
+                } else {
+                    this.openBuffer(SCRATCH_FILE_NAME)
+                }
+            } else {
+                // no saved state, just open the scratch file
+                //console.log("No saved tabs state, opening scratch file")
+                this.openBuffer(SCRATCH_FILE_NAME)
+            }
         },
     },
 })
@@ -193,5 +324,16 @@ export async function initHeynoteStore() {
     window.heynote.buffer.setLibraryPathChangeCallback(() => {
         heynoteStore.reloadLibrary()
     })
+    window.heynote.mainProcess.on(WINDOW_FULLSCREEN_STATE, (event, state) => {
+        heynoteStore.isFullscreen = state
+        document.documentElement.setAttribute("fullscreen", state ? "true" : "false")
+    })
+    window.heynote.mainProcess.on(WINDOW_FOCUS_STATE, (event, state) => {
+        heynoteStore.isFocused = state
+    })
     await heynoteStore.updateBuffers()
+    heynoteStore.loadTabsState()
+
+    watch(() => heynoteStore.currentBufferPath, () => heynoteStore.saveTabsState())
+    watch(() => heynoteStore.openTabs, () => heynoteStore.saveTabsState())
 }

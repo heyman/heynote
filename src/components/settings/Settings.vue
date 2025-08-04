@@ -40,6 +40,8 @@
                 isMac: window.heynote.platform.isMac,
                 showLineNumberGutter: this.initialSettings.showLineNumberGutter,
                 showFoldGutter: this.initialSettings.showFoldGutter,
+                showTabs: this.initialSettings.showTabs,
+                showTabsInFullscreen: this.initialSettings.showTabsInFullscreen,
                 allowBetaVersions: this.initialSettings.allowBetaVersions,
                 enableGlobalHotkey: this.initialSettings.enableGlobalHotkey,
                 globalHotkey: this.initialSettings.globalHotkey,
@@ -113,6 +115,8 @@
                 this.settingsStore.updateSettings({
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
+                    showTabs: this.showTabs,
+                    showTabsInFullscreen: this.showTabsInFullscreen,
                     keymap: this.keymap,
                     keyBindings: this.keyBindings.map((kb) => toRaw(kb)),
                     emacsMetaKey: window.heynote.platform.isMac ? this.metaKey : "alt",
@@ -383,6 +387,30 @@
                                         :value="size"
                                     >{{ size }}px{{ size === defaultFontSize ? " (default)" : "" }}</option>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Tabs</h2>
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="showTabs" 
+                                        @change="updateSettings"
+                                    />
+                                    Show tabs
+                                </label>
+                                
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="showTabsInFullscreen" 
+                                        @change="updateSettings"
+                                        :disabled="!showTabs"
+                                    />
+                                    Show tabs in fullscreen mode
+                                </label>
                             </div>
                         </div>
                     </TabContent>

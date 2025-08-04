@@ -1,13 +1,11 @@
 <script>
     import { syntaxTree } from "@codemirror/language"
     import { toRaw } from 'vue';
-    import { mapState, mapWritableState, mapActions, mapStores } from 'pinia'
-    import { useErrorStore } from "../stores/error-store"
+    import { mapState, mapWritableState, mapStores } from 'pinia'
     import { useHeynoteStore } from "../stores/heynote-store.js"
     import { useEditorCacheStore } from "../stores/editor-cache"
     import { REDO_EVENT, WINDOW_CLOSE_EVENT, DELETE_BLOCK_EVENT, UNDO_EVENT, SELECT_ALL_EVENT } from '@/src/common/constants';
 
-    const NUM_EDITOR_INSTANCES = 5
 
     export default {
         props: {
@@ -142,15 +140,10 @@
                     this.editor.hide()
                 }
 
-                let cachedEditor = this.editorCacheStore.getEditor(path)
-                if (cachedEditor) {
-                    //console.log("show cached editor")
-                    this.editor = cachedEditor
-                    toRaw(this.editor).show()
-                } else {
-                    //console.log("create new editor")
-                    this.editor = this.editorCacheStore.createEditor(path)
-                    this.editorCacheStore.addEditor(path, toRaw(this.editor))
+                const [editor, created] = this.editorCacheStore.getOrCreateEditor(path, true)
+                this.editor = editor
+                if (!created) {
+                    toRaw(editor).show()
                 }
 
                 this.currentEditor = toRaw(this.editor)

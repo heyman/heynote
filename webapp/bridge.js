@@ -1,5 +1,4 @@
-import { Exception } from "sass";
-import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT } from "@/src/common/constants";
+import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT, SAVE_TABS_STATE, LOAD_TABS_STATE } from "@/src/common/constants";
 import { NoteFormat } from "../src/common/note-format";
 
 const NOTE_KEY_PREFIX = "heynote-library__"
@@ -90,6 +89,8 @@ let initialSettings = {
     showFoldGutter: true,
     bracketClosing: false,
     keyBindings: [],
+    showTabs: true,
+    showTabsInFullscreen: true,
 }
 if (settingsData !== null) {
     initialSettings = Object.assign(initialSettings, JSON.parse(settingsData))
@@ -220,6 +221,10 @@ const Heynote = {
         },
 
         pathSeparator: "/",
+
+        setLibraryPathChangeCallback(callback) {
+            
+        },
     },
 
     mainProcess: {
@@ -232,7 +237,17 @@ const Heynote = {
         },
 
         invoke(event, ...args) {
-            
+            switch (event) {
+                case SAVE_TABS_STATE:
+                    localStorage.setItem("openTabsState", JSON.stringify(args[0]))
+                    break;
+                case LOAD_TABS_STATE:
+                    const tabsState = localStorage.getItem("openTabsState")
+                    if (tabsState) {
+                        return JSON.parse(tabsState)
+                    }
+                    return undefined
+            }
         }
     },
 
