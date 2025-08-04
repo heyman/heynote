@@ -280,7 +280,9 @@ export const useHeynoteStore = defineStore("heynote", {
             await this.updateBuffers()
             editorCacheStore.clearCache(false)
             this.currentEditor = null
-            this.currentBufferPath = SCRATCH_FILE_NAME
+            this.openTabs = []
+            this.recentBufferPaths = []
+            this.openBuffer(SCRATCH_FILE_NAME)
             this.libraryId++
         },
 
@@ -302,7 +304,7 @@ export const useHeynoteStore = defineStore("heynote", {
                 // make sure all open tabs still exist
                 this.openTabs = state.openTabs?.filter((path) => this.buffers[path]) || []
                 this.recentBufferPaths = state.recentBuffers?.filter((path) => this.buffers[path]) || [SCRATCH_FILE_NAME]
-                
+
                 if (this.buffers[state.currentBufferPath]) {
                     this.openBuffer(state.currentBufferPath)
                 } else {
