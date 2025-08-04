@@ -72,7 +72,6 @@ Alt + Shift + F        Format block content (works for JSON, JavaScript, HTML, C
 Ctrl + Alt + [         Fold block(s)
 Ctrl + Alt + ]         Unfold block(s)
 Ctrl + Alt + .         Toggle block fold
-Alt                    Show menu
 ```
 
 You can see all the default key bindings in Heynote's settings under Key Bindings.

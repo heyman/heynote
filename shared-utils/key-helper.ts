@@ -26,10 +26,7 @@ export const keyHelpStr = (platform: string, extended: boolean = false) => {
             [`${modChar} + ${altChar} + .`, "Toggle block fold"],
         )
     }
-
-    if (platform === "win32" || platform === "linux") {
-        keyHelp.push([altChar, "Show menu"])
-    }
+    
     const keyMaxLength = keyHelp.map(([key]) => key.length).reduce((a, b) => Math.max(a, b))
 
     return keyHelp.map(([key, help]) => `${key.padEnd(keyMaxLength)}   ${help}`).join("\n")
