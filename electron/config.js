@@ -85,6 +85,12 @@ const schema = {
                     type: "string",
                 },
             },
+            recentBuffers: {
+                type: "array",
+                items: {
+                    type: "string",
+                },
+            },
         },
     },
 

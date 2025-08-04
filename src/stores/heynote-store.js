@@ -289,6 +289,7 @@ export const useHeynoteStore = defineStore("heynote", {
             await window.heynote.mainProcess.invoke(SAVE_TABS_STATE, {
                 currentBufferPath: this.currentBufferPath,
                 openTabs: toRaw(this.openTabs),
+                recentBuffers: toRaw(this.recentBufferPaths),
             })
         },
         
@@ -299,9 +300,9 @@ export const useHeynoteStore = defineStore("heynote", {
 
             if (!!state) {
                 // make sure all open tabs still exist
-                const openTabs = state.openTabs.filter((path) => this.buffers[path])
-
-                this.openTabs = openTabs
+                this.openTabs = state.openTabs?.filter((path) => this.buffers[path]) || []
+                this.recentBufferPaths = state.recentBuffers?.filter((path) => this.buffers[path]) || [SCRATCH_FILE_NAME]
+                
                 if (this.buffers[state.currentBufferPath]) {
                     this.openBuffer(state.currentBufferPath)
                 } else {
