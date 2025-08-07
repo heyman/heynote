@@ -1,6 +1,6 @@
 import { lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, rectangularSelection, crosshairCursor, highlightActiveLine, keymap, scrollPastEnd } from '@codemirror/view';
 import { EditorView } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
+import { EditorState, EditorSelection } from '@codemirror/state';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldKeymap } from '@codemirror/language';
 import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
 //import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
@@ -57,6 +57,34 @@ const customSetup = /*@__PURE__*/(() => [
     dropCursor(),
     EditorState.allowMultipleSelections.of(true),
     EditorView.clickAddsSelectionRange.of(e => e.altKey),
+    EditorView.domEventHandlers({
+        mousedown: (event, view) => {
+            if (event.altKey && event.button === 0) {
+                const pos = view.posAtCoords({ x: event.clientX, y: event.clientY })
+                if (pos !== null) {
+                    const currentSelection = view.state.selection
+                    
+                    const existingRangeIndex = currentSelection.ranges.findIndex(range => {
+                        return Math.abs(pos - range.head) <= 1 || Math.abs(pos - range.anchor) <= 1
+                    })
+                    
+                    if (existingRangeIndex !== -1 && currentSelection.ranges.length > 1) {
+                        const newRanges = currentSelection.ranges.filter((_, i) => i !== existingRangeIndex)
+                        const newMainIndex = existingRangeIndex <= currentSelection.mainIndex && currentSelection.mainIndex > 0 
+                            ? currentSelection.mainIndex - 1 
+                            : Math.min(currentSelection.mainIndex, newRanges.length - 1)
+                        
+                        view.dispatch({
+                            selection: EditorSelection.create(newRanges, newMainIndex)
+                        })
+                        event.preventDefault()
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+    }),
     indentOnInput(),
     syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
     bracketMatching(),
