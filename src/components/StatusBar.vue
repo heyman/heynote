@@ -11,6 +11,7 @@
         props: [
             "autoUpdate",
             "allowBetaVersions",
+            "isPinned",
         ],
 
         components: {
@@ -111,6 +112,14 @@
             :autoUpdate="autoUpdate"
             :allowBetaVersions="allowBetaVersions"
         />
+        <!-- Pin the window  -->
+        <div 
+            @click.stop="$emit('pinWindow')"
+            class="status-block pin clickable"
+            title="Pin"
+        >
+            <span class="icon icon-format" :class="{'pinned': isPinned}"></span>
+        </div>
         <div 
             @click.stop="$emit('openSettings')"
             class="status-block settings clickable"
@@ -190,4 +199,14 @@
                 background-position: center center
                 background-image: url("@/assets/icons/settings.svg")
 
+        .pin
+            padding-top: 0
+            padding-bottom: 0
+            .icon   
+                background-size: 13px
+                background-repeat: no-repeat
+                background-position: center center
+                background-image: url("@/assets/icons/pin.svg")
+                &.pinned
+                    background-image: url("@/assets/icons/pin-pined.svg")
 </style>

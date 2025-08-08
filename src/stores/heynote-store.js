@@ -33,6 +33,7 @@ export const useHeynoteStore = defineStore("heynote", {
 
         isFullscreen: false,
         isFocused: true,
+        isPinned: false,
     }),
 
     actions: {
@@ -150,6 +151,11 @@ export const useHeynoteStore = defineStore("heynote", {
         openMoveToBufferSelector() {
             this.closeDialog()
             this.showMoveToBufferSelector = true
+        },
+
+        async togglePinWindow() {
+            const newPinState = await window.heynote.mainProcess.invoke("pinWindow", null)
+            this.isPinned = newPinState
         },
         openCreateBuffer(createMode, nameSuggestion) {
             createMode = createMode || "new"

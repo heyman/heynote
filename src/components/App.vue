@@ -7,7 +7,7 @@
     import { useSettingsStore } from "../stores/settings-store"
     import { useEditorCacheStore } from '../stores/editor-cache'
 
-    import { OPEN_SETTINGS_EVENT, MOVE_BLOCK_EVENT, CHANGE_BUFFER_EVENT } from '@/src/common/constants'
+    import { OPEN_SETTINGS_EVENT, MOVE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, PIN_WINDOW_EVENT } from '@/src/common/constants'
 
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
@@ -52,6 +52,10 @@
 
             window.heynote.mainProcess.on(CHANGE_BUFFER_EVENT, () => {
                 this.openBufferSelector()
+            })
+
+            window.heynote.mainProcess.on(PIN_WINDOW_EVENT, (event, checked) => {
+                this.handlePinWindowEvent(checked)
             })
 
             // Tab context menu events
@@ -112,6 +116,7 @@
                 "showMoveToBufferSelector",
                 "showCommandPalette",
                 "isFullscreen",
+                "isPinned",
             ]),
             ...mapState(useSettingsStore, [
                 "settings",
@@ -145,6 +150,7 @@
                 "openBuffer",
                 "closeMoveToBufferSelector",
                 "deleteBuffer",
+                "togglePinWindow",
             ]),
 
             // Used as a watcher for the booleans that control the visibility of editor dialogs. 
@@ -184,6 +190,15 @@
                 this.editorCacheStore.moveCurrentBlockToOtherEditor(path)
                 this.closeMoveToBufferSelector()
             },
+
+            async pinWindow () {
+                await this.togglePinWindow()
+            },
+
+            async handlePinWindowEvent (checked) {
+                const newPinState = await window.heynote.mainProcess.invoke("pinWindow", checked)
+                this.heynoteStore.isPinned = newPinState
+            }
         },
     }
 
@@ -207,9 +222,11 @@
         <StatusBar 
             :autoUpdate="settings.autoUpdate"
             :allowBetaVersions="settings.allowBetaVersions"
+            :isPinned="isPinned"
             @openBufferSelector="openBufferSelector"
             @openLanguageSelector="openLanguageSelector"
             @formatCurrentBlock="formatCurrentBlock"
+            @pinWindow="pinWindow"
             @openSettings="showSettings = true"
             @click="() => {$refs.editor.focus()}"
             class="status" 
