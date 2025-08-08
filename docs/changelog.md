@@ -11,6 +11,8 @@ You now get a visual representation of open buffers in the form of tabs. The tab
 ### Other fixes and improvements
 
 - Remember the open buffer(s) between program restarts
+- Fixed so that Alt-clicking on an cursor removes it (if more than one cursor exists)
+- Changed the key binding for rectangular selection from Alt+Click to Alt+Shift+Click.
 - Update to latest version of Electron
 
 
