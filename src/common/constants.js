@@ -12,6 +12,7 @@ export const MOVE_BLOCK_EVENT = "move-block"
 export const DELETE_BLOCK_EVENT = "delete-block"
 export const CHANGE_BUFFER_EVENT = "change-buffer"
 export const SELECT_ALL_EVENT = "select-all"
+export const PIN_WINDOW_EVENT = "pin-window"
 export const SAVE_TABS_STATE = "save-tabs-state"
 export const LOAD_TABS_STATE = "load-tabs-state"
 

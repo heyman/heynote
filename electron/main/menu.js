@@ -1,5 +1,5 @@
 const { app, Menu } = require("electron")
-import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, SELECT_ALL_EVENT, SCRATCH_FILE_NAME } from '@/src/common/constants'
+import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_BLOCK_EVENT, CHANGE_BUFFER_EVENT, SELECT_ALL_EVENT, PIN_WINDOW_EVENT, SCRATCH_FILE_NAME } from '@/src/common/constants'
 import { openAboutWindow } from "./about";
 import { quit } from "./index"
 
@@ -51,6 +51,16 @@ const changeBufferMenuItem = {
     accelerator: 'CommandOrControl+P',
     click: (menuItem, window, event) => {
         window?.webContents.send(CHANGE_BUFFER_EVENT)
+    },
+}
+
+const pinWindowMenuItem = {
+    label: 'Always on Top',
+    accelerator: 'CommandOrControl+Shift+T',
+    type: 'checkbox',
+    id: 'pin-window-menu-item',
+    click: (menuItem, window, event) => {
+        window?.webContents.send(PIN_WINDOW_EVENT, menuItem.checked)
     },
 }
 
@@ -171,6 +181,8 @@ const template = [
         submenu: [
             { role: 'minimize' },
             { role: 'zoom' },
+            { type: 'separator' },
+            pinWindowMenuItem,
             ...(isMac ? [
                 { type: 'separator' },
                 { role: 'front' },

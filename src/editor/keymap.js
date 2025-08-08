@@ -95,6 +95,7 @@ export const DEFAULT_KEYMAP = [
 
     cmd("Mod-l", "openLanguageSelector"),
     cmd("Mod-p", "openBufferSelector"),
+    cmd("Mod-Shift-t", "togglePinWindow"),
     cmd("Mod-Shift-p", "openCommandPalette"),
     cmd("Mod-s", "openMoveToBuffer"),
     cmd("Mod-n", "openCreateNewBuffer"),

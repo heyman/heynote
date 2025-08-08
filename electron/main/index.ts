@@ -63,6 +63,7 @@ export let win: BrowserWindow | null = null
 let fileLibrary: FileLibrary | null = null
 let tray: Tray | null = null;
 let initErrors: string[] = []
+let isWindowPinned: boolean = false
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
@@ -348,7 +349,10 @@ function registerShowInMenu() {
 }
 
 function registerAlwaysOnTop() {
-    if (CONFIG.get("settings.alwaysOnTop")) {
+    const alwaysOnTop = CONFIG.get("settings.alwaysOnTop")
+    isWindowPinned = alwaysOnTop
+    
+    if (alwaysOnTop) {
         const disableAlwaysOnTop = () => {
             win.setAlwaysOnTop(true, "floating");
             win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
@@ -366,6 +370,12 @@ function registerAlwaysOnTop() {
         win.setAlwaysOnTop(false);
         win.setVisibleOnAllWorkspaces(false);
         win.setFullScreenable(true);
+    }
+    
+    // update menu item checked state
+    const menuItem = menu.getMenuItemById('pin-window-menu-item')
+    if (menuItem) {
+        menuItem.checked = alwaysOnTop
     }
 }
 
@@ -445,6 +455,64 @@ ipcMain.handle("showMainMenu", (event, x, y) =>  {
 
 ipcMain.handle("showTabContextMenu", (event, tabPath) =>  {
     getTabContextMenu(win, tabPath).popup({window: win});
+})
+
+ipcMain.handle("pinWindow", (event, toPin) => {
+    // If toPin is null/undefined, toggle current state
+    if (!win) {
+        return
+    }
+    
+    // If toPin is null or undefined, toggle current state
+    if (toPin === null || toPin === undefined) {
+        toPin = !isWindowPinned
+    }
+    
+    isWindowPinned = toPin
+    
+    if (toPin) {
+        const enableAlwaysOnTop = () => {
+            win.setAlwaysOnTop(true, "floating")
+            win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true})
+            win.setFullScreenable(false)
+            
+            // Ensure the Dock icon remains visible on macOS
+            if (isMac && CONFIG.get("settings.showInDock")) {
+                app.dock.show().catch((error) => {
+                    console.log("Could not show app in dock after pin: ", error);
+                });
+            }
+        }
+        
+        // If you are currently in full-screen mode, you need to exit full-screen first to set the window to stay on top.
+        if (win.isFullScreen()) {
+            win.once("leave-full-screen", enableAlwaysOnTop)
+            win.setFullScreen(false)
+        } else {
+            enableAlwaysOnTop()
+        }
+    } else {
+        win.setAlwaysOnTop(false)
+        win.setVisibleOnAllWorkspaces(false)
+        win.setFullScreenable(true)
+        
+        if (isMac) {
+            if (CONFIG.get("settings.showInDock")) {
+                app.dock.show().catch((error) => {
+                    console.log("Could not show app in dock after unpin: ", error);
+                });
+            } else {
+                app.dock.hide();
+            }
+        }
+    }
+    
+    const menuItem = menu.getMenuItemById('pin-window-menu-item')
+    if (menuItem) {
+        menuItem.checked = toPin
+    }
+    
+    return toPin
 })
 
 // Initialize note/file library
