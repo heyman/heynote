@@ -8,6 +8,8 @@ import { highlightSelectionMatches, searchKeymap } from './codemirror-search/sea
 import { closeBrackets, autocompletion, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
 
+import { crosshairCursor as customCrosshairCursor} from "./crosshair-cursor.js"
+
 // (The superfluous function calls around the list of extensions work
 // around current limitations in tree-shaking software.)
 /**
@@ -57,13 +59,21 @@ const customSetup = /*@__PURE__*/(() => [
     dropCursor(),
     EditorState.allowMultipleSelections.of(true),
     EditorView.clickAddsSelectionRange.of(e => e.altKey),
+
+    // configure rectangular selection for Alt+Shift+Click 
+    rectangularSelection({
+        eventFilter: e => e.altKey && e.shiftKey
+    }),
+    customCrosshairCursor({
+        eventFilter: e => e.altKey && e.shiftKey
+    }),
+    //crosshairCursor(),
+    
     indentOnInput(),
     syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
     bracketMatching(),
     //closeBrackets(),
     //autocompletion(),
-    rectangularSelection(),
-    crosshairCursor(),
     highlightActiveLine(),
     //highlightSelectionMatches(),
     EditorView.lineWrapping,
