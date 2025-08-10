@@ -3,6 +3,7 @@
     import UpdateStatusItem from './UpdateStatusItem.vue'
     import { LANGUAGES } from '../editor/languages.js'
     import { useHeynoteStore } from "../stores/heynote-store"
+    import { useSettingsStore } from "../stores/settings-store"
     
     const LANGUAGE_MAP = Object.fromEntries(LANGUAGES.map(l => [l.token, l]))
     const LANGUAGE_NAMES = Object.fromEntries(LANGUAGES.map(l => [l.token, l.name]))
@@ -35,6 +36,9 @@
                 "currentSelectionSize", 
                 "currentLanguage",
                 "currentLanguageAuto",
+            ]),
+            ...mapState(useSettingsStore, [
+                "spellcheckEnabled",
             ]),
 
             languageName() {
@@ -70,6 +74,13 @@
                 return !!window.heynote.autoUpdate
             },
         },
+
+        methods: {
+            onSpellcheckingContextMenu(event) {
+                event.preventDefault()
+                window.heynote.mainProcess.invoke('showSpellcheckingContextMenu')
+            },
+        },
     }
 </script>
 
@@ -103,6 +114,14 @@
             @click.stop="$emit('formatCurrentBlock')"
             class="status-block format clickable"
             :title="formatBlockTitle"
+        >
+            <span class="icon icon-format"></span>
+        </div>
+        <div 
+            @click.stop="$emit('toggleSpellcheck')"
+            @contextmenu="onSpellcheckingContextMenu"
+            :class="'status-block spellcheck clickable' + (this.spellcheckEnabled ? ' spellcheck-enabled' : '')"
+            title="Spellchecking"
         >
             <span class="icon icon-format"></span>
         </div>
@@ -180,6 +199,18 @@
                 background-repeat: no-repeat
                 background-position: center center
                 background-image: url("@/assets/icons/format.svg")
+
+        .spellcheck
+            padding-top: 0
+            padding-bottom: 0
+            opacity: 1.0
+            .icon
+                background-size: 13px
+                background-repeat: no-repeat
+                background-position: center center
+                background-image: url("@/assets/icons/spellcheck-off.svg")
+            &.spellcheck-enabled .icon
+                background-image: url("@/assets/icons/spellcheck.svg")
         
         .settings
             padding-top: 0

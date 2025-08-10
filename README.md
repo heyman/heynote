@@ -23,7 +23,7 @@ Available for Mac, Windows, and Linux.
 -   Block-based
 -   Syntax highlighting:
 
-    C++, C#, Clojure, CSS, Erlang, Dart, Go, Groovy, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Scala, Shell, SQL, Swift, Vue, XML, YAML
+    C++, C#, Clojure, CSS, Elixir, Erlang, Dart, Go, Groovy, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Scala, Shell, SQL, Swift, Vue, XML, YAML
     
 -   Language auto-detection
 -   Auto-formatting
@@ -34,6 +34,7 @@ Available for Mac, Windows, and Linux.
 -   Dark & Light themes
 -   Option to set a global hotkey to show/hide the app
 -   Default, Emacs-like or custom key bindings
+-   Spellchecking
 
 
 ## Documentation

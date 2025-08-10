@@ -180,6 +180,10 @@
                 this.$refs.editor.formatCurrentBlock()
             },
 
+            toggleSpellcheck() {
+                this.heynoteStore.executeCommand("toggleSpellcheck")
+            },
+
             onMoveCurrentBlockToOtherEditor(path) {
                 this.editorCacheStore.moveCurrentBlockToOtherEditor(path)
                 this.closeMoveToBufferSelector()
@@ -211,6 +215,7 @@
             @openLanguageSelector="openLanguageSelector"
             @formatCurrentBlock="formatCurrentBlock"
             @openSettings="showSettings = true"
+            @toggleSpellcheck="toggleSpellcheck"
             @click="() => {$refs.editor.focus()}"
             class="status" 
         />

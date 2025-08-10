@@ -8,6 +8,10 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 You now get a visual representation of open buffers in the form of tabs. The tabs are integrated in the menu bar to take up as little screen real estate as possible, and they can also be turned off - completely or just in fullscreen mode - in the settings. 
 
+### Spellchecking
+
+It's now possible to turn on/off spellchecking. This can be done by clicking the spellchecking icon in the status bar. There are also heynote commands that can be bound to custom keys to enable/disable/toggle spellchecking.
+
 ### Other fixes and improvements
 
 - Remember the open buffer(s) between program restarts

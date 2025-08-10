@@ -39,6 +39,7 @@ import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel }
 import { insertDateAndTime } from "./date-time.js"
 import { foldBlock, unfoldBlock, toggleBlockFold } from "./fold-gutter.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
+import { toggleSpellcheck, enableSpellcheck, disableSpellcheck } from "./spell-check.js"
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
@@ -138,6 +139,11 @@ const HEYNOTE_COMMANDS = {
             useHeynoteStore().switchToTabIndex(i)
         }, "Buffer", `Switch to tab ${i+1}`),
     ])),
+
+    // spellcheck
+    toggleSpellcheck: cmd(toggleSpellcheck, "Spellchecker", "Toggle Spellchecking"),
+    enableSpellcheck: cmd(enableSpellcheck, "Spellchecker", "Enable Spellchecking"),
+    disableSpellcheck: cmd(disableSpellcheck, "Spellchecker", "Disable Spellchecking"),
 
     // commands without editor context
     paste: cmdLessContext(pasteCommand, "Clipboard", "Paste from clipboard"),

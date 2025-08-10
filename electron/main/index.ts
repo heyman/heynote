@@ -9,7 +9,7 @@ import {
     SCRATCH_FILE_NAME, SAVE_TABS_STATE, LOAD_TABS_STATE,
 } from '@/src/common/constants'
 
-import { menu, getTrayMenu, getEditorContextMenu, getTabContextMenu } from './menu'
+import { menu, getTrayMenu, getEditorContextMenu, getTabContextMenu, getSpellcheckingContextMenu } from './menu'
 import CONFIG from "../config"
 import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates } from './auto-update';
@@ -445,6 +445,14 @@ ipcMain.handle("showMainMenu", (event, x, y) =>  {
 
 ipcMain.handle("showTabContextMenu", (event, tabPath) =>  {
     getTabContextMenu(win, tabPath).popup({window: win});
+})
+
+ipcMain.handle("showSpellcheckingContextMenu", (event) => {
+    // the OS spellchecking API is used on Mac, so it's not possible to select languages
+    if (isMac) {
+        return
+    }
+    getSpellcheckingContextMenu(win).popup({window: win})
 })
 
 // Initialize note/file library

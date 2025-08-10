@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 17 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,0.211272,0.359733)">
+        <g transform="matrix(0.974515,0,0,0.974515,-4.80311,1.73653)">
+            <text x="4.712px" y="6.966px" style="font-family:'OpenSans-Regular', 'Open Sans', sans-serif;font-size:12px;fill:white;">Ab</text>
+        </g>
+        <g id="check" transform="matrix(0.402677,0,0,0.402677,5.4865,6.42353)">
+            <path d="M26.109,8.844C26.109,9.235 25.953,9.625 25.671,9.906L12.233,23.344C11.952,23.625 11.561,23.782 11.171,23.782C10.781,23.782 10.39,23.626 10.109,23.344L2.328,15.563C2.047,15.282 1.89,14.891 1.89,14.501C1.89,14.111 2.046,13.72 2.328,13.439L4.453,11.314C4.734,11.033 5.125,10.876 5.515,10.876C5.905,10.876 6.296,11.032 6.577,11.314L11.171,15.923L21.421,5.657C21.702,5.376 22.093,5.219 22.483,5.219C22.873,5.219 23.264,5.375 23.545,5.657L25.67,7.782C25.951,8.063 26.108,8.454 26.108,8.844L26.109,8.844Z" style="fill:white;fill-rule:nonzero;"/>
+        </g>
+    </g>
+</svg>

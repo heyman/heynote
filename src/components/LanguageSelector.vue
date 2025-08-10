@@ -103,6 +103,7 @@
             @keydown="onKeydown"
             @input="onInput"
             v-model="filter"
+            spellcheck="false"
         />
         <ul class="items">
             <li

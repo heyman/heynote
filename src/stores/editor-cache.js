@@ -45,6 +45,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
                     defaultBlockToken: settingsStore.settings.defaultBlockLanguage,
                     defaultBlockAutoDetect: settingsStore.settings.defaultBlockLanguageAutoDetect,
                     keyBindings: settingsStore.settings.keyBindings,
+                    spellcheckEnabled: settingsStore.settings.spellcheckEnabled,
                 })
             } catch (e) {
                 errorStore.addError("Error! " + e.message)
@@ -177,6 +178,9 @@ export const useEditorCacheStore = defineStore("editorCache", {
                             case "defaultBlockLanguage":
                             case "defaultBlockLanguageAutoDetect":
                                 editor.setDefaultBlockLanguage(newSettings.defaultBlockLanguage, newSettings.defaultBlockLanguageAutoDetect)
+                                break
+                            case "spellcheckEnabled":
+                                editor.setSpellcheckEnabled(newSettings.spellcheckEnabled)
                                 break
                         }
                     })

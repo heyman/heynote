@@ -25,6 +25,7 @@ Available for Mac, Windows, and Linux.
 -   Dark & Light themes
 -   Option to set a global hotkey to show/hide the app
 -   Default, Emacs-like or custom key bindings
+-   Spellchecking
 
 ## Default Key Bindings
 
@@ -84,6 +85,8 @@ Heynote supports custom key bindings which you can configure in the settings. Th
 
 To disable one of the built in key bindings, you can add a new key binding with the same key combination for the command "Do nothing". This will stop the event from propagating to the built in key binding.
 
+You can see all available commands that can be bound to keys in the command palette which can be opened by pressing `⌘ + ⇧ + P` on Mac and `Ctrl + ⇧ + P` on Windows/Linux.
+
 ## Download/Installation
 
 Download the appropriate (Mac, Windows or Linux) version from [heynote.com](https://heynote.com). The Windows build is not signed, so you might see some scary warning (I can not justify paying a yearly fee for a certificate just to get rid of that).
@@ -141,6 +144,11 @@ Heynote is built to support synchronizing the notes library (or buffer file in t
 When using a file synching service that support "offloading" of files in the cloud (removing them from the disk), it's recommended to mark the notes library as "always available offline".
 
 As always, backup things that are important.
+
+
+### Spellchecking
+
+Spellchecking can be toggled on or off by clicking the spellchecking icon in the status bar. Right-clicking the icon on Windows and Linux allows you to select the active dictionaries (on Mac, the default OS dictionary is used).  
 
 
 ## Linux
