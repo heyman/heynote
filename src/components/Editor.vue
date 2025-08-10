@@ -140,7 +140,7 @@
                     this.editor.hide()
                 }
 
-                const [editor, created] = this.editorCacheStore.getOrCreateEditor(path, true)
+                const [editor, created] = this.editorCacheStore.getOrCreateEditor(path)
                 this.editor = editor
                 if (!created) {
                     toRaw(editor).show()
