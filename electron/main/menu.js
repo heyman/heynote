@@ -309,9 +309,9 @@ export function getSpellcheckingContextMenu(win) {
             checked: selectedLanguages.includes(lang),
             click: () => {
                 if (selectedLanguages.includes(lang)) {
-                    win.webContents.setSpellCheckerLanguages(selectedLanguages.filter(l => l !== lang))
+                    win.webContents.session.setSpellCheckerLanguages(selectedLanguages.filter(l => l !== lang))
                 } else {
-                    win.webContents.setSpellCheckerLanguages([...selectedLanguages, lang])
+                    win.webContents.session.setSpellCheckerLanguages([...selectedLanguages, lang])
                 }
             },
         })
