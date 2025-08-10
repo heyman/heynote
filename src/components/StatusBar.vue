@@ -74,6 +74,13 @@
                 return !!window.heynote.autoUpdate
             },
         },
+
+        methods: {
+            onSpellcheckingContextMenu(event) {
+                event.preventDefault()
+                window.heynote.mainProcess.invoke('showSpellcheckingContextMenu')
+            },
+        },
     }
 </script>
 
@@ -112,6 +119,7 @@
         </div>
         <div 
             @click.stop="$emit('toggleSpellcheck')"
+            @contextmenu="onSpellcheckingContextMenu"
             :class="'status-block spellcheck clickable' + (this.spellcheckEnabled ? ' spellcheck-enabled' : '')"
             title="Spellchecking"
         >

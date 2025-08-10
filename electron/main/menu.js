@@ -3,6 +3,8 @@ import { OPEN_SETTINGS_EVENT, UNDO_EVENT, REDO_EVENT, MOVE_BLOCK_EVENT, DELETE_B
 import { openAboutWindow } from "./about";
 import { quit } from "./index"
 
+import { getLanguageName } from "@/src/common/language-code/language-code"
+
 const isMac = process.platform === "darwin"
 
 
@@ -285,5 +287,35 @@ export function getTabContextMenu(win, tabPath) {
         },
     )
     
+    return Menu.buildFromTemplate(menuItems)
+}
+
+
+export function getSpellcheckingContextMenu(win) {
+    const languages = win.webContents.session.availableSpellCheckerLanguages
+    const selectedLanguages = win.webContents.session.getSpellCheckerLanguages()
+    //console.log("Available spellchecker languages:", languages)
+    //console.log("selected languages:", selectedLanguages)
+    
+    //win.webContents.session.listWordsInSpellCheckerDictionary().then((words) => {
+    //    console.log("words:", words)
+    //})
+
+    const menuItems = []
+    for (const lang of languages) {
+        menuItems.push({
+            label: getLanguageName(lang),
+            type: 'checkbox',
+            checked: selectedLanguages.includes(lang),
+            click: () => {
+                if (selectedLanguages.includes(lang)) {
+                    win.webContents.setSpellCheckerLanguages(selectedLanguages.filter(l => l !== lang))
+                } else {
+                    win.webContents.setSpellCheckerLanguages([...selectedLanguages, lang])
+                }
+            },
+        })
+    }
+
     return Menu.buildFromTemplate(menuItems)
 }
