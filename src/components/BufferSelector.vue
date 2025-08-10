@@ -301,6 +301,7 @@
                 @input="onInput"
                 v-model="filter"
                 autocomplete="off"
+                spellcheck="false"
             />
         </div>
         <div class="scroller">
