@@ -29,6 +29,7 @@ import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useErrorStore } from "../stores/error-store.js";
 import { foldGutterExtension } from "./fold-gutter.js"
 import { heynoteSearch } from "./search/search.js"
+import { spellcheckConfig } from "./spell-check.js"
 
 
 // Turn off the use of EditContext, since Chrome has a bug (https://issues.chromium.org/issues/351029417) 
@@ -56,6 +57,7 @@ export class HeynoteEditor {
         defaultBlockToken,
         defaultBlockAutoDetect,
         keyBindings,
+        spellcheckEnabled=false,
     }) {
         this.element = element
         this.path = path
@@ -70,6 +72,8 @@ export class HeynoteEditor {
         this.deselectOnCopy = keymap === "emacs"
         this.emacsMetaKey = emacsMetaKey
         this.fontTheme = new Compartment
+        this.spellcheckEnabled = spellcheckEnabled
+        this.spellcheckCompartment = new Compartment
         this.setDefaultBlockLanguage(defaultBlockToken, defaultBlockAutoDetect)
         this.contentLoaded = false
         this.notesStore = useHeynoteStore()
@@ -122,6 +126,8 @@ export class HeynoteEditor {
                 Prec.highest(cmKeymap.of(markdownKeymap)),
 
                 links,
+
+                this.spellcheckCompartment.of(spellcheckConfig(this.spellcheckEnabled)),
             ],
         })
 
@@ -299,6 +305,13 @@ export class HeynoteEditor {
         this.emacsMetaKey = emacsMetaKey
         this.view.dispatch({
             effects: this.keymapCompartment.reconfigure(getKeymapExtensions(this, keymap, keyBindings)),
+        })
+    }
+
+    setSpellcheckEnabled(enabled) {
+        this.spellcheckEnabled = enabled
+        this.view.dispatch({
+            effects: this.spellcheckCompartment.reconfigure(spellcheckConfig(this.spellcheckEnabled)),
         })
     }
 
