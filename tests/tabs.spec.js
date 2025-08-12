@@ -131,7 +131,7 @@ test("closing last non-scratch tab opens scratch buffer", async ({ page }) => {
     
     await page.waitForTimeout(300)
     expect(await page.locator('.tab-item').count()).toBe(1)
-    expect(await page.locator('.tab-item .title').textContent()).toContain("scratch")
+    expect(await page.locator('.tab-item .title').textContent()).toContain("Scratch")
 })
 
 test("open new tab via keyboard shortcut", async ({ page }) => {
