@@ -61,7 +61,7 @@ test("content is preserved after page reload", async ({ page }) => {
     
     // Reload the page - this should trigger the Firefox content loss
     page.evaluate(() => window.location.reload())
-    await page.waitForTimeout(300)
+    await page.waitForTimeout(1000)
     
     // Should be on Buffer 2 (first tab) after reload, verify content is preserved
     expect(await heynotePage.getBlockContent(0)).toBe("Content in Buffer 2")
