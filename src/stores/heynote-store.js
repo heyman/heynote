@@ -44,6 +44,13 @@ export const useHeynoteStore = defineStore("heynote", {
             this.buffers = buffers
         },
 
+        focusEditor() {
+            if (!this.currentEditor) {
+                return
+            }
+            this.currentEditor.focus()
+        },
+
         openBuffer(path) {
             this.closeDialog()
             this.currentBufferPath = path

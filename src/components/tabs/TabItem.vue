@@ -83,6 +83,7 @@
             @click.stop="onClose"
             @mousedown.prevent
             class="close"
+            tabindex="-1"
         ></button>
     </li>
 </template>
