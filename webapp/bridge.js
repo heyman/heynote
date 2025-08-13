@@ -1,4 +1,4 @@
-import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT, SAVE_TABS_STATE, LOAD_TABS_STATE } from "@/src/common/constants";
+import { SETTINGS_CHANGE_EVENT, OPEN_SETTINGS_EVENT, SAVE_TABS_STATE, LOAD_TABS_STATE, WINDOW_CLOSE_EVENT } from "@/src/common/constants";
 import { NoteFormat } from "../src/common/note-format";
 
 const NOTE_KEY_PREFIX = "heynote-library__"
@@ -172,7 +172,9 @@ const Heynote = {
         },
 
         async saveAndQuit(contents) {
-            
+            for (const [path, content] of contents) {
+                localStorage.setItem(noteKey(path), content)
+            }
         },
 
         async exists(path) {
@@ -187,6 +189,9 @@ const Heynote = {
                     const path = key.slice(NOTE_KEY_PREFIX.length)
                     notes[path] = getNoteMetadata(content)
                 }
+            }
+            if (notes["scratch.txt"] === undefined) {
+                notes["scratch.txt"] = {name: "Scratch"}
             }
             return notes
         },
@@ -302,5 +307,7 @@ const Heynote = {
         document.title = title + " - Heynote"
     },
 }
+
+window.addEventListener("beforeunload", () => ipcRenderer.send(WINDOW_CLOSE_EVENT))
 
 export { Heynote, ipcRenderer}

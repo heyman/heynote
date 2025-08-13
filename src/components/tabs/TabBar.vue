@@ -1,5 +1,6 @@
 <script>
-    import { mapStores, mapState } from 'pinia'
+    import { mapStores, mapState, mapWritableState } from 'pinia'
+    import draggable from 'vuedraggable'
 
     import { TITLE_BAR_BG_LIGHT, TITLE_BAR_BG_DARK, TITLE_BAR_BG_LIGHT_BLURRED, TITLE_BAR_BG_DARK_BLURRED } from "@/src/common/constants"
     import { useEditorCacheStore } from "@/src/stores/editor-cache"
@@ -11,6 +12,7 @@
     export default {
         components: {
             TabItem,
+            draggable,
         },
 
         data() {
@@ -28,10 +30,11 @@
                 "theme",
                 "settings",
             ]),
+            ...mapWritableState(useHeynoteStore, ["openTabs"]),
             ...mapStores(useEditorCacheStore, useHeynoteStore),
 
             tabs() {
-                return this.heynoteStore.openTabs.map((path) => {
+                return this.openTabs.map((path) => {
                     //console.log("tab:", path)
                     return {
                         path: path,
@@ -78,6 +81,13 @@
             openBufferSelector() {
                 this.heynoteStore.openBufferSelector()
             },
+
+            dragEnd(event) {
+                //console.log("drag end:", event)
+                this.heynoteStore.focusEditor()
+                this.openTabs.splice(event.newIndex, 0, this.openTabs.splice(event.oldIndex, 1)[0])
+                this.heynoteStore.saveTabsState()
+            },
         },
     }
 </script>
@@ -91,23 +101,33 @@
         </div>
         <template v-if="showTabs">
             <div class="scroller">
-                <ol>
-                    <TabItem
-                        v-for="tab in tabs"
-                        :key="tab.path"
-                        :path="tab.path"
-                        :title="tab.title"
-                        :active="tab.active"
-                        @click.prevent="heynoteStore.openBuffer(tab.path)"
-                        @mousedown.prevent
-                    />
-                    <li class="spacer"></li>
-                </ol>
+                <draggable 
+                    :list="tabs" 
+                    tag="ol"
+                    group="tabs" 
+                    ghost-class="ghost"
+                    @end="dragEnd" 
+                    item-key="path"
+                >
+                    <template #item="{element, index}">
+                        <TabItem
+                            :path="element.path"
+                            :title="element.title"
+                            :active="element.active"
+                            @click.prevent="heynoteStore.openBuffer(element.path)"
+                            @mouseup="heynoteStore.focusEditor"
+                        />
+                    </template>
+                    <template #footer>
+                        <li class="spacer"></li>
+                    </template>
+                </draggable>
             </div>
             <div class="button-container">
                 <button 
                     @click="openBufferSelector"
                     class="add-tab"
+                    tabindex="-1"
                 ></button>
             </div>
         </template>

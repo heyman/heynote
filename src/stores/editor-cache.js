@@ -241,6 +241,10 @@ export const useEditorCacheStore = defineStore("editorCache", {
             })
 
             //console.log("LRU", this.lru)
-        }
+        },
+
+        getAllBufferContent() {
+            return Object.entries(this.cache).map(([path, editor]) => [path, editor.getContent()])
+        },
     },
 })

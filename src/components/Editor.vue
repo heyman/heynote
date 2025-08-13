@@ -35,9 +35,8 @@
 
             // set up window close handler that will save the buffer and quit
             this.onWindowClose = () => {
-                window.heynote.buffer.saveAndQuit([
-                    [this.editor.path, this.editor.getContent()],
-                ])
+                //console.log("content to save:", JSON.stringify(this.editorCacheStore.getContentToSave()))
+                window.heynote.buffer.saveAndQuit(this.editorCacheStore.getAllBufferContent())
             }
             window.heynote.mainProcess.on(WINDOW_CLOSE_EVENT, this.onWindowClose)
 

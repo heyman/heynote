@@ -131,7 +131,7 @@ test("closing last non-scratch tab opens scratch buffer", async ({ page }) => {
     
     await page.waitForTimeout(300)
     expect(await page.locator('.tab-item').count()).toBe(1)
-    expect(await page.locator('.tab-item .title').textContent()).toContain("scratch")
+    expect(await page.locator('.tab-item .title').textContent()).toContain("Scratch")
 })
 
 test("open new tab via keyboard shortcut", async ({ page }) => {
@@ -173,3 +173,45 @@ test("open new tab via add button", async ({ page }) => {
     await createBuffer(page, 'New Tab')
     expect(await page.locator('.tab-item').count()).toBe(4)
 })
+
+
+test("reorder tabs by dragging and verify order persistence", async ({ page }) => {
+    // Wait for buffers to be loaded properly
+    await page.waitForTimeout(1000)
+    
+    // Use hardcoded titles for reliable testing
+    const scratchTitle = 'Scratch'
+    const buffer1Title = 'Buffer 1' 
+    const buffer2Title = 'Buffer 2'
+    
+    // Drag Buffer 2 (3rd tab) to the first position using dragTo method
+    const buffer2Tab = await page.locator('.tab-item').nth(2)
+    const scratchTab = await page.locator('.tab-item').first()
+    
+    // Perform drag and drop operation using Playwright's dragTo method
+    await buffer2Tab.dragTo(scratchTab)
+    
+    // Wait for the reorder to complete
+    await page.waitForTimeout(500)
+    
+    // Verify the new tab order
+    const reorderedTabTitles = await page.locator('.tab-item .title').allTextContents()
+    expect(reorderedTabTitles).toEqual([buffer2Title, scratchTitle, buffer1Title])
+    
+    // Reload the page to test order persistence
+    await page.reload()
+    await page.waitForTimeout(2000)
+    
+    // Verify the tab order is preserved after reload
+    const persistedTabTitles = await page.locator('.tab-item .title').allTextContents()
+    expect(persistedTabTitles[0]).toBe(buffer2Title)  // Buffer 2 should be first
+    expect(persistedTabTitles[1]).toBe(scratchTitle)  // Scratch should be in middle
+    expect(persistedTabTitles[2]).toBe(buffer1Title)  // Buffer 1 should be last
+    expect(persistedTabTitles.length).toBe(3)         // Should still have 3 tabs
+    
+    // Verify tabs are still functional after reload
+    await page.locator('.tab-item').first().click()
+    await page.locator('.tab-item').nth(1).click() 
+    await page.locator('.tab-item').nth(2).click()
+})
+
