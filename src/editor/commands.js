@@ -74,6 +74,10 @@ const closeCurrentTab = (editor) => () => {
     useHeynoteStore().closeCurrentTab()
     return true
 }
+const reopenLastClosedTab = (editor) => () => {
+    useHeynoteStore().reopenLastClosedTab()
+    return true
+}
 const switchToLastTab = (editor) => () => {
     useHeynoteStore().switchToLastTab()
     return true
@@ -139,6 +143,7 @@ const HEYNOTE_COMMANDS = {
 
     // tab commands
     closeCurrentTab: cmd(closeCurrentTab, "Buffer", "Close current tab"),
+    reopenLastClosedTab: cmd(reopenLastClosedTab, "Buffer", "Reopen last closed tab"),
     switchToLastTab: cmd(switchToLastTab, "Buffer", "Switch to last tab"),
     previousTab: cmd(previousTab, "Buffer", "Switch to previous tab"),
     nextTab: cmd(nextTab, "Buffer", "Switch to next tab"),

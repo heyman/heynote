@@ -117,6 +117,7 @@ export const DEFAULT_KEYMAP = [
 
     // tabs
     cmd("Mod-w", "closeCurrentTab"),
+    cmd("Mod-Shift-t", "reopenLastClosedTab"),
     cmd("Ctrl-Tab", "nextTab"),
     cmd("Ctrl-Shift-Tab", "previousTab"),
     cmd("Mod-1", "switchToTab1"),
