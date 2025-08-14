@@ -14,10 +14,12 @@ It's now possible to turn on/off spellchecking. This can be done by clicking the
 
 ### Other fixes and improvements
 
-- Remember the open buffer(s) between program restarts
-- Fixed so that Alt-clicking on an cursor removes it (if more than one cursor exists)
+- Added a pin icon to the status bar that can be used to toggle the "Always on top" setting (to make the windows float on top of other programs).
+- Added toggleAlwaysOnTop command that can be used to bind a key that toggles the "Always on top setting".
+- Remember the open buffer(s) between program restarts.
+- Fixed so that Alt-clicking on an cursor removes it (if more than one cursor exists).
 - Changed the key binding for rectangular selection from Alt+Click to Alt+Shift+Click.
-- Update to latest version of Electron
+- Updated to latest version of Electron.
 
 
 ## 2.4.0

@@ -184,6 +184,10 @@
                 this.heynoteStore.executeCommand("toggleSpellcheck")
             },
 
+            toggleAlwaysOnTop() {
+                this.heynoteStore.executeCommand("toggleAlwaysOnTop")
+            },
+
             onMoveCurrentBlockToOtherEditor(path) {
                 this.editorCacheStore.moveCurrentBlockToOtherEditor(path)
                 this.closeMoveToBufferSelector()
@@ -216,6 +220,7 @@
             @formatCurrentBlock="formatCurrentBlock"
             @openSettings="showSettings = true"
             @toggleSpellcheck="toggleSpellcheck"
+            @toggleAlwaysOnTop="toggleAlwaysOnTop"
             @click="() => {$refs.editor.focus()}"
             class="status" 
         />
