@@ -10,6 +10,7 @@ export const useHeynoteStore = defineStore("heynote", {
         buffers: {},
         recentBufferPaths: [SCRATCH_FILE_NAME],
         openTabs: [],
+        closedTabs: [],
 
         currentEditor: null,
         currentBufferPath: null,
@@ -68,6 +69,15 @@ export const useHeynoteStore = defineStore("heynote", {
                 return
             }
             const editorCacheStore = useEditorCacheStore()
+            
+            // add the tab being closed to the closed tabs stack with its position
+            const tabIndex = this.openTabs.indexOf(path)
+            this.closedTabs.unshift({ path, index: tabIndex })
+            // keep only the last 10 closed tabs
+            if (this.closedTabs.length > 10) {
+                this.closedTabs = this.closedTabs.slice(0, 10)
+            }
+            
             this.openTabs = this.openTabs.filter((p) => p !== path)
             if (this.currentBufferPath === path) {
                 this.currentEditor = null
@@ -125,6 +135,22 @@ export const useHeynoteStore = defineStore("heynote", {
                 this.switchToTabIndex(0)
             } else {
                 this.switchToTabIndex(idx + 1)
+            }
+        },
+
+        reopenLastClosedTab() {
+            // find the most recent closed tab that still exists and isn't already open
+            while (this.closedTabs.length > 0) {
+                const closedTab = this.closedTabs.shift()
+                const { path: pathToReopen, index: originalIndex } = closedTab
+                if (this.buffers[pathToReopen] && !this.openTabs.includes(pathToReopen)) {
+                    // insert the tab at its original position (or as close as possible)
+                    const insertIndex = Math.min(originalIndex, this.openTabs.length)
+                    this.openTabs.splice(insertIndex, 0, pathToReopen)
+                    this.currentBufferPath = pathToReopen
+                    this.addRecentBuffer(pathToReopen)
+                    return
+                }
             }
         },
 
@@ -263,6 +289,7 @@ export const useHeynoteStore = defineStore("heynote", {
             editorCacheStore.freeEditor(path)
             this.recentBufferPaths = this.recentBufferPaths.filter((p) => p !== path)
             this.openTabs = this.openTabs.filter((p) => p !== path)
+            this.closedTabs = this.closedTabs.filter((closedTab) => closedTab.path !== path)
 
             // if the active buffer is deleted, we need to select a new tab
             if (this.currentEditor.path === path) {
