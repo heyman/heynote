@@ -326,15 +326,27 @@ function registerGlobalHotkey() {
     }
 }
 
+function setDockVisibility(visible) {
+    if (visible) {
+        //console.log("showing in dock")
+        app.dock.show().catch((error) => {
+            console.log("Could not show app in dock: ", error);
+        });
+        //app.setActivationPolicy("regular");
+    } else {
+        //console.log("hiding from dock")
+        app.dock.hide()
+        //app.setActivationPolicy("accessory")
+    }
+}
+
 function registerShowInDock() {
     // dock is only available on macOS
     if (isMac) {
         if (CONFIG.get("settings.showInDock")) {
-            app.dock.show().catch((error) => {
-                console.log("Could not show app in dock: ", error);
-            });
+            setDockVisibility(true)
         } else {
-            app.dock.hide();
+            setDockVisibility(false)
         }
     }
 }
@@ -349,22 +361,34 @@ function registerShowInMenu() {
 
 function registerAlwaysOnTop() {
     if (CONFIG.get("settings.alwaysOnTop")) {
-        const disableAlwaysOnTop = () => {
+        const setAlwaysOnTop = () => {
             win.setAlwaysOnTop(true, "floating");
             win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
             win.setFullScreenable(false);
+
+            // Ensure the Dock icon remains visible on macOS
+            if (isMac && CONFIG.get("settings.showInDock")) {
+                setDockVisibility(true)
+            }
+
+            // windows looses focus (on Mac)
+            win.focus()
         }
         // if we're in fullscreen mode, we need to exit fullscreen before we can set alwaysOnTop
         if (win.isFullScreen()) {
             // on Mac setFullScreen happens asynchronously, so we need to wait for the event before we can disable alwaysOnTop
-            win.once("leave-full-screen", disableAlwaysOnTop)
+            win.once("leave-full-screen", setAlwaysOnTop)
             win.setFullScreen(false)
         } else {
-            disableAlwaysOnTop()
+            setAlwaysOnTop()
         }
     } else {
         win.setAlwaysOnTop(false);
-        win.setVisibleOnAllWorkspaces(false);
+
+        // without skipTransformProcessType, the window dock icon will re-appear on Mac if showInDock is false, 
+        // and calling app.dock.hide() immediately after this call won't fix it
+        win.setVisibleOnAllWorkspaces(false, {skipTransformProcessType:true});
+        
         win.setFullScreenable(true);
     }
 }
