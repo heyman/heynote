@@ -215,3 +215,80 @@ test("reorder tabs by dragging and verify order persistence", async ({ page }) =
     await page.locator('.tab-item').nth(2).click()
 })
 
+test("reopen last closed tab with keyboard shortcut", async ({ page }) => {
+    // Add content to Buffer 2 (current active tab)
+    await page.locator("body").pressSequentially("Buffer 2 content")
+    
+    // Switch to Buffer 1 and add content
+    const buffer1Tab = await page.locator('.tab-item').nth(1)
+    await buffer1Tab.click()
+    await page.locator("body").pressSequentially("Buffer 1 content")
+    
+    // Close Buffer 1 using close button
+    await buffer1Tab.hover()
+    await buffer1Tab.locator('.close').click()
+    await page.waitForTimeout(300)
+    
+    // Should now have 2 tabs (Scratch and Buffer 2)
+    expect(await page.locator('.tab-item').count()).toBe(2)
+    
+    // Reopen last closed tab (Buffer 1) using keyboard shortcut
+    await page.locator("body").press(heynotePage.isMac ? "Meta+Shift+t" : "Control+Shift+t")
+    await page.waitForTimeout(300)
+    
+    // Should have 3 tabs again
+    expect(await page.locator('.tab-item').count()).toBe(3)
+    
+    // Buffer 1 should be reopened at its original position (middle)
+    const tabTitles = await page.locator('.tab-item .title').allTextContents()
+    expect(tabTitles[1]).toContain("Buffer 1")
+    
+    // Buffer 1 content should be preserved
+    expect(await heynotePage.getBlockContent(0)).toBe("Buffer 1 content")
+})
+
+test("reopen multiple closed tabs in reverse order", async ({ page }) => {
+    // Add content to all tabs
+    await page.locator("body").pressSequentially("Buffer 2 content")
+    
+    const buffer1Tab = await page.locator('.tab-item').nth(1)
+    await buffer1Tab.click()
+    await page.locator("body").pressSequentially("Buffer 1 content")
+    
+    const scratchTab = await page.locator('.tab-item').first()
+    await scratchTab.click()
+    await page.locator("body").pressSequentially("Scratch content")
+    
+    // Close Buffer 1 first
+    await buffer1Tab.hover()
+    await buffer1Tab.locator('.close').click()
+    await page.waitForTimeout(300)
+    
+    // Close Buffer 2 next
+    const buffer2Tab = await page.locator('.tab-item').nth(1) // Buffer 2 is now at index 1
+    await buffer2Tab.hover()
+    await buffer2Tab.locator('.close').click()
+    await page.waitForTimeout(300)
+    
+    // Should have only Scratch tab
+    expect(await page.locator('.tab-item').count()).toBe(1)
+    
+    // Reopen most recently closed tab (Buffer 2)
+    await page.locator("body").press(heynotePage.isMac ? "Meta+Shift+t" : "Control+Shift+t")
+    await page.waitForTimeout(300)
+    expect(await page.locator('.tab-item').count()).toBe(2)
+
+    // Verify content of Buffer 2 is preserved
+    expect(await heynotePage.getBlockContent(0)).toBe("Buffer 2 content")
+    
+    // Reopen second most recently closed tab (Buffer 1)
+    await page.locator("body").press(heynotePage.isMac ? "Meta+Shift+t" : "Control+Shift+t")
+    await page.waitForTimeout(300)
+    expect(await page.locator('.tab-item').count()).toBe(3)
+    
+    // Click on Buffer 1 and verify its content is preserved
+    const reopenedBuffer1 = await page.locator('.tab-item').filter({ hasText: 'Buffer 1' })
+    await reopenedBuffer1.click()
+    expect(await heynotePage.getBlockContent(0)).toBe("Buffer 1 content")
+})
+
