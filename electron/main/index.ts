@@ -98,19 +98,21 @@ async function createWindow() {
     // windowConfig.x and windowConfig.y will be undefined when config file is missing, e.g. first time run
     if (windowConfig.x !== undefined && windowConfig.y !== undefined) {
         // check if window is outside of screen, or too large
-        const area = screen.getDisplayMatching({
+        const display = screen.getDisplayMatching({
             x: windowConfig.x,
             y: windowConfig.y,
             width: windowConfig.width,
             height: windowConfig.height,
-        }).workArea
+        })
+        //console.log("bounds:", display.bounds, "workArea:", display.workArea)
+        const area = display.workArea
         if (windowConfig.width > area.width) {
             windowConfig.width = area.width
         }
         if (windowConfig.height > area.height) {
             windowConfig.height = area.height
         }
-        if (windowConfig.x + windowConfig.width > area.width || windowConfig.y + windowConfig.height > area.height) {
+        if (windowConfig.x + windowConfig.width > (area.width + area.x) || windowConfig.y + windowConfig.height > (area.height + area.y)) {
             // window is outside of screen, reset position
             windowConfig.x = undefined
             windowConfig.y = undefined
