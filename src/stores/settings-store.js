@@ -9,7 +9,8 @@ export const useSettingsStore = defineStore("settings", {
             settings: window.heynote.settings,
             themeSetting: "system",
             theme: window.heynote.themeMode.initial,
-            spellcheckEnabled: window.heynote.settings.spellcheckEnabled === true
+            spellcheckEnabled: window.heynote.settings.spellcheckEnabled === true,
+            alwaysOnTop: window.heynote.settings.alwaysOnTop,
         }
     },
 
@@ -18,6 +19,7 @@ export const useSettingsStore = defineStore("settings", {
             //console.log("settings updated", settings)
             this.settings = settings
             this.spellcheckEnabled = settings.spellcheckEnabled === true
+            this.alwaysOnTop = settings.alwaysOnTop
         },
 
         updateSettings(settings) {

@@ -20,7 +20,7 @@
 
         data() {
             return {
-                
+                isWebApp: window.heynote.platform.isWebApp,
             }
         },
 
@@ -39,6 +39,7 @@
             ]),
             ...mapState(useSettingsStore, [
                 "spellcheckEnabled",
+                "alwaysOnTop",
             ]),
 
             languageName() {
@@ -119,12 +120,24 @@
         </div>
         <div 
             @click.stop="$emit('toggleSpellcheck')"
+            @mousedown.prevent
             @contextmenu="onSpellcheckingContextMenu"
             :class="'status-block spellcheck clickable' + (this.spellcheckEnabled ? ' spellcheck-enabled' : '')"
             title="Spellchecking"
         >
             <span class="icon icon-format"></span>
         </div>
+
+        <div 
+            v-if="!isWebApp"
+            @click.stop="$emit('toggleAlwaysOnTop')"
+            @mousedown.prevent
+            class="status-block pin clickable"
+            title="Pin"
+        >
+            <span class="icon icon-format" :class="{'pinned': alwaysOnTop}"></span>
+        </div>
+
         <UpdateStatusItem 
             v-if="updatesEnabled" 
             :autoUpdate="autoUpdate"
@@ -211,6 +224,17 @@
                 background-image: url("@/assets/icons/spellcheck-off.svg")
             &.spellcheck-enabled .icon
                 background-image: url("@/assets/icons/spellcheck.svg")
+        
+        .pin
+            padding-top: 0
+            padding-bottom: 0
+            .icon   
+                background-size: 13px
+                background-repeat: no-repeat
+                background-position: center center
+                background-image: url("@/assets/icons/pin.svg")
+                &.pinned
+                    background-image: url("@/assets/icons/pin-pinned.svg")
         
         .settings
             padding-top: 0

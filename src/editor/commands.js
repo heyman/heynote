@@ -39,6 +39,7 @@ import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel }
 import { insertDateAndTime } from "./date-time.js"
 import { foldBlock, unfoldBlock, toggleBlockFold } from "./fold-gutter.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
+import { useSettingsStore } from "../stores/settings-store.js"
 import { toggleSpellcheck, enableSpellcheck, disableSpellcheck } from "./spell-check.js"
 
 
@@ -86,6 +87,14 @@ const nextTab = (editor) => () => {
 }
 const previousTab = (editor) => () => {
     useHeynoteStore().previousTab()
+}
+
+export function toggleAlwaysOnTop(editor) {
+    return (view) => {
+        const settingsStore = useSettingsStore()
+        settingsStore.updateSettings({alwaysOnTop:!settingsStore.settings.alwaysOnTop})
+        return true
+    }
 }
 
 const nothing = (view) => {
@@ -149,6 +158,7 @@ const HEYNOTE_COMMANDS = {
     toggleSpellcheck: cmd(toggleSpellcheck, "Spellchecker", "Toggle Spellchecking"),
     enableSpellcheck: cmd(enableSpellcheck, "Spellchecker", "Enable Spellchecking"),
     disableSpellcheck: cmd(disableSpellcheck, "Spellchecker", "Disable Spellchecking"),
+    toggleAlwaysOnTop: cmd(toggleAlwaysOnTop, "Window", "Toggle Always on top"),
 
     // commands without editor context
     paste: cmdLessContext(pasteCommand, "Clipboard", "Paste from clipboard"),
