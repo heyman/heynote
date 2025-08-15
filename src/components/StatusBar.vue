@@ -168,6 +168,8 @@
         flex-direction: row
         align-items: center
         user-select: none
+        white-space: nowrap
+        overflow: hidden
 
         .spacer
             flex-grow: 1
