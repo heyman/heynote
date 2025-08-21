@@ -2,7 +2,13 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.5.0 (not yet released)
+## Next version (not yet released)
+
+- When displaying key bindings show shorter version with ⇧, ⌘, ⌥, etc instead of Shift, Cmd, Alt, etc
+- Fixed so that tooltips displays new key binding if the default have been overridden
+
+
+## 2.5.0
 
 ### Tabs
 

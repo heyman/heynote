@@ -84,9 +84,11 @@ const switchToLastTab = (editor) => () => {
 }
 const nextTab = (editor) => () => {
     useHeynoteStore().nextTab()
+    return true
 }
 const previousTab = (editor) => () => {
     useHeynoteStore().previousTab()
+    return true
 }
 
 export function toggleAlwaysOnTop(editor) {
@@ -151,6 +153,7 @@ const HEYNOTE_COMMANDS = {
         "switchToTab" + (i+1), 
         cmdLessContext(() => {
             useHeynoteStore().switchToTabIndex(i)
+            return true
         }, "Buffer", `Switch to tab ${i+1}`),
     ])),
 

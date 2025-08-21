@@ -2,6 +2,7 @@
     import { mapState } from 'pinia'
     import UpdateStatusItem from './UpdateStatusItem.vue'
     import { LANGUAGES } from '../editor/languages.js'
+    import { getKeyBindingForCommand } from '../editor/keymap.js'
     import { useHeynoteStore } from "../stores/heynote-store"
     import { useSettingsStore } from "../stores/settings-store"
     
@@ -40,6 +41,7 @@
             ...mapState(useSettingsStore, [
                 "spellcheckEnabled",
                 "alwaysOnTop",
+                "settings",
             ]),
 
             languageName() {
@@ -63,14 +65,6 @@
                 return `Format Block Content (Alt + Shift + F)`
             },
 
-            changeNoteTitle() {
-                return `Change Note (${this.cmdKey} + P)`
-            },
-
-            changeLanguageTitle() {
-                return `Change language for current block (${this.cmdKey} + L)`
-            },
-
             updatesEnabled() {
                 return !!window.heynote.autoUpdate
             },
@@ -81,6 +75,11 @@
                 event.preventDefault()
                 window.heynote.mainProcess.invoke('showSpellcheckingContextMenu')
             },
+
+            getTooltip(text, command) {
+                const binding = getKeyBindingForCommand(command, this.settings.keymap, this.settings.keyBindings, this.settings.emacsMetaKey)
+                return !binding ? text : `${text} (${binding})`
+            }
         },
     }
 </script>
@@ -98,14 +97,14 @@
         <div 
             @click.stop="$emit('openBufferSelector')"
             class="status-block note clickable"
-            :title="changeNoteTitle"
+            :title="getTooltip('Change Note', 'openBufferSelector')"
         >
             {{ currentBufferName }} 
         </div>
         <div 
             @click.stop="$emit('openLanguageSelector')"
             class="status-block lang clickable"
-            :title="changeLanguageTitle"
+            :title="getTooltip('Change language for current block', 'openLanguageSelector')"
         >
             {{ languageName }} 
             <span v-if="currentLanguageAuto" class="auto">(auto)</span>
@@ -114,7 +113,7 @@
             v-if="supportsFormat"
             @click.stop="$emit('formatCurrentBlock')"
             class="status-block format clickable"
-            :title="formatBlockTitle"
+            :title="getTooltip('Format Block Content', 'formatBlockContent')"
         >
             <span class="icon icon-format"></span>
         </div>
@@ -123,7 +122,7 @@
             @mousedown.prevent
             @contextmenu="onSpellcheckingContextMenu"
             :class="'status-block spellcheck clickable' + (this.spellcheckEnabled ? ' spellcheck-enabled' : '')"
-            title="Spellchecking"
+            :title="getTooltip('Spellchecking', 'toggleSpellcheck')"
         >
             <span class="icon icon-format"></span>
         </div>
@@ -133,7 +132,7 @@
             @click.stop="$emit('toggleAlwaysOnTop')"
             @mousedown.prevent
             class="status-block pin clickable"
-            title="Pin"
+            :title="getTooltip('Pin', 'toggleAlwaysOnTop')"
         >
             <span class="icon icon-format" :class="{'pinned': alwaysOnTop}"></span>
         </div>

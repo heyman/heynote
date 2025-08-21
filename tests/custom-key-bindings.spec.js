@@ -29,6 +29,11 @@ test("add custom key binding", async ({page}) => {
     await page.locator("css=.overlay .settings .dialog .bottom-bar .close").click()
     await page.locator("body").press("Control+Shift+H")
     await expect(page.locator("css=.language-selector .items > li.selected")).toBeVisible()
+    await page.locator("body").press("Escape")
+    await expect(page.locator("css=.status .status-block.lang")).toHaveAttribute(
+        "title", 
+        "Change language for current block (Ctrl + ⇧ + H)"
+    )
 })
 
 test("delete custom key binding", async ({page}) => {
@@ -70,4 +75,8 @@ test("disable default key binding", async ({page}) => {
     await heynotePage.setSettings(settings)
     await page.locator("body").press(langKey)
     await expect(page.locator("css=.language-selector .items > li.selected")).toHaveCount(0)
+    await expect(page.locator("css=.status .status-block.lang")).toHaveAttribute(
+        "title", 
+        "Change language for current block"
+    )
 })
