@@ -96,3 +96,118 @@ test`)
     await page.keyboard.press("Control+Y")
     expect(await heynotePage.getBlockContent(0)).toBe("1test1")
 })
+
+test("cut empty line deletes the line", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞text
+line 1
+
+line 3`)
+    
+    // Move cursor to the empty line (line 2)
+    await page.keyboard.press("Control+A")
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("ArrowDown")
+    
+    // Cut the empty line (should delete it)
+    await page.keyboard.press("Control+W")
+    
+    // Verify the empty line was deleted
+    expect(await heynotePage.getBlockContent(0)).toBe("line 1\nline 3")
+    
+    // Verify the content was copied to clipboard by pasting (should include line break)
+    await page.keyboard.press("Control+Y")
+    expect(await heynotePage.getBlockContent(0)).toBe("line 1\n\nline 3")
+})
+
+test("cut non-empty line deletes the line", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞text
+line 1
+line 2`)
+    
+    // Move cursor to line 1
+    await page.keyboard.press("Control+A")
+    await page.keyboard.press("ArrowDown")
+    
+    // Cut the non-empty line (should delete it)
+    await page.keyboard.press("Control+W")
+    
+    // Verify the line was cut (removed from content)
+    expect(await heynotePage.getBlockContent(0)).toBe("line 2")
+    
+    // Verify the content was copied to clipboard by pasting (should include line break)
+    await page.keyboard.press("Control+Y")
+    expect(await heynotePage.getBlockContent(0)).toBe("line 1\nline 2")
+})
+
+test("cut with selection works normally", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞text
+line 1
+line 2`)
+    
+    // Create a selection on line 1
+    await page.keyboard.press("Control+A")
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("Control+Space")
+    await page.keyboard.press("Control+A")
+    
+    // Cut the selection
+    await page.keyboard.press("Control+W")
+    
+    // Verify the selection was cut (removed from content)
+    expect(await heynotePage.getBlockContent(0)).toBe("line 2")
+    
+    // Verify the content was copied to clipboard by pasting
+    await page.keyboard.press("Control+Y")
+    expect(await heynotePage.getBlockContent(0)).toBe("line 1\nline 2")
+})
+
+test("copy empty line includes line break", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞text
+line 1
+
+line 3`)
+    
+    // Move cursor to the empty line (line 2)
+    await page.keyboard.press("Control+A")
+    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("ArrowDown")
+    
+    // Copy the empty line (should copy with line break)
+    await page.keyboard.press("Alt+W")
+    
+    // Clear the buffer
+    await clearBuffer()
+    
+    // Paste the copied content (should include line break)
+    await page.keyboard.press("Control+Y")
+    expect(await heynotePage.getBlockContent(0)).toBe("\n")
+})
+
+test("copy non-empty line includes line break", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞text
+line 1
+line 2`)
+    
+    // Move cursor to line 1
+    await page.keyboard.press("Control+A")
+    await page.keyboard.press("ArrowDown")
+    
+    // Copy the non-empty line (should copy with line break)
+    await page.keyboard.press("Alt+W")
+    
+    // Clear the buffer
+    await clearBuffer()
+    
+    // Paste the copied content (should include line break)
+    await page.keyboard.press("Control+Y")
+    expect(await heynotePage.getBlockContent(0)).toBe("line 1\n")
+})
+
+
+
+
