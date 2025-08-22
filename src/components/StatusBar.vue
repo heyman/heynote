@@ -2,7 +2,6 @@
     import { mapState } from 'pinia'
     import UpdateStatusItem from './UpdateStatusItem.vue'
     import { LANGUAGES } from '../editor/languages.js'
-    import { getKeyBindingForCommand } from '../editor/keymap.js'
     import { useHeynoteStore } from "../stores/heynote-store"
     import { useSettingsStore } from "../stores/settings-store"
     
@@ -42,6 +41,7 @@
                 "spellcheckEnabled",
                 "alwaysOnTop",
                 "settings",
+                "commandKeyBindingsMap",
             ]),
 
             languageName() {
@@ -77,8 +77,8 @@
             },
 
             getTooltip(text, command) {
-                const binding = getKeyBindingForCommand(command, this.settings.keymap, this.settings.keyBindings, this.settings.emacsMetaKey)
-                return !binding ? text : `${text} (${binding})`
+                const bindings = this.commandKeyBindingsMap[command]
+                return bindings.length === 0 ? text : `${text} (${bindings[0]})`
             }
         },
     }

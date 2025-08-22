@@ -4,7 +4,8 @@
     import { mapState, mapActions } from 'pinia'
     import { SCRATCH_FILE_NAME } from "../common/constants"
     import { useHeynoteStore } from "../stores/heynote-store"
-    import { HEYNOTE_COMMANDS } from '../editor/commands'
+    import { useSettingsStore } from "../stores/settings-store"
+    import { HEYNOTE_COMMANDS } from "../editor/commands"
 
     const pathSep = window.heynote.buffer.pathSeparator
 
@@ -50,6 +51,9 @@
                 "buffers",
                 "recentBufferPaths",
             ]),
+            ...mapState(useSettingsStore, [
+                "commandKeyBindingsMap",
+            ]),
 
             commands() {
                 const commands = Object.entries(HEYNOTE_COMMANDS)
@@ -67,6 +71,7 @@
                     name: `${cmd.category}: ${cmd.description}`,
                     cmd: cmdKey,
                     isCommand: true,
+                    bindings: this.commandKeyBindingsMap[cmdKey],
                 }))
             },
 
@@ -258,6 +263,7 @@
                     "action-buttons-visible": this.actionButton > 0,
                     "scratch": item.scratch,
                     "new-note": item.createNew,
+                    "command": item.isCommand,
                 }
             },
 
@@ -318,6 +324,16 @@
                     >
                         <span class="name" v-html="item.name" />
                         <span class="path" v-html="item.folder" />
+                        <span v-if="item.bindings" class="bindings">
+                            <span 
+                                v-for="binding in item.bindings.slice(0, 2)" 
+                                :key="binding" 
+                                class="binding"
+                            > {{ binding }}</span>
+                            <span v-if="item.bindings.length > 2" class="more">
+                                and {{ item.bindings.length - 2 }} more
+                            </span>
+                        </span>
                         <span :class="{'action-buttons':true, 'visible':actionButton > 0 && idx === selected}">
                             <button 
                                 v-if="actionButton > 0 && idx === selected"
@@ -356,7 +372,7 @@
         position: absolute
         top: 0
         left: 50%
-        width: 440px
+        width: 480px
         transform: translateX(-50%)
         max-height: 100%
         box-sizing: border-box
@@ -421,6 +437,7 @@
                 align-items: center
                 scroll-margin-top: 6px
                 scroll-margin-bottom: 6px
+                cursor: pointer
                 &:hover
                     background: #e2e2e2
                     .action-buttons .show-actions
@@ -455,6 +472,9 @@
                     font-weight: 600
                 &.new-note
                     //font-size: 12px
+                &.command
+                    .name
+                        flex-grow: 1
                 .name
                     max-width: 100%
                     margin-right: 12px
@@ -473,6 +493,21 @@
                     text-wrap: nowrap
                     ::v-deep(b)
                         font-weight: 700
+                .bindings
+                    opacity: 0.6
+                    font-size: 12px
+                    flex-shrink: 1
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    text-wrap: nowrap
+                    .binding
+                        display: inline-block
+                        margin-right: 10px
+                        &:last-child
+                            margin-right: 0
+                    .more
+                        font-style: italic
+                    
                 .action-buttons
                     position: absolute
                     top: 1px

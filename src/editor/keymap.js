@@ -247,7 +247,7 @@ export function getKeyBindingLabel(binding, emacsMetaKey, separator=" ") {
                 return key.toUpperCase()
             }
             return key
-        }).join(parts.length === 1 ? " + " : "+")
+        }).join("+")
     }).join(separator)
 }
 
@@ -289,7 +289,8 @@ function _canonicalizeSingleStroke(strokeString) {
 /**
  * Returns the first bound key for a command (in label format, i.e. Mod replaced with ⌘ etc.)
  */
-export function getKeyBindingForCommand(command, keymapName, userKeymap, emacsMetaKey) {
+export function getAllKeyBindingsForCommand(command, keymapName, userKeymap, emacsMetaKey) {
+    //console.log("debug:", "getKeyBindingForCommand", command, keymapName, userKeymap, emacsMetaKey)
     const capturingCommands = new Set([
         "nothing", 
         "toggleAlwaysOnTop", 
@@ -299,16 +300,24 @@ export function getKeyBindingForCommand(command, keymapName, userKeymap, emacsMe
     ])
 
     const capturedKeys = new Set()
+    const bindings = []
     
 
     for (const binding of getCombinedKeymapSpec(keymapName, userKeymap)) {
         const key = canonicalizeKey(binding.key)
         if (binding.command === command && !capturedKeys.has(key)) {
-            return getKeyBindingLabel(binding.key, emacsMetaKey)
+            bindings.push(getKeyBindingLabel(binding.key, emacsMetaKey))
         }
         
         if (capturingCommands.has(binding.command)) {
             capturedKeys.add(key)
         }
     }
+    return bindings
+}
+
+export function getCommandKeyBindings(keymapName, userKeymap, emacsMetaKey) {
+    return Object.fromEntries(Object.keys(HEYNOTE_COMMANDS).map((cmd) => {
+        return [cmd, getAllKeyBindingsForCommand(cmd, keymapName, userKeymap, emacsMetaKey)]
+    }))
 }

@@ -1,7 +1,8 @@
-import { toRaw } from 'vue'
+import { toRaw } from "vue"
 import { defineStore } from "pinia"
 
-import { SETTINGS_CHANGE_EVENT } from '@/src/common/constants'
+import { SETTINGS_CHANGE_EVENT } from "@/src/common/constants"
+import { getCommandKeyBindings } from "@/src/editor/keymap"
 
 export const useSettingsStore = defineStore("settings", {
     state: () => {
@@ -13,6 +14,13 @@ export const useSettingsStore = defineStore("settings", {
             alwaysOnTop: window.heynote.settings.alwaysOnTop,
         }
     },
+
+    getters: {
+        commandKeyBindingsMap(state) {
+            return getCommandKeyBindings(state.settings.keymap, state.settings.keyBindings, state.settings.emacsMetaKey)
+        },
+    },
+        
 
     actions: {
         onSettingsChange(settings) {

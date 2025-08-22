@@ -32,7 +32,7 @@ test("add custom key binding", async ({page}) => {
     await page.locator("body").press("Escape")
     await expect(page.locator("css=.status .status-block.lang")).toHaveAttribute(
         "title", 
-        "Change language for current block (Ctrl + ⇧ + H)"
+        "Change language for current block (Ctrl+⇧+H)"
     )
 })
 
@@ -79,4 +79,15 @@ test("disable default key binding", async ({page}) => {
         "title", 
         "Change language for current block"
     )
+})
+
+test("open command palette", async ({page}) => {
+    const langKey = heynotePage.isMac ? "Meta+Shift+P" : "Control+Shift+P"
+    await page.locator("body").press(langKey)
+    await expect(page.locator("css=.note-selector .input-container input")).toHaveValue(">")
+    await expect(page.locator("css=.note-selector .items > li.selected")).toBeVisible()
+    await page.locator("body").pressSequentially("create new")
+    await expect(page.locator("css=.note-selector .items > li.selected .name")).toHaveText("Buffer: Create new buffer…")
+    await expect(page.locator("css=.note-selector .items > li.selected .bindings .binding")).toBeVisible()
+    await page.locator("body").press("Escape")
 })
