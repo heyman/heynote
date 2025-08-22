@@ -12,6 +12,7 @@ export const keyHelpStr = (platform: string, extended: boolean = false) => {
         [`${modChar} + N`, "Create a new note buffer"],
         [`${modChar} + S`, "Move the current block to another (or new) buffer"],
         [`${modChar} + P`, "Open note selector"],
+        [`${modChar} + Shift + P`, "Open command palette"],
         [`${modChar} + Down`, "Goto next block"],
         [`${modChar} + Up`, "Goto previous block"],
         [`${modChar} + A`, "Select all text in a note block. Press again to select the whole buffer"],
