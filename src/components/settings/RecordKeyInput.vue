@@ -1,4 +1,9 @@
 <script>
+    import { mapState } from 'pinia'
+    
+    import { getKeyBindingLabel } from '@/src/editor/keymap'
+    import { useSettingsStore } from '@/src/stores/settings-store'
+
     import { keyName, base } from "w3c-keyname"
 
     export default {
@@ -13,8 +18,14 @@
         },
 
         computed: {
+            ...mapState(useSettingsStore, ["settings"]),
+            
             key() {
                 return this.keys.join(" ")
+            },
+
+            keyLabel() {
+                return getKeyBindingLabel(this.key, this.settings.emacsMetaKey, "     ")
             },
         },
 
@@ -80,7 +91,7 @@
 <template>
     <input 
         type="text" 
-        :value="key" 
+        :value="keyLabel" 
         @keydown.prevent="onKeyDown"
         class="keys"
         readonly

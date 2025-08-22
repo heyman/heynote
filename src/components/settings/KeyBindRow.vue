@@ -1,5 +1,10 @@
 <script>
+    import { mapState } from 'pinia'
+
     import { HEYNOTE_COMMANDS } from '@/src/editor/commands'
+    import { getKeyBindingLabel } from '@/src/editor/keymap'
+    import { useSettingsStore } from '@/src/stores/settings-store'
+
     
     export default {
         props: [
@@ -10,11 +15,10 @@
         ],
 
         computed: {
+            ...mapState(useSettingsStore, ["settings"]),
+
             formattedKeys() {
-                return this.keys.replaceAll(
-                    "Mod", 
-                    window.heynote.platform.isMac ? "⌘" : "Ctrl",
-                )
+                return getKeyBindingLabel(this.keys, this.settings.emacsMetaKey, "&nbsp;&nbsp;&nbsp;")
             },
 
             commandLabel() {
@@ -38,9 +42,7 @@
             {{ source }}
         </td>
         <td class="key">
-            <template v-if="keys">
-                {{ formattedKeys }}
-            </template>
+            <span v-if="keys" v-html="formattedKeys" />
         </td>
         <td class="command">
             <span class="command-name">{{ commandLabel }}</span>

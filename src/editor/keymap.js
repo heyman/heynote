@@ -1,7 +1,11 @@
 import { keymap } from "@codemirror/view"
 import { Prec } from "@codemirror/state"
 
+import { keyName } from "w3c-keyname"
+
+
 import { HEYNOTE_COMMANDS } from "./commands.js"
+
 
 const cmd = (key, command, scope) => ({key, command, scope})
 const cmdShift = (key, command, shiftCommand) => {
@@ -203,19 +207,117 @@ function keymapFromSpec(specs, editor) {
 }
 
 
-export function heynoteKeymap(editor, keymap, userKeymap) {
+function getCombinedKeymapSpec(keymapName, userKeymap) {
     return [
-        keymapFromSpec([
-            ...userKeymap,
-            ...keymap,
-        ], editor),
+        ...userKeymap,
+        ...(keymapName === "emacs" ? [...EMACS_KEYMAP, ...DEFAULT_KEYMAP] : [...DEFAULT_NOT_EMACS_KEYMAP, ...DEFAULT_KEYMAP]),
     ]
 }
 
 export function getKeymapExtensions(editor, keymap, keyBindings) {
-    return heynoteKeymap(
-        editor, 
-        keymap === "emacs" ? [...EMACS_KEYMAP, ...DEFAULT_KEYMAP] : [...DEFAULT_NOT_EMACS_KEYMAP, ...DEFAULT_KEYMAP],
-        keyBindings || [],
-    )
+    return [
+        keymapFromSpec(getCombinedKeymapSpec(keymap, keyBindings), editor)
+    ]
+}
+
+/**
+ * @returns Human readable version of a key binding
+ */
+export function getKeyBindingLabel(binding, emacsMetaKey, separator=" ") {
+    emacsMetaKey = emacsMetaKey === "meta" ? "Meta" : (emacsMetaKey === "alt" ? "Alt" : emacsMetaKey)
+
+    const parts = binding.split(" ")
+    return parts.map((part) => {
+        return part.split("-").map((key) => {
+            switch(key) {
+                case "Mod":
+                    return window.heynote.platform.isMac ? "⌘" : "Ctrl"
+                case "Alt":
+                    return window.heynote.platform.isMac ? "⌥" : "Alt"
+                case "EmacsMeta":
+                    return emacsMetaKey === "Meta" ? "Meta" : (emacsMetaKey === "Alt" ? "Alt" : emacsMetaKey)
+                case "Meta":
+                    return window.heynote.platform.isMac ? "⌘" : "Meta"
+                case "Shift":
+                    return "⇧"
+                case "Control":
+                    return "Ctrl"
+            }
+            if (key.match(/^[a-z]$/)) {
+                return key.toUpperCase()
+            }
+            return key
+        }).join("+")
+    }).join(separator)
+}
+
+
+
+function canonicalizeKey(keyString) {
+    const strokes = keyString.trim().split(/\s+/)
+    return strokes.map(stroke => _canonicalizeSingleStroke(stroke)).join(' ')
+}
+function _canonicalizeSingleStroke(strokeString) {
+    const parts = strokeString.split('-')
+    const key = parts.pop()
+    const modifiers = parts.map(mod => mod.toLowerCase())
+
+    const normalizedModifiers = modifiers.map(mod => {
+        switch (mod) {
+            case 'mod': return isMac ? 'meta' : 'ctrl'
+            case 'control': case 'ctrl': return 'ctrl'
+            case 'shift': return 'shift'
+            case 'alt': case 'option': return 'alt'
+            case 'meta': case 'cmd': case 'command': return 'meta'
+            default: return mod
+        }
+    })
+
+    const order = ['ctrl', 'alt', 'shift', 'meta']
+    const sortedModifiers = normalizedModifiers.sort((a, b) => {
+        return order.indexOf(a) - order.indexOf(b)
+    })
+
+    const uniqueModifiers = [...new Set(sortedModifiers)]
+
+    return uniqueModifiers.length > 0
+        ? uniqueModifiers.join('-') + '-' + key.toLowerCase()
+        : key.toLowerCase()
+}
+
+
+/**
+ * Returns the first bound key for a command (in label format, i.e. Mod replaced with ⌘ etc.)
+ */
+export function getAllKeyBindingsForCommand(command, keymapName, userKeymap, emacsMetaKey) {
+    //console.log("debug:", "getKeyBindingForCommand", command, keymapName, userKeymap, emacsMetaKey)
+    const capturingCommands = new Set([
+        "nothing", 
+        "toggleAlwaysOnTop", 
+        "openLanguageSelector", "openBufferSelector", "openCreateNewBuffer", "openMoveToBuffer", "openCommandPalette", 
+        "closeCurrentTab", "reopenLastClosedTab", "nextTab", "previousTab", 
+        "switchToTab1", "switchToTab2", "switchToTab3", "switchToTab4", "switchToTab5", "switchToTab6", "switchToTab7", "switchToTab8", "switchToTab9", "switchToLastTab"
+    ])
+
+    const capturedKeys = new Set()
+    const bindings = []
+    
+
+    for (const binding of getCombinedKeymapSpec(keymapName, userKeymap)) {
+        const key = canonicalizeKey(binding.key)
+        if (binding.command === command && !capturedKeys.has(key)) {
+            bindings.push(getKeyBindingLabel(binding.key, emacsMetaKey))
+        }
+        
+        if (capturingCommands.has(binding.command)) {
+            capturedKeys.add(key)
+        }
+    }
+    return bindings
+}
+
+export function getCommandKeyBindings(keymapName, userKeymap, emacsMetaKey) {
+    return Object.fromEntries(Object.keys(HEYNOTE_COMMANDS).map((cmd) => {
+        return [cmd, getAllKeyBindingsForCommand(cmd, keymapName, userKeymap, emacsMetaKey)]
+    }))
 }

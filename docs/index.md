@@ -43,6 +43,7 @@ Available for Mac, Windows, and Linux.
 ⌘ + N               Create a new note buffer
 ⌘ + S               Move the current block to another (or new) buffer
 ⌘ + P               Open note selector
+⌘ + Shift + P       Open command palette
 ⌘ + Down            Goto next block
 ⌘ + Up              Goto previous block
 ⌘ + A               Select all text in a note block. Press again to select the whole buffer
@@ -65,6 +66,7 @@ Ctrl + L               Change block language
 Ctrl + N               Create a new note buffer
 Ctrl + S               Move the current block to another (or new) buffer
 Ctrl + P               Open note selector
+Ctrl + Shift + P       Open command palette
 Ctrl + Down            Goto next block
 Ctrl + Up              Goto previous block
 Ctrl + A               Select all text in a note block. Press again to select the whole buffer
