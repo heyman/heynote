@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## Next version (not yet released)
+## 2.6.0 (not yet released)
 
 - Show key bindings in Command Palette
 - When displaying key bindings show shorter version with ⇧, ⌘, ⌥, etc instead of Shift, Cmd, Alt, etc
