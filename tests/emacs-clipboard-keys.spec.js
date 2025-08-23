@@ -61,7 +61,7 @@ test("copy current line", async ({ page }) => {
     expect(await heynotePage.getBlockContent(0)).toBe("")
     await page.locator("body").press("Control+Y")
     await page.locator("body").press("Control+Y")
-    expect(await heynotePage.getBlockContent(0)).toBe("test line! test line! ")
+    expect(await heynotePage.getBlockContent(0)).toBe("test line! \ntest line! \n")
 })
 
 test("copy current multiple cursors", async ({ page }) => {
@@ -77,7 +77,7 @@ line 2`)
     expect(await heynotePage.getBlockContent(0)).toBe("")
     await page.keyboard.press("Control+Y")
     //await page.waitForTimeout(100);
-    expect(await heynotePage.getBlockContent(0)).toBe(`testline 1\ntestline 2`)
+    expect(await heynotePage.getBlockContent(0)).toBe(`testline 1\ntestline 2\n`)
 })
 
 test("copy current multiple cursors on same line", async ({ page }) => {
@@ -94,7 +94,7 @@ test`)
     expect(await heynotePage.getBlockContent(0)).toBe("")
 
     await page.keyboard.press("Control+Y")
-    expect(await heynotePage.getBlockContent(0)).toBe("1test1")
+    expect(await heynotePage.getBlockContent(0)).toBe("1test1\n")
 })
 
 test("cut empty line deletes the line", async ({ page }) => {
