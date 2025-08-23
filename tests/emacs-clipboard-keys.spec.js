@@ -211,7 +211,7 @@ test("cut single line block with another block after it", async ({ page }) => {
     await heynotePage.setContent(`
 ∞∞∞text
 block 1
-∞∞∞text
+∞∞∞python
 block 2`)
     
     // Move cursor to line 1
@@ -221,7 +221,7 @@ block 2`)
     await page.keyboard.press("Control+W")
 
     expect(await heynotePage.getBlockContent(0)).toBe(`
-∞∞∞text
+∞∞∞python
 block 2`)
     // Clear the buffer
     await clearBuffer()
