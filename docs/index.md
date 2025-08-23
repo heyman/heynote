@@ -78,7 +78,7 @@ Ctrl + Alt + ]         Unfold block(s)
 Ctrl + Alt + .         Toggle block fold
 ```
 
-You can see all the default key bindings in Heynote's settings under Key Bindings.
+You can see all the key bindings in the command palette and in Settings under Key Bindings.
 
 
 

@@ -31,7 +31,7 @@ ${keyHelpStr('darwin', true)}
 ${keyHelpStr('win32', true)}
 \`\`\`
 
-You can see all the default key bindings in Heynote's settings under Key Bindings.
+You can see all the key bindings in the command palette and in Settings under Key Bindings.
 $2`
 	const docsPath = path.resolve(__dirname, 'docs', 'index.md')
 	let docs = fs.readFileSync(docsPath, 'utf-8')
