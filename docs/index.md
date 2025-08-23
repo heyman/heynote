@@ -12,20 +12,21 @@ Available for Mac, Windows, and Linux.
 
 -   Persistent text buffer(s)
 -   Block-based
+-   Multiple buffers in tabs
+-   Math/Calculator mode
+-   Currency conversion
 -   Syntax highlighting:
 
     C++, C#, Clojure, CSS, Elixir, Erlang, Dart, Go, Groovy, HTML, Java, JavaScript, JSX, Kotlin, TypeScript, TOML, TSX, JSON, Lezer, Markdown, PHP, Python, Ruby, Rust, Scala, Shell, SQL, Swift, Vue, XML, YAML
-
+    
 -   Language auto-detection
 -   Auto-formatting
--   Math/Calculator mode
--   Currency conversion
--   Multiple buffers
 -   Multi-cursor editing
 -   Dark & Light themes
 -   Option to set a global hotkey to show/hide the app
 -   Default, Emacs-like or custom key bindings
 -   Spellchecking
+
 
 ## Default Key Bindings
 
