@@ -207,6 +207,26 @@ line 2`)
     expect(await heynotePage.getBlockContent(0)).toBe("line 1\n")
 })
 
+test("cut single line block with another block after it", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞text
+block 1
+∞∞∞text
+block 2`)
+    
+    // Move cursor to line 1
+    await page.keyboard.press("ArrowUp")
+    
+    // Cut block/line 1
+    await page.keyboard.press("Control+W")
 
-
-
+    expect(await heynotePage.getBlockContent(0)).toBe(`
+∞∞∞text
+block 2`)
+    // Clear the buffer
+    await clearBuffer()
+    
+    // Paste the copied content (should include line break)
+    await page.keyboard.press("Control+Y")
+    expect(await heynotePage.getBlockContent(0)).toBe("block 1\n")
+})
