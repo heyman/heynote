@@ -106,8 +106,7 @@ line 3`)
     
     // Move cursor to the empty line (line 2)
     await page.keyboard.press("Control+A")
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("ArrowUp")
     
     // Cut the empty line (should delete it)
     await page.keyboard.press("Control+W")
@@ -128,7 +127,7 @@ line 2`)
     
     // Move cursor to line 1
     await page.keyboard.press("Control+A")
-    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("ArrowUp")
     
     // Cut the non-empty line (should delete it)
     await page.keyboard.press("Control+W")
@@ -148,9 +147,10 @@ line 1
 line 2`)
     
     // Create a selection on line 1
+    await page.keyboard.press("ArrowUp")
     await page.keyboard.press("Control+A")
-    await page.keyboard.press("ArrowDown")
     await page.keyboard.press("Control+Space")
+    await page.keyboard.press("ArrowDown")
     await page.keyboard.press("Control+A")
     
     // Cut the selection
@@ -173,8 +173,8 @@ line 3`)
     
     // Move cursor to the empty line (line 2)
     await page.keyboard.press("Control+A")
-    await page.keyboard.press("ArrowDown")
-    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("ArrowUp")
+    //await page.keyboard.press("ArrowDown")
     
     // Copy the empty line (should copy with line break)
     await page.keyboard.press("Alt+W")
@@ -194,8 +194,7 @@ line 1
 line 2`)
     
     // Move cursor to line 1
-    await page.keyboard.press("Control+A")
-    await page.keyboard.press("ArrowDown")
+    await page.keyboard.press("ArrowUp")
     
     // Copy the non-empty line (should copy with line break)
     await page.keyboard.press("Alt+W")
