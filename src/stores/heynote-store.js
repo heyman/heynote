@@ -2,7 +2,10 @@ import { toRaw, nextTick, watch } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../common/note-format"
 import { useEditorCacheStore } from "./editor-cache"
-import { SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, SAVE_TABS_STATE, LOAD_TABS_STATE } from "../common/constants"
+import { 
+    SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, 
+    SAVE_TABS_STATE, LOAD_TABS_STATE, CONTEXT_MENU_CLOSED 
+} from "../common/constants"
 
 
 export const useHeynoteStore = defineStore("heynote", {
@@ -367,6 +370,10 @@ export async function initHeynoteStore() {
     })
     await heynoteStore.updateBuffers()
     heynoteStore.loadTabsState()
+
+    window.heynote.mainProcess.on(CONTEXT_MENU_CLOSED, (event) => {
+        heynoteStore.focusEditor()
+    })
 
     watch(() => heynoteStore.currentBufferPath, () => heynoteStore.saveTabsState())
     watch(() => heynoteStore.openTabs, () => heynoteStore.saveTabsState())

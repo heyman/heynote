@@ -6,7 +6,7 @@ import fs from "fs"
 import { 
     WINDOW_CLOSE_EVENT, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, SETTINGS_CHANGE_EVENT,
     TITLE_BAR_BG_LIGHT, TITLE_BAR_BG_LIGHT_BLURRED, TITLE_BAR_BG_DARK, TITLE_BAR_BG_DARK_BLURRED,
-    SCRATCH_FILE_NAME, SAVE_TABS_STATE, LOAD_TABS_STATE,
+    SCRATCH_FILE_NAME, SAVE_TABS_STATE, LOAD_TABS_STATE, CONTEXT_MENU_CLOSED,
 } from '@/src/common/constants'
 
 import { menu, getTrayMenu, getEditorContextMenu, getTabContextMenu, getSpellcheckingContextMenu } from './menu'
@@ -470,7 +470,11 @@ ipcMain.handle("showMainMenu", (event, x, y) =>  {
 })
 
 ipcMain.handle("showTabContextMenu", (event, tabPath) =>  {
-    getTabContextMenu(win, tabPath).popup({window: win});
+    const menu = getTabContextMenu(win, tabPath)
+    menu.once("menu-will-close", () => {
+        win?.webContents.send(CONTEXT_MENU_CLOSED)
+    })
+    menu.popup({window: win});
 })
 
 ipcMain.handle("showSpellcheckingContextMenu", (event) => {

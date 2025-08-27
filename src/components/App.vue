@@ -75,6 +75,7 @@
                 if (confirm(`Are you sure you want to delete the buffer "${this.heynoteStore.getBufferTitle(tabPath)}"?`)) {
                     this.deleteBuffer(tabPath)
                 }
+                this.focusEditor()
             })
         },
 
@@ -145,6 +146,7 @@
                 "openBuffer",
                 "closeMoveToBufferSelector",
                 "deleteBuffer",
+                "focusEditor",
             ]),
 
             // Used as a watcher for the booleans that control the visibility of editor dialogs. 
