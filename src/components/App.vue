@@ -18,6 +18,7 @@
     import NewBuffer from './NewBuffer.vue'
     import EditBuffer from './EditBuffer.vue'
     import TabBar from './tabs/TabBar.vue'
+    import AIPanel from './AIPanel.vue'
 
     export default {
         components: {
@@ -30,6 +31,7 @@
             NewBuffer,
             EditBuffer,
             TabBar,
+            AIPanel,
         },
 
         data() {
@@ -77,10 +79,29 @@
                 }
                 this.focusEditor()
             })
+
+            // Listen to AI invocation from command/shortcut
+            this._onInvokeAI = () => {
+                // Toggle: if panel is visible, close it; else open it with current block content
+                if (this.heynoteStore.showAIPanel) {
+                    this.heynoteStore.closeAIPanel()
+                    return
+                }
+                let initial = ''
+                try {
+                    const current = this.heynoteStore.currentEditor
+                    if (current && typeof current.getActiveBlockContent === 'function') {
+                        initial = current.getActiveBlockContent() || ''
+                    }
+                } catch (e) {}
+                this.heynoteStore.openAIPanel(initial)
+            }
+            window.addEventListener('invokeAIAgent', this._onInvokeAI)
         },
 
         beforeUnmount() {
             this.settingsStore.tearDown()
+            window.removeEventListener('invokeAIAgent', this._onInvokeAI)
         },
 
         watch: {
@@ -254,6 +275,7 @@
                 :themeSetting="settingsStore.themeSetting"
                 @closeSettings="closeSettings"
             />
+            <AIPanel v-if="heynoteStore.showAIPanel" />
             <NewBuffer 
                 v-if="showCreateBuffer"
                 @close="closeDialog"

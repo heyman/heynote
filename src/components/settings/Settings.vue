@@ -76,6 +76,13 @@
 
                 // tracks if the add key binding dialog is visible (so that we can set inert on the save button)
                 addKeyBindingDialogVisible: false,
+
+                // Integrations
+                noteMateAuthToken: this.initialSettings.noteMateAuthToken || "",
+                noteMateBaseUrl: this.initialSettings.noteMateBaseUrl || "http://localhost:80",
+                noteMateUserId: this.initialSettings.noteMateUserId || "tmfc",
+                testConnectStatus: "",
+                testConnectLoading: false,
             }
         },
 
@@ -135,6 +142,10 @@
                     fontSize: this.fontSize === defaultFontSize ? undefined : this.fontSize,
                     defaultBlockLanguage: this.defaultBlockLanguage === "text" ? undefined : this.defaultBlockLanguage,
                     defaultBlockLanguageAutoDetect: this.defaultBlockLanguageAutoDetect === true ? undefined : this.defaultBlockLanguageAutoDetect,
+                    // Integrations
+                    noteMateAuthToken: this.noteMateAuthToken,
+                    noteMateBaseUrl: this.noteMateBaseUrl,
+                    noteMateUserId: this.noteMateUserId,
                 })
                 if (!this.showInDock) {
                     this.showInMenu = true
@@ -156,6 +167,50 @@
                 if (!this.customBufferLocation) {
                     this.bufferPath = ""
                     this.updateSettings()
+                }
+            },
+
+            async testNoteMateConnection() {
+                const base = (this.noteMateBaseUrl || "").trim().replace(/\/$/, "")
+                if (!base) {
+                    this.testConnectStatus = "Please enter Base URL"
+                    return
+                }
+                const ctrl = new AbortController()
+                const timer = setTimeout(() => ctrl.abort(), 10000)
+                this.testConnectLoading = true
+                this.testConnectStatus = "Testing..."
+                const t0 = performance.now()
+                try {
+                    const resp = await fetch(`${base}/invoke`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...(this.noteMateAuthToken ? { 'Authorization': `Bearer ${this.noteMateAuthToken}` } : {}),
+                        },
+                        body: JSON.stringify({
+                            message: 'ping', images: [], model: 'gpt-4o-mini', thread_id: null,
+                            platform: 'heynote', platform_id: 'tmfc'
+                        }),
+                        signal: ctrl.signal,
+                    })
+                    const dt = Math.round(performance.now() - t0)
+                    if (resp.ok) {
+                        this.testConnectStatus = `OK (${dt}ms)`
+                    } else if (resp.status === 401) {
+                        this.testConnectStatus = `Unauthorized (401). Check API Key.`
+                    } else {
+                        this.testConnectStatus = `Error ${resp.status} ${resp.statusText}`
+                    }
+                } catch (e) {
+                    if (e?.name === 'AbortError') {
+                        this.testConnectStatus = 'Timeout'
+                    } else {
+                        this.testConnectStatus = `Failed: ${e?.message || e}`
+                    }
+                } finally {
+                    clearTimeout(timer)
+                    this.testConnectLoading = false
                 }
             },
         }
@@ -274,6 +329,47 @@
                                         @click="selectBufferLocation"
                                     >Select Directory</button>
                                     <span class="path" v-show="customBufferLocation && bufferPath">{{ bufferPath }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="entry" style="width:100%">
+                                <h2>Integrations</h2>
+                                <div class="nm-card">
+                                    <div class="nm-title">NoteMate</div>
+                                    <label class="nm-field">
+                                        <span>API Base URL</span>
+                                        <input
+                                            type="text"
+                                            :value="noteMateBaseUrl"
+                                            @input="(e) => { noteMateBaseUrl = e.target.value; updateSettings() }"
+                                            placeholder="http://localhost:80"
+                                        />
+                                    </label>
+                                    <div class="nm-row">
+                                        <label class="nm-field">
+                                            <span>API Key</span>
+                                            <input
+                                                type="password"
+                                                :value="noteMateAuthToken"
+                                                @input="(e) => { noteMateAuthToken = e.target.value; updateSettings() }"
+                                                placeholder="Enter AUTH_SECRET"
+                                            />
+                                        </label>
+                                        <label class="nm-field">
+                                            <span>User ID</span>
+                                            <input
+                                                type="text"
+                                                :value="noteMateUserId"
+                                                @input="(e) => { noteMateUserId = e.target.value; updateSettings() }"
+                                                placeholder="tmfc"
+                                            />
+                                        </label>
+                                    </div>
+                                    <div class="nm-actions">
+                                        <span class="nm-status">{{ testConnectStatus }}</span>
+                                        <button @click="testNoteMateConnection" :disabled="testConnectLoading">{{ testConnectLoading ? 'Testing...' : 'Test Connection' }}</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -611,6 +707,60 @@
                                     +dark-mode
                                         background: #222
                                         color: #aaa
+
+                        // NoteMate card styles
+                        .nm-card
+                            box-sizing: border-box
+                            // Match KeyboardHotkey box exactly
+                            border: 1px solid #c4c4c4
+                            border-radius: 3px
+                            padding: 7px
+                            background: #eee
+                            margin-top: 6px
+                            +dark-mode
+                                border: 1px solid #666
+                                background: #555
+                            .nm-title
+                                font-weight: 600
+                                margin-bottom: 8px
+                            .nm-row
+                                display: grid
+                                grid-template-columns: 1fr 1fr
+                                gap: 10px
+                                @media (max-width: 860px)
+                                    grid-template-columns: 1fr
+                            .nm-field
+                                display: block
+                                margin-bottom: 8px
+                                span
+                                    display: block
+                                    font-size: 12px
+                                    opacity: .85
+                                    margin-bottom: 3px
+                                input
+                                    width: 100%
+                                    padding: 6px 8px
+                                    box-sizing: border-box
+                                    border: 1px solid #ddd
+                                    border-radius: 6px
+                                    background: #fff
+                                    color: #333
+                                    +dark-mode
+                                        border: 1px solid #333
+                                        background: #1e1e1e
+                                        color: #eee
+                            .nm-hint
+                                font-size: 12px
+                                opacity: .7
+                                margin-top: 4px
+                            .nm-actions
+                                margin-top: 10px
+                                display: flex
+                                align-items: center
+                                gap: 8px
+                                justify-content: flex-end
+                                .nm-status
+                                    font-size: 12px
             .bottom-bar
                 box-sizing: border-box
                 height: var(--bottom-bar-height)

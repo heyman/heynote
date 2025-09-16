@@ -100,6 +100,8 @@ export const DEFAULT_KEYMAP = [
     cmd("Mod-l", "openLanguageSelector"),
     cmd("Mod-p", "openBufferSelector"),
     cmd("Mod-Shift-p", "openCommandPalette"),
+    // Invoke AI Agent
+    cmd("Mod-Alt-l", "invokeAIAgent"),
     cmd("Mod-s", "openMoveToBuffer"),
     cmd("Mod-n", "openCreateNewBuffer"),
 
@@ -208,8 +210,10 @@ function keymapFromSpec(specs, editor) {
 
 
 function getCombinedKeymapSpec(keymapName, userKeymap) {
+    // Ensure userKeymap is an array to avoid runtime errors when spreading
+    const safeUserKeymap = Array.isArray(userKeymap) ? userKeymap : []
     return [
-        ...userKeymap,
+        ...safeUserKeymap,
         ...(keymapName === "emacs" ? [...EMACS_KEYMAP, ...DEFAULT_KEYMAP] : [...DEFAULT_NOT_EMACS_KEYMAP, ...DEFAULT_KEYMAP]),
     ]
 }

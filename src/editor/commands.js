@@ -70,6 +70,20 @@ const openCreateNewBuffer = (editor) => () => {
     return true
 }
 
+// AI Agent invocation placeholder
+// Dispatch a browser event so other parts of the app (or plugins) can listen and handle the AI workflow.
+// Example listener:
+//   window.addEventListener('invokeAIAgent', (e) => { /* open AI panel / send IPC */ })
+const invokeAIAgent = (editor) => () => {
+    try {
+        const detail = { source: 'shortcut', timestamp: Date.now() }
+        window.dispatchEvent(new CustomEvent('invokeAIAgent', { detail }))
+    } catch (e) {
+        // no-op; ensure command never throws
+    }
+    return true
+}
+
 const closeCurrentTab = (editor) => () => {
     useHeynoteStore().closeCurrentTab()
     return true
@@ -162,6 +176,8 @@ const HEYNOTE_COMMANDS = {
     enableSpellcheck: cmd(enableSpellcheck, "Spellchecker", "Enable Spellchecking"),
     disableSpellcheck: cmd(disableSpellcheck, "Spellchecker", "Disable Spellchecking"),
     toggleAlwaysOnTop: cmd(toggleAlwaysOnTop, "Window", "Toggle Always on top"),
+    // AI
+    invokeAIAgent: cmd(invokeAIAgent, "AI", "Invoke AI Agent"),
 
     // commands without editor context
     paste: cmdLessContext(pasteCommand, "Clipboard", "Paste from clipboard"),
