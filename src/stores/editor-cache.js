@@ -46,6 +46,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
                     defaultBlockAutoDetect: settingsStore.settings.defaultBlockLanguageAutoDetect,
                     keyBindings: settingsStore.settings.keyBindings,
                     spellcheckEnabled: settingsStore.settings.spellcheckEnabled,
+                    showWhitespace: settingsStore.settings.showWhitespace,
                 })
             } catch (e) {
                 errorStore.addError("Error! " + e.message)
@@ -182,6 +183,9 @@ export const useEditorCacheStore = defineStore("editorCache", {
                             case "spellcheckEnabled":
                                 editor.setSpellcheckEnabled(newSettings.spellcheckEnabled)
                                 break
+                            case "showWhitespace":
+                                editor.setShowWhitespace(newSettings.showWhitespace)
+                                break;
                         }
                     })
                 }

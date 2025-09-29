@@ -40,6 +40,7 @@
                 isMac: window.heynote.platform.isMac,
                 showLineNumberGutter: this.initialSettings.showLineNumberGutter,
                 showFoldGutter: this.initialSettings.showFoldGutter,
+                showWhitespace: this.initialSettings.showWhitespace,
                 showTabs: this.initialSettings.showTabs,
                 showTabsInFullscreen: this.initialSettings.showTabsInFullscreen,
                 allowBetaVersions: this.initialSettings.allowBetaVersions,
@@ -115,6 +116,7 @@
                 this.settingsStore.updateSettings({
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
+                    showWhitespace: this.showWhitespace,
                     showTabs: this.showTabs,
                     showTabsInFullscreen: this.showTabsInFullscreen,
                     keymap: this.keymap,
@@ -347,7 +349,7 @@
                         </div>
                         <div class="row">
                             <div class="entry">
-                                <h2>Gutters</h2>
+                                <h2>Gutters & Whitespace</h2>
                                 <label>
                                     <input 
                                         type="checkbox" 
@@ -364,6 +366,15 @@
                                         @change="updateSettings"
                                     />
                                     Show fold gutter
+                                </label>
+
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        v-model="showWhitespace" 
+                                        @change="updateSettings"
+                                    />
+                                    Show white-space
                                 </label>
                             </div>
                         </div>
