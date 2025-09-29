@@ -1,5 +1,5 @@
 import { Annotation, EditorState, Compartment, Facet, EditorSelection, Transaction, Prec, RangeSet } from "@codemirror/state"
-import { EditorView, keymap as cmKeymap, drawSelection, ViewPlugin, lineNumbers } from "@codemirror/view"
+import { EditorView, keymap as cmKeymap, drawSelection, highlightWhitespace } from "@codemirror/view"
 import { ensureSyntaxTree, foldState, foldEffect } from "@codemirror/language"
 import { markdown, markdownKeymap } from "@codemirror/lang-markdown"
 import { undo, redo } from "@codemirror/commands"
@@ -58,6 +58,7 @@ export class HeynoteEditor {
         defaultBlockAutoDetect,
         keyBindings,
         spellcheckEnabled=false,
+        showWhitespace=false,
     }) {
         this.element = element
         this.path = path
@@ -69,6 +70,7 @@ export class HeynoteEditor {
         this.readOnlyCompartment = new Compartment
         this.closeBracketsCompartment = new Compartment
         this.indentUnitCompartment = new Compartment
+        this.highlightWhitespaceCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
         this.emacsMetaKey = emacsMetaKey
         this.fontTheme = new Compartment
@@ -128,6 +130,7 @@ export class HeynoteEditor {
                 links,
 
                 this.spellcheckCompartment.of(spellcheckConfig(this.spellcheckEnabled)),
+                this.highlightWhitespaceCompartment.of(showWhitespace ? highlightWhitespace() : [])
             ],
         })
 
@@ -312,6 +315,12 @@ export class HeynoteEditor {
         this.spellcheckEnabled = enabled
         this.view.dispatch({
             effects: this.spellcheckCompartment.reconfigure(spellcheckConfig(this.spellcheckEnabled)),
+        })
+    }
+
+    setShowWhitespace(enabled) {
+        this.view.dispatch({
+            effects: this.highlightWhitespaceCompartment.reconfigure(enabled ? highlightWhitespace() : []),
         })
     }
 

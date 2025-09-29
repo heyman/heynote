@@ -4,6 +4,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ## 2.6.0 (not yet released)
 
+- Add setting for rendering white-space (spaces as dots and tabs as arrows)
 - Show key bindings in Command Palette
 - When displaying key bindings show shorter version with ⇧, ⌘, ⌥, etc instead of Shift, Cmd, Alt, etc
 - Fixed so that tooltips displays new key binding if the default have been overridden
