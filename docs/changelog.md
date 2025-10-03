@@ -2,7 +2,11 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.6.0 (not yet released)
+## 2.6.1
+
+- Fix crash when no custom key binding had been set
+
+## 2.6.0
 
 - Add setting for rendering white-space (spaces as dots and tabs as arrows)
 - Show key bindings in Command Palette

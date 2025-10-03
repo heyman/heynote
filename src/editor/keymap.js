@@ -209,7 +209,7 @@ function keymapFromSpec(specs, editor) {
 
 function getCombinedKeymapSpec(keymapName, userKeymap) {
     return [
-        ...userKeymap,
+        ...(userKeymap ? userKeymap : []),
         ...(keymapName === "emacs" ? [...EMACS_KEYMAP, ...DEFAULT_KEYMAP] : [...DEFAULT_NOT_EMACS_KEYMAP, ...DEFAULT_KEYMAP]),
     ]
 }
