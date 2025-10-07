@@ -56,3 +56,27 @@ prev
     await expect(page.locator("css=.heynote-math-result").last()).toHaveText("1337")
 })
 
+
+test("each row of math blocks are processed even if they are outside of visible ranges", async ({ page }) => {
+    let bufferContent = `
+∞∞∞math
+a = 0`
+
+    for (let i=0; i<=200; i++) {
+        bufferContent += "\na = a + 1"
+    }
+    await heynotePage.setContent(bufferContent)
+
+    // scroll all the way up
+    for (let i=0; i<=20; i++)
+        await page.locator("body").press("PageUp");
+    await page.waitForTimeout(100)
+
+    // scroll all the way up to make the first rows of the block outside visible ranges
+    for (let i=0; i<=20; i++)
+        await page.locator("body").press("PageDown");
+    await page.waitForTimeout(100)
+
+    // make sure the whole Math block was processed
+    await expect(page.locator("css=.heynote-math-result").last()).toHaveText("201")
+})

@@ -53,6 +53,14 @@ function mathDeco(view) {
                 // get math.js parser and cache it for this block
                 let {parser, prev} = mathParsers.get(block) || {}
                 if (!parser) {
+                    if (line.from > block.content.from) {
+                        // this means that the first line of the visible ranges is in the middle of a math block
+                        // and in this case we want to start processing from the start of the math block to ensure 
+                        // that each of the Math block's lines get processed
+                        //console.log("whole match block not within visible ranges!")
+                        pos = block.content.from
+                        continue
+                    }
                     parser = window.math.parser()
                     mathParsers.set(block, {parser, prev})
                 }
