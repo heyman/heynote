@@ -163,6 +163,15 @@ async function createWindow() {
         win.setFullScreen(true)
     }
 
+
+    // when app gets focused, show the window if it's hidden
+    // without this, there are cases when Cmd-Tabbing to Heynote won't show the window
+    app.on("did-become-active", (event) => {
+        if (!win.isVisible()) {
+            win.show()
+        }
+    })
+
     win.on("close", (event) => {
         if (!forceQuit && CONFIG.get("settings.showInMenu")) {
             event.preventDefault()
@@ -294,10 +303,7 @@ function registerGlobalHotkey() {
                         // app.hide() only available on macOS
                         // We want to use app.hide() so that the menu bar also gets changed
                         app?.hide()
-                        if (CONFIG.get("settings.alwaysOnTop")) {
-                            // if alwaysOnTop is on, calling app.hide() won't hide the window
-                            win.hide()
-                        }
+                        win.hide()
                     } else if (isLinux) {
                         win.blur()
                         // If we don't hide the window, it will stay on top of the stack even though it's not visible
@@ -365,7 +371,7 @@ function registerAlwaysOnTop() {
     if (CONFIG.get("settings.alwaysOnTop")) {
         const setAlwaysOnTop = () => {
             win.setAlwaysOnTop(true, "floating");
-            win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
+            win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true, skipTransformProcessType:true});
             win.setFullScreenable(false);
 
             // Ensure the Dock icon remains visible on macOS
