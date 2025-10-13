@@ -24,7 +24,8 @@ function copiedRange(state) {
                 const line = state.doc.lineAt(range.head)
                 const lineContent = state.sliceDoc(line.from, line.to)
                 if (!copiedLines.includes(line.from)) {
-                    content.push(lineContent)
+                    // Copy the line content with line break
+                    content.push(lineContent + state.lineBreak)
                     ranges.push(range)
                     copiedLines.push(line.from)
                 }
@@ -83,6 +84,41 @@ export const heynoteCopyCut = (editor) => {
 const copyCut = (view, cut, editor) => {
     let { text, ranges } = copiedRange(view.state)
     text = text.replaceAll(blockSeparatorRegex, "\n\n")
+    
+    // For cut operations with empty selections, we need to delete the lines
+    if (cut && ranges.length > 0) {
+        const hasEmptySelection = view.state.selection.ranges.every(range => range.empty)
+        
+        if (hasEmptySelection) {
+            // Delete the entire lines and update ranges
+            const changes = ranges.map(range => {
+                const line = view.state.doc.lineAt(range.head)
+                const nextLine = line.number < view.state.doc.lines ? view.state.doc.line(line.number + 1) : null
+                const deleteTo = nextLine ? nextLine.from : line.to
+                return { from: line.from, to: deleteTo }
+            })
+            
+            const newRanges = view.state.selection.ranges.map(range => {
+                const line = view.state.doc.lineAt(range.head)
+                return EditorSelection.cursor(line.from)
+            })
+            
+            navigator.clipboard.writeText(text)
+            
+            view.dispatch({
+                changes,
+                selection: EditorSelection.create(newRanges),
+                scrollIntoView: true,
+                userEvent: "delete.cut"
+            })
+            
+            // Handle Emacs mode
+            editor.selectionMarkMode = false
+            
+            return true
+        }
+    }
+    
     navigator.clipboard.writeText(text)
 
     if (cut && !view.state.readOnly) {
