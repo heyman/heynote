@@ -4,6 +4,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ## 2.6.2 (not yet released)
 
+- Update to latest version of Electron to fix issue making Heynote unusable on latest version of Mac OS (Tahoe)
 - Fix issue that would break Math blocks with a large number of lines (the parser would not start processing 
   rows from the beginning of the block)
 - Fix issue with not being able to hide window after toggling alwaysOnTop (on Mac)
