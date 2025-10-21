@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.6.2-beta
+## 2.6.2
 
 - Update to latest version of Electron to fix issue making Heynote unusable on latest version of Mac OS (Tahoe)
 - Fix issue that would break Math blocks with a large number of lines (the parser would not start processing 
