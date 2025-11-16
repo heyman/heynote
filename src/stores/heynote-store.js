@@ -235,7 +235,7 @@ export const useHeynoteStore = defineStore("heynote", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                        ...(token ? { 'X-API-Key': token, 'Authorization': `Bearer ${token}` } : {}),
                     },
                     body: JSON.stringify(payload),
                 })

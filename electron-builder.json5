@@ -2,7 +2,8 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-  "appId": "com.heynote.app",
+  "appId": "com.heynote.notemate",
+  "productName": "Heynote + Notemate",
   "asar": true,
   //"icon": "public/favicon.ico",
   "directories": {
@@ -19,9 +20,7 @@
       {
         target: 'default',
         arch: [
-          'x64',
-          'arm64',
-          'universal'
+          'arm64'
         ]
       }
     ],

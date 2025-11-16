@@ -145,7 +145,6 @@
                     // Integrations
                     noteMateAuthToken: this.noteMateAuthToken,
                     noteMateBaseUrl: this.noteMateBaseUrl,
-                    noteMateUserId: this.noteMateUserId,
                 })
                 if (!this.showInDock) {
                     this.showInMenu = true
@@ -186,7 +185,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            ...(this.noteMateAuthToken ? { 'Authorization': `Bearer ${this.noteMateAuthToken}` } : {}),
+                            ...(this.noteMateAuthToken ? { 'X-API-Key': this.noteMateAuthToken, 'Authorization': `Bearer ${this.noteMateAuthToken}` } : {}),
                         },
                         body: JSON.stringify({
                             message: 'ping', images: [], model: 'gpt-4o-mini', thread_id: null,
@@ -347,22 +346,13 @@
                                         />
                                     </label>
                                     <div class="nm-row">
-                                        <label class="nm-field">
+                                        <label class="nm-field" style="width:100%">
                                             <span>API Key</span>
                                             <input
                                                 type="password"
                                                 :value="noteMateAuthToken"
                                                 @input="(e) => { noteMateAuthToken = e.target.value; updateSettings() }"
-                                                placeholder="Enter AUTH_SECRET"
-                                            />
-                                        </label>
-                                        <label class="nm-field">
-                                            <span>User ID</span>
-                                            <input
-                                                type="text"
-                                                :value="noteMateUserId"
-                                                @input="(e) => { noteMateUserId = e.target.value; updateSettings() }"
-                                                placeholder="tmfc"
+                                                placeholder="Enter API Key"
                                             />
                                         </label>
                                     </div>

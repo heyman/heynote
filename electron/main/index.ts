@@ -3,6 +3,16 @@ import { release } from 'node:os'
 import { join } from 'node:path'
 import fs from "fs"
 
+// Ensure the app has a distinct display name to coexist with the original app
+app.setName('Heynote + Notemate')
+// Use a separate userData directory to avoid sharing config/library with original Heynote
+try {
+    const appData = app.getPath('appData')
+    app.setPath('userData', join(appData, 'Heynote + Notemate'))
+} catch (e) {
+    // noop: best effort; Electron should allow this before ready
+}
+
 import { 
     WINDOW_CLOSE_EVENT, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, SETTINGS_CHANGE_EVENT,
     TITLE_BAR_BG_LIGHT, TITLE_BAR_BG_LIGHT_BLURRED, TITLE_BAR_BG_DARK, TITLE_BAR_BG_DARK_BLURRED,
@@ -131,7 +141,7 @@ async function createWindow() {
     nativeTheme.themeSource = CONFIG.get("theme")
 
     win = new BrowserWindow(Object.assign({
-        title: 'heynote',
+        title: 'Heynote + Notemate',
         icon,
         backgroundColor: nativeTheme.shouldUseDarkColors ? '#262B37' : '#FFFFFF',
         accentColor: undefined,
@@ -265,7 +275,7 @@ function createTray() {
         img = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon.ico'));
     }
     tray = new Tray(img);
-    tray.setToolTip("Heynote");
+    tray.setToolTip("Heynote + Notemate");
     const menu = getTrayMenu(win)
     if (isMac) {
         // using tray.setContextMenu() on macOS will open the menu on left-click, so instead we'll
