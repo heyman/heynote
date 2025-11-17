@@ -40,6 +40,7 @@ export const useHeynoteStore = defineStore("heynote", {
         showAIPanel: false,
         aiMessages: [], // {role: 'user'|'assistant', content: string}
         aiInput: "",
+        aiThreadId: null, // 当前会话使用的 thread_id，用于携带上下文
 
         isFullscreen: false,
         isFocused: true,
@@ -213,11 +214,22 @@ export const useHeynoteStore = defineStore("heynote", {
 
             // Prepare payload according to note-mate schema
             const settingsStore = useSettingsStore()
+
+            // 如果当前还没有 threadId，则生成一个新的，用于后续消息复用上下文
+            if (!this.aiThreadId) {
+                try {
+                    this.aiThreadId = (window.crypto && window.crypto.randomUUID)
+                        ? window.crypto.randomUUID()
+                        : `heynote-${Date.now()}-${Math.random().toString(16).slice(2)}`
+                } catch (e) {
+                    this.aiThreadId = `heynote-${Date.now()}-${Math.random().toString(16).slice(2)}`
+                }
+            }
             const payload = {
                 message: text,
                 images: [],
                 model: 'gpt-4o-mini',
-                thread_id: null,
+                thread_id: this.aiThreadId,
                 stream_tokens: true,
                 platform: 'heynote',
                 platform_id: settingsStore?.settings?.noteMateUserId || 'tmfc',
@@ -297,6 +309,11 @@ export const useHeynoteStore = defineStore("heynote", {
             } catch (e) {
                 pending.content = `调用出错：${e?.message || e}`
             }
+        },
+
+        // 清空当前对话上下文：仅重置 threadId，不清除已显示的消息
+        aiResetContext() {
+            this.aiThreadId = null
         },
         openMoveToBufferSelector() {
             this.closeDialog()

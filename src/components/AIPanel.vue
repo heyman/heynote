@@ -30,12 +30,26 @@ export default {
     ]),
   },
   methods: {
-    ...mapActions(useHeynoteStore, ['aiSend', 'closeAIPanel']),
+    ...mapActions(useHeynoteStore, ['aiSend', 'closeAIPanel', 'aiResetContext']),
     onSend() {
       this.aiSend()
       // 可在此处触发真正的 AI 请求；当前仅将消息放入会话区
     },
+    onClearContext() {
+      this.aiResetContext()
+    },
     onKeydown(e) {
+      // Cmd/Ctrl+A：在 AI 输入框中全选当前内容
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'a' || e.key === 'A')) {
+        const target = e.target
+        if (target && typeof target.select === 'function') {
+          e.preventDefault()
+          e.stopPropagation()
+          target.select()
+          return
+        }
+      }
+
       // Cmd+Enter 发送（macOS 上使用 Meta 键）
       if (e.key === 'Enter' && e.metaKey) {
         e.preventDefault()
@@ -75,11 +89,21 @@ export default {
         rows="4"
         @keydown="onKeydown"
       />
-      <button class="send" @click="onSend" aria-label="发送">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-          <path d="M12 19V5M12 5l-6 6M12 5l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </button>
+      <div class="actions">
+        <button class="clear" @click="onClearContext" aria-label="清空上下文">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <rect x="6" y="7" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2" />
+            <path d="M9 11l6 6M15 11l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <button class="send" @click="onSend" aria-label="发送">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M12 19V5M12 5l-6 6M12 5l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -155,18 +179,37 @@ export default {
     padding: 8px 10px
     resize: vertical
     outline: none
-  .send
-    background: #4a7cf7
-    border: none
-    color: #fff
-    width: 40px
-    height: 40px
-    border-radius: 50%
-    display: grid
-    place-items: center
-    cursor: pointer
-    align-self: end
-    transition: background 0.15s ease
-    &:hover
-      background: #3e6ce0
+  .actions
+    display: flex
+    flex-direction: column
+    align-items: flex-end
+    gap: 6px
+    .clear
+      background: transparent
+      border: none
+      color: rgba(255,255,255,0.7)
+      width: 28px
+      height: 28px
+      border-radius: 50%
+      display: grid
+      place-items: center
+      cursor: pointer
+      transition: background 0.15s ease, color 0.15s ease
+      &:hover
+        background: rgba(255,255,255,0.08)
+        color: #fff
+    .send
+      background: #4a7cf7
+      border: none
+      color: #fff
+      width: 40px
+      height: 40px
+      border-radius: 50%
+      display: grid
+      place-items: center
+      cursor: pointer
+      align-self: end
+      transition: background 0.15s ease
+      &:hover
+        background: #3e6ce0
 </style>

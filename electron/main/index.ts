@@ -295,7 +295,7 @@ function registerGlobalHotkey() {
     globalShortcut.unregisterAll()
     if (CONFIG.get("settings.enableGlobalHotkey")) {
         try {
-            const ret = globalShortcut.register(CONFIG.get("settings.globalHotkey"), () => {
+            globalShortcut.register(CONFIG.get("settings.globalHotkey"), () => {
                 if (!win) {
                     return
                 }
@@ -334,6 +334,36 @@ function registerGlobalHotkey() {
             })
         } catch (error) {
             console.log("Could not register global hotkey:", error)
+        }
+    }
+
+    // NoteMate sidebar hotkey to toggle AI panel
+    const sidebarHotkey = CONFIG.get("settings.noteMateSidebarHotkey") as string | undefined
+    if (sidebarHotkey) {
+        try {
+            globalShortcut.register(sidebarHotkey, () => {
+                if (!win) return
+
+                // Ensure window is visible and focused
+                if (win.isMinimized()) {
+                    win.restore()
+                }
+                if (!win.isVisible()) {
+                    win.show()
+                }
+                win.focus()
+
+                // Dispatch the same event that editor command invokeAIAgent uses
+                win.webContents
+                    .executeJavaScript(
+                        "window.dispatchEvent(new CustomEvent('invokeAIAgent', { detail: { source: 'globalHotkey', timestamp: Date.now() } }))",
+                    )
+                    .catch((err) => {
+                        console.log("Error dispatching invokeAIAgent from global hotkey", err)
+                    })
+            })
+        } catch (error) {
+            console.log("Could not register NoteMate sidebar hotkey:", error)
         }
     }
 }
@@ -525,6 +555,7 @@ ipcMain.handle("getInitErrors", () => {
 
 ipcMain.handle('settings:set', async (event, settings) => {
     let globalHotkeyChanged = settings.enableGlobalHotkey !== CONFIG.get("settings.enableGlobalHotkey") || settings.globalHotkey !== CONFIG.get("settings.globalHotkey")
+    let noteMateSidebarHotkeyChanged = settings.noteMateSidebarHotkey !== CONFIG.get("settings.noteMateSidebarHotkey")
     let showInDockChanged = settings.showInDock !== CONFIG.get("settings.showInDock");
     let showInMenuChanged = settings.showInMenu !== CONFIG.get("settings.showInMenu");
     let bufferPathChanged = settings.bufferPath !== CONFIG.get("settings.bufferPath");
@@ -533,7 +564,7 @@ ipcMain.handle('settings:set', async (event, settings) => {
 
     win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
 
-    if (globalHotkeyChanged) {
+    if (globalHotkeyChanged || noteMateSidebarHotkeyChanged) {
         registerGlobalHotkey()
     }
     if (showInDockChanged) {

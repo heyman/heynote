@@ -75,6 +75,7 @@ const schema = {
             "noteMateAuthToken": { type: "string", default: "" },
             "noteMateBaseUrl": { type: "string", default: "http://localhost:80" },
             "noteMateUserId": { type: "string", default: "tmfc" },
+            "noteMateSidebarHotkey": { type: "string", default: "" },
         },
     },
 
@@ -136,6 +137,7 @@ const defaults = {
         noteMateAuthToken: "",
         noteMateBaseUrl: "http://localhost:80",
         noteMateUserId: "tmfc",
+        noteMateSidebarHotkey: "",
     },
     theme: "system",
 }

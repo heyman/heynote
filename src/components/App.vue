@@ -91,7 +91,20 @@
                 try {
                     const current = this.heynoteStore.currentEditor
                     if (current && typeof current.getActiveBlockContent === 'function') {
-                        initial = current.getActiveBlockContent() || ''
+                        const raw = current.getActiveBlockContent() || ''
+                        const lines = raw.split('\n')
+                        // 找到第一行非空内容，如果是以 ∞∞∞ 开头的分隔符，则移除
+                        const firstNonEmptyIndex = lines.findIndex(l => (l || '').trim().length > 0)
+                        if (firstNonEmptyIndex !== -1) {
+                            const firstLine = (lines[firstNonEmptyIndex] || '').trim()
+                            if (/^∞∞∞/.test(firstLine)) {
+                                lines.splice(firstNonEmptyIndex, 1)
+                            }
+                        }
+                        const body = lines.join('\n').trim()
+                        if (body) {
+                            initial = `帮我记录这条笔记\n\n${body}`
+                        }
                     }
                 } catch (e) {}
                 this.heynoteStore.openAIPanel(initial)

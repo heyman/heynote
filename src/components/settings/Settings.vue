@@ -81,6 +81,7 @@
                 noteMateAuthToken: this.initialSettings.noteMateAuthToken || "",
                 noteMateBaseUrl: this.initialSettings.noteMateBaseUrl || "http://localhost:80",
                 noteMateUserId: this.initialSettings.noteMateUserId || "tmfc",
+                noteMateSidebarHotkey: this.initialSettings.noteMateSidebarHotkey || "",
                 testConnectStatus: "",
                 testConnectLoading: false,
             }
@@ -145,6 +146,7 @@
                     // Integrations
                     noteMateAuthToken: this.noteMateAuthToken,
                     noteMateBaseUrl: this.noteMateBaseUrl,
+                    noteMateSidebarHotkey: this.noteMateSidebarHotkey,
                 })
                 if (!this.showInDock) {
                     this.showInMenu = true
@@ -248,6 +250,12 @@
                             @click="activeTab = 'keyboard-bindings'"
                         />
                         <TabListItem 
+                            name="NoteMate" 
+                            tab="notemate" 
+                            :activeTab="activeTab" 
+                            @click="activeTab = 'notemate'"
+                        />
+                        <TabListItem 
                             :name="isWebApp ? 'Version' : 'Updates'" 
                             tab="updates" 
                             :activeTab="activeTab" 
@@ -328,38 +336,6 @@
                                         @click="selectBufferLocation"
                                     >Select Directory</button>
                                     <span class="path" v-show="customBufferLocation && bufferPath">{{ bufferPath }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="entry" style="width:100%">
-                                <h2>Integrations</h2>
-                                <div class="nm-card">
-                                    <div class="nm-title">NoteMate</div>
-                                    <label class="nm-field">
-                                        <span>API Base URL</span>
-                                        <input
-                                            type="text"
-                                            :value="noteMateBaseUrl"
-                                            @input="(e) => { noteMateBaseUrl = e.target.value; updateSettings() }"
-                                            placeholder="http://localhost:80"
-                                        />
-                                    </label>
-                                    <div class="nm-row">
-                                        <label class="nm-field" style="width:100%">
-                                            <span>API Key</span>
-                                            <input
-                                                type="password"
-                                                :value="noteMateAuthToken"
-                                                @input="(e) => { noteMateAuthToken = e.target.value; updateSettings() }"
-                                                placeholder="Enter API Key"
-                                            />
-                                        </label>
-                                    </div>
-                                    <div class="nm-actions">
-                                        <span class="nm-status">{{ testConnectStatus }}</span>
-                                        <button @click="testNoteMateConnection" :disabled="testConnectLoading">{{ testConnectLoading ? 'Testing...' : 'Test Connection' }}</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -524,6 +500,49 @@
                             v-model="keyBindings"
                             @addKeyBindingDialogVisible="addKeyBindingDialogVisible = $event"
                         />
+                    </TabContent>
+                    
+                    <TabContent tab="notemate" :activeTab="activeTab">
+                        <div class="row">
+                            <div class="entry" style="width:100%">
+                                <h2>NoteMate</h2>
+                                <div class="nm-card">
+                                    <div class="nm-title">NoteMate</div>
+                                    <label class="nm-field">
+                                        <span>API Base URL</span>
+                                        <input
+                                            type="text"
+                                            :value="noteMateBaseUrl"
+                                            @input="(e) => { noteMateBaseUrl = e.target.value; updateSettings() }"
+                                            placeholder="http://localhost:80"
+                                        />
+                                    </label>
+                                    <div class="nm-row">
+                                        <label class="nm-field" style="width:100%">
+                                            <span>API Key</span>
+                                            <input
+                                                type="password"
+                                                :value="noteMateAuthToken"
+                                                @input="(e) => { noteMateAuthToken = e.target.value; updateSettings() }"
+                                                placeholder="Enter API Key"
+                                            />
+                                        </label>
+                                    </div>
+                                    <div class="nm-actions">
+                                        <span class="nm-status">{{ testConnectStatus }}</span>
+                                        <button @click="testNoteMateConnection" :disabled="testConnectLoading">{{ testConnectLoading ? 'Testing...' : 'Test Connection' }}</button>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 24px; max-width: 520px;">
+                                    <h2>Sidebar Hotkey</h2>
+                                    <p style="font-size: 12px; margin-bottom: 6px;">Set the keyboard shortcut to open / close the NoteMate sidebar in the client.</p>
+                                    <KeyboardHotkey
+                                        v-model="noteMateSidebarHotkey"
+                                        @change="updateSettings"
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </TabContent>
                     
                     <TabContent tab="updates" :activeTab="activeTab">
