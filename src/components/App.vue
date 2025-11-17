@@ -19,6 +19,7 @@
     import EditBuffer from './EditBuffer.vue'
     import TabBar from './tabs/TabBar.vue'
     import AIPanel from './AIPanel.vue'
+    import ImagePreviewModal from './ImagePreviewModal.vue'
 
     export default {
         components: {
@@ -32,12 +33,18 @@
             EditBuffer,
             TabBar,
             AIPanel,
+            ImagePreviewModal,
         },
 
         data() {
             return {
                 development: window.location.href.indexOf("dev=1") !== -1,
                 showSettings: false,
+                showImagePreview: false,
+                imagePreviewUrl: '',
+                imagePreviewFilename: '',
+                imagePreviewLoading: false,
+                imagePreviewError: '',
             }
         },
 
@@ -110,11 +117,106 @@
                 this.heynoteStore.openAIPanel(initial)
             }
             window.addEventListener('invokeAIAgent', this._onInvokeAI)
+
+            this._onImagePasted = async (e) => {
+                const detail = e.detail || {}
+                const file = detail.file
+                const path = detail.path
+                if (!file || !path) return
+
+                try {
+                    const editor = this.heynoteStore.currentEditor
+                    if (!editor || editor.path !== path) {
+                        // 只在当前 buffer 中处理粘贴
+                        return
+                    }
+
+                    const settings = this.settingsStore.settings
+                    const base = (settings.noteMateBaseUrl || 'http://localhost:80').replace(/\/$/, '')
+                    const token = settings.noteMateAuthToken || ''
+
+                    const form = new FormData()
+                    form.append('file', file, file.name || 'image.png')
+                    form.append('platform', 'heynote')
+                    form.append('platform_id', settings.noteMateUserId || 'tmfc')
+
+                    const resp = await fetch(`${base}/files/upload`, {
+                        method: 'POST',
+                        headers: {
+                            ...(token ? { 'X-API-Key': token, 'Authorization': `Bearer ${token}` } : {}),
+                        },
+                        body: form,
+                    })
+                    if (!resp.ok) {
+                        console.error('upload failed', resp.status, resp.statusText)
+                        return
+                    }
+                    const data = await resp.json()
+                    if (!data || !data.success || !data.key) {
+                        console.error('upload error payload', data)
+                        return
+                    }
+
+                    const filename = data.filename || file.name || ''
+                    const placeholder = `![image nm-file:${data.key}](${filename})`
+                    if (typeof editor.insertTextAtCursor === 'function') {
+                        editor.insertTextAtCursor(placeholder)
+                    }
+                } catch (err) {
+                    console.error('onImagePasted error', err)
+                }
+            }
+
+            this._onOpenImagePreview = async (e) => {
+                const detail = e.detail || {}
+                const key = detail.key
+                const filename = detail.filename || ''
+                if (!key) return
+
+                const settings = this.settingsStore.settings
+                const base = (settings.noteMateBaseUrl || 'http://localhost:80').replace(/\/$/, '')
+                const token = settings.noteMateAuthToken || ''
+
+                this.imagePreviewFilename = filename
+                this.imagePreviewLoading = true
+                this.imagePreviewError = ''
+                this.imagePreviewUrl = ''
+                this.showImagePreview = true
+
+                try {
+                    const url = `${base}/files/url?key=${encodeURIComponent(key)}`
+                    const resp = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            ...(token ? { 'X-API-Key': token, 'Authorization': `Bearer ${token}` } : {}),
+                        },
+                    })
+                    if (!resp.ok) {
+                        this.imagePreviewError = `加载失败：${resp.status} ${resp.statusText}`
+                        return
+                    }
+                    const data = await resp.json()
+                    if (!data || !data.success || !data.url) {
+                        this.imagePreviewError = '接口返回异常'
+                        return
+                    }
+                    this.imagePreviewUrl = data.url
+                } catch (err) {
+                    this.imagePreviewError = (err && err.message) || String(err)
+                } finally {
+                    this.imagePreviewLoading = false
+                }
+            }
+
+            window.addEventListener('heynoteImagePasted', this._onImagePasted)
+            window.addEventListener('heynoteOpenImagePreview', this._onOpenImagePreview)
         },
 
         beforeUnmount() {
             this.settingsStore.tearDown()
             window.removeEventListener('invokeAIAgent', this._onInvokeAI)
+            window.removeEventListener('heynoteImagePasted', this._onImagePasted)
+            window.removeEventListener('heynoteOpenImagePreview', this._onOpenImagePreview)
         },
 
         watch: {
@@ -228,6 +330,12 @@
                 this.editorCacheStore.moveCurrentBlockToOtherEditor(path)
                 this.closeMoveToBufferSelector()
             },
+
+            closeImagePreview() {
+                this.showImagePreview = false
+                this.imagePreviewUrl = ''
+                this.imagePreviewError = ''
+            },
         },
     }
 
@@ -289,6 +397,14 @@
                 @closeSettings="closeSettings"
             />
             <AIPanel v-if="heynoteStore.showAIPanel" />
+            <ImagePreviewModal
+                v-if="showImagePreview"
+                :url="imagePreviewUrl"
+                :filename="imagePreviewFilename"
+                :loading="imagePreviewLoading"
+                :error="imagePreviewError"
+                @close="closeImagePreview"
+            />
             <NewBuffer 
                 v-if="showCreateBuffer"
                 @close="closeDialog"

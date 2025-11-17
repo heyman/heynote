@@ -127,6 +127,78 @@ export class HeynoteEditor {
 
                 links,
 
+                EditorView.domEventHandlers({
+                    paste: (event, view) => {
+                        const dt = event.clipboardData
+                        if (!dt) {
+                            return false
+                        }
+                        const items = Array.from(dt.items || [])
+                        const fileItem = items.find((it) => it.kind === "file" && it.type && it.type.startsWith("image/"))
+                        if (!fileItem) {
+                            return false
+                        }
+                        const file = fileItem.getAsFile()
+                        if (!file) {
+                            return false
+                        }
+
+                        event.preventDefault()
+
+                        try {
+                            window.dispatchEvent(new CustomEvent("heynoteImagePasted", {
+                                detail: {
+                                    file,
+                                    path: this.path,
+                                },
+                            }))
+                        } catch (e) {
+                            console.error("Failed to dispatch heynoteImagePasted event", e)
+                        }
+                        return true
+                    },
+
+                    click: (event, view) => {
+                        const target = event.target
+                        if (!(target instanceof HTMLElement)) {
+                            return false
+                        }
+                        let pos
+                        try {
+                            pos = view.posAtDOM(target, 0)
+                        } catch (e) {
+                            return false
+                        }
+                        if (pos == null || pos < 0) {
+                            return false
+                        }
+                        const line = view.state.doc.lineAt(pos)
+                        const text = line.text || ""
+                        const re = /!\[image nm-file:([^\]]+)\]\(([^)]*)\)/
+                        const match = re.exec(text)
+                        if (!match) {
+                            return false
+                        }
+
+                        event.preventDefault()
+
+                        const key = match[1]
+                        const filename = match[2] || ""
+                        try {
+                            window.dispatchEvent(new CustomEvent("heynoteOpenImagePreview", {
+                                detail: {
+                                    key,
+                                    filename,
+                                    path: this.path,
+                                },
+                            }))
+                        } catch (e) {
+                            console.error("Failed to dispatch heynoteOpenImagePreview event", e)
+                        }
+                        return true
+                    },
+                }),
+
                 this.spellcheckCompartment.of(spellcheckConfig(this.spellcheckEnabled)),
             ],
         })
@@ -440,6 +512,21 @@ export class HeynoteEditor {
 
     selectAll() {
         selectAll(this.view)
+    }
+
+    insertTextAtCursor(text) {
+        const selection = this.view.state.selection.main
+        const from = selection.from
+        const to = selection.to
+        this.view.dispatch({
+            changes: {
+                from,
+                to,
+                insert: text,
+            },
+            selection: { anchor: from + text.length, head: from + text.length },
+            scrollIntoView: true,
+        })
     }
 
     setIndentSettings(indentType, tabSize) {
