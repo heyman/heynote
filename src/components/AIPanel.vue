@@ -77,6 +77,10 @@ export default {
         class="msg"
         :class="m.role"
       >
+        <div class="avatar" :class="m.role">
+          <span v-if="m.role === 'user'" class="avatar-inner">👤</span>
+          <span v-else class="avatar-inner">🤖</span>
+        </div>
         <div class="bubble">{{ m.content }}</div>
       </div>
     </div>
@@ -146,16 +150,34 @@ export default {
   .msg
     margin: 8px 0
     display: flex
+    align-items: flex-start
+    gap: 6px
     &.user
       justify-content: flex-end
+      .avatar
+        order: 2
       .bubble
         background: #4a7cf7
         color: #fff
     &.assistant
       justify-content: flex-start
+      .avatar
+        order: 0
       .bubble
         background: #2b3242
         color: #fff
+    .avatar
+      flex: 0 0 auto
+      width: 28px
+      height: 28px
+      border-radius: 999px
+      display: flex
+      align-items: center
+      justify-content: center
+      background: rgba(255,255,255,0.08)
+      color: #fff
+      .avatar-inner
+        font-size: 14px
     .bubble
       padding: 8px 10px
       border-radius: 8px
