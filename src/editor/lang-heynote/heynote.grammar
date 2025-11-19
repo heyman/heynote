@@ -30,7 +30,7 @@ MetadataEntry {
     "xml" | "cpp" | "rust" | "csharp" | "ruby" | "shell" | "yaml" |
     "golang" | "clojure" | "elixir" | "erlang" | "lezer" | "toml" |
     "swift" | "kotlin" | "groovy" | "diff" | "powershell" | "vue" |
-    "dart" | "scala"
+    "dart" | "scala"| "mermaid"
   }
 
   Auto { "-a" }
