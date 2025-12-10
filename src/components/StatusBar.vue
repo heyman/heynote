@@ -8,6 +8,57 @@
     const LANGUAGE_MAP = Object.fromEntries(LANGUAGES.map(l => [l.token, l]))
     const LANGUAGE_NAMES = Object.fromEntries(LANGUAGES.map(l => [l.token, l.name]))
 
+
+    function formatDate(date) {
+        const now = new Date();
+
+        // normalize to local midnight for date-only comparison
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const startOfGiven = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const diffDays = Math.floor((startOfToday - startOfGiven) / (1000 * 60 * 60 * 24));
+
+        // Today: show just time
+        if (diffDays === 0) {
+            return date.toLocaleTimeString(undefined, {
+                hour: "numeric",
+                minute: "2-digit"
+            });
+        }
+
+        // Yesterday: show "Yesterday, <time>"
+        if (diffDays === 1) {
+            const time = date.toLocaleTimeString(undefined, {
+                hour: "numeric",
+                minute: "2-digit"
+            });
+            return `Yesterday, ${time}`;
+        }
+
+        // Otherwise: full date + time, omit year if same
+        const sameYear = date.getFullYear() === now.getFullYear();
+
+        return date.toLocaleString(undefined, {
+            year: sameYear ? undefined : "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit"
+        });
+    }
+
+    function formatFulDate(date) {
+        return date.toLocaleString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            second: "2-digit",
+        });
+    }
+
+
+
     export default {
         props: [
             "autoUpdate",
@@ -36,6 +87,7 @@
                 "currentSelectionSize", 
                 "currentLanguage",
                 "currentLanguageAuto",
+                "currentCreatedTime",
             ]),
             ...mapState(useSettingsStore, [
                 "spellcheckEnabled",
@@ -68,7 +120,21 @@
             updatesEnabled() {
                 return !!window.heynote.autoUpdate
             },
+
+        formattedCreatedTime() {
+            if (!this.currentCreatedTime) {
+                return null
+            }
+            return formatDate(this.currentCreatedTime)
         },
+
+        createdTimeTitle() {
+            if (!this.currentCreatedTime) {
+                return null
+            }
+            return "Block created " +  formatFulDate(this.currentCreatedTime)
+        },
+    },
 
         methods: {
             onSpellcheckingContextMenu(event) {
@@ -92,6 +158,12 @@
             <template v-if="currentSelectionSize > 0">
                 Sel <span class="num">{{ currentSelectionSize }}</span>
             </template>
+        </div>
+        <div 
+            :title="createdTimeTitle"
+            class="status-block created-time"
+        >
+            {{ formattedCreatedTime }}
         </div>
         <div class="spacer"></div>
         <div 

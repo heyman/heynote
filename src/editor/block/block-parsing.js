@@ -2,6 +2,9 @@ import { syntaxTree } from "@codemirror/language"
 import { Note, Document, NoteDelimiter } from "../lang-heynote/parser.terms.js"
 import { IterMode } from "@lezer/common";
 
+import { LANGUAGES } from '../languages.js'
+
+
 // tracks the size of the first delimiter
 export let firstBlockDelimiterSize
 
@@ -31,6 +34,26 @@ export function getBlocksFromSyntaxTree(state) {
                     const langNode = type.node.getChild("NoteLanguage")
                     const language = state.doc.sliceString(langNode.from, langNode.to)
                     const isAuto = !!type.node.getChild("Auto")
+
+                    // parse created metadata
+                    let created
+                    const metadataNode = type.node.getChild("Metadata")
+                    if (metadataNode) {
+                        for (let entry = metadataNode.firstChild; entry; entry = entry.nextSibling) {
+                            if (entry.name === "MetadataEntry") {
+                                const keyNode = entry.getChild("MetadataKey")
+                                const valueNode = entry.getChild("MetadataValue")
+                                if (!keyNode || !valueNode) continue
+
+                                const key = state.doc.sliceString(keyNode.from, keyNode.to)
+                                const value = state.doc.sliceString(valueNode.from, valueNode.to)
+                                if (key === "created") {
+                                    created = value
+                                }
+                            }
+                        }
+                    }
+
                     const contentNode = type.node.nextSibling
                     blocks.push({
                         language: {
@@ -49,6 +72,7 @@ export function getBlocksFromSyntaxTree(state) {
                             from: type.node.from,
                             to: contentNode.to,
                         },
+                        created,
                     })
                     return false;
                 }
@@ -62,10 +86,17 @@ export function getBlocksFromSyntaxTree(state) {
     return blocks
 }
 
+
+const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
+const BLOCK_DELIMITER_REGEX = new RegExp(`\\n∞∞∞(${languageTokensMatcher})(-a)?(?:;[^∞\\n]+)*(∞∞∞)?\\n`, "g")
+// regex to pull out ;created=...
+const CREATED_METADATA_REGEX = /;created=([^;∞\n]+)/
+
 /**
  * Parse blocks from document's string contents using String.indexOf()
  */
 export function getBlocksFromString(state) {
+        //console.log("parsing from string!")
         //const timer = startTimer()
         const blocks = []
         const doc = state.doc
@@ -73,54 +104,44 @@ export function getBlocksFromString(state) {
             return [];
         }
         const content = doc.sliceString(0, doc.length)
-        const delim = "\n∞∞∞"
-        let pos = 0
-        while (pos < doc.length) {
-            const blockStart = content.indexOf(delim, pos);
-            if (blockStart != pos) {
-                console.error("Error parsing blocks, expected delimiter at", pos)
-                break;
-            }
-            const langStart = blockStart + delim.length;
-            const delimiterEnd = content.indexOf("\n", langStart)
-            if (delimiterEnd < 0) {
-                console.error("Error parsing blocks. Delimiter didn't end with newline")
-                break
-            }
-            const langFull = content.substring(langStart, delimiterEnd);
-            let auto = false;
-            let lang = langFull;
-            if (langFull.endsWith("-a")) {
-                auto = true;
-                lang = langFull.substring(0, langFull.length - 2);
-            }
-            const contentFrom = delimiterEnd + 1;
-            let blockEnd = content.indexOf(delim, contentFrom);
-            if (blockEnd < 0) {
-                blockEnd = doc.length;
-            }
-            
+
+        const matches = content.matchAll(BLOCK_DELIMITER_REGEX).toArray()
+
+        for (let i=0; i<matches.length; i++) {
+            const match = matches[i]
+            const nextMatch = i < matches.length - 1 ? matches[i+1] : null
+
+            const blockStart = match.index
+            const blockEnd = nextMatch ? nextMatch.index : doc.length
+            const delimiterEnd = match.index + match[0].length
+            //const contentFrom = delimiterEnd + 1
+
+            // parse created time
+            const delimiterText = match[0]
+            const createdMatch = delimiterText.match(CREATED_METADATA_REGEX)
+            const created = createdMatch ? createdMatch[1] : undefined
+
             const block = {
                 language: {
-                    name: lang,
-                    auto: auto,
+                    name: match[1],
+                    auto: match[2] === "-a",
                 },
                 content: {
-                    from: contentFrom,
+                    from: delimiterEnd,
                     to: blockEnd,
                 },
                 delimiter: {
                     from: blockStart,
-                    to: delimiterEnd + 1,
+                    to: delimiterEnd,
                 },
                 range: {
                     from: blockStart,
                     to: blockEnd,
                 },
+                created: created,
             };
             blocks.push(block);
-            pos = blockEnd;
         }
         //console.log("getBlocksFromString() took", timer(), "ms")
-        return blocks;
+        return blocks
 }

@@ -22,6 +22,7 @@ export const useHeynoteStore = defineStore("heynote", {
         currentLanguageAuto: null,
         currentCursorLine: null,
         currentSelectionSize: null,
+        currentCreatedTime: null,
         libraryId: 0,
         createBufferParams: {
             mode: "new",

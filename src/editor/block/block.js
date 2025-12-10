@@ -8,8 +8,8 @@ import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
 import { firstBlockDelimiterSize, getBlocksFromSyntaxTree, getBlocksFromString } from "./block-parsing.js";
 
-export const delimiterRegex = /^\n∞∞∞[a-z]+?(-a)?\n$/
-export const delimiterRegexWithoutNewline = /^∞∞∞[a-z]+?(-a)?$/
+export const delimiterRegex = /^\n∞∞∞[a-z]+?(-a)?(?:;[^∞\\n]+)*(∞∞∞)?\n$/
+export const delimiterRegexWithoutNewline = /^∞∞∞[a-z]+?(-a)?(?:;[^∞\\n]+)*(∞∞∞)?$/
 
 
 
@@ -339,6 +339,7 @@ const emitCursorChange = (editor) => {
                         heynoteStore.currentLanguage = block.language.name
                         heynoteStore.currentLanguageAuto = block.language.auto
                         heynoteStore.currentBufferName = editor.name
+                        heynoteStore.currentCreatedTime = block.created ? new Date(Date.parse(block.created)) : null
                     }
                 }
             }
