@@ -1,9 +1,8 @@
 <script>
-    import slugify from '@sindresorhus/slugify';
-
     import { mapState, mapActions } from 'pinia'
     import { useHeynoteStore } from "../stores/heynote-store"
 
+    import { filenameSlug } from "@/src/common/sanitize-filename"
     import FolderSelector from './folder-selector/FolderSelector.vue'
 
     const pathSep = window.heynote.buffer.pathSeparator
@@ -143,7 +142,7 @@
             },
 
             submit() {
-                let slug = slugify(this.name)
+                let slug = filenameSlug(this.name)
                 if (slug === "") {
                     this.errors.name = true
                     return
@@ -156,7 +155,7 @@
                     if (!this.buffers[path]) {
                         break
                     }
-                    slug = slugify(this.name + "-" + i)
+                    slug = filenameSlug(this.name + "-" + i)
                 }
                 if (this.buffers[path]) {
                     console.error("Failed to create buffer, path already exists", path)
