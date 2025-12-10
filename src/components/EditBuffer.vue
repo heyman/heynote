@@ -1,9 +1,8 @@
 <script>
-    import slugify from '@sindresorhus/slugify';
-
     import { toRaw } from 'vue';
     import { mapState, mapActions } from 'pinia'
     import { useHeynoteStore } from "../stores/heynote-store"
+    import { filenameSlug } from "@/src/common/sanitize-filename"
 
     import FolderSelector from './folder-selector/FolderSelector.vue'
 
@@ -134,7 +133,7 @@
             },
 
             submit() {
-                let slug = slugify(this.name)
+                let slug = filenameSlug(this.name)
                 if (slug === "") {
                     this.errors.name = true
                     return
@@ -148,7 +147,7 @@
                         // file name is ok if it's the current note, or if it doesn't exist
                         break
                     }
-                    slug = slugify(this.name + "-" + i)
+                    slug = filenameSlug(this.name + "-" + i)
                 }
                 if (path !== this.currentBufferPath && this.buffers[path]) {
                     console.error("Failed to edit note, path already exists", path)

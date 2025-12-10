@@ -1,5 +1,5 @@
 <script>
-    import sanitizeFilename from "./sanitize-filename.js"
+    import { sanitizeFilename } from "@/src/common/sanitize-filename.js"
 
     export default {
         props: {
