@@ -2,61 +2,12 @@
     import { mapState } from 'pinia'
     import UpdateStatusItem from './UpdateStatusItem.vue'
     import { LANGUAGES } from '../editor/languages.js'
+    import { formatDate, formatFullDate } from '../common/format-date'
     import { useHeynoteStore } from "../stores/heynote-store"
     import { useSettingsStore } from "../stores/settings-store"
     
     const LANGUAGE_MAP = Object.fromEntries(LANGUAGES.map(l => [l.token, l]))
     const LANGUAGE_NAMES = Object.fromEntries(LANGUAGES.map(l => [l.token, l.name]))
-
-
-    function formatDate(date) {
-        const now = new Date();
-
-        // normalize to local midnight for date-only comparison
-        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const startOfGiven = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        const diffDays = Math.floor((startOfToday - startOfGiven) / (1000 * 60 * 60 * 24));
-
-        // Today: show just time
-        if (diffDays === 0) {
-            return date.toLocaleTimeString(undefined, {
-                hour: "numeric",
-                minute: "2-digit"
-            });
-        }
-
-        // Yesterday: show "Yesterday, <time>"
-        if (diffDays === 1) {
-            const time = date.toLocaleTimeString(undefined, {
-                hour: "numeric",
-                minute: "2-digit"
-            });
-            return `Yesterday, ${time}`;
-        }
-
-        // Otherwise: full date + time, omit year if same
-        const sameYear = date.getFullYear() === now.getFullYear();
-
-        return date.toLocaleString(undefined, {
-            year: sameYear ? undefined : "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit"
-        });
-    }
-
-    function formatFulDate(date) {
-        return date.toLocaleString(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit",
-            second: "2-digit",
-        });
-    }
-
 
 
     export default {
@@ -132,7 +83,7 @@
             if (!this.currentCreatedTime) {
                 return null
             }
-            return "Block created " +  formatFulDate(this.currentCreatedTime)
+            return "Block created " +  formatFullDate(this.currentCreatedTime)
         },
     },
 
