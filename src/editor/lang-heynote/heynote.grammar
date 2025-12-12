@@ -5,18 +5,45 @@ Note {
 }
 
 NoteDelimiter {
-    noteDelimiterEnter noteDelimiterMark NoteLanguage Auto? noteDelimiterEnter
+  noteDelimiterEnter
+  noteDelimiterMark
+  NoteLanguage
+  Auto?
+  Metadata?
+  noteDelimiterMark?
+  noteDelimiterEnter
 }
 
+Metadata {
+  MetadataEntry+
+}
+
+MetadataEntry {
+  MetadataSeparator MetadataKey MetadataEq MetadataValue
+}
 
 @tokens {
-    noteDelimiterMark { "∞∞∞" }
-    NoteLanguage { "text" | "math" | "javascript" | "typescript" | "jsx" | "tsx" | "json" | "python" | "html" | "sql" | "markdown" | "java" | "php" | "css" | "xml" | "cpp" | "rust" | "csharp" | "ruby" | "shell" | "yaml" | "golang" | "clojure" | "elixir" | "erlang" | "lezer" | "toml" | "swift" | "kotlin" | "groovy" | "diff" | "powershell" | "vue" | "dart" | "scala" }
-    Auto { "-a" }
-    noteDelimiterEnter { "\n" }
-    //NoteContent { String }
-    //String { (![∞])+ }
+  noteDelimiterMark { "∞∞∞" }
+
+  NoteLanguage {
+    "text" | "math" | "javascript" | "typescript" | "jsx" | "tsx" | "json" |
+    "python" | "html" | "sql" | "markdown" | "java" | "php" | "css" |
+    "xml" | "cpp" | "rust" | "csharp" | "ruby" | "shell" | "yaml" |
+    "golang" | "clojure" | "elixir" | "erlang" | "lezer" | "toml" |
+    "swift" | "kotlin" | "groovy" | "diff" | "powershell" | "vue" |
+    "dart" | "scala"
+  }
+
+  Auto { "-a" }
+
+  // ;created=2025-01-18T14:32:00Z
+  MetadataSeparator { ";" }
+  MetadataKey { "created" }
+  MetadataEq { "=" }
+  // Any run of characters that doesn't include ;, ∞ or newline
+  MetadataValue { (![;∞\n])+ }
+
+  noteDelimiterEnter { "\n" }
 }
 
 @external tokens noteContent from "./external-tokens.js" { NoteContent }
-

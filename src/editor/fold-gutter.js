@@ -2,6 +2,7 @@ import { codeFolding, foldGutter, unfoldEffect, foldEffect, foldedRanges } from 
 import { EditorView } from "@codemirror/view"
 
 import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
+import { formatDate, formatFullDate } from "@/src/common/format-date.js"
 import { getNoteBlockFromPos, getNoteBlocksFromRangeSet, delimiterRegexWithoutNewline } from "./block/block.js"
 import { transactionsHasAnnotationsAny, ADD_NEW_BLOCK, LANGUAGE_CHANGE, transactionsHasHistoryEvent } from "./annotation.js"
 
@@ -120,6 +121,20 @@ export function foldGutterExtension() {
                         dom.appendChild(labelDom)
                     }
                     dom.appendChild(linesDom)
+
+                    // if this is a fold of a whole block add creation time element
+                    const block = getNoteBlockFromPos(state, from)
+                    if (block.content.from === firstLine.from && block.content.to === to) {
+                        if (block.created) {
+                            const date = new Date(Date.parse(block.created))
+                            const createdDom = document.createElement("span")
+                            createdDom.className = "created-time"
+                            createdDom.textContent = formatDate(date)
+                            createdDom.title = "Created " + formatFullDate(date)
+                            dom.appendChild(createdDom)
+                        }
+                    }
+
                     return dom
                 },
                 placeholderDOM: (view, onClick, prepared) => {
