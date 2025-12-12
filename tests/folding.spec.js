@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { HeynotePage } from "./test-utils.js";
 import { NoteFormat } from "../src/common/note-format.js";
+import { formatDate, formatFullDate } from "@/src/common/format-date.js"
 
 let heynotePage
 
@@ -17,13 +18,13 @@ test.describe("Block Folding", () => {
 Block A
 Line 2 of Block A
 Line 3 of Block A
-∞∞∞javascript
+∞∞∞javascript;created=2025-12-12T10:54:40.124Z∞∞∞
 console.log("Block B")
 let x = 42
 return x * 2
-∞∞∞text
+∞∞∞text;created=2025-12-12T10:54:40.124Z∞∞∞
 Block C single line
-∞∞∞markdown
+∞∞∞markdown;created=2025-12-12T10:54:40.124Z∞∞∞
 # Block D
 This is a markdown block
 - Item 1
@@ -240,7 +241,7 @@ Block C single line`)
         expect(typeof note.foldedRanges[0].to).toBe('number')
         
         // Fold Block B (javascript block) as well
-        await heynotePage.setCursorPosition(80) // Middle of Block B
+        await heynotePage.setCursorPosition(114) // Middle of Block B
         await page.locator("body").press(foldKey)
         
         // Verify both blocks are folded
@@ -639,5 +640,28 @@ Another paragraph here
         expect(unfoldedVisibleText).toContain("This is some markdown content")
         expect(unfoldedVisibleText).toContain("List item 1")
         expect(unfoldedVisibleText).toContain("Another paragraph here")
+    });
+
+    test("creation time is displayed for folded blocks", async ({ page }) => {
+        const date = new Date()
+        await heynotePage.setContent(`
+∞∞∞text;created=${date.toISOString()}∞∞∞
+# Markdown Header
+This is some markdown content
+- List item 1
+- List item 2
+
+Another paragraph here`)
+        
+        // Verify no fold placeholder exists initially
+        await expect(page.locator(".cm-foldPlaceholder")).not.toBeVisible()
+        
+        // Click on the fold gutter to fold the block
+        await page.locator(".cm-foldGutter span[title='Fold line']").first().click()
+
+        // Verify block is folded by checking for fold placeholder
+        await expect(page.locator(".cm-foldPlaceholder")).toBeVisible()
+
+        await expect(page.locator(".cm-foldPlaceholder .created-time")).toHaveText(formatDate(date))
     });
 });

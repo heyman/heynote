@@ -143,4 +143,9 @@ export const heynoteBase = EditorView.theme({
         backgroundColor: "#ffaa20",
         outline: "1px solid #e46d00",
     },
+
+    ".cm-foldPlaceholder .created-time": {
+        float: "right",
+        marginRight: "6px",
+    },
 })
