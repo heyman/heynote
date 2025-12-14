@@ -104,8 +104,8 @@ export function getBlocksFromString(state) {
             return [];
         }
         const content = doc.sliceString(0, doc.length)
-
-        const matches = content.matchAll(BLOCK_DELIMITER_REGEX).toArray()
+        
+        const matches = [...content.matchAll(BLOCK_DELIMITER_REGEX)]
 
         for (let i=0; i<matches.length; i++) {
             const match = matches[i]
