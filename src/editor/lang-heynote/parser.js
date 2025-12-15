@@ -3,9 +3,9 @@ import {LRParser} from "@lezer/lr"
 import {noteContent} from "./external-tokens.js"
 export const parser = LRParser.deserialize({
   version: 14,
-  states: "$bQQOPOOOVOPO'#C`O[OSO'#C_OOOO'#Ci'#CiQQOPOOOaOPO,58zOOOO,58y,58yOOOO-E6g-E6gOfOPO1G.fOtOPO'#CdOOOO'#Cj'#CjOyOPO'#CcOOOS7+$Q7+$QO!UOPO7+$QO!ZOPO7+$QO!cOPO7+$QO!nOPO,59OOOOO-E6h-E6hOOOS<<Gl<<GlO!sOPO<<GlO!xOPO<<GlO#QOQO1G.jOOOSAN=WAN=WO#VOPOAN=WOOOO7+$U7+$UOOOSG22rG22r",
-  stateData: "#[~O`PO~OaTO~OPUO~OTWO~OU_OXXO`[Oa]O~OY`O~OXXO`VXaVX~O`bO~O`bOacO~OXXO`bOacO~OZeO~O`fO~O`fOagO~O[hO~O`iO~O",
-  goto: "!Q_PPP`dPPhnPPPPsyTROSTQOSQ^WRd_VYWZ_QSORVSSZW_RaZ",
+  states: "#xQQOPOOOVOPO'#C`O[OSO'#C_OOOO'#Ci'#CiQQOPOOOaOPO,58zOOOO,58y,58yOOOO-E6g-E6gOfOPO1G.fOqOPO'#CdOOOO'#Cj'#CjOvOPO'#CcOOOS7+$Q7+$QO!OOPO7+$QO!TOPO7+$QO!]OPO,59OOOOO-E6h-E6hOOOS<<Gl<<GlO!bOPO<<GlO!gOQO1G.jOOOSAN=WAN=WOOOO7+$U7+$U",
+  stateData: "!l~O`PO~OaTO~OPUO~OTWO~OU^OXXO`[O~OY_O~OXXO`VX~O`aO~OXXO`aO~OZcO~O`dO~O[eO~O",
+  goto: "!Q_PPP`dPPhnPPPPsyTROSTQOSQ]WRb^VYWZ^QSORVSSZW^R`Z",
   nodeNames: "⚠ NoteContent Document Note NoteDelimiter NoteLanguage Auto Metadata MetadataEntry MetadataSeparator MetadataKey MetadataEq MetadataValue",
   maxTerm: 17,
   skippedNodes: [0],

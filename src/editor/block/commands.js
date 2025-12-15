@@ -9,7 +9,7 @@ export { moveLineDown, moveLineUp, selectAll }
 
 
 export function getBlockDelimiter(defaultToken, autoDetect) {
-    return `\n∞∞∞${autoDetect ? defaultToken + '-a' : defaultToken};created=${(new Date()).toISOString()}∞∞∞\n`
+    return `\n∞∞∞${autoDetect ? defaultToken + '-a' : defaultToken};created=${(new Date()).toISOString()}\n`
 }
 
 export const insertNewBlockAtCursor = (editor) => ({ state, dispatch }) => {
@@ -129,7 +129,7 @@ export function changeLanguageTo(state, dispatch, block, language, auto) {
             changes: {
                 from: block.delimiter.from,
                 to: block.delimiter.to,
-                insert: `\n∞∞∞${language}${auto ? '-a' : ''}${createdMetadata}∞∞∞\n`,
+                insert: `\n∞∞∞${language}${auto ? '-a' : ''}${createdMetadata}\n`,
             },
             annotations: [heynoteEvent.of(LANGUAGE_CHANGE)],
         }))

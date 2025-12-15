@@ -78,7 +78,7 @@ test("create block before Markdown block", async ({page}) => {
 `)
     await page.locator("body").press("Alt+Enter")
     await page.waitForTimeout(100);
-    expect(await heynotePage.getCursorPosition()).toBe(47)
+    expect(await heynotePage.getCursorPosition()).toBe(44)
 })
 
 test("create block before first Markdown block", async ({page}) => {
@@ -92,7 +92,7 @@ test("create block before first Markdown block", async ({page}) => {
     }
     await page.locator("body").press("Alt+Shift+Enter")
     await page.waitForTimeout(100);
-    expect(await heynotePage.getCursorPosition()).toBe(47)
+    expect(await heynotePage.getCursorPosition()).toBe(44)
 })
 
 const runTest = async (page, key, expectedBlocks) => {
@@ -127,7 +127,7 @@ Text block`)
     expect(await heynotePage.getContent()).toMatch(new RegExp(`
 ∞∞∞text
 Text block
-∞∞∞rust-a[^∞\\n]+∞∞∞
+∞∞∞rust-a[^∞\\n]+
 `))
 
     await page.locator("css=.status-block.settings").click()
@@ -138,8 +138,8 @@ Text block
     expect(await heynotePage.getContent()).toMatch(new RegExp(`
 ∞∞∞text
 Text block
-∞∞∞rust-a[^∞\\n]+∞∞∞
+∞∞∞rust-a[^∞\\n]+
 
-∞∞∞rust[^∞\\n]+∞∞∞
+∞∞∞rust[^∞\\n]+
 `))
 })

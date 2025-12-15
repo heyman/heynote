@@ -18,7 +18,7 @@ Textblock`)
     expect(await heynotePage.getContent()).toMatch(new RegExp(`
 ∞∞∞text
 Text
-∞∞∞text;created=[^∞\\n]+∞∞∞
+∞∞∞text;created=[^∞\\n]+
 block`))
 })
 

@@ -18,13 +18,13 @@ test.describe("Block Folding", () => {
 Block A
 Line 2 of Block A
 Line 3 of Block A
-∞∞∞javascript;created=2025-12-12T10:54:40.124Z∞∞∞
+∞∞∞javascript;created=2025-12-12T10:54:40.124Z
 console.log("Block B")
 let x = 42
 return x * 2
-∞∞∞text;created=2025-12-12T10:54:40.124Z∞∞∞
+∞∞∞text;created=2025-12-12T10:54:40.124Z
 Block C single line
-∞∞∞markdown;created=2025-12-12T10:54:40.124Z∞∞∞
+∞∞∞markdown;created=2025-12-12T10:54:40.124Z
 # Block D
 This is a markdown block
 - Item 1
@@ -645,7 +645,7 @@ Another paragraph here
     test("creation time is displayed for folded blocks", async ({ page }) => {
         const date = new Date()
         await heynotePage.setContent(`
-∞∞∞text;created=${date.toISOString()}∞∞∞
+∞∞∞text;created=${date.toISOString()}
 # Markdown Header
 This is some markdown content
 - List item 1

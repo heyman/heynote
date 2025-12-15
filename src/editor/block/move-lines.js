@@ -1,9 +1,5 @@
 import { EditorSelection } from "@codemirror/state"
-import { blockState } from "./block"
-import { LANGUAGES } from '../languages.js';
-
-const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
-const tokenRegEx = new RegExp(`^∞∞∞(${languageTokensMatcher})(-a)?$`, "g")
+import { blockState, delimiterRegexWithoutNewline } from "./block.js"
 
 
 function selectedLineBlocks(state) {
@@ -42,8 +38,8 @@ function moveLine(state, dispatch, forward) {
         // if the whole selection is a block (surrounded by separators) we need to add an extra line break between the separators that'll
         // get stacked on top of each other, since we'll otherwise create two separators with only a single line break between them which 
         // the syntax parser won't be able to parse (since a valid separator needs one line break on each side)
-        let nextLineIsSeparator = nextLine.text.match(tokenRegEx)
-        let blockSurroundedBySeparators = previousLine !== null && previousLine.text.match(tokenRegEx) && nextLineIsSeparator
+        let nextLineIsSeparator = nextLine.text.match(delimiterRegexWithoutNewline)
+        let blockSurroundedBySeparators = previousLine !== null && previousLine.text.match(delimiterRegexWithoutNewline) && nextLineIsSeparator
         let size = nextLine.length + 1;
         if (forward) {
             if (blockSurroundedBySeparators) {

@@ -10,13 +10,13 @@ const SECOND_TOKEN_CHAR = "∞".charCodeAt(0)
 // Build a regex that matches a full note delimiter, including optional -a,
 // optional metadata (";key=value" style), and optional trailing "∞∞∞"
 //
-//   \n∞∞∞(LANG)(-a)?(;...)* (∞∞∞)? \n
+//   \n∞∞∞(LANG)(-a)?(;...)* \n
 //
 const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
 // Metadata is parsed as one or more `;...` segments that must not contain
 // a newline or "∞" (so we don't eat the closing mark or line break).
 const tokenRegEx = new RegExp(
-    `^\\n∞∞∞(${languageTokensMatcher})(-a)?(?:;[^∞\\n]+)*(∞∞∞)?\\n`
+    `^\\n∞∞∞(${languageTokensMatcher})(-a)?(?:;[^∞\\n]+)*\\n`
 )
 
 const HEADER_MAX_LOOKAHEAD = 256
@@ -44,7 +44,7 @@ export const noteContent = new ExternalTokenizer((input) => {
                 potentialHeader += String.fromCharCode(ch);
 
                 // We started on a '\n' (at i === 0). A second '\n' means we've
-                // reached the end of the delimiter line: "\n∞∞∞...∞∞∞?\n"
+                // reached the end of the delimiter line: "\n∞∞∞...\n"
                 if (i > 0 && ch === FIRST_TOKEN_CHAR) {
                     break;
                 }

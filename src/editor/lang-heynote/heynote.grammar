@@ -10,7 +10,6 @@ NoteDelimiter {
   NoteLanguage
   Auto?
   Metadata?
-  noteDelimiterMark?
   noteDelimiterEnter
 }
 

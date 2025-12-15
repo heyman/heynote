@@ -88,9 +88,9 @@ export function getBlocksFromSyntaxTree(state) {
 
 
 const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
-const BLOCK_DELIMITER_REGEX = new RegExp(`\\n∞∞∞(${languageTokensMatcher})(-a)?(?:;[^∞\\n]+)*(∞∞∞)?\\n`, "g")
+export const BLOCK_DELIMITER_REGEX = new RegExp(`\\n∞∞∞(${languageTokensMatcher})(-a)?(?:;[^\\n]+)*\\n`, "g")
 // regex to pull out ;created=...
-const CREATED_METADATA_REGEX = /;created=([^;∞\n]+)/
+const CREATED_METADATA_REGEX = /;created=([^;\n]+)/
 
 /**
  * Parse blocks from document's string contents using String.indexOf()
