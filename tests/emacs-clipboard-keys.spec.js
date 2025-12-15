@@ -96,3 +96,24 @@ test`)
     await page.keyboard.press("Control+Y")
     expect(await heynotePage.getBlockContent(0)).toBe("1test1")
 })
+
+test("cut multiple blocks", async ({ page }) => {
+    await page.locator("body").pressSequentially("block1")
+    await page.locator("body").press(heynotePage.agnosticKey("Mod+Enter"))
+    await page.locator("body").pressSequentially("block2")
+    expect(await heynotePage.getBlockContent(0)).toBe("block1")
+    expect(await heynotePage.getBlockContent(1)).toBe("block2")
+
+    await heynotePage.executeCommand("selectAll")
+    await heynotePage.executeCommand("selectAll")
+    await page.locator("body").press("Control+W")
+    
+    // check that editor is empty
+    expect((await heynotePage.getBlocks()).length).toBe(1)
+    expect(await heynotePage.getBlockContent(0)).toBe("")
+
+    // paste content and check that block separator was replaced with \n\n
+    await page.locator("body").press("Control+Y")
+    expect((await heynotePage.getBlocks()).length).toBe(1)
+    expect(await heynotePage.getBlockContent(0)).toBe("block1\n\nblock2")
+})
