@@ -2,6 +2,23 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## 2.7.0-beta
+
+### Breaking change
+
+Buffers created/saved with this new version of Heynote is not compatible with older versions of Heynote, 
+so if you're using Heynote on multiple machines, make sure to update to >=2.7 on all machines.
+
+### Creation time for blocks
+
+The time of creation is now recorded for blocks, and it's displayed in the status bar. For folded blocks, 
+it's also displayed in the summary line.
+
+### Other fixes and improvements
+
+- Chinese characters in buffer file names are now converted to ascii using pinyin. This fixes an issue where it 
+  wasn't possible to create a buffer with only chinese characters it the name.
+
 ## 2.6.2
 
 - Update to latest version of Electron to fix issue making Heynote unusable on latest version of Mac OS (Tahoe)
