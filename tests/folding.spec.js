@@ -662,6 +662,6 @@ Another paragraph here`)
         // Verify block is folded by checking for fold placeholder
         await expect(page.locator(".cm-foldPlaceholder")).toBeVisible()
 
-        await expect(page.locator(".cm-foldPlaceholder .created-time")).toHaveText(formatDate(date))
+        await expect(page.locator(".cm-foldPlaceholder .created-time")).toHaveText(formatDate(date, "en-GB"))
     });
 });

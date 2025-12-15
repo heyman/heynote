@@ -1,4 +1,4 @@
-export function formatDate(date) {
+export function formatDate(date, locale) {
     const now = new Date();
 
     // normalize to local midnight for date-only comparison
@@ -8,7 +8,7 @@ export function formatDate(date) {
 
     // Today: show just time
     if (diffDays === 0) {
-        return date.toLocaleTimeString(undefined, {
+        return date.toLocaleTimeString(locale, {
             hour: "numeric",
             minute: "2-digit"
         });
@@ -16,7 +16,7 @@ export function formatDate(date) {
 
     // Yesterday: show "Yesterday, <time>"
     if (diffDays === 1) {
-        const time = date.toLocaleTimeString(undefined, {
+        const time = date.toLocaleTimeString(locale, {
             hour: "numeric",
             minute: "2-digit"
         });
@@ -26,7 +26,7 @@ export function formatDate(date) {
     // Otherwise: full date + time, omit year if same
     const sameYear = date.getFullYear() === now.getFullYear();
 
-    return date.toLocaleString(undefined, {
+    return date.toLocaleString(locale, {
         year: sameYear ? undefined : "numeric",
         month: "short",
         day: "numeric",
@@ -35,8 +35,8 @@ export function formatDate(date) {
     });
 }
 
-export function formatFullDate(date) {
-    return date.toLocaleString(undefined, {
+export function formatFullDate(date, locale) {
+    return date.toLocaleString(locale, {
         year: "numeric",
         month: "short",
         day: "numeric",
