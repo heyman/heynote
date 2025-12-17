@@ -149,7 +149,7 @@ const Heynote = {
         async load(path) {
             //console.log("loading", path)
             const content = localStorage.getItem(noteKey(path))
-            return content === null ? '{"formatVersion":"1.0.0","name":"Scratch"}\n∞∞∞text-a\n' : content
+            return content === null ? '{"formatVersion":"1.0.0","name":"Scratch"}\n∞∞∞text-a;created=' + (new Date()).toISOString() + '\n' : content
         },
 
         async save(path, content) {

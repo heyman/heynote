@@ -1,11 +1,8 @@
 import { EditorState, EditorSelection } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"
 
-import { LANGUAGES } from './languages.js';
-
-
-const languageTokensMatcher = LANGUAGES.map(l => l.token).join("|")
-const blockSeparatorRegex = new RegExp(`\\n∞∞∞(${languageTokensMatcher})(-a)?\\n`, "g")
+import { LANGUAGES } from './languages.js'
+import { BLOCK_DELIMITER_REGEX } from './block/block-parsing.js'
 
 
 function copiedRange(state) {
@@ -44,7 +41,7 @@ export const heynoteCopyCut = (editor) => {
     let copy, cut
     copy = cut = (event, view) => {
         let { text, ranges } = copiedRange(view.state)
-        text = text.replaceAll(blockSeparatorRegex, "\n\n")
+        text = text.replaceAll(BLOCK_DELIMITER_REGEX, "\n\n")
         let data = event.clipboardData
         if (data) {
             event.preventDefault()
@@ -82,7 +79,7 @@ export const heynoteCopyCut = (editor) => {
 
 const copyCut = (view, cut, editor) => {
     let { text, ranges } = copiedRange(view.state)
-    text = text.replaceAll(blockSeparatorRegex, "\n\n")
+    text = text.replaceAll(BLOCK_DELIMITER_REGEX, "\n\n")
     navigator.clipboard.writeText(text)
 
     if (cut && !view.state.readOnly) {

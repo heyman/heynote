@@ -9,7 +9,7 @@ export { moveLineDown, moveLineUp, selectAll }
 
 
 export function getBlockDelimiter(defaultToken, autoDetect) {
-    return `\n∞∞∞${autoDetect ? defaultToken + '-a' : defaultToken}\n`
+    return `\n∞∞∞${autoDetect ? defaultToken + '-a' : defaultToken};created=${(new Date()).toISOString()}\n`
 }
 
 export const insertNewBlockAtCursor = (editor) => ({ state, dispatch }) => {
@@ -19,7 +19,7 @@ export const insertNewBlockAtCursor = (editor) => ({ state, dispatch }) => {
     const currentBlock = getActiveNoteBlock(state)
     let delimText;
     if (currentBlock) {
-        delimText = `\n∞∞∞${currentBlock.language.name}${currentBlock.language.auto ? "-a" : ""}\n`
+        delimText = getBlockDelimiter(currentBlock.language.name, currentBlock.language.auto)
     } else {
         delimText = getBlockDelimiter(editor.defaultBlockToken, editor.defaultBlockAutoDetect)
     }
@@ -121,11 +121,15 @@ export function changeLanguageTo(state, dispatch, block, language, auto) {
         return false
     if (state.doc.sliceString(block.delimiter.from, block.delimiter.to).match(delimiterRegex)) {
         //console.log("changing language to", language)
+        let createdMetadata = ""
+        if (block.created) {
+            createdMetadata = ";created=" + block.created
+        }
         dispatch(state.update({
             changes: {
                 from: block.delimiter.from,
                 to: block.delimiter.to,
-                insert: `\n∞∞∞${language}${auto ? '-a' : ''}\n`,
+                insert: `\n∞∞∞${language}${auto ? '-a' : ''}${createdMetadata}\n`,
             },
             annotations: [heynoteEvent.of(LANGUAGE_CHANGE)],
         }))

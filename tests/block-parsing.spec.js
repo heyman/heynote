@@ -8,7 +8,7 @@ test("parse blocks from both syntax tree and string contents", async ({page}) =>
     const contents = `
 ∞∞∞text
 Text Block A
-∞∞∞text-a
+∞∞∞text-a;created=2025-12-14T10:49:23.407Z
 Text Block B
 ∞∞∞json-a
 {

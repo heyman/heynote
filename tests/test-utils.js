@@ -92,4 +92,8 @@ export class HeynotePage {
     agnosticKey(key) {
         return key.replace("Mod", this.isMac ? "Meta" : "Control")
     }
+
+    async executeCommand(command) {
+        return await this.page.evaluate((command) => window._heynote_editor.executeCommand(command), command)
+    }
 }

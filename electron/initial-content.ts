@@ -1,15 +1,17 @@
 import os from "os";
 import { keyHelpStr } from "../shared-utils/key-helper";
 
+const created = (new Date()).toISOString()
+
 export const initialContent = `
 {"formatVersion":"1.0.0","name":"Scratch"}
-∞∞∞text
+∞∞∞text;created=${created}
 Welcome to Heynote! 👋
 
 ${keyHelpStr(os.platform())}
-∞∞∞markdown
+∞∞∞markdown;created=${created}
 Read full documentation at https://heynote.com/docs
-∞∞∞math
+∞∞∞math;created=${created}
 This is a Math block. Here, rows are evaluated as math expressions. 
 
 radius = 5
@@ -23,21 +25,21 @@ time = 3900 seconds to minutes
 time * 2
 
 1 EUR in USD
-∞∞∞markdown
+∞∞∞markdown;created=${created}
 In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
 
 - [x] Download Heynote
 - [ ] Try out Heynote
-∞∞∞text-a
+∞∞∞text-a;created=${created}
 `
 
 export const initialDevContent = initialContent + `
-∞∞∞python-a
+∞∞∞python-a;created=2022-12-15T11:57:40.988Z
 # hmm
 def my_func():
   print("hejsan")
 
-∞∞∞javascript-a
+∞∞∞javascript-a;created=2025-12-15T11:57:40.988Z
 import {basicSetup} from "codemirror"
 import {EditorView, keymap} from "@codemirror/view"
 import {javascript} from "@codemirror/lang-javascript"
@@ -107,9 +109,9 @@ let editor = new EditorView({
         </script>
     </body>
 </html>
-∞∞∞sql
+∞∞∞sql;created=${created}
 SELECT * FROM table WHERE id = 1;
-∞∞∞text
+∞∞∞text;created=${created}
 Shopping list:
 
 - Milk

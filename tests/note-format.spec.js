@@ -15,11 +15,11 @@ test("test restore cursor position", async ({ page, browserName }) => {
 ∞∞∞text
 Textblock`)
     await page.locator("body").press((heynotePage.isMac ? "Meta" : "Control") +  "+Alt+Enter")
-    expect(await heynotePage.getContent()).toBe(`
+    expect(await heynotePage.getContent()).toMatch(new RegExp(`
 ∞∞∞text
 Text
-∞∞∞text
-block`)
+∞∞∞text;created=[^∞\\n]+
+block`))
 })
 
 

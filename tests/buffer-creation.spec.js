@@ -91,9 +91,9 @@ Block B
 ∞∞∞text
 Block C`)
 
-    expect(newBuffer.content).toBe(`
-∞∞∞text-a
-`)
+    expect(newBuffer.content).toMatch(new RegExp(`
+∞∞∞text-a;created=[^∞\\n]+
+`))
 })
 
 
@@ -120,7 +120,7 @@ Block B
 ∞∞∞text
 Block C`)
 
-    expect(newBuffer.content).toBe(`
-∞∞∞text-a
-`)
+    expect(newBuffer.content).toMatch(new RegExp(`
+∞∞∞text-a;created=[^∞\\n]+
+`))
 })
