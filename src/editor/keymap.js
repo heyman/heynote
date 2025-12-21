@@ -92,7 +92,7 @@ export const DEFAULT_KEYMAP = [
         cmd("Mod-y", "redo"),
     ] : []),
 
-    cmd("Tab", "indentMore"),
+    cmd("Tab", "insertIndentation"),
     cmd("Shift-Tab", "indentLess"),
     //cmd("Alt-ArrowLeft", "cursorSubwordBackward"),
     //cmd("Alt-ArrowRight", "cursorSubwordForward"),

@@ -16,6 +16,10 @@ it's also displayed in the summary line.
 
 ### Other fixes and improvements
 
+- The default key binding for the `TAB` key is now a new `insertIndentation` command. This command will insert 
+  indentation character(s) (spaces or tabs depending on the setting) so that the cursor aligns with the indentation
+  columns. Unless there is an active selection, in which case the `indentMore` command will be executed instead.
+  If you want the old behaviour, you can bind the `TAB` key to `indentMore`.
 - Chinese characters in buffer file names are now converted to ascii using pinyin. This fixes an issue where it 
   wasn't possible to create a buffer with only chinese characters it the name.
 
