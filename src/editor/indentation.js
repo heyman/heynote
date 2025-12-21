@@ -1,5 +1,5 @@
 import { EditorSelection, EditorState, countColumn } from "@codemirror/state"
-import { indentUnit, indentString } from "@codemirror/language"
+import { indentUnit } from "@codemirror/language"
 import { indentMore } from "@codemirror/commands"
 
 
@@ -24,13 +24,7 @@ export const insertIndentation = ({state, dispatch}) => {
 
     if (state.facet(indentUnit) === "\t") {
         // if the indent unit is tabs, just insert tab character(s)
-        dispatch(state.update(state.replaceSelection(
-            indentString(state, state.facet(EditorState.tabSize))),
-            {
-                scrollIntoView: true,
-                userEvent: "input",
-            }
-        ))
+        dispatch(state.update(state.replaceSelection("\t", {scrollIntoView: true, userEvent: "input"})))
     } else {
         // if the indent unit is space, we need to figure out how many spaces to insert to align 
         // with the indendation columns (for each line)
