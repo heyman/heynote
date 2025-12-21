@@ -46,3 +46,13 @@ test("insert current date and time", async ({ page }) => {
     expect(await heynotePage.getBlockContent(0)).toContain(expectedYear)
     expect((await heynotePage.getBlockContent(0)).length).toBeGreaterThan(0)
 })
+
+test("press tab", async ({ page }) => {
+
+    await page.locator("body").pressSequentially("H")
+    await page.locator("body").press("Tab")
+    await page.locator("body").pressSequentially("ello")
+    await page.locator("body").press("Enter")
+    await page.locator("body").press("Tab")
+    expect(await heynotePage.getBlockContent(0)).toBe("H   ello\n    ")
+})
