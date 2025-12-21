@@ -10,6 +10,7 @@ import {
     splitLine,
     insertNewlineAndIndent,
     toggleComment, toggleBlockComment, toggleLineComment,
+    insertTab,
 } from "@codemirror/commands"
 import { foldCode, unfoldCode, toggleFold } from "@codemirror/language"
 import { 
@@ -41,6 +42,7 @@ import { foldBlock, unfoldBlock, toggleBlockFold } from "./fold-gutter.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useSettingsStore } from "../stores/settings-store.js"
 import { toggleSpellcheck, enableSpellcheck, disableSpellcheck } from "./spell-check.js"
+import { insertIndentation } from "./indentation.js"
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
@@ -180,6 +182,7 @@ const HEYNOTE_COMMANDS = {
     selectNextBlock: cmdLessContext(selectNextBlock, "Selection", "Select to next block"),
     nothing: cmdLessContext(nothing, "Misc", "Do nothing"),
     insertDateAndTime: cmdLessContext(insertDateAndTime, "Misc", "Insert date and time"),
+    insertIndentation: cmdLessContext(insertIndentation, "Edit", "Insert indentation"),
 
     // directly from CodeMirror
     undo: cmdLessContext(undo, "Edit", "Undo"),
@@ -214,6 +217,7 @@ const HEYNOTE_COMMANDS = {
     toggleComment: cmdLessContext(toggleComment, "Edit", "Toggle comment"),
     toggleBlockComment: cmdLessContext(toggleBlockComment, "Edit", "Toggle block comment"),
     toggleLineComment: cmdLessContext(toggleLineComment, "Edit", "Toggle line comment"),
+    insertTab: cmdLessContext(insertTab, "Edit", "Insert tab"),
 }
 
 // selection mark-mode:ify all cursor/select commands from CodeMirror
