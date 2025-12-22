@@ -21,7 +21,8 @@ import { selectNextOccurrence, selectSelectionMatches } from "./search/selection
 import { insertNewlineContinueMarkup } from "@codemirror/lang-markdown"
 
 import { 
-    addNewBlockAfterCurrent, addNewBlockBeforeCurrent, addNewBlockAfterLast, addNewBlockBeforeFirst, insertNewBlockAtCursor, 
+    addNewBlockAfterCurrent, addNewBlockBeforeCurrent, addNewBlockAfterLast, addNewBlockAfterLastAndScrollDown, 
+    addNewBlockBeforeFirst, insertNewBlockAtCursor, 
     gotoPreviousBlock, gotoNextBlock, selectNextBlock, selectPreviousBlock,
     gotoPreviousParagraph, gotoNextParagraph, selectNextParagraph, selectPreviousParagraph,
     moveLineUp, moveLineDown,
@@ -124,6 +125,7 @@ const HEYNOTE_COMMANDS = {
     addNewBlockAfterCurrent: cmd(addNewBlockAfterCurrent, "Block", "Add new block after current block"),
     addNewBlockBeforeCurrent: cmd(addNewBlockBeforeCurrent, "Block", "Add new block before current block"),
     addNewBlockAfterLast: cmd(addNewBlockAfterLast, "Block", "Add new block after last block"),
+    addNewBlockAfterLastAndScrollDown: cmd(addNewBlockAfterLastAndScrollDown, "Block", "Add new block after last, and scroll down"),
     addNewBlockBeforeFirst: cmd(addNewBlockBeforeFirst, "Block", "Add new block before first block"),
     insertNewBlockAtCursor: cmd(insertNewBlockAtCursor, "Block", "Insert new block at cursor"),
     deleteBlock: cmd(deleteBlock, "Block", "Delete block"),

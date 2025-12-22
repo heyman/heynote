@@ -1,4 +1,5 @@
 import { EditorSelection, Transaction } from "@codemirror/state"
+import { EditorView } from "@codemirror/view"
 
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK, MOVE_BLOCK, DELETE_BLOCK } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos, delimiterRegex } from "./block"
@@ -113,6 +114,12 @@ export const addNewBlockAfterLast = (editor) => ({ state, dispatch }) => {
         scrollIntoView: true,
         userEvent: "input",
     }))
+    return true;
+}
+
+export const addNewBlockAfterLastAndScrollDown = (editor) => (view) => {
+    addNewBlockAfterLast(editor)(view)
+    view.scrollDOM.scrollTop = view.scrollDOM.scrollHeight
     return true;
 }
 
