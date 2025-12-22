@@ -30,6 +30,7 @@ import { useErrorStore } from "../stores/error-store.js";
 import { foldGutterExtension } from "./fold-gutter.js"
 import { heynoteSearch } from "./search/search.js"
 import { spellcheckConfig } from "./spell-check.js"
+import { scrollMargin } from "./scroll-margin.js"
 
 
 // Turn off the use of EditContext, since Chrome has a bug (https://issues.chromium.org/issues/351029417) 
@@ -102,9 +103,7 @@ export class HeynoteEditor {
                 heynoteBase,
                 this.fontTheme.of(getFontTheme(fontFamily, fontSize)),
                 this.indentUnitCompartment.of(indentation(indentType, tabSize)),
-                EditorView.scrollMargins.of(f => {
-                    return {top: 80, bottom: 80}
-                }),
+                scrollMargin(),
                 heynoteSearch,
                 heynoteLang(),
                 noteBlockExtension(this),
