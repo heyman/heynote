@@ -13,6 +13,7 @@ import { xmlLanguage } from "@codemirror/lang-xml"
 import { rustLanguage } from "@codemirror/lang-rust"
 import { csharpLanguage } from "@replit/codemirror-lang-csharp"
 import { vueLanguage } from "@codemirror/lang-vue";
+import { mermaidLanguage } from 'codemirror-lang-mermaid';
 
 import { StreamLanguage } from "@codemirror/language"
 import { ruby } from "@codemirror/legacy-modes/mode/ruby"
@@ -278,7 +279,13 @@ export const LANGUAGES = [
         name: "Scala",
         parser: StreamLanguage.define(scala).parser,
         guesslang: "scala",
-    }), 
+    }),
+    new Language({
+        token: "mermaid",
+        name: "Mermaid",
+        parser: mermaidLanguage.parser ,
+        guesslang: 'mermaid',
+    }),
 ]
 
 

@@ -10,6 +10,7 @@ import { javaLanguage } from "@codemirror/lang-java"
 import { lezerLanguage } from "@codemirror/lang-lezer"
 import { phpLanguage } from "@codemirror/lang-php"
 import { elixirLanguage } from "codemirror-lang-elixir"
+import { mermaidLanguage } from 'codemirror-lang-mermaid'
 
 import { NoteContent, NoteLanguage } from "./parser.terms.js"
 import { LANGUAGES } from "../languages.js"
