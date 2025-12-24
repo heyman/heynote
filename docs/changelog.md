@@ -23,6 +23,8 @@ the other blocks above while writing.
 The default key binding for `Cmd/Ctrl+Shift+Enter` has been changed to this new command, but anyone who would 
 prefer the old behaviour, can add a key binding for the  `Add new block after last block` command.
 
+<img src="https://heynote.com/img/changelog/new-block-and-scroll-down.gif" style="width:100%;" alt="GIF showing the new feature">
+
 ### Other fixes and improvements
 
 - The default key binding for the `TAB` key is now a new `insertIndentation` command. This command will insert 
