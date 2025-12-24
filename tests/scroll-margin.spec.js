@@ -33,5 +33,10 @@ test("add new block at the end and scroll down", async ({ page }) => {
     await page.locator("body").press(heynotePage.isMac ? "Meta+Shift+Enter" : "Control+Shift+Enter")
     expect((await heynotePage.getBlocks()).length).toBe(2)
     //console.log("scrollTop:", await getScrollTop())
-    expect(await getScrollTop()).toBeGreaterThan(100)
+    const scrollTop = await getScrollTop()
+    expect(scrollTop).toBeGreaterThan(100)
+    
+    // go up one row, and make sure the scroll margin gets reset
+    await (page.locator("body")).press("ArrowUp")
+    await expect.poll(async () => scrollTop - await getScrollTop(), {timeout:3000}).toBeGreaterThan(40)
 })
