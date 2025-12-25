@@ -53,6 +53,10 @@ export class HeynotePage {
         await this.page.evaluate((position) => window._heynote_editor.setCursorPosition(position), position)
     }
 
+    async getMainSelection() {
+        return await this.page.evaluate(() => window._heynote_editor.view.state.selection.main)
+    }
+
     async getBlockContent(blockIndex) {
         const blocks = await this.getBlocks()
         const content = await this.getContent()
