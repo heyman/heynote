@@ -24,7 +24,7 @@ export const DEFAULT_KEYMAP = [
     
     cmd("Mod-a", "selectAll"),
     cmd("Mod-Enter", "addNewBlockAfterCurrent"),
-    cmd("Mod-Shift-Enter", "addNewBlockAfterLast"),
+    cmd("Mod-Shift-Enter", "addNewBlockAfterLastAndScrollDown"),
     cmd("Alt-Enter", "addNewBlockBeforeCurrent"),
     cmd("Alt-Shift-Enter", "addNewBlockBeforeFirst"),
     cmd("Mod-Alt-Enter", "insertNewBlockAtCursor"),

@@ -14,6 +14,17 @@ so if you're using Heynote on multiple machines, make sure to update to >=2.7 on
 The time of creation is now recorded for blocks, and it's displayed in the status bar. For folded blocks, 
 it's also displayed in the summary line.
 
+### Add new block after last and scroll down
+
+A new command for adding a new block at the end of the buffer and then scrolling down so that only the new 
+block is visible has been added. This can be used to create a new block and avoid any distraction from seeing 
+the other blocks above while writing. 
+
+The default key binding for `Cmd/Ctrl+Shift+Enter` has been changed to this new command, but anyone who would 
+prefer the old behaviour, can add a key binding for the  `Add new block after last block` command.
+
+<img src="https://heynote.com/img/changelog/new-block-and-scroll-down.gif" style="width:100%;" alt="GIF showing the new feature">
+
 ### Other fixes and improvements
 
 - The default key binding for the `TAB` key is now a new `insertIndentation` command. This command will insert 
