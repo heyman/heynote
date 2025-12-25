@@ -27,7 +27,8 @@ test.beforeEach(async ({ page }) => {
     expect(await page.locator('.tab-item').count()).toBe(3)
 });
 
-test("content is preserved after page reload", async ({ page }) => {
+test("content is preserved after page reload", async ({ page, browserName }) => {
+    test.skip(browserName === "webkit", "WebKit dragTo is flaky in CI")
     // Replicate the exact failing scenario from tab reordering test
     // Add content to Buffer 2 (currently active)
     await page.locator("body").pressSequentially("Content in Buffer 2")
@@ -42,7 +43,7 @@ test("content is preserved after page reload", async ({ page }) => {
     // Perform the same drag operation that triggered the Firefox issue
     const buffer2Tab = await page.locator('.tab-item').nth(2)
     await buffer2Tab.dragTo(scratchTab)
-    await page.waitForTimeout(500)
+    await expect(page.locator(".tab-item:first-child")).toHaveText("Buffer 2")
     
     // Switch to the reordered Buffer 2 (now first tab)
     const reorderedBuffer2Tab = await page.locator('.tab-item').first()

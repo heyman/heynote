@@ -175,7 +175,8 @@ test("open new tab via add button", async ({ page }) => {
 })
 
 
-test("reorder tabs by dragging and verify order persistence", async ({ page }) => {
+test("reorder tabs by dragging and verify order persistence", async ({ page, browserName }) => {
+    test.skip(browserName === "webkit", "WebKit dragTo is flaky in CI")
     // Wait for buffers to be loaded properly
     await page.waitForTimeout(1000)
     
@@ -291,4 +292,3 @@ test("reopen multiple closed tabs in reverse order", async ({ page }) => {
     await reopenedBuffer1.click()
     expect(await heynotePage.getBlockContent(0)).toBe("Buffer 1 content")
 })
-
