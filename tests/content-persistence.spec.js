@@ -51,6 +51,8 @@ test("content is preserved after page reload", async ({ page }) => {
     // Wait for content to be saved
     await page.waitForTimeout(300)
 
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("Content in Buffer 2")
+
     await page.evaluate(() => {
         ['beforeunload', 'unload', 'pagehide'].forEach(eventType => {
           window.addEventListener(eventType, (e) => {
