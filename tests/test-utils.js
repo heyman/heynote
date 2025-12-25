@@ -57,6 +57,18 @@ export class HeynotePage {
         return await this.page.evaluate(() => window._heynote_editor.view.state.selection.main)
     }
 
+    async expectSelectionContent(content) {
+        console.log("expectSelectionContent")
+        return await expect.poll(async () => {
+            return await this.page.evaluate(() => {
+                const state = window._heynote_editor.view.state
+                const selection = state.selection.main
+                console.log("selection:", state.doc.sliceString(selection.from, selection.to))
+                return state.doc.sliceString(selection.from, selection.to)
+            })
+        }).toBe(content)
+    }
+
     async getBlockContent(blockIndex) {
         const blocks = await this.getBlocks()
         const content = await this.getContent()
