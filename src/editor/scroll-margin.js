@@ -71,3 +71,17 @@ export function scrollMargin() {
         marginCompartment.of(margins(getMarginSize(NUM_LINES_MARGIN))),
     ]
 }
+
+export function getScrollMargins(editor) {
+    const margins = { top: 0, bottom: 0, left: 0, right: 0 }
+
+    for (const provider of editor.view.state.facet(EditorView.scrollMargins)) {
+        const m = provider(editor.view)
+        if (m.top != null) margins.top += m.top
+        if (m.bottom != null) margins.bottom += m.bottom
+        if (m.left != null) margins.left += m.left
+        if (m.right != null) margins.right += m.right
+    }
+
+    return margins
+}

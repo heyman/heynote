@@ -30,7 +30,7 @@ import { useErrorStore } from "../stores/error-store.js";
 import { foldGutterExtension } from "./fold-gutter.js"
 import { heynoteSearch } from "./search/search.js"
 import { spellcheckConfig } from "./spell-check.js"
-import { scrollMargin } from "./scroll-margin.js"
+import { scrollMargin, getScrollMargins } from "./scroll-margin.js"
 
 
 // Turn off the use of EditContext, since Chrome has a bug (https://issues.chromium.org/issues/351029417) 
@@ -463,6 +463,13 @@ export class HeynoteEditor {
             return
         }
         cmd.run(this)(this.view)
+    }
+
+    /**
+     * Used in tests
+     */
+    getScrollMargins() {
+        return getScrollMargins(this)
     }
 }
 
