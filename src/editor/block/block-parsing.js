@@ -142,6 +142,7 @@ export function getBlocksFromString(state) {
             };
             blocks.push(block);
         }
+        firstBlockDelimiterSize = blocks[0]?.delimiter.to
         //console.log("getBlocksFromString() took", timer(), "ms")
         return blocks
 }
