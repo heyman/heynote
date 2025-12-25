@@ -100,4 +100,12 @@ export class HeynotePage {
     async executeCommand(command) {
         return await this.page.evaluate((command) => window._heynote_editor.executeCommand(command), command)
     }
+
+    async waitForContentSaved() {
+        await expect.poll(async () => {
+            const editorContent = await this.page.evaluate(() => window._heynote_editor.getContent())
+            const diskContent = await this.page.evaluate(() => window._heynote_editor.diskContent)
+            return editorContent === diskContent
+        }).toBeTruthy()
+    }
 }
