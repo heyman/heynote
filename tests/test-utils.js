@@ -58,7 +58,6 @@ export class HeynotePage {
     }
 
     async expectSelectionContent(content) {
-        console.log("expectSelectionContent")
         return await expect.poll(async () => {
             return await this.page.evaluate(() => {
                 const state = window._heynote_editor.view.state
