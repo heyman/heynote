@@ -12,6 +12,7 @@ import {
     UPDATE_INSTALL_AND_RESTART,
     UPDATE_DOWNLOADED,
     UPDATE_CHECK_FOR_UPDATES,
+    GET_SYSTEM_LOCALE,
 } from "@/src/common/constants"
 import CONFIG from "../config"
 import getCurrencyData from "./currency"
@@ -168,6 +169,10 @@ contextBridge.exposeInMainWorld("heynote", {
 
     setWindowTitle(title) {
         ipcRenderer.invoke("setWindowTitle", title)
+    },
+
+    async getSystemLocale() {
+        return await ipcRenderer.invoke(GET_SYSTEM_LOCALE)
     },
 })
 

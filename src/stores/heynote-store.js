@@ -38,6 +38,7 @@ export const useHeynoteStore = defineStore("heynote", {
 
         isFullscreen: false,
         isFocused: true,
+        systemLocale: navigator.language,
     }),
 
     actions: {
@@ -378,4 +379,6 @@ export async function initHeynoteStore() {
 
     watch(() => heynoteStore.currentBufferPath, () => heynoteStore.saveTabsState())
     watch(() => heynoteStore.openTabs, () => heynoteStore.saveTabsState())
+
+    heynoteStore.systemLocale = await window.heynote.getSystemLocale()
 }

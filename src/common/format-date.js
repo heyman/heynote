@@ -45,3 +45,13 @@ export function formatFullDate(date, locale) {
         second: "2-digit",
     });
 }
+
+export function formatFullDateWithoutSeconds(date, locale) {
+    return date.toLocaleString(locale, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+     });
+}

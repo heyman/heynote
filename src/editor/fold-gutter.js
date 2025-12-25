@@ -5,6 +5,7 @@ import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
 import { formatDate, formatFullDate } from "@/src/common/format-date.js"
 import { getNoteBlockFromPos, getNoteBlocksFromRangeSet, delimiterRegexWithoutNewline } from "./block/block.js"
 import { transactionsHasAnnotationsAny, ADD_NEW_BLOCK, LANGUAGE_CHANGE, transactionsHasHistoryEvent } from "./annotation.js"
+import { useHeynoteStore } from "@/src/stores/heynote-store.js"
 
 
 // This extension fixes so that a folded region is automatically unfolded if any changes happen 
@@ -86,6 +87,8 @@ const autoUnfoldOnEdit = () => {
 }
 
 export function foldGutterExtension() {
+    const heynoteStore = useHeynoteStore()
+
     return [
         foldGutter({
             domEventHandlers: {
@@ -129,8 +132,8 @@ export function foldGutterExtension() {
                             const date = new Date(Date.parse(block.created))
                             const createdDom = document.createElement("span")
                             createdDom.className = "created-time"
-                            createdDom.textContent = formatDate(date)
-                            createdDom.title = "Created " + formatFullDate(date)
+                            createdDom.textContent = formatDate(date, heynoteStore.systemLocale)
+                            createdDom.title = "Created " + formatFullDate(date, heynoteStore.systemLocale)
                             dom.appendChild(createdDom)
                         }
                     }

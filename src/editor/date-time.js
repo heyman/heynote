@@ -1,15 +1,15 @@
+import { useHeynoteStore } from "@/src/stores/heynote-store"
+import { formatFullDateWithoutSeconds } from "../common/format-date"
+
+
 export const insertDateAndTime = ({ state, dispatch }) => {
     if (state.readOnly) {
         return false
     }
 
-    const dateText = new Date().toLocaleString(undefined, {
-        hour: '2-digit',
-        minute: '2-digit',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    })
+    const heynoteStore = useHeynoteStore()
+    const dateText = formatFullDateWithoutSeconds(new Date(), heynoteStore.systemLocale)
+
     dispatch(state.replaceSelection(dateText),
         {
             scrollIntoView: true,

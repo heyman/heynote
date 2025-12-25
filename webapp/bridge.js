@@ -306,6 +306,10 @@ const Heynote = {
     setWindowTitle(title) {
         document.title = title + " - Heynote"
     },
+
+    async getSystemLocale() {
+        return navigator.language
+    },
 }
 
 window.addEventListener("beforeunload", () => ipcRenderer.send(WINDOW_CLOSE_EVENT))

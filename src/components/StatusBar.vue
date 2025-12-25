@@ -39,6 +39,7 @@
                 "currentLanguage",
                 "currentLanguageAuto",
                 "currentCreatedTime",
+                "systemLocale",
             ]),
             ...mapState(useSettingsStore, [
                 "spellcheckEnabled",
@@ -76,14 +77,14 @@
             if (!this.currentCreatedTime) {
                 return null
             }
-            return formatDate(this.currentCreatedTime)
+            return formatDate(this.currentCreatedTime, this.systemLocale)
         },
 
         createdTimeTitle() {
             if (!this.currentCreatedTime) {
                 return null
             }
-            return "Block created " +  formatFullDate(this.currentCreatedTime)
+            return "Block created " +  formatFullDate(this.currentCreatedTime, this.systemLocale)
         },
     },
 
