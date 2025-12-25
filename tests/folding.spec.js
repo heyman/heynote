@@ -33,7 +33,7 @@ This is a markdown block
 - Item 2
 `)
         //await page.waitForTimeout(100);
-        expect((await heynotePage.getBlocks()).length).toBe(4)
+        await expect.poll(async () => (await heynotePage.getBlocks()).length).toBe(4)
     });
 
     test("fold gutter doesn't lose editor focus when clicked", async ({ page }) => {
@@ -85,6 +85,7 @@ This is a markdown block
     test("multiple blocks can be folded and unfolded when selection overlaps multiple blocks", async ({ page }) => {
         // Use Ctrl/Cmd+A twice to select all content across all blocks
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // First press selects current block
+        await page.waitForSelector(".cm-selectionBackground")
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Second press selects entire buffer
         await expectWholeBufferToBeSelected();
         
@@ -131,6 +132,7 @@ This is a markdown block
     test("toggleBlockFold works on multiple blocks", async ({ page }) => {
         // Select all content across all blocks
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // First press selects current block
+        await page.waitForSelector(".cm-selectionBackground")
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Second press selects entire buffer
         await expectWholeBufferToBeSelected();
         
