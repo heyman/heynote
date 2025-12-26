@@ -667,7 +667,6 @@ Another paragraph here`)
         // Verify block is folded by checking for fold placeholder
         await expect(page.locator(".cm-foldPlaceholder")).toBeVisible()
         
-        const locale = await page.evaluate(async () => navigator.language)
         const expectedTime = await page.evaluate(async (date) => {
             return date.toLocaleTimeString(navigator.language, {
                 hour: "numeric",
