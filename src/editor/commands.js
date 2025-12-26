@@ -44,6 +44,7 @@ import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useSettingsStore } from "../stores/settings-store.js"
 import { toggleSpellcheck, enableSpellcheck, disableSpellcheck } from "./spell-check.js"
 import { insertIndentation } from "./indentation.js"
+import { toggleCheckbox } from "./todo-checkbox.ts"
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
@@ -216,6 +217,7 @@ const HEYNOTE_COMMANDS = {
     transposeChars: cmdLessContext(transposeChars, "Edit", "Transpose characters"),
     insertNewlineAndIndent: cmdLessContext(insertNewlineAndIndent, "Edit", "Insert newline and indent"),
     insertNewlineContinueMarkup: cmdLessContext(insertNewlineContinueMarkup, "Markdown", "Insert newline and continue todo lists/block quotes"),
+    toggleCheckbox: cmdLessContext(toggleCheckbox, "Markdown", "Toggle todo checkbox"),
     toggleComment: cmdLessContext(toggleComment, "Edit", "Toggle comment"),
     toggleBlockComment: cmdLessContext(toggleBlockComment, "Edit", "Toggle block comment"),
     toggleLineComment: cmdLessContext(toggleLineComment, "Edit", "Toggle line comment"),

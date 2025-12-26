@@ -104,6 +104,7 @@ export const DEFAULT_KEYMAP = [
     cmd("Mod-n", "openCreateNewBuffer"),
 
     cmd("Alt-Shift-f", "formatBlockContent"),
+    cmd("Mod-Shift-Space", "toggleCheckbox"),
 
     cmd("Mod-/", "toggleComment"),
     cmd("Alt-Shift-a", "toggleBlockComment"),
