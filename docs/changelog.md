@@ -2,14 +2,8 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## Not yet released
 
-- Add setting for configuring the cursor blink rate (or turning off the blinking)
-- Add support for Lua blocks
-- Add `toggleCheckbox` command for Markdown todo items (default key binding: `Cmd/Ctrl+Shift+Space`)
-
-
-## 2.7.0-beta.2
+## 2.7.0-beta.3
 
 ### Non backwards-compatible change
 
@@ -43,6 +37,9 @@ prefer the old behaviour, can add a key binding for the  `Add new block after la
 - Fix issue where the wrong locale was used for formatting dates on MacOS on systems using a locale such as "en-SE"
 - Fix issue with folded Math blocks where the results from the first and last line would still be visible
 - Always use 2-digit notation for hours when displaying time
+- Add setting for configuring the cursor blink rate (or turning off the blinking)
+- Add support for Lua blocks
+- Add `toggleCheckbox` command for Markdown todo items (default key binding: `Cmd/Ctrl+Shift+Space`)
 
 
 ## 2.6.2
