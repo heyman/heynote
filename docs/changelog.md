@@ -2,6 +2,11 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## Not yet released
+
+- Add setting for configuring the cursor blink rate (or turning off the blinking)
+
+
 ## 2.7.0-beta.2
 
 ### Non backwards-compatible change

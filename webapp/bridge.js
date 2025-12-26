@@ -91,6 +91,7 @@ let initialSettings = {
     keyBindings: [],
     showTabs: true,
     showTabsInFullscreen: true,
+    cursorBlinkRate: 1000,
 }
 if (settingsData !== null) {
     initialSettings = Object.assign(initialSettings, JSON.parse(settingsData))

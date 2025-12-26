@@ -56,6 +56,7 @@
                 bufferPath: this.initialSettings.bufferPath,
                 fontFamily: this.initialSettings.fontFamily || defaultFontFamily,
                 fontSize: this.initialSettings.fontSize || defaultFontSize,
+                cursorBlinkRate: this.initialSettings.cursorBlinkRate ?? 1000,
                 languageOptions: LANGUAGES.map(l => {
                     return {
                         "value": l.token, 
@@ -135,6 +136,7 @@
                     bufferPath: this.bufferPath,
                     fontFamily: this.fontFamily === defaultFontFamily ? undefined : this.fontFamily,
                     fontSize: this.fontSize === defaultFontSize ? undefined : this.fontSize,
+                    cursorBlinkRate: this.cursorBlinkRate,
                     defaultBlockLanguage: this.defaultBlockLanguage === "text" ? undefined : this.defaultBlockLanguage,
                     defaultBlockLanguageAutoDetect: this.defaultBlockLanguageAutoDetect === true ? undefined : this.defaultBlockLanguageAutoDetect,
                 })
@@ -397,6 +399,21 @@
                                         :selected="size === fontSize"
                                         :value="size"
                                     >{{ size }}px{{ size === defaultFontSize ? " (default)" : "" }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="entry">
+                                <h2>Cursor Blink Rate</h2>
+                                <select v-model.number="cursorBlinkRate" @change="updateSettings" class="cursor-blink-rate">
+                                    <option :value="0">Off</option>
+                                    <option :value="250">250 ms</option>
+                                    <option :value="500">500 ms</option>
+                                    <option :value="750">750 ms</option>
+                                    <option :value="1000">1000 ms (default)</option>
+                                    <option :value="1250">1250 ms</option>
+                                    <option :value="1500">1500 ms</option>
+                                    <option :value="2000">2000 ms</option>
                                 </select>
                             </div>
                         </div>
