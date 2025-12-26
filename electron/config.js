@@ -56,6 +56,7 @@ const schema = {
             "defaultBlockLanguageAutoDetect": {type: "boolean"},
             "spellcheckEnabled": {type: "boolean", default:false},
             "showWhitespace": {type:"boolean", default:false},
+            "cursorBlinkRate": {type: "integer", default: 1000},
 
             // when default font settings are used, fontFamily and fontSize is not specified in the 
             // settings file, so that it's possible for us to change the default settings in the 
@@ -131,6 +132,7 @@ const defaults = {
         },
         spellcheckEnabled: false,
         showWhitespace: false,
+        cursorBlinkRate: 1000,
     },
     theme: "system",
 }

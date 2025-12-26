@@ -36,6 +36,7 @@ prefer the old behaviour, can add a key binding for the  `Add new block after la
 - Fix issue where the wrong locale was used for formatting dates on MacOS on systems using a locale such as "en-SE"
 - Fix issue with folded Math blocks where the results from the first and last line would still be visible
 - Always use 2-digit notation for hours when displaying time
+- Add setting for configuring the cursor blink rate (or turning off the blinking)
 
 
 ## 2.6.2

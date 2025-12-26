@@ -47,6 +47,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
                     keyBindings: settingsStore.settings.keyBindings,
                     spellcheckEnabled: settingsStore.settings.spellcheckEnabled,
                     showWhitespace: settingsStore.settings.showWhitespace,
+                    cursorBlinkRate: settingsStore.settings.cursorBlinkRate,
                 })
             } catch (e) {
                 errorStore.addError("Error! " + e.message)
@@ -185,6 +186,9 @@ export const useEditorCacheStore = defineStore("editorCache", {
                                 break
                             case "showWhitespace":
                                 editor.setShowWhitespace(newSettings.showWhitespace)
+                                break;
+                            case "cursorBlinkRate":
+                                editor.setCursorBlinkRate(newSettings.cursorBlinkRate)
                                 break;
                         }
                     })

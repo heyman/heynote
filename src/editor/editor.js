@@ -60,6 +60,7 @@ export class HeynoteEditor {
         keyBindings,
         spellcheckEnabled=false,
         showWhitespace=false,
+        cursorBlinkRate=1000,
     }) {
         this.element = element
         this.path = path
@@ -72,6 +73,7 @@ export class HeynoteEditor {
         this.closeBracketsCompartment = new Compartment
         this.indentUnitCompartment = new Compartment
         this.highlightWhitespaceCompartment = new Compartment
+        this.cursorBlinkCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
         this.emacsMetaKey = emacsMetaKey
         this.fontTheme = new Compartment
@@ -109,8 +111,7 @@ export class HeynoteEditor {
                 noteBlockExtension(this),
                 languageDetection(path, () => this),
                 
-                // set cursor blink rate to 1 second
-                drawSelection({cursorBlinkRate:1000}),
+                this.cursorBlinkCompartment.of(drawSelection({cursorBlinkRate})),
 
                 // add CSS class depending on dark/light theme
                 EditorView.editorAttributes.of((view) => {
@@ -323,6 +324,13 @@ export class HeynoteEditor {
         })
     }
 
+    setCursorBlinkRate(cursorBlinkRate) {
+        const rate = typeof cursorBlinkRate === "number" ? cursorBlinkRate : 1000
+        this.view.dispatch({
+            effects: this.cursorBlinkCompartment.reconfigure(drawSelection({cursorBlinkRate: rate})),
+        })
+    }
+
     async createNewBuffer(path, name) {
         const data = getBlockDelimiter(this.defaultBlockToken, this.defaultBlockAutoDetect)
         await this.notesStore.saveNewBuffer(path, name, data)
@@ -486,4 +494,3 @@ editor.update([
         annotations: heynoteEvent.of(INITIAL_DATA),
     })
 ])*/
-
