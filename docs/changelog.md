@@ -6,6 +6,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 - Add setting for configuring the cursor blink rate (or turning off the blinking)
 - Add support for Lua blocks
+- Add `toggleCheckbox` command for Markdown todo items (default key binding: `Cmd/Ctrl+Shift+Space`)
 
 
 ## 2.7.0-beta.2
