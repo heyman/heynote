@@ -5,6 +5,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 ## Not yet released
 
 - Add setting for configuring the cursor blink rate (or turning off the blinking)
+- Add support for Lua blocks
 
 
 ## 2.7.0-beta.2
