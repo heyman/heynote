@@ -19,7 +19,7 @@ test("enter text and create new block", async ({ page }) => {
     expect(await heynotePage.getBlockContent(1)).toBe("")
 
     // check that visual block layers are created
-    expect(await page.locator("css=.heynote-blocks-layer > div").count()).toBe(2)
+    await expect(page.locator("css=.heynote-blocks-layer > div")).toHaveCount(2)
 })
 
 test("backspace", async ({ page }) => {

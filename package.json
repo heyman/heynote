@@ -55,7 +55,7 @@
     "@electron/asar": "^3.2.2",
     "@lezer/generator": "^1.5.1",
     "@lezer/markdown": "^1.4.2",
-    "@playwright/test": "^1.51.1",
+    "@playwright/test": "^1.57.0",
     "@replit/codemirror-lang-csharp": "^6.2.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/node": "^20.10.5",

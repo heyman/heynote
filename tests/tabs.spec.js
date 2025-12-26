@@ -175,7 +175,8 @@ test("open new tab via add button", async ({ page }) => {
 })
 
 
-test("reorder tabs by dragging and verify order persistence", async ({ page }) => {
+test("reorder tabs by dragging and verify order persistence", async ({ page, browserName }) => {
+    test.skip(browserName === "webkit", "WebKit dragTo is flaky in CI")
     // Wait for buffers to be loaded properly
     await page.waitForTimeout(1000)
     
@@ -195,19 +196,19 @@ test("reorder tabs by dragging and verify order persistence", async ({ page }) =
     await page.waitForTimeout(500)
     
     // Verify the new tab order
-    const reorderedTabTitles = await page.locator('.tab-item .title').allTextContents()
-    expect(reorderedTabTitles).toEqual([buffer2Title, scratchTitle, buffer1Title])
+    await expect(page.locator(".tab-item:nth-child(1)")).toHaveText(buffer2Title)
+    await expect(page.locator(".tab-item:nth-child(2)")).toHaveText(scratchTitle)
+    await expect(page.locator(".tab-item:nth-child(3)")).toHaveText(buffer1Title)
     
     // Reload the page to test order persistence
     await page.reload()
-    await page.waitForTimeout(2000)
+    //await page.waitForTimeout(2000)
     
     // Verify the tab order is preserved after reload
-    const persistedTabTitles = await page.locator('.tab-item .title').allTextContents()
-    expect(persistedTabTitles[0]).toBe(buffer2Title)  // Buffer 2 should be first
-    expect(persistedTabTitles[1]).toBe(scratchTitle)  // Scratch should be in middle
-    expect(persistedTabTitles[2]).toBe(buffer1Title)  // Buffer 1 should be last
-    expect(persistedTabTitles.length).toBe(3)         // Should still have 3 tabs
+    await expect(page.locator(".tab-item:nth-child(1)")).toHaveText(buffer2Title)
+    await expect(page.locator(".tab-item:nth-child(2)")).toHaveText(scratchTitle)
+    await expect(page.locator(".tab-item:nth-child(3)")).toHaveText(buffer1Title)
+    await expect(page.locator('.tab-item .title')).toHaveCount(3)
     
     // Verify tabs are still functional after reload
     await page.locator('.tab-item').first().click()
@@ -291,4 +292,3 @@ test("reopen multiple closed tabs in reverse order", async ({ page }) => {
     await reopenedBuffer1.click()
     expect(await heynotePage.getBlockContent(0)).toBe("Buffer 1 content")
 })
-

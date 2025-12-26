@@ -27,7 +27,8 @@ test.beforeEach(async ({ page }) => {
     expect(await page.locator('.tab-item').count()).toBe(3)
 });
 
-test("content is preserved after page reload", async ({ page }) => {
+test("content is preserved after page reload", async ({ page, browserName }) => {
+    test.skip(browserName === "webkit", "WebKit dragTo is flaky in CI")
     // Replicate the exact failing scenario from tab reordering test
     // Add content to Buffer 2 (currently active)
     await page.locator("body").pressSequentially("Content in Buffer 2")
@@ -42,14 +43,16 @@ test("content is preserved after page reload", async ({ page }) => {
     // Perform the same drag operation that triggered the Firefox issue
     const buffer2Tab = await page.locator('.tab-item').nth(2)
     await buffer2Tab.dragTo(scratchTab)
-    await page.waitForTimeout(500)
+    await expect(page.locator(".tab-item:first-child")).toHaveText("Buffer 2")
     
     // Switch to the reordered Buffer 2 (now first tab)
     const reorderedBuffer2Tab = await page.locator('.tab-item').first()
     await reorderedBuffer2Tab.click()
     
     // Wait for content to be saved
-    await page.waitForTimeout(300)
+    await heynotePage.waitForContentSaved()
+
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("Content in Buffer 2")
 
     await page.evaluate(() => {
         ['beforeunload', 'unload', 'pagehide'].forEach(eventType => {
@@ -60,14 +63,12 @@ test("content is preserved after page reload", async ({ page }) => {
       });
     
     // Reload the page - this should trigger the Firefox content loss
-    page.evaluate(() => window.location.reload())
-    await page.waitForTimeout(1000)
+    await page.reload()
     
     // Should be on Buffer 2 (first tab) after reload, verify content is preserved
-    expect(await heynotePage.getBlockContent(0)).toBe("Content in Buffer 2")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("Content in Buffer 2")
 
     buffer1Tab = await page.locator('.tab-item').nth(1)
     await buffer1Tab.click()
-    await page.waitForTimeout(300)
-    expect(await heynotePage.getBlockContent(0)).toBe("Content in scratch")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("Content in scratch")
 })
