@@ -669,7 +669,7 @@ Another paragraph here`)
         
         const expectedTime = await page.evaluate(async (date) => {
             return date.toLocaleTimeString(navigator.language, {
-                hour: "numeric",
+                hour: "2-digit",
                 minute: "2-digit"
             });
         }, date)
