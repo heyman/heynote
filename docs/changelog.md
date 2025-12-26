@@ -4,7 +4,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ## 2.7.0-beta
 
-### Breaking change
+### Non backwards-compatible change
 
 Buffers created/saved with this new version of Heynote is not compatible with older versions of Heynote, 
 so if you're using Heynote on multiple machines, make sure to update to >=2.7 on all machines.
