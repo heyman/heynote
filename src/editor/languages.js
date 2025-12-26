@@ -28,6 +28,7 @@ import { kotlin, dart, scala } from "@codemirror/legacy-modes/mode/clike"
 import { groovy } from "@codemirror/legacy-modes/mode/groovy"
 import { diff } from "@codemirror/legacy-modes/mode/diff";
 import { powerShell } from "@codemirror/legacy-modes/mode/powershell";
+import { lua } from "@codemirror/legacy-modes/mode/lua";
 
 import typescriptPlugin from "prettier/plugins/typescript"
 import babelPrettierPlugin from "prettier/plugins/babel"
@@ -242,6 +243,12 @@ export const LANGUAGES = [
         name: "Kotlin",
         parser: StreamLanguage.define(kotlin).parser,
         guesslang: "kt",
+    }),
+    new Language({
+        token: "lua",
+        name: "Lua",
+        parser: StreamLanguage.define(lua).parser,
+        guesslang: "lua",
     }),
     new Language({
         token: "groovy",

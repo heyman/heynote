@@ -1,6 +1,6 @@
 importScripts("guesslang.min.js")
 
-GUESSLANG_LANGUAGES = ["json","py","html","sql","md","java","php","css","xml","cpp","rs","cs","rb","sh","yaml","toml","go","clj","ex","erl","js","ts","swift","kt","groovy","ps1","dart","scala"]
+GUESSLANG_LANGUAGES = ["json","py","html","sql","md","java","php","css","xml","cpp","rs","cs","rb","sh","yaml","toml","go","clj","ex","erl","js","ts","swift","kt","lua","groovy","ps1","dart","scala"]
 
 const guessLang = new self.GuessLang()
 
