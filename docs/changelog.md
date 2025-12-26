@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.7.0-beta
+## 2.7.0-beta.2
 
 ### Non backwards-compatible change
 
