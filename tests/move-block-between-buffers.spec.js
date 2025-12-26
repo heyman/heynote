@@ -44,15 +44,16 @@ test("move block to other buffer", async ({page}) => {
     const buffers = Object.keys(await heynotePage.getStoredBufferList())
     expect(buffers).toContain("other.txt")
 
-    const otherBuffer = NoteFormat.load(await heynotePage.getStoredBuffer("other.txt"))
-
-    expect(await heynotePage.getContent()).toBe(`
+    await expect.poll(async () => await heynotePage.getContent()).toBe(`
 ∞∞∞text
 Block A
 ∞∞∞text
 Block B`)
 
-    expect(otherBuffer.content).toBe(`
+    await expect.poll(async () => {
+        const otherBuffer = NoteFormat.load(await heynotePage.getStoredBuffer("other.txt"))
+        return otherBuffer.content
+    }).toBe(`
 ∞∞∞text-a
 First block
 ∞∞∞math
