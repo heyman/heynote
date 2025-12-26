@@ -34,6 +34,8 @@ prefer the old behaviour, can add a key binding for the  `Add new block after la
 - Chinese characters in buffer file names are now converted to ascii using pinyin. This fixes an issue where it 
   wasn't possible to create a buffer with only chinese characters it the name.
 - Fix issue where the wrong locale was used for formatting dates on MacOS on systems using a locale such as "en-SE"
+- Fix issue with folded Math blocks where the results from the first and last line would still be visible
+
 
 ## 2.6.2
 

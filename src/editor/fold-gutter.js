@@ -236,3 +236,20 @@ export const unfoldBlock = (editor) => (view) => {
         })
     }
 }
+
+/**
+ * Given a block state, returns the folded range if the block is folded, otherwise null
+ */
+export function isBlockFolded(state, block) {
+    const folds = foldedRanges(state)
+    const firstLine = state.doc.lineAt(block.content.from)
+    let isFolded = false
+    folds.between(block.content.from, block.content.to, (from, to) => {
+        if (from <= firstLine.to && to === block.content.to) {
+
+            isFolded = true
+            return false
+        }
+    })
+    return isFolded
+}
