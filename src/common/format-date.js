@@ -20,7 +20,7 @@ export function formatDate(date, locale) {
             hour: "2-digit",
             minute: "2-digit"
         });
-        return `Yesterday, ${time}`;
+        return `Yesterday ${time}`;
     }
 
     // Otherwise: full date + time, omit year if same
