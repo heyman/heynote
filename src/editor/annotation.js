@@ -11,6 +11,7 @@ export const CURSOR_CHANGE = "heynote-cursor-change"
 export const APPEND_BLOCK = "heynote-append-block"
 export const SET_FONT = "heynote-set-font"
 export const SEARCH_SETTINGS_UPDATED = "heynote-search-settings-updates"
+export const UPDATE_CREATED = "heynote-update-created"
 
 
 // This function checks if any of the transactions has the given Heynote annotation

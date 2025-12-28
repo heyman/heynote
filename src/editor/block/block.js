@@ -3,10 +3,10 @@ import { layer, RectangleMarker } from "@codemirror/view"
 import { EditorState, RangeSetBuilder, StateField, RangeSet, Transaction} from "@codemirror/state";
 import { syntaxTreeAvailable } from "@codemirror/language"
 import { useHeynoteStore } from "../../stores/heynote-store.js"
-import { heynoteEvent, LANGUAGE_CHANGE, CURSOR_CHANGE } from "../annotation.js";
+import { heynoteEvent, LANGUAGE_CHANGE, CURSOR_CHANGE, SET_CONTENT, UPDATE_CREATED, ADD_NEW_BLOCK } from "../annotation.js";
 import { mathBlock } from "./math.js"
 import { emptyBlockSelected } from "./select-all.js";
-import { firstBlockDelimiterSize, getBlocksFromSyntaxTree, getBlocksFromString } from "./block-parsing.js";
+import { firstBlockDelimiterSize, getBlocksFromSyntaxTree, getBlocksFromString, getBlockDelimiter } from "./block-parsing.js";
 
 export const delimiterRegex = /^\n∞∞∞[a-z]+(-a)?(?:;[^\\n]+)*\n$/
 export const delimiterRegexWithoutNewline = /^∞∞∞[a-z]+?(-a)?(?:;[^\\n]+)*$/
@@ -347,6 +347,97 @@ const emitCursorChange = (editor) => {
     )
 }
 
+/**
+ * Transaction filter that updates the created time when content are written to empty blocks
+ * (so that the created time reflects the first time the block got actual content, and no just 
+ * when the block separator was added)
+ */
+const updateCreatedOnEmptyBlock = () => {
+    return EditorState.transactionFilter.of((tr) => {
+        if (!tr.docChanged || tr.startState.readOnly) {
+            return tr
+        }
+        if (
+            tr.annotation(heynoteEvent) === UPDATE_CREATED || 
+            tr.annotation(heynoteEvent) === SET_CONTENT ||
+            tr.annotation(heynoteEvent) === ADD_NEW_BLOCK
+        ) {
+            return tr
+        }
+        if (tr.isUserEvent("undo") || tr.isUserEvent("redo")) {
+            return tr
+        }
+        const changes = []
+        const now = new Date()
+        const startBlocks = tr.startState.facet(blockState)
+        const emptyBlocks = []
+
+        // snapshot empty blocks from the start state; we only update timestamps on first insert.
+        for (const block of startBlocks) {
+            if (block.content.from === block.content.to) {
+                emptyBlocks.push({
+                    pos: block.content.from,
+                    block,
+                    touched: false,
+                })
+            }
+        }
+
+        if (emptyBlocks.length === 0) {
+            return tr
+        }
+
+        // mark which empty block positions were touched by inserted content in this transaction.
+        let emptyIdx = 0
+        tr.changes.iterChanges((fromA, toA, fromB, toB) => {
+            // skip changes that's just removals
+            if (toB === fromB) {
+                return
+            }
+            // skip any changes that replaces text
+            if (fromA !== toA) {
+                return
+            }
+            // skip blocks before the change
+            while (emptyIdx < emptyBlocks.length && emptyBlocks[emptyIdx].pos < fromA) {
+                emptyIdx++
+            }
+            
+            let idx = emptyIdx
+            while (idx < emptyBlocks.length && emptyBlocks[idx].pos <= toA) {
+                emptyBlocks[idx].touched = true
+                idx++
+            }
+        })
+
+        // rewrite the delimiter at mapped positions to refresh the created time.
+        for (const entry of emptyBlocks) {
+            if (!entry.touched) {
+                continue
+            }
+            //const delimiterText = `\n∞∞∞${entry.block.language.name}${entry.block.language.auto ? "-a" : ""};created=${now}\n`
+            const delimiterText = getBlockDelimiter(entry.block.language.name, entry.block.language.auto, now)
+            changes.push({
+                from: tr.changes.mapPos(entry.block.delimiter.from, 1),
+                to: tr.changes.mapPos(entry.block.delimiter.to, -1),
+                insert: delimiterText,
+            })
+        }
+
+        if (changes.length === 0) {
+            return tr
+        }
+
+        return [
+            tr,
+            {
+                changes,
+                annotations: [heynoteEvent.of(UPDATE_CREATED)],
+            },
+        ]
+    })
+}
+
 export const noteBlockExtension = (editor) => {
     return [
         blockState,
@@ -356,6 +447,7 @@ export const noteBlockExtension = (editor) => {
         preventFirstBlockFromBeingDeleted,
         preventSelectionBeforeFirstBlock,
         emitCursorChange(editor),
+        updateCreatedOnEmptyBlock(),
         mathBlock,
         emptyBlockSelected,
     ]

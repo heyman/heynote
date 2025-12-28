@@ -146,3 +146,8 @@ export function getBlocksFromString(state) {
         //console.log("getBlocksFromString() took", timer(), "ms")
         return blocks
 }
+
+export function getBlockDelimiter(blockType, autoDetect, date) {
+    date = date ?? new Date()
+    return `\n∞∞∞${autoDetect ? blockType + '-a' : blockType};created=${date.toISOString()}\n`
+}
