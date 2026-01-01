@@ -94,7 +94,7 @@ export function foldGutterExtension() {
             domEventHandlers: {
                 click(view, line, event) {
                     // editor should not loose focus when clicking on the fold gutter
-                    view.docView.dom.focus()
+                    view.focus()
                 },
             },
         }),

@@ -29,9 +29,9 @@ test("checkbox toggle", async ({ page }) => {
     const checkbox = await page.locator("css=.cm-content input[type=checkbox]")
     await expect(checkbox).toHaveCount(1)
     await checkbox.click()
-    expect(await heynotePage.getBlockContent(0)).toBe("- [x] todo\n")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("- [x] todo\n")
     await checkbox.click()
-    expect(await heynotePage.getBlockContent(0)).toBe("- [ ] todo\n")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("- [ ] todo\n")
 })
 
 test("toggle checkbox command", async ({ page }) => {
