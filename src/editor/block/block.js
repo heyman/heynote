@@ -289,7 +289,7 @@ export const blockLineNumbers = lineNumbers({
     domEventHandlers: {
         click(view, line, event) {
             // editor should not loose focus when clicking on the line numbers
-            view.docView.dom.focus()
+            view.focus()
         },
     },
 })

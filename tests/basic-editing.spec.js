@@ -43,7 +43,7 @@ test("insert current date and time", async ({ page }) => {
         year: 'numeric',
     })
     await page.locator("body").press("Alt+Shift+D")
-    expect(await heynotePage.getBlockContent(0)).toContain(expectedYear)
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toContain(expectedYear)
     expect((await heynotePage.getBlockContent(0)).length).toBeGreaterThan(0)
 })
 

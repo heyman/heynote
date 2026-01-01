@@ -73,12 +73,12 @@ function checkboxes(view: EditorView) {
 
 
 function toggleBoolean(view: EditorView, pos: number) {
-    let before = view.state.doc.sliceString(pos-4, pos).toLowerCase()
+    let before = view.state.doc.sliceString(pos, pos+4).toLowerCase()
     let change
     if (before === "[x] ") {
-        change = { from: pos - 4, to: pos, insert: "[ ] " }
+        change = { from: pos, to: pos+4, insert: "[ ] " }
     } else if (before === "[ ] ") {
-        change = { from: pos - 4, to: pos, insert: "[x] " }
+        change = { from: pos, to: pos+4, insert: "[x] " }
     } else {
         return false
     }
