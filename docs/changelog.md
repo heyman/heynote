@@ -40,6 +40,7 @@ prefer the old behaviour, can add a key binding for the  `Add new block after la
 - Add setting for configuring the cursor blink rate (or turning off the blinking)
 - Add support for Lua blocks
 - Add `toggleCheckbox` command for Markdown todo items (default key binding: `Cmd/Ctrl+Shift+Space`)
+- Fix issue when selecting all content of a math block and typing a character
 
 
 ## 2.6.2
