@@ -41,6 +41,7 @@ prefer the old behaviour, can add a key binding for the  `Add new block after la
 - Add support for Lua blocks
 - Add `toggleCheckbox` command for Markdown todo items (default key binding: `Cmd/Ctrl+Shift+Space`)
 - Fix issue when selecting all content of a math block and typing a character
+- Fix so that checkboxes in todo lists takes up 4 spaces so that the margin align for multi line list items
 
 
 ## 2.6.2

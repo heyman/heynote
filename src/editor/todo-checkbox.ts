@@ -29,7 +29,7 @@ class CheckboxWidget extends WidgetType {
             // if the font is monospaced, we'll set the content of the wrapper to "   " and the 
             // position of the checkbox to absolute, since three spaces will be the same width
             // as "[ ]" and "[x]" so that characters on different lines will line up
-            wrap.appendChild(document.createTextNode("   "))
+            wrap.appendChild(document.createTextNode("    "))
             wrap.style.position = "relative"
             box.style.position = "absolute"
             box.style.top = "0"
