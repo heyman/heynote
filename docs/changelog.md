@@ -3,7 +3,7 @@
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
 
-## 2.7.0-beta.4
+## 2.7.0
 
 ### Non backwards-compatible change
 
@@ -15,7 +15,7 @@ so if you're using Heynote on multiple machines, make sure to update to >=2.7 on
 The time of creation is now recorded for blocks, and it's displayed in the status bar. For folded blocks, 
 it's also displayed in the summary line.
 
-### Add new block after last and scroll down
+### Add new block and scroll down
 
 A new command for adding a new block at the end of the buffer and then scrolling down so that only the new 
 block is visible has been added. This can be used to create a new block and avoid any distraction from seeing 
