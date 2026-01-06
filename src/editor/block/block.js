@@ -495,3 +495,5 @@ export const noteBlockExtension = (editor) => {
         emptyBlockSelected,
     ]
 }
+
+export { getBlocksWithPreviews }

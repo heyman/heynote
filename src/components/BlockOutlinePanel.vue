@@ -29,12 +29,18 @@
             this.$nextTick(() => {
                 this.$refs.input?.focus()
             })
+            document.addEventListener('keydown', this.onGlobalKeydown)
+        },
+
+        beforeUnmount() {
+            document.removeEventListener('keydown', this.onGlobalKeydown)
         },
 
         computed: {
             ...mapState(useHeynoteStore, [
                 "currentBlocks",
                 "currentEditor",
+                "currentBufferPath",
             ]),
 
             filteredBlocks() {
@@ -72,10 +78,31 @@
                     this.selected = Math.max(0, this.currentBlocks.length - 1)
                 }
             },
+            currentBufferPath() {
+                this.$nextTick(() => {
+                    const heynoteStore = useHeynoteStore()
+                    heynoteStore.refreshBlocksFromCurrentEditor()
+                })
+            },
         },
 
         methods: {
             ...mapActions(useHeynoteStore, ['closeBlockOutline']),
+
+            close() {
+                this.closeBlockOutline()
+                this.$nextTick(() => {
+                    const heynoteStore = useHeynoteStore()
+                    heynoteStore.focusEditor()
+                })
+            },
+
+            onGlobalKeydown(event) {
+                if (event.key === "Escape") {
+                    this.close()
+                    event.preventDefault()
+                }
+            },
 
             getLanguageName(token) {
                 return LANGUAGE_NAMES[token] || token
@@ -102,13 +129,6 @@
                     if (this.filteredBlocks.length > 0) {
                         this.jumpToBlock(this.filteredBlocks[this.selected])
                     }
-                    event.preventDefault()
-                } else if (event.key === "Escape") {
-                    this.closeBlockOutline()
-                    this.$nextTick(() => {
-                        const heynoteStore = useHeynoteStore()
-                        heynoteStore.focusEditor()
-                    })
                     event.preventDefault()
                 }
             },
@@ -159,6 +179,11 @@
                 autocomplete="off"
                 spellcheck="false"
             />
+            <button class="close-btn" @click="close" title="Close (Escape)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
         </div>
         <ul class="block-list" ref="list">
             <li
@@ -196,13 +221,17 @@
             border-left-color: #333
 
         .panel-header
+            display: flex
+            align-items: center
+            gap: 6px
             padding: 8px
             border-bottom: 1px solid #ddd
             +dark-mode
                 border-bottom-color: #333
 
             input
-                width: 100%
+                flex: 1
+                min-width: 0
                 padding: 4px 8px
                 background: #fff
                 border: 1px solid #ccc
@@ -219,6 +248,28 @@
                     border: 1px solid #5a5a5a
                     &:focus
                         border: 1px solid #3b3b3b
+
+            .close-btn
+                display: flex
+                align-items: center
+                justify-content: center
+                width: 24px
+                height: 24px
+                padding: 0
+                border: none
+                background: transparent
+                color: #666
+                border-radius: 3px
+                cursor: pointer
+                flex-shrink: 0
+                &:hover
+                    background: #e0e0e0
+                    color: #333
+                +dark-mode
+                    color: rgba(255,255,255, 0.6)
+                    &:hover
+                        background: #3a3a3a
+                        color: rgba(255,255,255, 0.9)
 
         .block-list
             flex: 1

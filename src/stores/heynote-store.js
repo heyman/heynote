@@ -2,9 +2,10 @@ import { toRaw, nextTick, watch } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../common/note-format"
 import { useEditorCacheStore } from "./editor-cache"
-import { 
-    SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, 
-    SAVE_TABS_STATE, LOAD_TABS_STATE, CONTEXT_MENU_CLOSED 
+import { getBlocksWithPreviews } from "../editor/block/block"
+import {
+    SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE,
+    SAVE_TABS_STATE, LOAD_TABS_STATE, CONTEXT_MENU_CLOSED
 } from "../common/constants"
 
 
@@ -224,6 +225,12 @@ export const useHeynoteStore = defineStore("heynote", {
 
         updateCurrentBlocks(blocks) {
             this.currentBlocks = blocks
+        },
+
+        refreshBlocksFromCurrentEditor() {
+            if (this.currentEditor?.view) {
+                this.currentBlocks = getBlocksWithPreviews(toRaw(this.currentEditor).view.state)
+            }
         },
 
         closeMoveToBufferSelector() {
