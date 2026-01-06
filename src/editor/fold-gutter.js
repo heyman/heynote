@@ -28,7 +28,7 @@ const autoUnfoldOnEdit = () => {
         }
         
         // we don't want to unfold a block/range if the user adds a new block, or changes language of the block
-        if (transactionsHasAnnotationsAny(update.transactions, [ADD_NEW_BLOCK, LANGUAGE_CHANGE])) {
+        if (transactionsHasAnnotationsAny(update.transactions, [ADD_NEW_BLOCK, LANGUAGE_CHANGE, UPDATE_CREATED])) {
             return
         }
         // an undo/redo action should never be able to get characters into a folded line but if we don't have 

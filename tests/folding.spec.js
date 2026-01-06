@@ -533,6 +533,33 @@ Block A line 3`)
         expect(content).toContain("Block A line 3Y")
     });
 
+    test("typing in empty block with empty block below does not unfold previous folded block", async ({ page }) => {
+        await heynotePage.setContent(`
+∞∞∞text
+Block A line 1
+Block A line 2
+Block A line 3
+∞∞∞text
+`)
+
+        // Fold the first block
+        await heynotePage.setCursorPosition(20) // Middle of Block A
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
+        await page.locator("body").press(foldKey)
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+
+        const blocks = await heynotePage.getBlocks()
+        expect(blocks).toHaveLength(2)
+        expect(await heynotePage.getBlockContent(1)).toBe("")
+
+        // Type into the empty middle block while another empty block follows it
+        await heynotePage.setCursorPosition(blocks[1].content.from)
+        await page.locator("body").pressSequentially("a")
+
+        // The folded block should remain folded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+    });
+
     test("folded block does not unfold when language changes", async ({ page }) => {
         // Set up test content with a multi-line block
         await heynotePage.setContent(`
