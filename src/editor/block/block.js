@@ -308,6 +308,39 @@ function getSelectionSize(state, sel) {
     return count
 }
 
+// Strip markdown syntax for cleaner preview display in outline panel
+function stripMarkdown(text) {
+    return text
+        .replace(/^#{1,6}\s+/gm, '')           // Headers: ### Title -> Title
+        .replace(/\*\*([^*]+)\*\*/g, '$1')     // Bold: **text** -> text
+        .replace(/\*([^*]+)\*/g, '$1')         // Italic: *text* -> text
+        .replace(/`([^`]+)`/g, '$1')           // Inline code: `code` -> code
+        .replace(/^\s*[-*+]\s+/gm, '')         // List items: - item -> item
+        .replace(/^\s*\d+\.\s+/gm, '')         // Numbered lists: 1. item -> item
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Links: [text](url) -> text
+}
+
+function getBlockPreview(state, block, lineCount = 3) {
+    const content = state.doc.sliceString(block.content.from, block.content.to)
+    const lines = content.split('\n').slice(0, lineCount).join('\n').substring(0, 150)
+    // Strip markdown for markdown blocks
+    if (block.language.name === 'markdown') {
+        return stripMarkdown(lines)
+    }
+    return lines
+}
+
+function getBlocksWithPreviews(state) {
+    const blocks = state.facet(blockState)
+    return blocks.map((block, index) => ({
+        index,
+        language: block.language,
+        preview: getBlockPreview(state, block),
+        contentFrom: block.content.from,
+        contentTo: block.content.to,
+    }))
+}
+
 export function triggerCursorChange({state, dispatch}) {
     // Trigger empty change transaction that is annotated with CURRENCIES_LOADED
     // This will make Math blocks re-render so that currency conversions are applied
@@ -321,8 +354,13 @@ const emitCursorChange = (editor) => {
     const heynoteStore = useHeynoteStore()
     return ViewPlugin.fromClass(
         class {
+            constructor(view) {
+                // Initial block data update
+                heynoteStore.updateCurrentBlocks(getBlocksWithPreviews(view.state))
+            }
+
             update(update) {
-                // if the selection changed or the language changed (can happen without selection change), 
+                // if the selection changed or the language changed (can happen without selection change),
                 // emit a selection change event
                 const shouldUpdate = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE || a.value == CURSOR_CHANGE))
                 if (update.selectionSet || shouldUpdate) {
@@ -341,6 +379,11 @@ const emitCursorChange = (editor) => {
                         heynoteStore.currentBufferName = editor.name
                         heynoteStore.currentCreatedTime = block.created ? new Date(Date.parse(block.created)) : null
                     }
+                }
+
+                // Update block outline data when document changes
+                if (update.docChanged) {
+                    heynoteStore.updateCurrentBlocks(getBlocksWithPreviews(update.state))
                 }
             }
         }

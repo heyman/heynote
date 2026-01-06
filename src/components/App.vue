@@ -18,6 +18,7 @@
     import NewBuffer from './NewBuffer.vue'
     import EditBuffer from './EditBuffer.vue'
     import TabBar from './tabs/TabBar.vue'
+    import BlockOutlinePanel from './BlockOutlinePanel.vue'
 
     export default {
         components: {
@@ -30,6 +31,7 @@
             NewBuffer,
             EditBuffer,
             TabBar,
+            BlockOutlinePanel,
         },
 
         data() {
@@ -112,6 +114,7 @@
                 "showEditBuffer",
                 "showMoveToBufferSelector",
                 "showCommandPalette",
+                "showBlockOutline",
                 "isFullscreen",
             ]),
             ...mapState(useSettingsStore, [
@@ -201,31 +204,36 @@
 
 <template>
     <TabBar v-if="showTabBar" />
-    <div 
-        class="container" 
+    <div
+        class="container"
         :class="{'tab-bar-visible':showTabBar}"
     >
-        <Editor 
-            v-if="currentBufferPath"
-            :theme="settingsStore.theme"
-            :development="development"
-            :debugSyntaxTree="false"
-            :inert="editorInert"
-            class="editor"
-            ref="editor"
-        />
-        <StatusBar 
-            :autoUpdate="settings.autoUpdate"
-            :allowBetaVersions="settings.allowBetaVersions"
-            @openBufferSelector="openBufferSelector"
-            @openLanguageSelector="openLanguageSelector"
-            @formatCurrentBlock="formatCurrentBlock"
-            @openSettings="showSettings = true"
-            @toggleSpellcheck="toggleSpellcheck"
-            @toggleAlwaysOnTop="toggleAlwaysOnTop"
-            @click="() => {$refs.editor.focus()}"
-            class="status" 
-        />
+        <div class="main-content">
+            <div class="editor-container">
+                <Editor
+                    v-if="currentBufferPath"
+                    :theme="settingsStore.theme"
+                    :development="development"
+                    :debugSyntaxTree="false"
+                    :inert="editorInert"
+                    class="editor"
+                    ref="editor"
+                />
+                <StatusBar
+                    :autoUpdate="settings.autoUpdate"
+                    :allowBetaVersions="settings.allowBetaVersions"
+                    @openBufferSelector="openBufferSelector"
+                    @openLanguageSelector="openLanguageSelector"
+                    @formatCurrentBlock="formatCurrentBlock"
+                    @openSettings="showSettings = true"
+                    @toggleSpellcheck="toggleSpellcheck"
+                    @toggleAlwaysOnTop="toggleAlwaysOnTop"
+                    @click="() => {$refs.editor.focus()}"
+                    class="status"
+                />
+            </div>
+            <BlockOutlinePanel v-if="showBlockOutline" />
+        </div>
         <div class="overlay">
             <LanguageSelector 
                 v-if="showLanguageSelector" 
@@ -274,10 +282,23 @@
         position: relative
         &.tab-bar-visible
             height: calc(100% - var(--tab-bar-height))
-        .editor
-            height: calc(100% - 21px)
-        .status
-            position: absolute
-            bottom: 0
-            left: 0
+
+        .main-content
+            display: flex
+            height: 100%
+            width: 100%
+
+            .editor-container
+                flex: 1
+                position: relative
+                min-width: 0
+                height: 100%
+
+                .editor
+                    height: calc(100% - 21px)
+
+                .status
+                    position: absolute
+                    bottom: 0
+                    left: 0
 </style>

@@ -105,6 +105,7 @@ export const DEFAULT_KEYMAP = [
 
     cmd("Alt-Shift-f", "formatBlockContent"),
     cmd("Mod-Shift-Space", "toggleCheckbox"),
+    cmd("Mod-Shift-o", "toggleBlockOutline"),
 
     cmd("Mod-/", "toggleComment"),
     cmd("Alt-Shift-a", "toggleBlockComment"),
@@ -293,10 +294,10 @@ function _canonicalizeSingleStroke(strokeString) {
 export function getAllKeyBindingsForCommand(command, keymapName, userKeymap, emacsMetaKey) {
     //console.log("debug:", "getKeyBindingForCommand", command, keymapName, userKeymap, emacsMetaKey)
     const capturingCommands = new Set([
-        "nothing", 
-        "toggleAlwaysOnTop", 
-        "openLanguageSelector", "openBufferSelector", "openCreateNewBuffer", "openMoveToBuffer", "openCommandPalette", 
-        "closeCurrentTab", "reopenLastClosedTab", "nextTab", "previousTab", 
+        "nothing",
+        "toggleAlwaysOnTop", "toggleBlockOutline",
+        "openLanguageSelector", "openBufferSelector", "openCreateNewBuffer", "openMoveToBuffer", "openCommandPalette",
+        "closeCurrentTab", "reopenLastClosedTab", "nextTab", "previousTab",
         "switchToTab1", "switchToTab2", "switchToTab3", "switchToTab4", "switchToTab5", "switchToTab6", "switchToTab7", "switchToTab8", "switchToTab9", "switchToLastTab"
     ])
 

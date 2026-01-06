@@ -35,6 +35,8 @@ export const useHeynoteStore = defineStore("heynote", {
         showEditBuffer: false,
         showMoveToBufferSelector: false,
         showCommandPalette: false,
+        showBlockOutline: false,
+        currentBlocks: [],
 
         isFullscreen: false,
         isFocused: true,
@@ -210,6 +212,18 @@ export const useHeynoteStore = defineStore("heynote", {
         closeBufferSelector() {
             this.showBufferSelector = false
             this.showCommandPalette = false
+        },
+
+        toggleBlockOutline() {
+            this.showBlockOutline = !this.showBlockOutline
+        },
+
+        closeBlockOutline() {
+            this.showBlockOutline = false
+        },
+
+        updateCurrentBlocks(blocks) {
+            this.currentBlocks = blocks
         },
 
         closeMoveToBufferSelector() {

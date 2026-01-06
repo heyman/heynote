@@ -74,6 +74,11 @@ const openCreateNewBuffer = (editor) => () => {
     return true
 }
 
+const toggleBlockOutline = (editor) => () => {
+    useHeynoteStore().toggleBlockOutline()
+    return true
+}
+
 const closeCurrentTab = (editor) => () => {
     useHeynoteStore().closeCurrentTab()
     return true
@@ -167,6 +172,7 @@ const HEYNOTE_COMMANDS = {
     enableSpellcheck: cmd(enableSpellcheck, "Spellchecker", "Enable Spellchecking"),
     disableSpellcheck: cmd(disableSpellcheck, "Spellchecker", "Disable Spellchecking"),
     toggleAlwaysOnTop: cmd(toggleAlwaysOnTop, "Window", "Toggle Always on top"),
+    toggleBlockOutline: cmd(toggleBlockOutline, "View", "Toggle Block Outline Panel"),
 
     // commands without editor context
     paste: cmdLessContext(pasteCommand, "Clipboard", "Paste from clipboard"),
