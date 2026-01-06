@@ -4,7 +4,7 @@ import { EditorView } from "@codemirror/view"
 import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
 import { formatDate, formatFullDate } from "@/src/common/format-date.js"
 import { getNoteBlockFromPos, getNoteBlocksFromRangeSet, delimiterRegexWithoutNewline } from "./block/block.js"
-import { transactionsHasAnnotationsAny, ADD_NEW_BLOCK, LANGUAGE_CHANGE, transactionsHasHistoryEvent } from "./annotation.js"
+import { transactionsHasAnnotationsAny, ADD_NEW_BLOCK, LANGUAGE_CHANGE, UPDATE_CREATED, transactionsHasHistoryEvent } from "./annotation.js"
 import { useHeynoteStore } from "@/src/stores/heynote-store.js"
 
 
