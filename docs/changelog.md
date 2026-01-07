@@ -2,6 +2,10 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## (not yet released)
+
+- New lines in a Plaintext or Math block now inherits the indentation from the previous line
+
 
 ## 2.7.1
 

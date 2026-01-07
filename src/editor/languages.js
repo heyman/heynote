@@ -46,13 +46,16 @@ class Language {
      * @param parser: The Lezer parser used to parse the language
      * @param guesslang: The name of the language as used by the guesslang library
      * @param prettier: The prettier configuration for the language (if any)
+     * @param inheritIndentation: If true, the indentService will return null for blocks of this type, which will 
+     *                            result in the  line inheriting the indentation of the one above it
      */
-    constructor({ token, name, parser, guesslang, prettier }) {
+    constructor({ token, name, parser, guesslang, prettier, inheritIndentation }) {
         this.token = token
         this.name = name
         this.parser = parser
         this.guesslang = guesslang
         this.prettier = prettier
+        this.inheritIndentation = inheritIndentation
     }
 
     get supportsFormat() {
@@ -66,12 +69,14 @@ export const LANGUAGES = [
         name: "Plain Text",
         parser: null,
         guesslang: null,
+        inheritIndentation: true,
     }),
     new Language({
         token: "math",
         name: "Math",
         parser: null,
         guesslang: null,
+        inheritIndentation: true,
     }),
     new Language({
         token: "json",

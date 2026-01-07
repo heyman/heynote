@@ -1,6 +1,9 @@
 import { EditorSelection, EditorState, countColumn } from "@codemirror/state"
-import { indentUnit } from "@codemirror/language"
+import { indentUnit, indentService } from "@codemirror/language"
 import { indentMore } from "@codemirror/commands"
+
+import { getNoteBlockFromPos } from "./block/block"
+import { getLanguage } from "./languages"
 
 
 export function indentation(indentType, tabSize) {
@@ -12,7 +15,17 @@ export function indentation(indentType, tabSize) {
     } else {
         throw new Error("Invalid indent type")
     }
-    return [unit, EditorState.tabSize.of(tabSize)]
+    return [
+        unit, 
+        EditorState.tabSize.of(tabSize),
+        indentService.of((context, pos) => {
+            const block = getNoteBlockFromPos(context.state, pos)
+            if (block && getLanguage(block.language.name)?.inheritIndentation) {
+                return null
+            }
+            return undefined
+        }),
+    ]
 }
 
 
