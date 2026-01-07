@@ -56,3 +56,19 @@ test("press tab", async ({ page }) => {
     await page.locator("body").press("Tab")
     expect(await heynotePage.getBlockContent(0)).toBe("H   ello\n    ")
 })
+
+test("indentation is preserved on enter in plain text block", async ({ page }) => {
+    await page.locator("body").pressSequentially("    Indented line")
+    await page.locator("body").press("Enter")
+    await page.locator("body").pressSequentially("Next line")
+    expect(await heynotePage.getBlockContent(0)).toBe("    Indented line\n    Next line")
+})
+
+test("python indentation increases after colon on enter", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞python
+def func():`)
+    await heynotePage.setCursorPosition((await heynotePage.getContent()).length)
+    await page.locator("body").press("Enter")
+    expect(await heynotePage.getBlockContent(0)).toBe("def func():\n    ")
+})
