@@ -6,6 +6,7 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 - New lines in a Plaintext, Math and SQL blocks now inherits the indentation from the previous line
   (other languages should already have this behaviour for new lines)
+- Add support for [Mermaid](https://mermaid.js.org/) blocks
 
 
 ## 2.7.1
