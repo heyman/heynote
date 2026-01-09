@@ -62,6 +62,7 @@
     "@types/node": "^20.10.5",
     "@vitejs/plugin-vue": "^5.2.3",
     "codemirror-lang-elixir": "^4.0.0",
+    "codemirror-lang-mermaid": "^0.5.0",
     "debounce": "^1.2.1",
     "electron": "^39.2.7",
     "electron-builder": "^26.0.12",
