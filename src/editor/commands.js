@@ -10,6 +10,7 @@ import {
     splitLine,
     insertNewlineAndIndent,
     toggleComment, toggleBlockComment, toggleLineComment,
+    insertTab,
 } from "@codemirror/commands"
 import { foldCode, unfoldCode, toggleFold } from "@codemirror/language"
 import { 
@@ -20,7 +21,8 @@ import { selectNextOccurrence, selectSelectionMatches } from "./search/selection
 import { insertNewlineContinueMarkup } from "@codemirror/lang-markdown"
 
 import { 
-    addNewBlockAfterCurrent, addNewBlockBeforeCurrent, addNewBlockAfterLast, addNewBlockBeforeFirst, insertNewBlockAtCursor, 
+    addNewBlockAfterCurrent, addNewBlockBeforeCurrent, addNewBlockAfterLast, addNewBlockAfterLastAndScrollDown, 
+    addNewBlockBeforeFirst, insertNewBlockAtCursor, 
     gotoPreviousBlock, gotoNextBlock, selectNextBlock, selectPreviousBlock,
     gotoPreviousParagraph, gotoNextParagraph, selectNextParagraph, selectPreviousParagraph,
     moveLineUp, moveLineDown,
@@ -41,6 +43,8 @@ import { foldBlock, unfoldBlock, toggleBlockFold } from "./fold-gutter.js"
 import { useHeynoteStore } from "../stores/heynote-store.js";
 import { useSettingsStore } from "../stores/settings-store.js"
 import { toggleSpellcheck, enableSpellcheck, disableSpellcheck } from "./spell-check.js"
+import { insertIndentation } from "./indentation.js"
+import { toggleCheckbox } from "./todo-checkbox.ts"
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
@@ -122,6 +126,7 @@ const HEYNOTE_COMMANDS = {
     addNewBlockAfterCurrent: cmd(addNewBlockAfterCurrent, "Block", "Add new block after current block"),
     addNewBlockBeforeCurrent: cmd(addNewBlockBeforeCurrent, "Block", "Add new block before current block"),
     addNewBlockAfterLast: cmd(addNewBlockAfterLast, "Block", "Add new block after last block"),
+    addNewBlockAfterLastAndScrollDown: cmd(addNewBlockAfterLastAndScrollDown, "Block", "Add new block after last, and scroll down"),
     addNewBlockBeforeFirst: cmd(addNewBlockBeforeFirst, "Block", "Add new block before first block"),
     insertNewBlockAtCursor: cmd(insertNewBlockAtCursor, "Block", "Insert new block at cursor"),
     deleteBlock: cmd(deleteBlock, "Block", "Delete block"),
@@ -180,6 +185,7 @@ const HEYNOTE_COMMANDS = {
     selectNextBlock: cmdLessContext(selectNextBlock, "Selection", "Select to next block"),
     nothing: cmdLessContext(nothing, "Misc", "Do nothing"),
     insertDateAndTime: cmdLessContext(insertDateAndTime, "Misc", "Insert date and time"),
+    insertIndentation: cmdLessContext(insertIndentation, "Edit", "Insert indentation"),
 
     // directly from CodeMirror
     undo: cmdLessContext(undo, "Edit", "Undo"),
@@ -211,9 +217,11 @@ const HEYNOTE_COMMANDS = {
     transposeChars: cmdLessContext(transposeChars, "Edit", "Transpose characters"),
     insertNewlineAndIndent: cmdLessContext(insertNewlineAndIndent, "Edit", "Insert newline and indent"),
     insertNewlineContinueMarkup: cmdLessContext(insertNewlineContinueMarkup, "Markdown", "Insert newline and continue todo lists/block quotes"),
+    toggleCheckbox: cmdLessContext(toggleCheckbox, "Markdown", "Toggle todo checkbox"),
     toggleComment: cmdLessContext(toggleComment, "Edit", "Toggle comment"),
     toggleBlockComment: cmdLessContext(toggleBlockComment, "Edit", "Toggle block comment"),
     toggleLineComment: cmdLessContext(toggleLineComment, "Edit", "Toggle line comment"),
+    insertTab: cmdLessContext(insertTab, "Edit", "Insert tab"),
 }
 
 // selection mark-mode:ify all cursor/select commands from CodeMirror

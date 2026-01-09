@@ -2,9 +2,20 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.7.0-beta
+## (not yet released)
 
-### Breaking change
+- New lines in a Plaintext, Math and SQL blocks now inherits the indentation from the previous line
+  (other languages should already have this behaviour for new lines)
+
+
+## 2.7.1
+
+- Fix issue where a folded block would get unfolded when editing an empty block directly below it.
+
+
+## 2.7.0
+
+### Non backwards-compatible change
 
 Buffers created/saved with this new version of Heynote is not compatible with older versions of Heynote, 
 so if you're using Heynote on multiple machines, make sure to update to >=2.7 on all machines.
@@ -14,10 +25,34 @@ so if you're using Heynote on multiple machines, make sure to update to >=2.7 on
 The time of creation is now recorded for blocks, and it's displayed in the status bar. For folded blocks, 
 it's also displayed in the summary line.
 
+### Add new block and scroll down
+
+A new command for adding a new block at the end of the buffer and then scrolling down so that only the new 
+block is visible has been added. This can be used to create a new block and avoid any distraction from seeing 
+the other blocks above while writing. 
+
+The default key binding for `Cmd/Ctrl+Shift+Enter` has been changed to this new command, but anyone who would 
+prefer the old behaviour, can add a key binding for the  `Add new block after last block` command.
+
+<img src="https://heynote.com/img/changelog/new-block-and-scroll-down.gif" style="width:100%;" alt="GIF showing the new feature">
+
 ### Other fixes and improvements
 
+- The default key binding for the `TAB` key is now a new `insertIndentation` command. This command will insert 
+  indentation character(s) (spaces or tabs depending on the setting) so that the cursor aligns with the indentation
+  columns. Unless there is an active selection, in which case the `indentMore` command will be executed instead.
+  If you want the old behaviour, you can bind the `TAB` key to `indentMore`.
 - Chinese characters in buffer file names are now converted to ascii using pinyin. This fixes an issue where it 
   wasn't possible to create a buffer with only chinese characters it the name.
+- Fix issue where the wrong locale was used for formatting dates on MacOS on systems using a locale such as "en-SE"
+- Fix issue with folded Math blocks where the results from the first and last line would still be visible
+- Always use 2-digit notation for hours when displaying time
+- Add setting for configuring the cursor blink rate (or turning off the blinking)
+- Add support for Lua blocks
+- Add `toggleCheckbox` command for Markdown todo items (default key binding: `Cmd/Ctrl+Shift+Space`)
+- Fix issue when selecting all content of a math block and typing a character
+- Fix so that checkboxes in todo lists takes up 4 spaces so that the margin align for multi line list items
+
 
 ## 2.6.2
 

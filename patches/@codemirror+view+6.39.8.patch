@@ -1,0 +1,13 @@
+diff --git a/node_modules/@codemirror/view/dist/index.js b/node_modules/@codemirror/view/dist/index.js
+index 5ddd730..9254811 100644
+--- a/node_modules/@codemirror/view/dist/index.js
++++ b/node_modules/@codemirror/view/dist/index.js
+@@ -8918,7 +8918,7 @@ function runHandlers(map, event, view, scope) {
+             // Ctrl-Alt may be used for AltGr on Windows
+             !(browser.windows && event.ctrlKey && event.altKey) &&
+             // Alt-combinations on macOS tend to be typed characters
+-            !(browser.mac && event.altKey && !(event.ctrlKey || event.metaKey)) &&
++            //!(browser.mac && event.altKey && !(event.ctrlKey || event.metaKey)) &&
+             (baseName = base[event.keyCode]) && baseName != name) {
+             if (runFor(scopeObj[prefix + modifiers(baseName, event, true)])) {
+                 handled = true;

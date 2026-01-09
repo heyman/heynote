@@ -13,7 +13,8 @@ import { heynoteLang } from "./lang-heynote/heynote.js"
 import { getCloseBracketsExtensions } from "./close-brackets.js"
 import { noteBlockExtension, blockLineNumbers, blockState, getActiveNoteBlock, triggerCursorChange } from "./block/block.js"
 import { heynoteEvent, SET_CONTENT, DELETE_BLOCK, APPEND_BLOCK, SET_FONT } from "./annotation.js";
-import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, getBlockDelimiter, deleteBlock, selectAll } from "./block/commands.js"
+import { getBlockDelimiter } from "./block/block-parsing.js"
+import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, deleteBlock, selectAll } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
 import { getKeymapExtensions } from "./keymap.js"
 import { heynoteCopyCut } from "./copy-paste"
@@ -30,6 +31,7 @@ import { useErrorStore } from "../stores/error-store.js";
 import { foldGutterExtension } from "./fold-gutter.js"
 import { heynoteSearch } from "./search/search.js"
 import { spellcheckConfig } from "./spell-check.js"
+import { scrollMargin, getScrollMargins } from "./scroll-margin.js"
 
 
 // Turn off the use of EditContext, since Chrome has a bug (https://issues.chromium.org/issues/351029417) 
@@ -59,6 +61,7 @@ export class HeynoteEditor {
         keyBindings,
         spellcheckEnabled=false,
         showWhitespace=false,
+        cursorBlinkRate=1000,
     }) {
         this.element = element
         this.path = path
@@ -71,6 +74,7 @@ export class HeynoteEditor {
         this.closeBracketsCompartment = new Compartment
         this.indentUnitCompartment = new Compartment
         this.highlightWhitespaceCompartment = new Compartment
+        this.cursorBlinkCompartment = new Compartment
         this.deselectOnCopy = keymap === "emacs"
         this.emacsMetaKey = emacsMetaKey
         this.fontTheme = new Compartment
@@ -102,16 +106,13 @@ export class HeynoteEditor {
                 heynoteBase,
                 this.fontTheme.of(getFontTheme(fontFamily, fontSize)),
                 this.indentUnitCompartment.of(indentation(indentType, tabSize)),
-                EditorView.scrollMargins.of(f => {
-                    return {top: 80, bottom: 80}
-                }),
+                scrollMargin(),
                 heynoteSearch,
                 heynoteLang(),
                 noteBlockExtension(this),
                 languageDetection(path, () => this),
                 
-                // set cursor blink rate to 1 second
-                drawSelection({cursorBlinkRate:1000}),
+                this.cursorBlinkCompartment.of(drawSelection({cursorBlinkRate})),
 
                 // add CSS class depending on dark/light theme
                 EditorView.editorAttributes.of((view) => {
@@ -324,6 +325,13 @@ export class HeynoteEditor {
         })
     }
 
+    setCursorBlinkRate(cursorBlinkRate) {
+        const rate = typeof cursorBlinkRate === "number" ? cursorBlinkRate : 1000
+        this.view.dispatch({
+            effects: this.cursorBlinkCompartment.reconfigure(drawSelection({cursorBlinkRate: rate})),
+        })
+    }
+
     async createNewBuffer(path, name) {
         const data = getBlockDelimiter(this.defaultBlockToken, this.defaultBlockAutoDetect)
         await this.notesStore.saveNewBuffer(path, name, data)
@@ -465,6 +473,13 @@ export class HeynoteEditor {
         }
         cmd.run(this)(this.view)
     }
+
+    /**
+     * Used in tests
+     */
+    getScrollMargins() {
+        return getScrollMargins(this)
+    }
 }
 
 
@@ -480,4 +495,3 @@ editor.update([
         annotations: heynoteEvent.of(INITIAL_DATA),
     })
 ])*/
-

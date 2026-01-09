@@ -29,6 +29,7 @@ import { kotlin, dart, scala } from "@codemirror/legacy-modes/mode/clike"
 import { groovy } from "@codemirror/legacy-modes/mode/groovy"
 import { diff } from "@codemirror/legacy-modes/mode/diff";
 import { powerShell } from "@codemirror/legacy-modes/mode/powershell";
+import { lua } from "@codemirror/legacy-modes/mode/lua";
 
 import typescriptPlugin from "prettier/plugins/typescript"
 import babelPrettierPlugin from "prettier/plugins/babel"
@@ -46,13 +47,16 @@ class Language {
      * @param parser: The Lezer parser used to parse the language
      * @param guesslang: The name of the language as used by the guesslang library
      * @param prettier: The prettier configuration for the language (if any)
+     * @param inheritIndentation: If true, the indentService will return null for blocks of this type, which will 
+     *                            result in the  line inheriting the indentation of the one above it
      */
-    constructor({ token, name, parser, guesslang, prettier }) {
+    constructor({ token, name, parser, guesslang, prettier, inheritIndentation }) {
         this.token = token
         this.name = name
         this.parser = parser
         this.guesslang = guesslang
         this.prettier = prettier
+        this.inheritIndentation = inheritIndentation
     }
 
     get supportsFormat() {
@@ -66,12 +70,14 @@ export const LANGUAGES = [
         name: "Plain Text",
         parser: null,
         guesslang: null,
+        inheritIndentation: true,
     }),
     new Language({
         token: "math",
         name: "Math",
         parser: null,
         guesslang: null,
+        inheritIndentation: true,
     }),
     new Language({
         token: "json",
@@ -98,6 +104,7 @@ export const LANGUAGES = [
         name: "SQL",
         parser: StandardSQL.language.parser,
         guesslang: "sql",
+        inheritIndentation: true,
     }),
     new Language({
         token: "markdown",
@@ -243,6 +250,12 @@ export const LANGUAGES = [
         name: "Kotlin",
         parser: StreamLanguage.define(kotlin).parser,
         guesslang: "kt",
+    }),
+    new Language({
+        token: "lua",
+        name: "Lua",
+        parser: StreamLanguage.define(lua).parser,
+        guesslang: "lua",
     }),
     new Language({
         token: "groovy",

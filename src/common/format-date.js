@@ -9,7 +9,7 @@ export function formatDate(date, locale) {
     // Today: show just time
     if (diffDays === 0) {
         return date.toLocaleTimeString(locale, {
-            hour: "numeric",
+            hour: "2-digit",
             minute: "2-digit"
         });
     }
@@ -17,10 +17,10 @@ export function formatDate(date, locale) {
     // Yesterday: show "Yesterday, <time>"
     if (diffDays === 1) {
         const time = date.toLocaleTimeString(locale, {
-            hour: "numeric",
+            hour: "2-digit",
             minute: "2-digit"
         });
-        return `Yesterday, ${time}`;
+        return `Yesterday ${time}`;
     }
 
     // Otherwise: full date + time, omit year if same
@@ -30,7 +30,7 @@ export function formatDate(date, locale) {
         year: sameYear ? undefined : "numeric",
         month: "short",
         day: "numeric",
-        hour: "numeric",
+        hour: "2-digit",
         minute: "2-digit"
     });
 }
@@ -40,8 +40,18 @@ export function formatFullDate(date, locale) {
         year: "numeric",
         month: "short",
         day: "numeric",
-        hour: "numeric",
+        hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
     });
+}
+
+export function formatFullDateWithoutSeconds(date, locale) {
+    return date.toLocaleString(locale, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+     });
 }

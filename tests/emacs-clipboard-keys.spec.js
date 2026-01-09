@@ -33,19 +33,21 @@ test("test emacs copy/pase/cut key bindings", async ({ page }) => {
     await page.locator("body").pressSequentially("test")
     await page.locator("body").press("Control+Space")
     await page.locator("body").press("Control+A")
+    await heynotePage.expectSelectionContent("test")
     await page.locator("body").press("Alt+W")
+    await heynotePage.expectSelectionContent("")
     expect(await heynotePage.getBlockContent(0)).toBe("test")
     await page.locator("body").press("Control+Y")
-    expect(await heynotePage.getBlockContent(0)).toBe("testtest")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("testtest")
 
     await page.locator("body").press("Control+E")
     await page.locator("body").press("Control+Space")
     await page.locator("body").press("Control+A")
     await page.locator("body").press("Control+W")
-    expect(await heynotePage.getBlockContent(0)).toBe("")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("")
     await page.locator("body").press("Control+Y")
     await page.locator("body").press("Control+Y")
-    expect(await heynotePage.getBlockContent(0)).toBe("testtesttesttest")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("testtesttesttest")
 })
 
 
@@ -58,10 +60,10 @@ test("copy current line", async ({ page }) => {
     await page.keyboard.press("Alt+W")
     await page.keyboard.press("Alt+W")
     await clearBuffer()
-    expect(await heynotePage.getBlockContent(0)).toBe("")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("")
     await page.locator("body").press("Control+Y")
     await page.locator("body").press("Control+Y")
-    expect(await heynotePage.getBlockContent(0)).toBe("test line! test line! ")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("test line! test line! ")
 })
 
 test("copy current multiple cursors", async ({ page }) => {
@@ -74,10 +76,10 @@ line 2`)
     await page.locator("body").pressSequentially("test")
     await page.keyboard.press("Alt+W")
     await clearBuffer()
-    expect(await heynotePage.getBlockContent(0)).toBe("")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("")
     await page.keyboard.press("Control+Y")
     //await page.waitForTimeout(100);
-    expect(await heynotePage.getBlockContent(0)).toBe(`testline 1\ntestline 2`)
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe(`testline 1\ntestline 2`)
 })
 
 test("copy current multiple cursors on same line", async ({ page }) => {
@@ -87,33 +89,33 @@ test`)
     await page.keyboard.press("Control+A")
     await page.keyboard.press(`${modifierKey}+Alt+ArrowDown`)
     await page.locator("body").pressSequentially("1")
-    expect(await heynotePage.getBlockContent(0)).toBe("1test1")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("1test1")
     await page.keyboard.press("Alt+W")
 
     await clearBuffer()
-    expect(await heynotePage.getBlockContent(0)).toBe("")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("")
 
     await page.keyboard.press("Control+Y")
-    expect(await heynotePage.getBlockContent(0)).toBe("1test1")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("1test1")
 })
 
 test("cut multiple blocks", async ({ page }) => {
     await page.locator("body").pressSequentially("block1")
     await page.locator("body").press(heynotePage.agnosticKey("Mod+Enter"))
     await page.locator("body").pressSequentially("block2")
-    expect(await heynotePage.getBlockContent(0)).toBe("block1")
-    expect(await heynotePage.getBlockContent(1)).toBe("block2")
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("block1")
+    await expect.poll(async () => await heynotePage.getBlockContent(1)).toBe("block2")
 
     await heynotePage.executeCommand("selectAll")
     await heynotePage.executeCommand("selectAll")
     await page.locator("body").press("Control+W")
     
     // check that editor is empty
-    expect((await heynotePage.getBlocks()).length).toBe(1)
-    expect(await heynotePage.getBlockContent(0)).toBe("")
+    await expect.poll(async () => (await heynotePage.getBlocks()).length).toBe(1)
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("")
 
     // paste content and check that block separator was replaced with \n\n
     await page.locator("body").press("Control+Y")
-    expect((await heynotePage.getBlocks()).length).toBe(1)
-    expect(await heynotePage.getBlockContent(0)).toBe("block1\n\nblock2")
+    await expect.poll(async () => (await heynotePage.getBlocks()).length).toBe(1)
+    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("block1\n\nblock2")
 })

@@ -1,16 +1,14 @@
 import { EditorSelection, Transaction } from "@codemirror/state"
+import { EditorView } from "@codemirror/view"
 
 import { heynoteEvent, LANGUAGE_CHANGE, CURRENCIES_LOADED, ADD_NEW_BLOCK, MOVE_BLOCK, DELETE_BLOCK } from "../annotation.js";
 import { blockState, getActiveNoteBlock, getFirstNoteBlock, getLastNoteBlock, getNoteBlockFromPos, delimiterRegex } from "./block"
 import { moveLineDown, moveLineUp } from "./move-lines.js";
 import { selectAll } from "./select-all.js";
+import { getBlockDelimiter } from "./block-parsing.js"
 
 export { moveLineDown, moveLineUp, selectAll }
 
-
-export function getBlockDelimiter(defaultToken, autoDetect) {
-    return `\n∞∞∞${autoDetect ? defaultToken + '-a' : defaultToken};created=${(new Date()).toISOString()}\n`
-}
 
 export const insertNewBlockAtCursor = (editor) => ({ state, dispatch }) => {
     if (state.readOnly)
@@ -113,6 +111,12 @@ export const addNewBlockAfterLast = (editor) => ({ state, dispatch }) => {
         scrollIntoView: true,
         userEvent: "input",
     }))
+    return true;
+}
+
+export const addNewBlockAfterLastAndScrollDown = (editor) => (view) => {
+    addNewBlockAfterLast(editor)(view)
+    view.scrollDOM.scrollTop = view.scrollDOM.scrollHeight
     return true;
 }
 

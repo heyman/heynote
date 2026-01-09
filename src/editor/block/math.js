@@ -2,9 +2,11 @@ import { ViewPlugin } from "@codemirror/view"
 import { Decoration } from "@codemirror/view"
 import { RangeSetBuilder } from "@codemirror/state"
 import { WidgetType } from "@codemirror/view"
+import { foldState } from "@codemirror/language"
 
 import { getNoteBlockFromPos } from "./block"
 import { transactionsHasAnnotation, CURRENCIES_LOADED } from "../annotation"
+import { isBlockFolded } from "../fold-gutter"
 
 
 class MathResult extends WidgetType {
@@ -50,6 +52,12 @@ function mathDeco(view) {
             var block = getNoteBlockFromPos(view.state, pos)
 
             if (block && block.language.name == "math") {
+                // if this block is folded, we want to skip the entire block
+                if (isBlockFolded(view.state, block)) {
+                    pos = block.range.to+1
+                    continue
+                }
+
                 // get math.js parser and cache it for this block
                 let {parser, prev} = mathParsers.get(block) || {}
                 if (!parser) {
@@ -117,17 +125,22 @@ function mathDeco(view) {
 
 export const mathBlock = ViewPlugin.fromClass(class {
     decorations
+    lastFoldField
 
     constructor(view) {
         this.decorations = mathDeco(view)
+        this.lastFoldField = view.state.field(foldState, false)
     }
 
     update(update) {
-        // If the document changed, the viewport changed, or the transaction was annotated with the CURRENCIES_LOADED annotation, 
-        // update the decorations. The reason we need to check for CURRENCIES_LOADED annotations is because the currency rates are 
-        // updated asynchronously
-        if (update.docChanged || update.viewportChanged || transactionsHasAnnotation(update.transactions, CURRENCIES_LOADED)) {
+        const curFoldField = update.state.field(foldState, false)
+
+        // If the document changed, the viewport changed, the foldState changed, or the transaction was 
+        // annotated with the CURRENCIES_LOADED annotation, update the decorations. The reason we need 
+        // to check for CURRENCIES_LOADED annotations is because the currency rates are updated asynchronously
+        if (update.docChanged || update.viewportChanged || curFoldField !== this.lastFoldField || transactionsHasAnnotation(update.transactions, CURRENCIES_LOADED)) {
             this.decorations = mathDeco(update.view)
+            this.lastFoldField = curFoldField
         }
     }
 }, {

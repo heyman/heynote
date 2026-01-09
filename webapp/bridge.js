@@ -91,6 +91,7 @@ let initialSettings = {
     keyBindings: [],
     showTabs: true,
     showTabsInFullscreen: true,
+    cursorBlinkRate: 1000,
 }
 if (settingsData !== null) {
     initialSettings = Object.assign(initialSettings, JSON.parse(settingsData))
@@ -305,6 +306,10 @@ const Heynote = {
 
     setWindowTitle(title) {
         document.title = title + " - Heynote"
+    },
+
+    async getSystemLocale() {
+        return navigator.language
     },
 }
 

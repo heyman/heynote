@@ -4,7 +4,8 @@ import { EditorView } from "@codemirror/view"
 import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
 import { formatDate, formatFullDate } from "@/src/common/format-date.js"
 import { getNoteBlockFromPos, getNoteBlocksFromRangeSet, delimiterRegexWithoutNewline } from "./block/block.js"
-import { transactionsHasAnnotationsAny, ADD_NEW_BLOCK, LANGUAGE_CHANGE, transactionsHasHistoryEvent } from "./annotation.js"
+import { transactionsHasAnnotationsAny, ADD_NEW_BLOCK, LANGUAGE_CHANGE, UPDATE_CREATED, transactionsHasHistoryEvent } from "./annotation.js"
+import { useHeynoteStore } from "@/src/stores/heynote-store.js"
 
 
 // This extension fixes so that a folded region is automatically unfolded if any changes happen 
@@ -27,7 +28,7 @@ const autoUnfoldOnEdit = () => {
         }
         
         // we don't want to unfold a block/range if the user adds a new block, or changes language of the block
-        if (transactionsHasAnnotationsAny(update.transactions, [ADD_NEW_BLOCK, LANGUAGE_CHANGE])) {
+        if (transactionsHasAnnotationsAny(update.transactions, [ADD_NEW_BLOCK, LANGUAGE_CHANGE, UPDATE_CREATED])) {
             return
         }
         // an undo/redo action should never be able to get characters into a folded line but if we don't have 
@@ -86,12 +87,14 @@ const autoUnfoldOnEdit = () => {
 }
 
 export function foldGutterExtension() {
+    const heynoteStore = useHeynoteStore()
+
     return [
         foldGutter({
             domEventHandlers: {
                 click(view, line, event) {
                     // editor should not loose focus when clicking on the fold gutter
-                    view.docView.dom.focus()
+                    view.focus()
                 },
             },
         }),
@@ -129,8 +132,8 @@ export function foldGutterExtension() {
                             const date = new Date(Date.parse(block.created))
                             const createdDom = document.createElement("span")
                             createdDom.className = "created-time"
-                            createdDom.textContent = formatDate(date)
-                            createdDom.title = "Created " + formatFullDate(date)
+                            createdDom.textContent = formatDate(date, heynoteStore.systemLocale)
+                            createdDom.title = "Created " + formatFullDate(date, heynoteStore.systemLocale)
                             dom.appendChild(createdDom)
                         }
                     }
@@ -232,4 +235,21 @@ export const unfoldBlock = (editor) => (view) => {
             effects: blockFolds.map(range => unfoldEffect.of(range)),
         })
     }
+}
+
+/**
+ * Given a block state, returns the folded range if the block is folded, otherwise null
+ */
+export function isBlockFolded(state, block) {
+    const folds = foldedRanges(state)
+    const firstLine = state.doc.lineAt(block.content.from)
+    let isFolded = false
+    folds.between(block.content.from, block.content.to, (from, to) => {
+        if (from <= firstLine.to && to === block.content.to) {
+
+            isFolded = true
+            return false
+        }
+    })
+    return isFolded
 }

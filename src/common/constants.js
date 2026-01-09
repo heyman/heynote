@@ -15,6 +15,7 @@ export const SELECT_ALL_EVENT = "select-all"
 export const SAVE_TABS_STATE = "save-tabs-state"
 export const LOAD_TABS_STATE = "load-tabs-state"
 export const CONTEXT_MENU_CLOSED = "context-menu-closed"
+export const GET_SYSTEM_LOCALE = "getSystemLocale"
 
 export const UPDATE_AVAILABLE_EVENT = "update-available"
 export const UPDATE_NOT_AVAILABLE_EVENT = "update-not-available"

@@ -56,6 +56,39 @@ prev
     await expect(page.locator("css=.heynote-math-result").last()).toHaveText("1337")
 })
 
+test("select all in math block replaces content", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞math
+1
+2`)
+
+    await heynotePage.executeCommand("selectAll")
+    await heynotePage.expectSelectionContent("1\n2")
+    await page.locator("body").pressSequentially("3")
+
+    await expect.poll(async () => {
+        return await heynotePage.getBlockContent(0)
+    }).toBe("3")
+})
+
+test("folded math block hides math results", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞math
+1 + 1
+2 + 2
+∞∞∞text
+After block
+`)
+
+    await expect(page.locator("css=.heynote-math-result:visible")).toHaveCount(2)
+
+    await heynotePage.setCursorPosition(10)
+    const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
+    await page.locator("body").press(foldKey)
+    await expect(page.locator(".cm-foldPlaceholder")).toBeVisible()
+    await expect(page.locator("css=.heynote-math-result:visible")).toHaveCount(0)
+})
+
 
 test("each row of math blocks are processed even if they are outside of visible ranges", async ({ page }) => {
     let bufferContent = `

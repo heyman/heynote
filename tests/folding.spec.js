@@ -3,6 +3,8 @@ import { HeynotePage } from "./test-utils.js";
 import { NoteFormat } from "../src/common/note-format.js";
 import { formatDate, formatFullDate } from "@/src/common/format-date.js"
 
+export const delimiterRegex = /\n∞∞∞[a-z]+(-a)?(?:;[^\\n]+)*\n/
+
 let heynotePage
 
 test.beforeEach(async ({ page }) => {
@@ -31,7 +33,7 @@ This is a markdown block
 - Item 2
 `)
         //await page.waitForTimeout(100);
-        expect((await heynotePage.getBlocks()).length).toBe(4)
+        await expect.poll(async () => (await heynotePage.getBlocks()).length).toBe(4)
     });
 
     test("fold gutter doesn't lose editor focus when clicked", async ({ page }) => {
@@ -83,7 +85,9 @@ This is a markdown block
     test("multiple blocks can be folded and unfolded when selection overlaps multiple blocks", async ({ page }) => {
         // Use Ctrl/Cmd+A twice to select all content across all blocks
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // First press selects current block
+        await page.waitForSelector(".cm-selectionBackground")
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Second press selects entire buffer
+        await expectWholeBufferToBeSelected();
         
         // Verify no fold placeholders exist initially
         await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
@@ -128,7 +132,9 @@ This is a markdown block
     test("toggleBlockFold works on multiple blocks", async ({ page }) => {
         // Select all content across all blocks
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // First press selects current block
+        await page.waitForSelector(".cm-selectionBackground")
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Second press selects entire buffer
+        await expectWholeBufferToBeSelected();
         
         // Verify no fold placeholders exist initially
         await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(0)
@@ -159,9 +165,8 @@ This is a markdown block
         
         // Now select all blocks (some folded, some unfolded)
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // First press selects current block
-        await page.waitForTimeout(200)
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Second press selects entire buffer
-        await page.waitForTimeout(200)
+        await expectWholeBufferToBeSelected();
         
         // Toggle fold on mixed state - should fold all unfolded blocks (since more are unfolded than folded)
         const toggleKey = heynotePage.isMac ? "Alt+Meta+." : "Alt+Control+."
@@ -198,9 +203,8 @@ Block C single line`)
 
         // Now select all blocks (some folded, some unfolded)
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // First press selects current block
-        await page.waitForTimeout(200)
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Second press selects entire buffer
-        await page.waitForTimeout(200)
+        await expectWholeBufferToBeSelected();
         
         // Toggle fold on mixed state - should fold all unfolded blocks (since more are unfolded than folded)
         const toggleKey = heynotePage.isMac ? "Alt+Meta+." : "Alt+Control+."
@@ -260,6 +264,7 @@ Block C single line`)
         const unfoldKey = heynotePage.isMac ? "Alt+Meta+]" : "Alt+Control+]"
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Select all
         await page.locator("body").press(heynotePage.agnosticKey("Mod+a")) // Select entire buffer
+        await expectWholeBufferToBeSelected();
         await page.locator("body").press(unfoldKey)
         
         // Verify no blocks are folded
@@ -528,6 +533,33 @@ Block A line 3`)
         expect(content).toContain("Block A line 3Y")
     });
 
+    test("typing in empty block with empty block below does not unfold previous folded block", async ({ page }) => {
+        await heynotePage.setContent(`
+∞∞∞text
+Block A line 1
+Block A line 2
+Block A line 3
+∞∞∞text
+`)
+
+        // Fold the first block
+        await heynotePage.setCursorPosition(20) // Middle of Block A
+        const foldKey = heynotePage.isMac ? "Alt+Meta+[" : "Alt+Control+["
+        await page.locator("body").press(foldKey)
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+
+        const blocks = await heynotePage.getBlocks()
+        expect(blocks).toHaveLength(2)
+        expect(await heynotePage.getBlockContent(1)).toBe("")
+
+        // Type into the empty middle block while another empty block follows it
+        await heynotePage.setCursorPosition(blocks[1].content.from)
+        await page.locator("body").pressSequentially("a")
+
+        // The folded block should remain folded
+        await expect(page.locator(".cm-foldPlaceholder")).toHaveCount(1)
+    });
+
     test("folded block does not unfold when language changes", async ({ page }) => {
         // Set up test content with a multi-line block
         await heynotePage.setContent(`
@@ -661,7 +693,24 @@ Another paragraph here`)
 
         // Verify block is folded by checking for fold placeholder
         await expect(page.locator(".cm-foldPlaceholder")).toBeVisible()
-
-        await expect(page.locator(".cm-foldPlaceholder .created-time")).toHaveText(formatDate(date, "en-GB"))
+        
+        const expectedTime = await page.evaluate(async (date) => {
+            return date.toLocaleTimeString(navigator.language, {
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }, date)
+        await expect(page.locator(".cm-foldPlaceholder .created-time")).toHaveText(expectedTime)
     });
 });
+
+
+async function expectWholeBufferToBeSelected() {
+    await expect.poll(async () => {
+        const selection = await heynotePage.getMainSelection();
+        const content = await heynotePage.getContent();
+        const match = delimiterRegex.exec(content);
+        const blockStart = match.index + match[0].length;
+        return selection.from === blockStart && selection.to === content.length;
+    }, { message: "Expected the whole buffer content to be selected" }).toBeTruthy();
+}

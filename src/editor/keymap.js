@@ -24,7 +24,7 @@ export const DEFAULT_KEYMAP = [
     
     cmd("Mod-a", "selectAll"),
     cmd("Mod-Enter", "addNewBlockAfterCurrent"),
-    cmd("Mod-Shift-Enter", "addNewBlockAfterLast"),
+    cmd("Mod-Shift-Enter", "addNewBlockAfterLastAndScrollDown"),
     cmd("Alt-Enter", "addNewBlockBeforeCurrent"),
     cmd("Alt-Shift-Enter", "addNewBlockBeforeFirst"),
     cmd("Mod-Alt-Enter", "insertNewBlockAtCursor"),
@@ -92,7 +92,7 @@ export const DEFAULT_KEYMAP = [
         cmd("Mod-y", "redo"),
     ] : []),
 
-    cmd("Tab", "indentMore"),
+    cmd("Tab", "insertIndentation"),
     cmd("Shift-Tab", "indentLess"),
     //cmd("Alt-ArrowLeft", "cursorSubwordBackward"),
     //cmd("Alt-ArrowRight", "cursorSubwordForward"),
@@ -104,6 +104,7 @@ export const DEFAULT_KEYMAP = [
     cmd("Mod-n", "openCreateNewBuffer"),
 
     cmd("Alt-Shift-f", "formatBlockContent"),
+    cmd("Mod-Shift-Space", "toggleCheckbox"),
 
     cmd("Mod-/", "toggleComment"),
     cmd("Alt-Shift-a", "toggleBlockComment"),
