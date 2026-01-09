@@ -284,7 +284,7 @@ export const LANGUAGES = [
         token: "mermaid",
         name: "Mermaid",
         parser: mermaidLanguage.parser ,
-        guesslang: 'mermaid',
+        guesslang: null,
     }),
 ]
 
