@@ -103,6 +103,7 @@ export const LANGUAGES = [
         name: "SQL",
         parser: StandardSQL.language.parser,
         guesslang: "sql",
+        inheritIndentation: true,
     }),
     new Language({
         token: "markdown",

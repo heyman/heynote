@@ -4,7 +4,8 @@ Here are the most notable changes in each release. For a more detailed list of c
 
 ## (not yet released)
 
-- New lines in a Plaintext or Math block now inherits the indentation from the previous line
+- New lines in a Plaintext, Math and SQL blocks now inherits the indentation from the previous line
+  (other languages should already have this behaviour for new lines)
 
 
 ## 2.7.1
