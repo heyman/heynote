@@ -73,6 +73,9 @@ const highlightStyle = HighlightStyle.define([
 
     // override heading style, in order to remove the ugly underline
     { tag: tags.heading, fontWeight: 'bold'},
+
+    //{ tag: [tags.function(tags.variableName)], color: "#00f" },
+    { tag: [tags.function(tags.variableName)], color: "#906c00" },
 ])
 
 const heynoteLight = [
