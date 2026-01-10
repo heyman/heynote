@@ -10,7 +10,7 @@ base01 = '#3b4252', // dark grey
 base02 = '#434c5e', base03 = '#4c566a'; // grey
 // Snow Storm
 const base04 = '#d8dee9', // grey
-base05 = '#e5e9f0', // off white
+base05 = '#c7cad0', // off white
 base06 = '#eceff4'; // white
 // Frost
 const base07 = '#8fbcbb', // moss green
@@ -22,7 +22,9 @@ const base0b = '#bf616a', // red
 base0C = '#d08770', // orange
 base0D = '#ebcb8b', // yellow
 base0E = '#a3be8c', // green
-base0F = '#b48ead'; // purple
+base0F = '#b48ead', // purple
+base10 = '#c6c097'; // light yellow
+
 const invalid = '#d30102', darkBackground = '#252a33', background = '#1e222a', tooltipBackground = base01, cursor = '#fff';
 const highlightBackground = 'rgba(255,255,255,0.04)';
 
@@ -168,7 +170,7 @@ const darkHighlightStyle = HighlightStyle.define([
         color: base08
     },
     { tag: [tags.variableName], color: base07 },
-    { tag: [tags.function(tags.variableName)], color: base07 },
+    { tag: [tags.function(tags.variableName)], color: base10 },
     { tag: [tags.labelName], color: base09 },
     {
         tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
@@ -190,7 +192,7 @@ const darkHighlightStyle = HighlightStyle.define([
     },
     {
         tag: [tags.operator, tags.operatorKeyword],
-        color: base0E
+        color: base05,
     },
     {
         tag: [tags.tagName],
