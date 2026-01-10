@@ -39,6 +39,8 @@ import markdownPrettierPlugin from "prettier/plugins/markdown"
 import yamlPrettierPlugin from "prettier/plugins/yaml"
 import * as prettierPluginEstree from "prettier/plugins/estree";
 
+import { mathjsLanguage } from "heynote-lang-mathjs"
+
 
 class Language {
     /**
@@ -75,7 +77,7 @@ export const LANGUAGES = [
     new Language({
         token: "math",
         name: "Math",
-        parser: null,
+        parser: mathjsLanguage.parser,
         guesslang: null,
         inheritIndentation: true,
     }),
