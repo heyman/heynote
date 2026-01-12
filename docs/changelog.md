@@ -2,12 +2,12 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## (not yet released)
+## 2.8.0-beta
 
+- Add syntax highlighting for Math blocks
 - New lines in a Plaintext, Math and SQL blocks now inherits the indentation from the previous line
   (other languages should already have this behaviour for new lines)
 - Add support for [Mermaid](https://mermaid.js.org/) blocks
-- Add syntax highlighting for Math blocks
 
 
 ## 2.7.1
