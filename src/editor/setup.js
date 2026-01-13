@@ -4,7 +4,6 @@ import { EditorState } from '@codemirror/state';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldKeymap } from '@codemirror/language';
 import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
 //import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
-import { highlightSelectionMatches, searchKeymap } from './codemirror-search/search.ts';
 import { closeBrackets, autocompletion, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
 

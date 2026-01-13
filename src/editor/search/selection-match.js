@@ -2,12 +2,13 @@
 import { EditorView, ViewPlugin, Decoration } from "@codemirror/view"
 import { EditorSelection, Facet, combineConfig, CharCategory } from "@codemirror/state"
 
-import { SearchCursor } from "../codemirror-search/search.ts"
+import { SearchCursor } from "@codemirror/search"
 
 import { useSettingsStore } from "@/src/stores/settings-store.js"
 import { getActiveNoteBlock } from "../block/block.js"
 import { delimiterRegexWithoutNewline } from "../block/block.js"
 import { transactionsHasAnnotation, SEARCH_SETTINGS_UPDATED } from "../annotation.js"
+import { searchTestFunction } from "./search-match-filter.js"
 
 
 
@@ -152,11 +153,8 @@ function currentBlockTestFilter(state) {
     const settingsStore = useSettingsStore()
     const currentBlock = getActiveNoteBlock(state)
     const onlyCurrentBlock = settingsStore.settings.searchSettings === undefined ? true : settingsStore.settings.searchSettings.onlyCurrentBlock
-    return (from, to, buffer, bufferPos) => {
-        return !delimiterRegexWithoutNewline.test(buffer) && (
-            onlyCurrentBlock ? from >= currentBlock.content.from && to <= currentBlock.content.to : true
-        )
-    }
+
+    return searchTestFunction(onlyCurrentBlock, currentBlock)
 }
 
 

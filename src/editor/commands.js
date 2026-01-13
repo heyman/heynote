@@ -16,7 +16,7 @@ import { foldCode, unfoldCode, toggleFold } from "@codemirror/language"
 import { 
     openSearchPanel, closeSearchPanel, findNext, findPrevious, 
     selectMatches, replaceNext, replaceAll, 
-} from "./codemirror-search/search.js"
+} from "@codemirror/search"
 import { selectNextOccurrence, selectSelectionMatches } from "./search/selection-match.js"
 import { insertNewlineContinueMarkup } from "@codemirror/lang-markdown"
 

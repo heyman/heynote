@@ -1,4 +1,4 @@
-import { search } from "../codemirror-search/search.ts"
+import { search } from "@codemirror/search"
 
 import { createApp } from "vue"
 
