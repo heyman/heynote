@@ -114,6 +114,7 @@ export const heynoteBase = EditorView.theme({
     },
     '.heynote-math-result .inner': {
         background: '#48b57e',
+        //background: '#4892b5',
         color: '#fff',
         padding: '0px 4px',
         borderRadius: '2px',

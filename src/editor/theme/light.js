@@ -66,6 +66,10 @@ const lightTheme = EditorView.theme({
         background: "#f4f8f4",
         borderTop: "1px solid #dfdfdf",
     },
+
+    ".cm-taskmarker-toggle input[type=checkbox]": {
+        accentColor: "#1f8deb",
+    },
 })
 
 const highlightStyle = HighlightStyle.define([
@@ -76,6 +80,7 @@ const highlightStyle = HighlightStyle.define([
 
     //{ tag: [tags.function(tags.variableName)], color: "#00f" },
     { tag: [tags.function(tags.variableName)], color: "#906c00" },
+    { tag: [tags.number], color: "#1a557e" },
 ])
 
 const heynoteLight = [
