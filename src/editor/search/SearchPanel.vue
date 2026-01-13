@@ -10,13 +10,14 @@
         SearchQuery,
         selectMatches,
         setSearchQuery,
-    } from "../codemirror-search/search.ts"
+    } from "@codemirror/search"
     import { mapStores } from 'pinia'
     import { useSettingsStore } from "@/src/stores/settings-store.js"
     import { getActiveNoteBlock } from "../block/block.js"
     import InputToggle from "./InputToggle.vue"
     import { delimiterRegexWithoutNewline } from "../block/block.js"
     import { heynoteEvent, SEARCH_SETTINGS_UPDATED } from "../annotation.js"
+    import { searchTestFunction } from "./search-match-filter.js"
 
     export default {
         name: "SearchPanel",
@@ -86,16 +87,9 @@
                     regexp: this.regexp,
                     wholeWord: this.wholeWord,
                     literal: true,
-                    test: (from, to, buffer, bufferPos) => {
-                        //console.log("test()", from, to, buffer, bufferPos);
-                        return !delimiterRegexWithoutNewline.test(buffer) && (
-                            this.onlyCurrentBlock ? from >= this.currentBlock.content.from && to <= this.currentBlock.content.to : true
-                        )
-                    },
-                    regexpTest: (from, to, match) =>  {
-                        return !delimiterRegexWithoutNewline.test(match.input) && (
-                            this.onlyCurrentBlock ? from >= this.currentBlock.content.from && to <= this.currentBlock.content.to : true
-                        )
+                    test: (matchedStr, state, from, to) => {
+                        const line = state.doc.lineAt(from)
+                        return searchTestFunction(this.onlyCurrentBlock, this.currentBlock)(from, to, line.text, line.from)
                     },
                     replace: this.replaceStr,
                 });

@@ -50,7 +50,7 @@
     "@codemirror/language": "^6.12.1",
     "@codemirror/legacy-modes": "^6.5.2",
     "@codemirror/lint": "^6.9.2",
-    "@codemirror/search": "^6.5.11",
+    "@codemirror/search": "^6.6.0",
     "@codemirror/state": "^6.5.3",
     "@codemirror/view": "^6.39.8",
     "@electron/asar": "^3.2.2",
