@@ -52,7 +52,7 @@
     "@codemirror/lint": "^6.9.2",
     "@codemirror/search": "^6.6.0",
     "@codemirror/state": "^6.5.3",
-    "@codemirror/view": "^6.39.8",
+    "@codemirror/view": "^6.39.10",
     "@electron/asar": "^3.2.2",
     "@lezer/generator": "^1.5.1",
     "@lezer/markdown": "^1.4.2",
