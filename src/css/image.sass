@@ -1,0 +1,76 @@
+.heynote-image
+    //--outline-color: var(--highlight-color)
+    //--outline-color: #b3bfcc
+    --outline-color: #17242b
+    padding: 6px 2px
+    display: inline-block
+    position: relative
+    vertical-align: middle
+
+    &.folded
+        padding: 0
+        //vertical-align: middle
+        &.selected
+            padding: 0
+        .resize-handle
+            display: none
+    
+    .inner
+        position: relative
+        border: 1px solid #252525
+        &:hover
+            //border: 1px solid var(--outline-color)
+        img
+            display: block
+            max-width: 100%
+            min-height: 16px
+            min-width: 16px
+        .highlight-border
+            display: none
+            position: absolute
+            top: -2px
+            bottom: -2px
+            left: -2px
+            right: -2px
+            border: 3px solid var(--outline-color)
+
+    
+    &.selected
+        .inner
+            //border: 2px solid var(--outline-color)
+            .highlight-border
+                display: block
+        .resize-handle
+            opacity: 1.0
+        &:hover
+            .resize-handle
+                opacity: 1.0
+    
+    &:hover
+        .resize-handle
+            opacity: 0.5
+            &:hover
+                opacity: 1.0
+    
+    .resize-handle
+        opacity: 0
+        transition: opacity 200ms
+        width: 0
+        height: 0
+        position: absolute
+        right: 2px
+        bottom: 6px
+        border-bottom: 10px solid var(--outline-color)
+        border-right: 10px solid var(--outline-color)
+        border-left: 10px solid transparent
+        border-top: 10px solid transparent
+        cursor: se-resize
+        z-index: 10
+        .icon
+            position: absolute
+            top: -4px
+            left: -4px
+            background: url("@/assets/icons/resize-handle-se-dark.png")
+            background-size: 100%
+            width: 12px
+            height: 12px
