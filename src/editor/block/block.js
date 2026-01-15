@@ -189,24 +189,26 @@ const blockLayer = layer({
                 idx++;
                 return
             }
-            // view.coordsAtPos returns null if the editor is not visible
-            const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from))?.top
-            let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to))?.bottom
+            // Use line box geometry so inline widgets (like images) expand the block height.
+            const fromPos = Math.max(block.content.from, view.visibleRanges[0].from)
+            const toPos = Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)
+            const fromCoordsTop = view.lineBlockAt(fromPos)?.top
+            const toLine = view.state.doc.lineAt(toPos)
+            const toLinePos = toLine.length === 0 ? toLine.from : Math.max(fromPos, Math.min(toPos - 1, block.content.to - 1))
+            let toCoordsBottom = view.lineBlockAt(toLinePos)?.bottom
             if (idx === blocks.length - 1) {
                 // Calculate how much extra height we need to add to the last block
                 let extraHeight = view.viewState.editorHeight - (
                     view.defaultLineHeight + // when scrolling furthest down, one line is still shown at the top
                     view.documentPadding.top +
-                    8
+                    11
                 )
                 toCoordsBottom += extraHeight
             }
             markers.push(new RectangleMarker(
                 idx++ % 2 == 0 ? "block-even" : "block-odd",
                 0,
-                // Change "- 0 - 6" to "+ 1 - 6" on the following line, and "+ 1 + 13" to "+2 + 13" on the line below, 
-                // in order to make the block backgrounds to have no gap between them
-                fromCoordsTop - (view.documentTop - view.documentPadding.top) - 1 - 6,
+                fromCoordsTop - 2,
                 null, // width is set to 100% in CSS
                 (toCoordsBottom - fromCoordsTop) + 15,
             ))
