@@ -5,7 +5,7 @@ import { WIDGET_TAG_REGEX } from "../image/image-parsing.js"
 export function searchTestFunction(onlyCurrentBlock, currentBlock) {
     return (from, to, buffer, bufferPos) => {
         //console.log("buffer:", buffer, bufferPos, "from:", from, "to:", to)
-        
+
         let localFrom = from - bufferPos, localTo = to - bufferPos
         const imageMatches = buffer.matchAll(WIDGET_TAG_REGEX)
         for (let match of imageMatches) {
@@ -13,7 +13,10 @@ export function searchTestFunction(onlyCurrentBlock, currentBlock) {
             
             // if bufferPos is undefined, it means that the searchTestFunction is used as argument for regexpTest and then 
             // we don't have the
-            if (localFrom < match[0].length || localTo < match.index) {
+            const tagFrom = match.index
+            const tagTo = match.index + match[0].length
+            
+            if (localFrom < tagTo && tagFrom < localTo) {
                 return false
             }
         }

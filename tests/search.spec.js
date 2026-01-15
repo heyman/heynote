@@ -38,6 +38,20 @@ test("basic search functionality", async ({ page }) => {
     await page.locator("body").press("Shift+F3")
 })
 
+test("search ignores img tags", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞text
+hello <∞img;id=11111111-1111-1111-1111-111111111111;file=https://example.com/hello.png;w=1200;h=630;dw=324;dh=170∞> world`)
+
+    // Open search panel
+    await page.locator("body").press(heynotePage.agnosticKey("Mod+f"))
+
+    // Search for "hello" (should match only the visible text, not the img tag)
+    await page.locator(".search-panel input[main-field]").fill("hello")
+
+    await expect(page.locator(".cm-searchMatch")).toHaveCount(1)
+})
+
 test("within current block setting", async ({ page }) => {
     // Create multi-block content
     await heynotePage.setContent(`
