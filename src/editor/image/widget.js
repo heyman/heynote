@@ -146,7 +146,8 @@ export class ImageWidget extends WidgetType {
                         //console.log("mouseleave")
                         endResize()
                     },
-                })
+                }),
+                EditorView.editorAttributes.of({class: "resizing-image"}),
             ])]})
         })
 
