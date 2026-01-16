@@ -35,7 +35,7 @@ import { deleteLine } from "./block/delete-line.js"
 import { formatBlockContent } from "./block/format-code.js"
 import { transposeChars } from "./block/transpose-chars.js"
 
-import { cutCommand, copyCommand, pasteCommand } from "./copy-paste.js"
+import { cutCommand, copyCommand, pasteCommand } from "./clipboard/copy-paste.js"
 
 import { markModeMoveCommand, toggleSelectionMarkMode, selectionMarkModeCancel } from "./mark-mode.js"
 import { insertDateAndTime } from "./date-time.js"

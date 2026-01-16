@@ -33,3 +33,15 @@ export const TITLE_BAR_BG_LIGHT = "#f3f2f2"
 export const TITLE_BAR_BG_LIGHT_BLURRED = "#e7e7e7"
 export const TITLE_BAR_BG_DARK = "#1b1c1d"
 export const TITLE_BAR_BG_DARK_BLURRED = "#121313"
+
+export const IMAGE_MIME_TYPES = [
+    "image/png",
+    "image/jpeg",
+    "image/gif",
+    "image/webp",
+    "image/svg+xml",
+    "image/apng",
+    "image/avif",
+    "image/bmp",
+    "image/tiff",
+]

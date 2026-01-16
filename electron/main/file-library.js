@@ -4,9 +4,10 @@ import { join, basename } from "path"
 
 import * as jetpack from "fs-jetpack";
 import { app, ipcMain, dialog } from "electron"
+import * as mimetypes from "mime-types"
 
 import CONFIG from "../config"
-import { SCRATCH_FILE_NAME } from "../../src/common/constants"
+import { SCRATCH_FILE_NAME, IMAGE_MIME_TYPES } from "../../src/common/constants"
 import { NoteFormat } from "../../src/common/note-format"
 import { isDev } from '../detect-platform';
 import { initialContent, initialDevContent } from '../initial-content'
@@ -14,6 +15,7 @@ import { initialContent, initialDevContent } from '../initial-content'
 export const NOTES_DIR_NAME = isDev ? "notes-dev" : "notes"
 
 
+/**@type {FileLibrary}*/
 let library
 
 const untildify = (pathWithTilde) => {
@@ -48,6 +50,7 @@ export class FileLibrary {
             throw new Error(`Path directory does not exist: ${basePath}`)
         }
         this.basePath = fs.realpathSync(basePath)
+        this.imagesBasePath = join(this.basePath, ".images")
         this.jetpack = jetpack.cwd(this.basePath)
         this.files = {};
         this.watcher = null;
@@ -196,6 +199,29 @@ export class FileLibrary {
             this._onWindowFocus = null
         }
     }
+
+    async saveImage({mime, data}) {
+        console.log("mime:", mime)
+        if (!IMAGE_MIME_TYPES.includes(mime)) {
+            return
+        }
+        const fileExtension = mimetypes.extension(mime)
+        const filename = (new Date()).toISOString() + fileExtension
+
+        const u8 = data instanceof Uint8Array ? data : new Uint8Array(data)
+        const buf = Buffer.from(u8)
+        //console.log("saveImage", filename, mime, buf.length)
+        await this.jetpack.writeAsync(join(this.imagesBasePath, filename), buf)
+        return filename
+    }
+
+    removeImage() {
+        
+    }
+
+    listImages() {
+
+    }
 }
 
 
@@ -316,6 +342,10 @@ export function setupFileLibraryEventHandlers() {
         }
         const filePath = result.filePaths[0]
         return filePath
+    })
+
+    ipcMain.handle("library:saveImage", async (event, blob) => {
+        return await library.saveImage(blob)
     })
 }
 

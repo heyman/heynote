@@ -7,14 +7,18 @@ export const WIDGET_TAG_REGEX_NON_GLOBAL = /<∞.*?∞>/
 
 const requiredParams = ["id", "file", "w", "h"]
 
+export function parseImages(state) {
+    const content = state.doc.sliceString(0, state.doc.length)
+    return parseImagesFromString(content)
+}
+
+
 /**
  * Parse img tags in the following format:
  * 
  * <∞img;id=2d45d5f5-f912-4a8b-817f-ab14a349e585;file=https://heynote.com/img/share.png;w=1200;h=630;dw=324;dh=170∞>
  */
-export function parseImages(state) {
-    const content = state.doc.sliceString(0, state.doc.length)
-
+export function parseImagesFromString(content) {
     let match
     const images = []
     while ((match = IMAGE_REGEX.exec(content)) !== null) {
@@ -60,7 +64,7 @@ export function parseImages(state) {
 }
 
 
-function createImageTag(image) {
+export function createImageTag(image) {
     const params = [
         "id=" + image.id,
         "file=" + image.file,
@@ -103,4 +107,3 @@ export function setImageDisplayDimensions(view, id, width, height) {
         }))
     }
 }
-
