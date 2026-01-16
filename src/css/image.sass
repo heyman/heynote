@@ -1,7 +1,10 @@
 .heynote-image
     //--outline-color: var(--highlight-color)
     //--outline-color: #b3bfcc
-    --outline-color: #17242b
+    //--outline-color: #17242b
+    --outline-color: #0060c7
+    //--outline-color: #549a70
+    --handle-color: #192736
     padding: 6px 2px
     display: inline-block
     position: relative
@@ -36,6 +39,7 @@
 
     
     &.selected
+        --handle-color: var(--outline-color)
         .inner
             //border: 2px solid var(--outline-color)
             .highlight-border
@@ -60,8 +64,8 @@
         position: absolute
         right: 2px
         bottom: 6px
-        border-bottom: 10px solid var(--outline-color)
-        border-right: 10px solid var(--outline-color)
+        border-bottom: 10px solid var(--handle-color)
+        border-right: 10px solid var(--handle-color)
         border-left: 10px solid transparent
         border-top: 10px solid transparent
         cursor: nwse-resize
@@ -74,3 +78,8 @@
             background-size: 100%
             width: 12px
             height: 12px
+    
+    &.resizing
+        .resize-handle
+            opacity: 1
+            transition: none

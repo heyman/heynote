@@ -18,6 +18,8 @@ export class ImageWidget extends WidgetType {
         this.displayHeight = displayHeight
         this.isFolded = isFolded
         this.domEventCompartment = domEventCompartment
+        this.idealWidth = this.width / window.devicePixelRatio
+        this.idealHeight = this.height / window.devicePixelRatio
     }
 
     eq(other) {
@@ -42,7 +44,7 @@ export class ImageWidget extends WidgetType {
         } else if (this.displayHeight) {
             height = this.displayHeight
         } else {
-            height = this.height / window.devicePixelRatio
+            height = this.idealHeight
         }
         return height + "px"
     }
@@ -54,7 +56,7 @@ export class ImageWidget extends WidgetType {
         } else if (this.displayWidth) {
             width = this.displayWidth
         } else {
-            width = this.width / window.devicePixelRatio
+            width = this.idealWidth
         }
         return width ? width + "px" : ""
     }
@@ -93,6 +95,7 @@ export class ImageWidget extends WidgetType {
         
 
         let initialWidth, initialHeight, initialX, initialY
+        let shouldSnap = true
         const onMousemove = (e) => {
             //console.log("mousemove", e)
             const aspect = this.width / this.height
@@ -103,12 +106,26 @@ export class ImageWidget extends WidgetType {
             const widthFromHeight = height * aspect
 
             if (heightFromWidth <= height) {
-                // width is the limiting factor
                 height = heightFromWidth
             } else {
-                // height is the limiting factor
                 width = widthFromHeight
             }
+
+            // snap to ideal dimensions
+            const SNAP_TOLERANCE = 10
+            if (shouldSnap) {
+                if (Math.abs(width - this.idealWidth) <= SNAP_TOLERANCE  || (Math.abs(height - this.idealHeight) <= 10)) {
+                    height = this.idealHeight
+                    width = this.idealWidth
+                }
+            } else {
+                // even if snapping is turned off from the beginning (because we start at the ideal dimensions)
+                // we want to enable snapping once we've passed the snap tolerance
+                if (Math.abs(width - this.idealWidth) > SNAP_TOLERANCE && Math.abs(height - this.idealHeight) > SNAP_TOLERANCE) {
+                    shouldSnap = true
+                }
+            }
+
 
             // clamp dimensions
             width = Math.max(width, 16)
@@ -124,6 +141,9 @@ export class ImageWidget extends WidgetType {
         const endResize = () => {
             view.dispatch({effects: [this.domEventCompartment.reconfigure([])]})
             setImageDisplayDimensions(view, this.id, img.width, img.height)
+            setTimeout(() => {
+                wrap.classList.remove("resizing")
+            }, 200)
         }
         resizeHandle.addEventListener("mousedown", (e) => {
             //console.log("mousedown", e)
@@ -132,6 +152,12 @@ export class ImageWidget extends WidgetType {
             initialHeight = img.getBoundingClientRect().height
             initialX = e.pageX
             initialY = e.pageY
+
+            // if we start the resize at ideal dimensions snapping should be turned off (initially)
+            shouldSnap = initialWidth !== this.idealWidth
+            //console.log("should snap?", shouldSnap, initialWidth, this.idealWidth)
+
+            wrap.classList.add("resizing")
             
             view.dispatch({effects: [this.domEventCompartment.reconfigure([
                 EditorView.domEventObservers({
@@ -164,5 +190,7 @@ export class ImageWidget extends WidgetType {
         return true
     }
 
-    ignoreEvent() { return false }
+    ignoreEvent(e) {
+        return false
+    }
 }
