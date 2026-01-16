@@ -194,7 +194,7 @@ const blockLayer = layer({
             const toPos = Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)
             const fromCoordsTop = view.lineBlockAt(fromPos)?.top
             const toLine = view.state.doc.lineAt(toPos)
-            const toLinePos = toLine.length === 0 ? toLine.from : Math.max(fromPos, Math.min(toPos - 1, block.content.to - 1))
+            const toLinePos = toLine.length === 0 ? toLine.from : Math.max(fromPos, Math.min(toPos, block.content.to))
             let toCoordsBottom = view.lineBlockAt(toLinePos)?.bottom
             if (idx === blocks.length - 1) {
                 // Calculate how much extra height we need to add to the last block
