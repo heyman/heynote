@@ -1,6 +1,5 @@
 import { heynoteEvent, IMAGE_RESIZE } from "../annotation.js"
-
-export const IMAGE_REGEX = /<∞img;([^∞>]*)∞>/g
+import { IMAGE_REGEX } from "@/src/common/constants.js"
 
 export const WIDGET_TAG_REGEX = /<∞.*?∞>/g
 export const WIDGET_TAG_REGEX_NON_GLOBAL = /<∞.*?∞>/

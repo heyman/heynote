@@ -45,3 +45,6 @@ export const IMAGE_MIME_TYPES = [
     "image/bmp",
     "image/tiff",
 ]
+
+export const IMAGE_REGEX = /<∞img;([^∞>]*)∞>/g
+export const IMAGE_REGEX_RIPGREP = "<∞img;([^∞>]*)∞>"

@@ -86,6 +86,7 @@
   },
   "dependencies": {
     "@sindresorhus/slugify": "^2.2.1",
+    "@vscode/ripgrep": "^1.17.0",
     "electron-log": "^5.0.1",
     "fuzzysort": "^3.0.2",
     "mime-types": "^3.0.2",

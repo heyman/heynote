@@ -11,6 +11,7 @@ import { SCRATCH_FILE_NAME, IMAGE_MIME_TYPES } from "../../src/common/constants"
 import { NoteFormat } from "../../src/common/note-format"
 import { isDev } from '../detect-platform';
 import { initialContent, initialDevContent } from '../initial-content'
+import { searchLibrary, getImgReferences } from "./ripgrep.js"
 
 export const NOTES_DIR_NAME = isDev ? "notes-dev" : "notes"
 
@@ -62,6 +63,9 @@ export class FileLibrary {
         if (!this.jetpack.exists(SCRATCH_FILE_NAME)) {
             this.jetpack.write(SCRATCH_FILE_NAME, isDev ? initialDevContent : initialContent)
         }
+
+        // garbage collect stale images
+        this.removeUnreferencedImages()
     }
 
     async exists(path) {
@@ -222,8 +226,49 @@ export class FileLibrary {
     listImages() {
 
     }
-}
 
+    async removeUnreferencedImages() {
+        if (!jetpack.exists(this.imagesBasePath)) {
+            console.log(`${this.imagesBasePath} does not exist, so no cleanup needed`)
+            return
+        }
+
+        let referencedImages
+        try {
+            referencedImages = await getImgReferences(this.basePath)
+        } catch (err) {
+            console.error(err)
+        }
+
+        if (referencedImages.length === 0) {
+            console.log(`No referenced images found, so as a precaution, we won't do any removal of unreferenced images`)
+            return
+        }
+        
+        const jp = jetpack.cwd(this.imagesBasePath)
+        const files = await jp.findAsync("", {
+            matching: "*",
+            recursive: false,
+        })
+        const filesToDelete = []
+        for (const filename of files) {
+            if (referencedImages.includes(filename)) {
+                //console.log("File is referenced, skipping:", filename)
+                continue
+            }
+            const fileInfo = await jp.inspectAsync(filename, {times: true})
+            if ((new Date() - fileInfo.birthTime) > 1000 * 3600 * 24) {
+                //console.log("deleting file:", filename)
+                filesToDelete.push(filename)
+            }
+        }
+
+        for (const filename of filesToDelete) {
+            await jp.removeAsync(filename)
+        }   
+        console.log(`Removed ${filesToDelete.length} unreferenced image files`)
+    }
+}
 
 
 export class NoteBuffer {
