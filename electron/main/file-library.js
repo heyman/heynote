@@ -206,7 +206,7 @@ export class FileLibrary {
             return
         }
         const fileExtension = mimetypes.extension(mime)
-        const filename = (new Date()).toISOString() + fileExtension
+        const filename = (new Date()).toISOString() + "." + fileExtension
 
         const u8 = data instanceof Uint8Array ? data : new Uint8Array(data)
         const buf = Buffer.from(u8)
