@@ -233,7 +233,7 @@ export class FileLibrary {
             return
         }
 
-        let referencedImages
+        let referencedImages = []
         try {
             referencedImages = await getImgReferences(this.basePath)
         } catch (err) {
@@ -254,7 +254,10 @@ export class FileLibrary {
                 continue
             }
             const fileInfo = await jp.inspectAsync(filename, {times: true})
-            if ((new Date() - fileInfo.birthTime) > 1000 * 3600 * 24) {
+            if (!fileInfo || !fileInfo.modifyTime) {
+                continue
+            }
+            if ((new Date() - fileInfo.modifyTime) > 1000 * 3600 * 24) {
                 //console.log("deleting file:", filename)
                 filesToDelete.push(filename)
             }
