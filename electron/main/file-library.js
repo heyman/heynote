@@ -239,21 +239,18 @@ export class FileLibrary {
         } catch (err) {
             console.error(err)
         }
-
-        if (referencedImages.length === 0) {
-            console.log(`No referenced images found, so as a precaution, we won't do any removal of unreferenced images`)
-            return
-        }
         
         const jp = jetpack.cwd(this.imagesBasePath)
         const files = await jp.findAsync("", {
             matching: "*",
             recursive: false,
         })
+        let referencedImageFound = false
         const filesToDelete = []
         for (const filename of files) {
             if (referencedImages.includes(filename)) {
                 //console.log("File is referenced, skipping:", filename)
+                referencedImageFound = true
                 continue
             }
             const fileInfo = await jp.inspectAsync(filename, {times: true})
@@ -261,6 +258,11 @@ export class FileLibrary {
                 //console.log("deleting file:", filename)
                 filesToDelete.push(filename)
             }
+        }
+
+        if (!referencedImageFound) {
+            console.log(`No referenced images found, so as a precaution, we won't do any removal of unreferenced images`)
+            return
         }
 
         for (const filename of filesToDelete) {
