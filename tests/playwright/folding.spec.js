@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { HeynotePage } from "./test-utils.js";
-import { NoteFormat } from "../src/common/note-format.js";
+import { NoteFormat } from "@/src/common/note-format.js";
 import { formatDate, formatFullDate } from "@/src/common/format-date.js"
 
 export const delimiterRegex = /\n∞∞∞[a-z]+(-a)?(?:;[^\\n]+)*\n/
