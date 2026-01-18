@@ -29,6 +29,7 @@
     "webapp:build": "vite build webapp",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
+    "test:main": "vitest",
     "postinstall": "patch-package"
   },
   "devDependencies": {
@@ -80,6 +81,7 @@
     "vite": "^6.3.5",
     "vite-plugin-electron": "^0.11.1",
     "vite-plugin-electron-renderer": "^0.11.4",
+    "vitest": "^2.1.9",
     "vue": "^3.5.13",
     "vue-tsc": "^2.2.10",
     "vuedraggable": "^4.1.0"
