@@ -11,7 +11,7 @@ import { SCRATCH_FILE_NAME, IMAGE_MIME_TYPES } from "../../src/common/constants"
 import { NoteFormat } from "../../src/common/note-format"
 import { isDev } from '../detect-platform';
 import { initialContent, initialDevContent } from '../initial-content'
-import { searchLibrary, getImgReferences } from "./ripgrep.js"
+import { getImgReferences } from "./ripgrep.js"
 
 export const NOTES_DIR_NAME = isDev ? "notes-dev" : "notes"
 
