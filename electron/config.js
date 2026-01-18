@@ -1,5 +1,12 @@
+import { app } from "electron"
 import Store from "electron-store"
 import { isMac } from "./detect-platform"
+
+// the process.type === "browser" check is needed because both the main and renderer process 
+// imports this file, and app is not available in the renderer process
+if (process.env.HEYNOTE_TEST_USER_DATA_DIR && process.type === "browser") {
+    app.setPath("userData", process.env.HEYNOTE_TEST_USER_DATA_DIR)
+}
 
 const isDev = !!process.env.VITE_DEV_SERVER_URL
 
