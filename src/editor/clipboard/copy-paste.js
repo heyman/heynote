@@ -242,5 +242,32 @@ export async function copyImage(url) {
     if (!blob.type.startsWith("image/")) {
         throw new Error(`Not an image content type. Got: ${contentType}`)
     }
-    await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
+    if (ClipboardItem.supports(blob.type)) {
+        await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
+    } else {
+        // convert image to PNG through a canvas
+        const img = new Image()
+        const blobUrl = URL.createObjectURL(blob)
+        const pngBlob = await new Promise((resolve, reject) => {
+            img.onload = () => {
+                const canvas = document.createElement("canvas")
+                canvas.width = img.naturalWidth
+                canvas.height = img.naturalHeight
+                const ctx = canvas.getContext("2d")
+                ctx.drawImage(img, 0, 0)
+                canvas.toBlob((result) => {
+                    if (result) {
+                        resolve(result)
+                    } else {
+                        reject(new Error("Failed to convert image to PNG"))
+                    }
+                }, "image/png")
+            }
+            img.onerror = () => reject(new Error("Failed to decode image"))
+            img.src = blobUrl
+        }).finally(() => {
+            URL.revokeObjectURL(blobUrl)
+        })
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": pngBlob })])
+    }
 }
