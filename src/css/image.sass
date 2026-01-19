@@ -23,6 +23,8 @@
         border: 1px solid #252525
         &:hover
             //border: 1px solid var(--outline-color)
+            .buttons-container
+                opacity: 1
         img
             display: block
             max-width: 100%
@@ -36,6 +38,44 @@
             left: -2px
             right: -2px
             border: 3px solid var(--outline-color)
+        .buttons-container
+            position: absolute
+            top: 0
+            left: 0
+            bottom: 0
+            right: 0
+            display: flex
+            padding: 7px
+            align-items: flex-start
+            justify-content: left
+            opacity: 0
+            //transition: opacity 100ms ease-in-out
+            overflow: hidden
+            container-type: inline-size
+            button
+                font-size: 12px
+                background-color: #646e71
+                opacity: 0.5
+                transition: opacity 200ms
+                //background-color: #51595c
+                background-image: url("@/assets/icons/copy-dark.svg")
+                background-size: 13px
+                background-position: 6px center
+                background-repeat: no-repeat
+                padding: 3px 7px 3px 22px
+                border: none
+                border-radius: 3px
+                cursor: pointer
+                box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3)
+                min-width: 0
+                white-space: nowrap
+                overflow: hidden
+                &:hover
+                    background-color: #51595c
+                    opacity: 1.0
+                @container (max-width: 50px)
+                    display: none
+                
 
     
     &.selected
@@ -80,6 +120,11 @@
             height: 12px
     
     &.resizing
+        .inner .buttons-container
+            display: none
         .resize-handle
             opacity: 1
             transition: none
+        &.snapped
+            --outline-color: #39a363
+

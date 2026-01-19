@@ -221,3 +221,17 @@ export async function pasteCommand(/** @type {EditorView} */view) {
 
     return doPaste(view, await navigator.clipboard.readText())
 }
+
+
+export async function copyImage(url) {
+    const res = await fetch(url, { mode: "cors" })
+    if (!res.ok) {
+        throw new Error(`Fetch failed: ${res.status}`)
+    }
+    const blob = await res.blob()
+
+    if (!blob.type.startsWith("image/")) {
+        throw new Error(`Not an image content type. Got: ${contentType}`)
+    }
+    await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
+}

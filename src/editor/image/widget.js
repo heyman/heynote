@@ -2,6 +2,7 @@ import { EditorView } from "@codemirror/view"
 import { WidgetType } from "@codemirror/view"
 import { doc } from "prettier"
 
+import { copyImage } from "../clipboard/copy-paste.js"
 import { setImageDisplayDimensions } from "./image-parsing.js"
 
 const FOLDED_HEIGHT = 16
@@ -64,6 +65,9 @@ export class ImageWidget extends WidgetType {
     toDOM(view) {
         //console.log("toDOM", this.selected, this.height)
         let wrap = document.createElement("div")
+        wrap.dataset.id = this.id
+        wrap.dataset.idealWidth = this.idealWidth
+        wrap.dataset.idealHeight = this.idealHeight
         //wrap.setAttribute("aria-hidden", "true")
         wrap.className = this.getClassName()
 
@@ -83,14 +87,30 @@ export class ImageWidget extends WidgetType {
         const highlightBorder = document.createElement("div")
         highlightBorder.className = "highlight-border"
         inner.appendChild(highlightBorder)
+
+        const buttonsContainer = document.createElement("div")
+        buttonsContainer.className = "buttons-container"
+        inner.appendChild(buttonsContainer)
+        const copyButton = document.createElement("button")
+        copyButton.innerHTML = "Copy"
+        buttonsContainer.appendChild(copyButton)
+        copyButton.addEventListener("mousedown", (event) => {
+            event.preventDefault()
+        })
+        copyButton.addEventListener("click", async (event) => {
+            event.preventDefault()
+            await copyImage(img.src)
+            copyButton.innerText = "Copied!"
+            setTimeout(() => {
+                copyButton.innerText = "Copy"
+            }, 2000)
+        })
         
         
         let img = document.createElement("img")
         img.src = this.path
         img.style.height = this.getHeight(img)
         img.style.width = this.getWidth(img)
-        //img.style.maxWidth = "100%"
-        //img.tabIndex = -1
         inner.appendChild(img)
         
 
@@ -98,7 +118,10 @@ export class ImageWidget extends WidgetType {
         let shouldSnap = true
         const onMousemove = (e) => {
             //console.log("mousemove", e)
-            const aspect = this.width / this.height
+            const idealWidth = parseFloat(wrap.dataset.idealWidth)
+            const idealHeight = parseFloat(wrap.dataset.idealHeight)
+
+            const aspect = idealWidth / idealHeight
             let width = initialWidth + (e.pageX - initialX)
             let height = initialHeight + (e.pageY - initialY)
 
@@ -114,18 +137,20 @@ export class ImageWidget extends WidgetType {
             // snap to ideal dimensions
             const SNAP_TOLERANCE = 10
             if (shouldSnap) {
-                if (Math.abs(width - this.idealWidth) <= SNAP_TOLERANCE  || (Math.abs(height - this.idealHeight) <= 10)) {
-                    height = this.idealHeight
-                    width = this.idealWidth
+                if (Math.abs(width - idealWidth) <= SNAP_TOLERANCE  || (Math.abs(height - idealHeight) <= 10)) {
+                    height = idealHeight
+                    width = idealWidth
+                    wrap.classList.add("snapped")
+                } else if (wrap.classList.contains("snapped")) {
+                    wrap.classList.remove("snapped")
                 }
             } else {
                 // even if snapping is turned off from the beginning (because we start at the ideal dimensions)
                 // we want to enable snapping once we've passed the snap tolerance
-                if (Math.abs(width - this.idealWidth) > SNAP_TOLERANCE && Math.abs(height - this.idealHeight) > SNAP_TOLERANCE) {
+                if (Math.abs(width - idealWidth) > SNAP_TOLERANCE && Math.abs(height - idealHeight) > SNAP_TOLERANCE) {
                     shouldSnap = true
                 }
             }
-
 
             // clamp dimensions
             width = Math.max(width, 16)
@@ -140,7 +165,7 @@ export class ImageWidget extends WidgetType {
         }
         const endResize = () => {
             view.dispatch({effects: [this.domEventCompartment.reconfigure([])]})
-            setImageDisplayDimensions(view, this.id, img.width, img.height)
+            setImageDisplayDimensions(view, wrap.dataset.id, img.width, img.height)
             setTimeout(() => {
                 wrap.classList.remove("resizing")
             }, 200)
@@ -181,6 +206,9 @@ export class ImageWidget extends WidgetType {
     }
 
     updateDOM(dom, view) {
+        dom.dataset.id = this.id
+        dom.dataset.idealWidth = this.idealWidth
+        dom.dataset.idealHeight = this.idealHeight
         //console.log("updateDOM:", dom, this.selected, this.height)
         dom.className = this.getClassName()
         const img = dom.querySelector("img")
