@@ -47,6 +47,20 @@ async function dirExists(path) {
     }
 }
 
+async function removeDirWithRetry(dirPath, retries = 5) {
+    for (let attempt = 0; attempt <= retries; attempt += 1) {
+        try {
+            await fs.rm(dirPath, { recursive: true, force: true })
+            return
+        } catch (err) {
+            if (err.code !== "ENOTEMPTY" || attempt === retries) {
+                throw err
+            }
+            await new Promise((resolve) => setTimeout(resolve, 100 * (attempt + 1)))
+        }
+    }
+}
+
 
 test.describe('electron app', { tag: "@e2e" }, () => {
     test.skip(({ browserName }) => browserName !== 'chromium', 'Electron runs only once under chromium')
@@ -82,10 +96,10 @@ test.describe('electron app', { tag: "@e2e" }, () => {
     })
     test.afterEach(async ({ page }) => {
         if (electronApp) {
-            electronApp.close()
+            await electronApp.close()
         }
         if (await dirExists(tmpRoot)) {
-            await fs.rm(tmpRoot, { recursive: true, force: true })
+            await removeDirWithRetry(tmpRoot)
         }
     })
 
