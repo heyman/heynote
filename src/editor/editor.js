@@ -18,6 +18,7 @@ import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, deleteBlock, selec
 import { formatBlockContent } from "./block/format-code.js"
 import { getKeymapExtensions } from "./keymap.js"
 import { heynoteCopyCut } from "./clipboard/copy-paste.js"
+import { heynoteDropPaste } from "./clipboard/drag-drop.js"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 import { imageExtension } from "./image/image.js"
@@ -94,6 +95,7 @@ export class HeynoteEditor {
             extensions: [
                 this.keymapCompartment.of(getKeymapExtensions(this, keymap, keyBindings)),
                 heynoteCopyCut(this),
+                heynoteDropPaste(),
 
                 //minimalSetup,
                 this.lineNumberCompartment.of(showLineNumberGutter ? blockLineNumbers : []),
