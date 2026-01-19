@@ -20,7 +20,6 @@ async function ensureElectronBuild() {
             stdio: 'inherit',
             env: {
                 ...process.env,
-                HEYNOTE_SKIP_DIST_ELECTRON_CLEAN: '1',
             },
         })
         child.on('error', reject)
@@ -45,7 +44,7 @@ test.describe('electron app', () => {
         await fs.mkdir(userDataDir)
 
         const electronApp = await electron.launch({
-            args: ['tests/playwright/electron-runner.cjs'],
+            args: ['--no-sandbox', 'tests/playwright/electron-runner.cjs'],
             env: {
                 ...process.env,
                 HEYNOTE_TEST_USER_DATA_DIR: userDataDir,
