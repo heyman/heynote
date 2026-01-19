@@ -64,6 +64,7 @@ async function removeDirWithRetry(dirPath, retries = 5) {
 
 
 test.describe('electron app', { tag: "@e2e" }, () => {
+    test.describe.configure({ mode: 'serial' });
     test.skip(({ browserName }) => browserName !== 'chromium', 'Electron runs only once under chromium')
 
     /**@type{HeynotePage}*/
