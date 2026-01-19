@@ -27,7 +27,8 @@
     "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",
     "webapp:dev": "vite webapp",
     "webapp:build": "vite build webapp",
-    "test": "playwright test",
+    "test": "playwright test --grep-invert @e2e",
+    "test:e2e": "playwright test --grep @e2e",
     "test:ui": "playwright test --ui",
     "test:main": "vitest",
     "postinstall": "patch-package"

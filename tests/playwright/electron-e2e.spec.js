@@ -33,7 +33,7 @@ async function ensureElectronBuild() {
     })
 }
 
-test.describe('electron app', () => {
+test.describe('electron app', {tag:"@e2e"}, () => {
     test.skip(({ browserName }) => browserName !== 'chromium', 'Electron runs only once under chromium')
 
     test('uses temp user data and notes library', async () => {
