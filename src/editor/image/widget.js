@@ -155,8 +155,8 @@ export class ImageWidget extends WidgetType {
             // clamp dimensions
             width = Math.max(width, 16)
             height = width / aspect
-            if (height < 16) {
-                height = 16
+            if (height < 17) {
+                height = 17
                 width = height * aspect
             }
 
