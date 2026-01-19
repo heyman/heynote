@@ -102,3 +102,49 @@ test("delete middle image then resize last image on the same row", async () => {
         return Boolean(lastImage?.displayWidth && lastImage?.displayHeight);
     }).toBeTruthy();
 });
+
+test("copy shortcut copies image data when cursor is after image", async () => {
+    const tag = "<∞img;id=img-copy;file=https://example.com/test.png;w=200;h=200∞>";
+    const content = buildContent(tag);
+
+    await heynotePage.setContent(content);
+
+    await heynotePage.page.evaluate(() => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 200;
+        canvas.height = 200;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#1e90ff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+            window.__testImageBlob = blob;
+        }, "image/png");
+
+        const originalFetch = window.fetch.bind(window);
+        window.fetch = async (input, init) => {
+            if (window.__testImageBlob) {
+                return new Response(window.__testImageBlob, {
+                    status: 200,
+                    headers: { "Content-Type": "image/png" },
+                });
+            }
+            return originalFetch(input, init);
+        };
+
+        window.__clipboardWriteTypes = [];
+        navigator.clipboard.write = async (items) => {
+            window.__clipboardWriteTypes = items.flatMap((item) => item.types);
+        };
+    });
+
+    await expect(heynotePage.page.locator(".heynote-image")).toHaveCount(1);
+    await heynotePage.page.locator(".cm-editor").click();
+
+    const tagEnd = content.indexOf(tag) + tag.length;
+    await heynotePage.setCursorPosition(tagEnd);
+    await heynotePage.page.locator("body").press(heynotePage.agnosticKey("Mod+C"));
+
+    await expect.poll(async () => {
+        return await heynotePage.page.evaluate(() => window.__clipboardWriteTypes);
+    }).toContain("image/png");
+});

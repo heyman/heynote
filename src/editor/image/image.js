@@ -152,7 +152,7 @@ export const imageExtension = () => {
 }
 
 
-const imageIsSelected = (image, selection) => {
+export const imageIsSelected = (image, selection) => {
     //return selection.from === image.from && selection.to === image.to
 
     return selection.from === selection.to && (selection.from === image.from || selection.from === image.to)

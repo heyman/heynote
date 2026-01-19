@@ -3,7 +3,8 @@ import { EditorView } from "@codemirror/view"
 
 import { IMAGE_MIME_TYPES } from "../../common/constants.js"
 
-import { createImageTag } from "../image/image-parsing.js"
+import { createImageTag, parseImages  } from "../image/image-parsing.js"
+import { imageIsSelected } from "../image/image.js"
 import { serializeToText, serializeToHeynote, serializeToHtml, unserializeFromHeynote } from "./serialize.js"
 
 
@@ -114,7 +115,15 @@ function doPaste(view, input) {
  * @returns CodeMirror command that copies the current selection to the clipboard
  */
 export function copyCommand(editor) {
-    return (view) => copyCut(view, false, editor)
+    return (view) => {
+        for (const image of parseImages(view.state)) {
+            if (imageIsSelected(image, view.state.selection.main)) {
+                copyImage(image.file)
+                return true
+            }
+        }
+        return copyCut(view, false, editor)
+    }
 }
 
 /**
