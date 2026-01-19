@@ -1,10 +1,19 @@
+@use "include" as *
+
 .heynote-image
-    //--outline-color: var(--highlight-color)
-    //--outline-color: #b3bfcc
-    //--outline-color: #17242b
-    --outline-color: #0060c7
-    //--outline-color: #549a70
-    --handle-color: #192736
+    --snapped-outline-color: var(--highlight-color)
+    --outline-color: #2482ce
+    --handle-color: #ccc
+    --image-border-color: #c9c9c9
+    +dark-mode
+        //--outline-color: var(--highlight-color)
+        //--outline-color: #b3bfcc
+        //--outline-color: #17242b
+        --outline-color: #0060c7
+        --snapped-outline-color: #39a363
+        //--outline-color: #549a70
+        --handle-color: #192736
+        --image-border-color: #252525
     padding: 6px 2px
     display: inline-block
     position: relative
@@ -20,7 +29,7 @@
     
     .inner
         position: relative
-        border: 1px solid #252525
+        border: 1px solid var(--image-border-color)
         &:hover
             //border: 1px solid var(--outline-color)
             .buttons-container
@@ -55,6 +64,7 @@
             button
                 font-size: 12px
                 background-color: #646e71
+                color: #fff
                 opacity: 0.5
                 transition: opacity 200ms
                 //background-color: #51595c
@@ -80,12 +90,16 @@
     
     &.selected
         --handle-color: var(--outline-color)
+        +dark-mode
+            --handle-color: var(--outline-color)
         .inner
             //border: 2px solid var(--outline-color)
             .highlight-border
                 display: block
         .resize-handle
             opacity: 1.0
+            .icon
+                background-image: url("@/assets/icons/resize-handle-se-dark.png")
         &:hover
             .resize-handle
                 opacity: 1.0
@@ -114,10 +128,12 @@
             position: absolute
             top: -4px
             left: -4px
-            background: url("@/assets/icons/resize-handle-se-dark.png")
+            background-image: url("@/assets/icons/resize-handle-se-light.png")
             background-size: 100%
             width: 12px
             height: 12px
+            +dark-mode
+                background-image: url("@/assets/icons/resize-handle-se-dark.png")
     
     &.resizing
         .inner .buttons-container
@@ -126,5 +142,5 @@
             opacity: 1
             transition: none
         &.snapped
-            --outline-color: #39a363
+            --outline-color: var(--snapped-outline-color)
 

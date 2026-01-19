@@ -156,6 +156,7 @@ const imageIsSelected = (image, selection) => {
     //return selection.from === image.from && selection.to === image.to
 
     return selection.from === selection.to && (selection.from === image.from || selection.from === image.to)
+    //return selection.from === selection.to && selection.from === image.to
     //return selection.from === selection.to && ((selection.assoc === 1 && selection.from === image.from) || (selection.assoc <= 0 && selection.from === image.to))
 
     //if (selection.main.assoc === 1) {
