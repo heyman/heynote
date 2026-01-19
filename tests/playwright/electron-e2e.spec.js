@@ -6,6 +6,7 @@ import { spawn } from 'node:child_process'
 import { FileLibrary } from '../../electron/main/file-library'
 
 import { HeynotePage } from "./test-utils.js"
+import { parseImagesFromString } from "../../src/editor/image/image-parsing.js"
 
 
 async function ensureElectronBuild() {
@@ -138,5 +139,67 @@ test.describe('electron app', { tag: "@e2e" }, () => {
         const library = new FileLibrary(path.join(userDataDir, 'notes'))
         const bufferContent = await library.load("scratch.txt")
         expect(bufferContent.endsWith("Hello World!")).toBeTruthy()
+    })
+
+    test('pastes image data, stores it, and copy button writes image to clipboard', async () => {
+        await expect.poll(async () => (await heynotePage.getBlocks()).length).toBeGreaterThan(0)
+
+        await page.evaluate(async () => {
+            const canvas = document.createElement("canvas")
+            canvas.width = 300
+            canvas.height = 300
+            const ctx = canvas.getContext("2d")
+            ctx.fillStyle = "#1e90ff"
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            const blob = await new Promise((resolve) =>
+                canvas.toBlob(resolve, "image/png")
+            )
+            const item = new ClipboardItem({ [blob.type]: blob })
+
+            window.__testClipboardItems = [item]
+            window.__clipboardWriteItems = []
+
+            navigator.clipboard.read = async () => window.__testClipboardItems
+            navigator.clipboard.write = async (items) => {
+                window.__clipboardWriteItems = items
+            }
+        })
+
+        await page.locator("body").press(heynotePage.agnosticKey("Mod+V"))
+
+        await expect.poll(async () => {
+            const content = await heynotePage.getContent()
+            return parseImagesFromString(content)
+        }).not.toHaveLength(0)
+
+        await expect(page.locator(".heynote-image")).toHaveCount(1)
+
+        const content = await heynotePage.getContent()
+        const images = parseImagesFromString(content)
+        expect(images).toHaveLength(1)
+        expect(images[0].file.startsWith("heynote-file://image/")).toBe(true)
+
+        const encodedName = images[0].file.replace("heynote-file://image/", "")
+        const filename = decodeURIComponent(encodedName)
+        const storedPath = path.join(userDataDir, "notes", ".images", filename)
+
+        await expect.poll(async () => {
+            return await fs.stat(storedPath).then((stat) => stat.size > 0).catch(() => false)
+        }).toBe(true)
+        //await page.waitForTimeout(100000)
+        await page.evaluate(() => {
+            const button = document.querySelector(".heynote-image .buttons-container button")
+            if (!button) {
+                throw new Error("Copy button not found")
+            }
+            button.click()
+        })
+
+        await expect.poll(async () => {
+            const types = await page.evaluate(() => {
+                return (window.__clipboardWriteItems || []).flatMap((item) => item.types)
+            })
+            return types.some((type) => type.startsWith("image/"))
+        }).toBe(true)
     })
 })
