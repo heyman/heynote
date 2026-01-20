@@ -3,8 +3,8 @@ import { EditorView } from "@codemirror/view"
 
 import { IMAGE_MIME_TYPES } from "../../common/constants.js"
 
-import { createImageTag, parseImages  } from "../image/image-parsing.js"
-import { imageIsSelected } from "../image/image.js"
+import { createImageTag  } from "../image/image-parsing.js"
+import { imageIsSelected, imageState } from "../image/image.js"
 import { serializeToText, serializeToHeynote, serializeToHtml, unserializeFromHeynote } from "./serialize.js"
 
 
@@ -116,7 +116,7 @@ function doPaste(view, input) {
  */
 export function copyCommand(editor) {
     return (view) => {
-        for (const image of parseImages(view.state)) {
+        for (const image of view.state.field(imageState)) {
             if (imageIsSelected(image, view.state.selection.main)) {
                 copyImage(image.file)
                 return true
