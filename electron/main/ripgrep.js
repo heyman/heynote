@@ -8,14 +8,14 @@ import { parseImagesFromString } from "@/src/editor/image/image-parsing.js"
 
 
 // If @vscode/ripgrep is in an .asar file, then the binary is unpacked.
-//const rgDiskPath = rgPath.replace(/\bnode_modules\.asar\b/, 'node_modules.asar.unpacked');
+const rgDiskPath = rgPath.replace(/app\.asar/, "app.asar.unpacked")
 
 
 export async function runRipgrep(args, cwd, onLine) {
     //console.log("cwd:", process.cwd(), "args:", args)
     let stdout = ""
     let stderr = ""
-    const rg = spawn(rgPath, args, {stdio: ["ignore", "pipe", "pipe"], cwd:cwd})
+    const rg = spawn(rgDiskPath, args, {stdio: ["ignore", "pipe", "pipe"], cwd:cwd})
     rg.stdout.setEncoding("utf8")
     rg.stderr.setEncoding("utf8")
     const rl = readline.createInterface({ input: rg.stdout })
@@ -38,7 +38,7 @@ export async function runRipgrep(args, cwd, onLine) {
     const [code, signal] = await once(rg, "close")
     // ripgrep exits with code 1 if there were not hits
     if (code !== 0 && code !== 1) {
-        const err = new Error(`Command failed: ${rgPath}}`)
+        const err = new Error(`Command failed: ${rgDiskPath}}`)
         err.code = code
         err.signal = signal
         err.stdout = stdout
