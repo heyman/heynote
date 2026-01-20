@@ -1,7 +1,7 @@
 import { EditorView, Decoration } from "@codemirror/view"
 import { ViewPlugin } from "@codemirror/view"
 import { EditorState, EditorSelection, SelectionRange, StateField, RangeSet, RangeSetBuilder, Compartment } from "@codemirror/state"
-import { foldState } from "@codemirror/language"
+import { foldState } from "@codemirror/language"
 
 import { transactionHasFoldEffect } from "../annotation.js"
 import { ImageWidget } from "./widget.js"
@@ -24,7 +24,7 @@ export const imageState = StateField.define({
 
 function atomicRanges(view) {
     let builder = new RangeSetBuilder()
-    view.state.facet(imageState).forEach(image => {
+    view.state.field(imageState).forEach(image => {
         builder.add(
             image.from-0,
             image.to+0,
@@ -67,7 +67,7 @@ export const imageExtension = () => {
         })
 
         let foundSelectedImage = false
-        state.facet(imageState).forEach(image => {
+        state.field(imageState).forEach(image => {
             // If a fold starts immediately after an image, it means the image is on the first line of a folded block
             // and in this case we want to render a folded image
             let isFolded = foldStarts.has(image.to)
