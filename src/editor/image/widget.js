@@ -1,6 +1,5 @@
 import { EditorView } from "@codemirror/view"
 import { WidgetType } from "@codemirror/view"
-import { doc } from "prettier"
 
 import { copyImage } from "../clipboard/copy-paste.js"
 import { setImageDisplayDimensions } from "./image-parsing.js"
