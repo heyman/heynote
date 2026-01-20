@@ -36,7 +36,8 @@ export async function runRipgrep(args, cwd, onLine) {
         stderr += d
     })
     const [code, signal] = await once(rg, "close")
-    if (code !== 0) {
+    // ripgrep exits with code 1 if there were not hits
+    if (code !== 0 && code !== 1) {
         const err = new Error(`Command failed: ${rgPath}}`)
         err.code = code
         err.signal = signal
