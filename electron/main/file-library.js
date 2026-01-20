@@ -205,12 +205,11 @@ export class FileLibrary {
     }
 
     async saveImage({mime, data}) {
-        console.log("mime:", mime)
         if (!IMAGE_MIME_TYPES.includes(mime)) {
             return
         }
         const fileExtension = mimetypes.extension(mime)
-        const filename = (new Date()).toISOString() + "." + fileExtension
+        const filename = (new Date()).toISOString().replace(/:/g, ".") + "." + fileExtension
 
         const u8 = data instanceof Uint8Array ? data : new Uint8Array(data)
         const buf = Buffer.from(u8)
