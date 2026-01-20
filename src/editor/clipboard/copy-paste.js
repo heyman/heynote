@@ -240,7 +240,7 @@ export async function copyImage(url) {
     const blob = await res.blob()
 
     if (!blob.type.startsWith("image/")) {
-        throw new Error(`Not an image content type. Got: ${contentType}`)
+        throw new Error(`Not an image content type. Got: ${blob.type}`)
     }
     if (ClipboardItem.supports(blob.type)) {
         await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
