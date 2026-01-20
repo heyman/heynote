@@ -17,6 +17,7 @@ export function searchTestFunction(onlyCurrentBlock, currentBlock) {
             const tagTo = match.index + match[0].length
             
             if (localFrom < tagTo && tagFrom < localTo) {
+                WIDGET_TAG_REGEX.lastIndex = 0
                 return false
             }
         }
