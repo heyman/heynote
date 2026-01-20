@@ -149,7 +149,7 @@ When using a file synching service that support "offloading" of files in the clo
 As always, backup things that are important.
 
 
-### Spellchecking
+## Spellchecking
 
 Spellchecking can be toggled on or off by clicking the spellchecking icon in the status bar. Right-clicking the icon on Windows and Linux allows you to select the active dictionaries (on Mac, the default OS dictionary is used).  
 
@@ -192,4 +192,3 @@ registerShortcut('toggleHeynote', 'Toggle Heynote', 'Ctrl+Shift+H', toggleHeynot
 See the [KWin scripting tutorial](https://develop.kde.org/docs/plasma/kwin/) for instructions on how to install the script.
 
 Remember to enable the script in the KDE System Settings. It may also be necessary to go into the KDE System Settings and bind the "Toggle Heynote" key manually.
-
