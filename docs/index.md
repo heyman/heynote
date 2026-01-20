@@ -12,6 +12,7 @@ Available for Mac, Windows, and Linux.
 
 -   Persistent text buffer(s)
 -   Block-based
+-   Inline images
 -   Multiple buffers in tabs
 -   Math/Calculator mode
 -   Currency conversion
@@ -139,6 +140,10 @@ The notes library is a directory (with sub dirs) on the disk with a `.txt` file 
 -   Linux: `~/.config/Heynote/notes/`
 
 You can change the path of the notes library in the settings. Heynote expects reasonably fast disk access to the notes library, so it's not recommended to use a network drive, though file syncing services like Dropbox, OneDrive, etc. should work (see below).
+
+### Image storage
+
+Images are stored alongside your notes in a hidden `.images` folder inside the notes library directory. Each image is referenced from the buffer file, and the app uses those references to clean up older, unreferenced images over time. Cleanup runs on startup and only removes unreferenced images older than 24 hours (and only if there are any referenced images, as a safety check).
 
 ### Synchronizing the notes library
 
