@@ -9,6 +9,9 @@ const buildImageTagFromFile = async (file) => {
     if (!file.type.startsWith("image/")) {
         return null
     }
+    if (typeof window?.heynote?.buffer?.saveImage !== "function") {
+        return null
+    }
 
     const img = new Image()
     const url = URL.createObjectURL(file)

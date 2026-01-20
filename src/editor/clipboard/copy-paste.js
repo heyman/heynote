@@ -57,12 +57,15 @@ const copyCut = async (view, cut, editor) => {
     let { text, ranges } = copiedRange(view.state)
 
     //text = text.replaceAll(BLOCK_DELIMITER_REGEX, "\n\n")
+    const formats = {
+        "text/plain": toBlob(serializeToText(text), "text/plain"),
+        "text/html": toBlob(await serializeToHtml(text), "text/html"),
+    }
+    if (ClipboardItem.supports("web text/heynote")) {
+        formats["web text/heynote"] = toBlob(serializeToHeynote(text), "web text/heynote")
+    }
     await navigator.clipboard.write([
-        new ClipboardItem({
-            "text/plain": toBlob(serializeToText(text), "text/plain"),
-            "text/html": toBlob(await serializeToHtml(text), "text/html"),
-            "web text/heynote": toBlob(serializeToHeynote(text), "web text/heynote"),
-        })
+        new ClipboardItem(formats)
     ])
 
     if (cut && !view.state.readOnly) {
@@ -147,7 +150,9 @@ export async function pasteAsTextCommand(view) {
 export async function pasteCommand(/** @type {EditorView} */view) {
     const { dispatch, state } = view
 
+
     const items = await navigator.clipboard.read()
+    const canSaveImages = typeof window?.heynote?.buffer?.saveImage === "function"
 
     for (const item of items) {
         //console.log("item:", item, item.types)
@@ -165,6 +170,9 @@ export async function pasteCommand(/** @type {EditorView} */view) {
                 //console.log(itemType, ":", await item.getType(itemType))
                 // handle images data
                 if (IMAGE_MIME_TYPES.includes(itemType)) {
+                    if (!canSaveImages) {
+                        continue
+                    }
                     const blob = await item.getType(itemType)
                     //console.log("image data:", blob.arrayBuffer())
 
