@@ -22,6 +22,7 @@ on the system clipboard.
 - New lines in a Plaintext, Math and SQL blocks now inherits the indentation from the previous line
   (other languages should already have this behaviour for new lines)
 - Add support for [Mermaid](https://mermaid.js.org/) blocks
+- Updated to latest version of Electron
 
 
 ## 2.7.1
