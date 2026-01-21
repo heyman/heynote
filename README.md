@@ -21,6 +21,7 @@ Available for Mac, Windows, and Linux.
 
 -   Persistent text buffer(s)
 -   Block-based
+-   Inline images
 -   Multiple buffers in tabs
 -   Math/Calculator mode
 -   Currency conversion
