@@ -136,6 +136,9 @@ Pasting image data from the clipboard will insert an inline image into the buffe
 within [the notes library's](#user-content-the-notes-library) `.images` directory. Drag and dropping an image file will also insert the image 
 into the editor (a copy of the image will be placed in the `.images` directory).
 
+Images can be resized for display, but the underlying image data keeps its original dimensions. Issuing a copy command (`Ctrl/Cmd-C` with the 
+default key bindings) with the cursor next to an image will populate the system clipboard with the image data.
+
 
 ## The notes library<a id="the-notes-library"></a>
 
