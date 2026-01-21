@@ -10,8 +10,11 @@ Heynote now supports inline images. You can paste images from the clipboard or d
 Images can be selected and resized directly in the editor, and it's quick and easy to put an image back 
 on the system clipboard.
 
-<img src="https://heynote.com/img/light/images.png" style="width:400px;" alt="New image feature"> 
-<img src="https://heynote.com/img/dark/images.png" style="width:400px;" alt="New image feature">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://heynote.com/img/dark/images.png">
+  <img src="https://heynote.com/img/light/images.png" width="400" alt="New image feature">
+</picture>
+
 
 ### Other changes
 
