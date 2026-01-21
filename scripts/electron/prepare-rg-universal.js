@@ -50,6 +50,13 @@ async function main() {
     }
 
     fs.chmodSync(destPath, 0o755);
+
+    const rgVersionResult = spawnSync(destPath, ["--version"], {
+        stdio: "inherit",
+    });
+    if (rgVersionResult.status !== 0) {
+        throw new Error("prepare-rg-universal: rg --version failed");
+    }
 }
 
 main().catch((error) => {
