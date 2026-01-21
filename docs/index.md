@@ -130,6 +130,12 @@ format(x) = x.toLocaleString('en-GB');
 
 See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
 
+## Images
+
+Pasting image data from the clipboard will insert an inline image into the buffer. Internally, the image data is saved to a file 
+within [the notes library's](#the-notes-library) `.images` directory. Drag and dropping an image file will also insert the image 
+into the editor (a copy of the image will be placed in the `.images` directory).
+
 
 ## The notes library<a id="the-notes-library"></a>
 
