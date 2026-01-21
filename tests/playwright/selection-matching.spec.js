@@ -23,6 +23,22 @@ test("basic selection matching highlights other occurrences", async ({ page }) =
     await expect(page.locator(".cm-selectionMatch")).toHaveCount(2)
 })
 
+test("selection matching ignores img tags", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞text
+hello <∞img;id=22222222-2222-2222-2222-222222222222;file=https://example.com/hello.png;w=1200;h=630;dw=324;dh=170∞> world`)
+
+    // Position cursor at the beginning of "hello"
+    await heynotePage.setCursorPosition(0)
+
+    // Use Mod-d to select the word and trigger selection matching
+    await page.locator("body").press(heynotePage.agnosticKey("Mod+d"))
+    await page.waitForTimeout(200)
+
+    // Only the visible "hello" should be matched (no matches in the img tag)
+    await expect(page.locator(".cm-selectionMatch")).toHaveCount(0)
+})
+
 test("Mod-d selects next occurrence", async ({ page }) => {
     // Add test content
     await page.locator("body").pressSequentially("test word test again test final")

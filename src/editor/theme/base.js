@@ -2,6 +2,9 @@ import { EditorView } from '@codemirror/view';
 
 
 export const heynoteBase = EditorView.theme({
+    ".cm-line": {
+        padding: "0 6px",
+    },
     ".cm-panels": {
         fontSize: "12px",
     },

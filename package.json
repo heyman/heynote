@@ -27,8 +27,10 @@
     "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",
     "webapp:dev": "vite webapp",
     "webapp:build": "vite build webapp",
-    "test": "playwright test",
+    "test": "playwright test --grep-invert @e2e",
+    "test:e2e": "playwright test --grep @e2e",
     "test:ui": "playwright test --ui",
+    "test:main": "vitest",
     "postinstall": "patch-package"
   },
   "devDependencies": {
@@ -80,14 +82,17 @@
     "vite": "^6.3.5",
     "vite-plugin-electron": "^0.11.1",
     "vite-plugin-electron-renderer": "^0.11.4",
+    "vitest": "^2.1.9",
     "vue": "^3.5.13",
     "vue-tsc": "^2.2.10",
     "vuedraggable": "^4.1.0"
   },
   "dependencies": {
     "@sindresorhus/slugify": "^2.2.1",
+    "@vscode/ripgrep": "^1.17.0",
     "electron-log": "^5.0.1",
     "fuzzysort": "^3.0.2",
+    "mime-types": "^3.0.2",
     "pinia": "^2.1.7",
     "pinyin-pro": "^3.27.0",
     "semver": "^7.6.3"

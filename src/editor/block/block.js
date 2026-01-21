@@ -44,23 +44,23 @@ export const blockState = StateField.define({
 export function getActiveNoteBlock(state) {
     // find which block the cursor is in
     const range = state.selection.asSingle().ranges[0]
-    return state.facet(blockState).find(block => block.range.from <= range.head && block.range.to >= range.head)
+    return state.field(blockState).find(block => block.range.from <= range.head && block.range.to >= range.head)
 }
 
 export function getFirstNoteBlock(state) {
-    return state.facet(blockState)[0]
+    return state.field(blockState)[0]
 }
 
 export function getLastNoteBlock(state) {
-    return state.facet(blockState)[state.facet(blockState).length - 1]
+    return state.field(blockState)[state.field(blockState).length - 1]
 }
 
 export function getNoteBlockFromPos(state, pos) {
-    return state.facet(blockState).find(block => block.range.from <= pos && block.range.to >= pos)
+    return state.field(blockState).find(block => block.range.from <= pos && block.range.to >= pos)
 }
 
 export function getNoteBlocksBetween(state, from, to) {
-    return state.facet(blockState).filter(block => block.range.from < to && block.range.to >= from)
+    return state.field(blockState).filter(block => block.range.from < to && block.range.to >= from)
 }
 
 export function getNoteBlocksFromRangeSet(state, ranges) {
@@ -98,7 +98,7 @@ const noteBlockWidget = () => {
     const decorate = (state) => {
         const widgets = [];
 
-        state.facet(blockState).forEach(block => {
+        state.field(blockState).forEach(block => {
             let delimiter = block.delimiter
             let deco = Decoration.replace({
                 widget: new NoteBlockStart(delimiter.from === 0 ? true : false),
@@ -143,7 +143,7 @@ const noteBlockWidget = () => {
 
 function atomicRanges(view) {
     let builder = new RangeSetBuilder()
-    view.state.facet(blockState).forEach(block => {
+    view.state.field(blockState).forEach(block => {
         builder.add(
             block.delimiter.from,
             block.delimiter.to,
@@ -182,31 +182,33 @@ const blockLayer = layer({
         function rangesOverlaps(range1, range2) {
             return range1.from <= range2.to && range2.from <= range1.to
         }
-        const blocks = view.state.facet(blockState)
+        const blocks = view.state.field(blockState)
         blocks.forEach(block => {
             // make sure the block is visible
             if (!view.visibleRanges.some(range => rangesOverlaps(block.content, range))) {
                 idx++;
                 return
             }
-            // view.coordsAtPos returns null if the editor is not visible
-            const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from))?.top
-            let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to))?.bottom
+            // Use line box geometry so inline widgets (like images) expand the block height.
+            const fromPos = Math.max(block.content.from, view.visibleRanges[0].from)
+            const toPos = Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)
+            const fromCoordsTop = view.lineBlockAt(fromPos)?.top
+            const toLine = view.state.doc.lineAt(toPos)
+            const toLinePos = toLine.length === 0 ? toLine.from : Math.max(fromPos, Math.min(toPos, block.content.to))
+            let toCoordsBottom = view.lineBlockAt(toLinePos)?.bottom
             if (idx === blocks.length - 1) {
                 // Calculate how much extra height we need to add to the last block
                 let extraHeight = view.viewState.editorHeight - (
                     view.defaultLineHeight + // when scrolling furthest down, one line is still shown at the top
                     view.documentPadding.top +
-                    8
+                    11
                 )
                 toCoordsBottom += extraHeight
             }
             markers.push(new RectangleMarker(
                 idx++ % 2 == 0 ? "block-even" : "block-odd",
                 0,
-                // Change "- 0 - 6" to "+ 1 - 6" on the following line, and "+ 1 + 13" to "+2 + 13" on the line below, 
-                // in order to make the block backgrounds to have no gap between them
-                fromCoordsTop - (view.documentTop - view.documentPadding.top) - 1 - 6,
+                fromCoordsTop - 2,
                 null, // width is set to 100% in CSS
                 (toCoordsBottom - fromCoordsTop) + 15,
             ))
@@ -230,7 +232,7 @@ const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
     }
     // if the transaction is a search and replace, we want to protect all block delimiters
     if (tr.annotations.some(a => a.value === "input.replace" || a.value === "input.replace.all")) {
-        const blocks = tr.startState.facet(blockState)
+        const blocks = tr.startState.field(blockState)
         blocks.forEach(block => {
             protect.push(block.delimiter.from, block.delimiter.to)
         })
@@ -264,7 +266,7 @@ const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of((tr) =
 
 export function getBlockLineFromPos(state, pos) {
     const line = state.doc.lineAt(pos)
-    const block = state.facet(blockState).find(block => block.content.from <= line.from && block.content.to >= line.from)
+    const block = state.field(blockState).find(block => block.content.from <= line.from && block.content.to >= line.from)
     if (block) {
         const firstBlockLine = state.doc.lineAt(block.content.from).number
         return {
@@ -298,7 +300,7 @@ export const blockLineNumbers = lineNumbers({
 function getSelectionSize(state, sel) {
     let count = 0
     let numBlocks = 0
-    for (const block of state.facet(blockState)) {
+    for (const block of state.field(blockState)) {
         if (sel.from <= block.range.to && sel.to > block.range.from) {
             count += Math.min(sel.to, block.content.to) - Math.max(sel.from, block.content.from)
             numBlocks++
@@ -369,7 +371,7 @@ const updateCreatedOnEmptyBlock = () => {
         }
         const changes = []
         const now = new Date()
-        const startBlocks = tr.startState.facet(blockState)
+        const startBlocks = tr.startState.field(blockState)
         const emptyBlocks = []
 
         // snapshot empty blocks from the start state; we only update timestamps on first insert.

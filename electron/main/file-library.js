@@ -4,16 +4,19 @@ import { join, basename } from "path"
 
 import * as jetpack from "fs-jetpack";
 import { app, ipcMain, dialog } from "electron"
+import * as mimetypes from "mime-types"
 
 import CONFIG from "../config"
-import { SCRATCH_FILE_NAME } from "../../src/common/constants"
+import { SCRATCH_FILE_NAME, IMAGE_MIME_TYPES } from "../../src/common/constants"
 import { NoteFormat } from "../../src/common/note-format"
 import { isDev } from '../detect-platform';
 import { initialContent, initialDevContent } from '../initial-content'
+import { getImgReferences } from "./ripgrep.js"
 
 export const NOTES_DIR_NAME = isDev ? "notes-dev" : "notes"
 
 
+/**@type {FileLibrary}*/
 let library
 
 const untildify = (pathWithTilde) => {
@@ -48,6 +51,7 @@ export class FileLibrary {
             throw new Error(`Path directory does not exist: ${basePath}`)
         }
         this.basePath = fs.realpathSync(basePath)
+        this.imagesBasePath = join(this.basePath, ".images")
         this.jetpack = jetpack.cwd(this.basePath)
         this.files = {};
         this.watcher = null;
@@ -59,6 +63,9 @@ export class FileLibrary {
         if (!this.jetpack.exists(SCRATCH_FILE_NAME)) {
             this.jetpack.write(SCRATCH_FILE_NAME, isDev ? initialDevContent : initialContent)
         }
+
+        // garbage collect stale images
+        this.removeUnreferencedImages()
     }
 
     async exists(path) {
@@ -196,8 +203,76 @@ export class FileLibrary {
             this._onWindowFocus = null
         }
     }
-}
 
+    async saveImage({mime, data}) {
+        if (!IMAGE_MIME_TYPES.includes(mime)) {
+            return
+        }
+        const fileExtension = mimetypes.extension(mime)
+        const filename = (new Date()).toISOString().replace(/:/g, ".") + "." + fileExtension
+
+        const u8 = data instanceof Uint8Array ? data : new Uint8Array(data)
+        const buf = Buffer.from(u8)
+        //console.log("saveImage", filename, mime, buf.length)
+        await this.jetpack.writeAsync(join(this.imagesBasePath, filename), buf)
+        return filename
+    }
+
+    removeImage() {
+        
+    }
+
+    listImages() {
+
+    }
+
+    async removeUnreferencedImages() {
+        if (!jetpack.exists(this.imagesBasePath)) {
+            console.log(`${this.imagesBasePath} does not exist, so no cleanup needed`)
+            return
+        }
+
+        let referencedImages = []
+        try {
+            referencedImages = await getImgReferences(this.basePath)
+        } catch (err) {
+            console.error(err)
+        }
+        
+        const jp = jetpack.cwd(this.imagesBasePath)
+        const files = await jp.findAsync("", {
+            matching: "*",
+            recursive: false,
+        })
+        let referencedImageFound = false
+        const filesToDelete = []
+        for (const filename of files) {
+            if (referencedImages.includes(filename)) {
+                //console.log("File is referenced, skipping:", filename)
+                referencedImageFound = true
+                continue
+            }
+            const fileInfo = await jp.inspectAsync(filename, {times: true})
+            if (!fileInfo || !fileInfo.modifyTime) {
+                continue
+            }
+            if ((new Date() - fileInfo.modifyTime) > 1000 * 3600 * 24) {
+                //console.log("deleting file:", filename)
+                filesToDelete.push(filename)
+            }
+        }
+
+        if (!referencedImageFound) {
+            console.log(`No referenced images found, so as a precaution, we won't do any removal of unreferenced images`)
+            return
+        }
+
+        for (const filename of filesToDelete) {
+            await jp.removeAsync(filename)
+        }   
+        console.log(`Removed ${filesToDelete.length} unreferenced image files`)
+    }
+}
 
 
 export class NoteBuffer {
@@ -316,6 +391,10 @@ export function setupFileLibraryEventHandlers() {
         }
         const filePath = result.filePaths[0]
         return filePath
+    })
+
+    ipcMain.handle("library:saveImage", async (event, blob) => {
+        return await library.saveImage(blob)
     })
 }
 

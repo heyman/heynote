@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { NoteFormat } from '../src/common/note-format.js';
+import { NoteFormat } from '@/src/common/note-format.js';
 
 export function pageErrorGetter(page) {
     let messages = [];

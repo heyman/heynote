@@ -4,6 +4,9 @@
 {
   "appId": "com.heynote.app",
   "asar": true,
+  "asarUnpack": [
+    "**/node_modules/@vscode/ripgrep/bin/**"
+  ],
   //"icon": "public/favicon.ico",
   "directories": {
     "output": "release/${version}",

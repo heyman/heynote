@@ -4,6 +4,7 @@ import { EditorView } from "@codemirror/view"
 import { FOLD_LABEL_LENGTH } from "@/src/common/constants.js"
 import { formatDate, formatFullDate } from "@/src/common/format-date.js"
 import { getNoteBlockFromPos, getNoteBlocksFromRangeSet, delimiterRegexWithoutNewline } from "./block/block.js"
+import { WIDGET_TAG_REGEX_NON_GLOBAL } from "./image/image-parsing.js"
 import { transactionsHasAnnotationsAny, ADD_NEW_BLOCK, LANGUAGE_CHANGE, UPDATE_CREATED, transactionsHasHistoryEvent } from "./annotation.js"
 import { useHeynoteStore } from "@/src/stores/heynote-store.js"
 
@@ -151,6 +152,30 @@ export function foldGutterExtension() {
 }
 
 
+/**
+ * Returns a range that is to be folded, when folding a block. If the block can't 
+ * be folded (e.i. it's a single line with few characters) it returns undefined
+ */
+function getFoldBlockRange(block, state) {
+    const firstLine = state.doc.lineAt(block.content.from)
+
+    let from
+    // if the fold cutoff point would end up in the middle of an image, we set the cutoff to be immediately after the image instead
+    const match = firstLine.text.match(WIDGET_TAG_REGEX_NON_GLOBAL)
+    if (match && match.index < FOLD_LABEL_LENGTH) {
+        from = firstLine.from + match.index + match[0].length
+    } else {
+        from = Math.min(firstLine.to, block.content.from + FOLD_LABEL_LENGTH)
+    }
+    const to = block.content.to
+    if (from < to) {
+        // skip empty ranges
+        return {from, to}
+    }
+    return undefined
+}
+
+
 export const toggleBlockFold = (editor) => (view) => {
     const state = view.state
     const folds = foldedRanges(state)
@@ -173,14 +198,10 @@ export const toggleBlockFold = (editor) => (view) => {
             unfoldEffects.push(...blockFolds.map(range => unfoldEffect.of(range)))
             numFolded++
         } else {
-            const lastLine = state.doc.lineAt(block.content.to)
-            // skip single-line blocks, since they are not folded
-            if (firstLine.from !== lastLine.from) {
-                const range = {from: Math.min(firstLine.to, block.content.from + FOLD_LABEL_LENGTH), to: block.content.to}
-                if (range.to > range.from) {
-                    foldEffects.push(foldEffect.of(range))
-                }
+            const range = getFoldBlockRange(block, state)
+            if (range) {
                 numUnfolded++
+                foldEffects.push(foldEffect.of(range))
             }
         }
     }
@@ -200,13 +221,9 @@ export const foldBlock = (editor) => (view) => {
     const blockRanges = []
 
     for (const block of getNoteBlocksFromRangeSet(state, state.selection.ranges)) {
-        const line = state.doc.lineAt(block.content.from)
-        // fold the block content, but only the first line
-        const from = Math.min(line.to, block.content.from + FOLD_LABEL_LENGTH)
-        const to = block.content.to
-        if (from < to) {
-            // skip empty ranges
-            blockRanges.push({from, to})
+        const range = getFoldBlockRange(block, state)
+        if (range) {
+            blockRanges.push(range)
         }
     }
     if (blockRanges.length > 0) {

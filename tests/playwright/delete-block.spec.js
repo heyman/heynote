@@ -1,8 +1,8 @@
 import {expect, test} from "@playwright/test";
 import {HeynotePage} from "./test-utils.js";
 
-import { AUTO_SAVE_INTERVAL } from "../src/common/constants.js"
-import { NoteFormat } from "../src/common/note-format.js"
+import { AUTO_SAVE_INTERVAL } from "@/src/common/constants.js"
+import { NoteFormat } from "@/src/common/note-format.js"
 
 
 let heynotePage

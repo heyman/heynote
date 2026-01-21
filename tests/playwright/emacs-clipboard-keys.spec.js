@@ -99,7 +99,9 @@ test`)
     await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("1test1")
 })
 
-test("cut multiple blocks", async ({ page }) => {
+test("cut multiple blocks", async ({ page, context }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+
     await page.locator("body").pressSequentially("block1")
     await page.locator("body").press(heynotePage.agnosticKey("Mod+Enter"))
     await page.locator("body").pressSequentially("block2")
@@ -114,8 +116,14 @@ test("cut multiple blocks", async ({ page }) => {
     await expect.poll(async () => (await heynotePage.getBlocks()).length).toBe(1)
     await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("")
 
-    // paste content and check that block separator was replaced with \n\n
+
+    // check that block separator was replaced with \n\n for clipboard plain text content
+    const handle = await page.evaluateHandle(() => navigator.clipboard.readText())
+    const clipboardTextContent = await handle.jsonValue()
+    expect(clipboardTextContent).toEqual("block1\n\nblock2")
+
+    // paste content and check that block separator was preserved
     await page.locator("body").press("Control+Y")
-    await expect.poll(async () => (await heynotePage.getBlocks()).length).toBe(1)
-    await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("block1\n\nblock2")
+    await expect.poll(async () => (await heynotePage.getBlocks()).length).toBe(2)
+    //await expect.poll(async () => await heynotePage.getBlockContent(0)).toBe("block1\n\nblock2")
 })

@@ -12,6 +12,7 @@ Available for Mac, Windows, and Linux.
 
 -   Persistent text buffer(s)
 -   Block-based
+-   Inline images
 -   Multiple buffers in tabs
 -   Math/Calculator mode
 -   Currency conversion
@@ -28,7 +29,7 @@ Available for Mac, Windows, and Linux.
 -   Spellchecking
 
 
-## Default Key Bindings
+## Default Key Bindings<a id="default-key-bindings"></a>
 
 <!-- keyboard_shortcuts -->
 
@@ -82,7 +83,7 @@ You can see all the key bindings in the command palette and in Settings under Ke
 
 
 
-## Custom Key Bindings
+## Custom Key Bindings<a id="custom-key-bindings"></a>
 
 Heynote supports custom key bindings which you can configure in the settings. The key bindings are evaluated from top to bottom, so a binding that comes before another one will take precedence. Most commands will stop the event from propagating, but some commands only applies in certain contexts and might not stop the event from propagating to a later key binding. 
 
@@ -98,7 +99,7 @@ If installing Heynote on Linux in ChromeOS, see the [notes](#user-content-linux-
 
 On macOS, [Homebrew](https://brew.sh) users can utilize an unofficial [Homebrew Cask](https://formulae.brew.sh/cask/heynote#default): `brew install --cask heynote`
 
-## Math Blocks
+## Math Blocks<a id="math-blocks"></a>
 
 Heynote's Math blocks are powered by [Math.js expressions](https://mathjs.org/docs/expressions). Checkout their [documentation](https://mathjs.org/docs/) to see what [syntax](https://mathjs.org/docs/expressions/syntax.html), [functions](https://mathjs.org/docs/reference/functions.html), and [constants](https://mathjs.org/docs/reference/constants.html) are available.
 
@@ -129,8 +130,14 @@ format(x) = x.toLocaleString('en-GB');
 
 See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
 
+## Images
 
-## The notes library
+Pasting image data from the clipboard will insert an inline image into the buffer. Internally, the image data is saved to a file 
+within [the notes library's](#user-content-the-notes-library) `.images` directory. Drag and dropping an image file will also insert the image 
+into the editor (a copy of the image will be placed in the `.images` directory).
+
+
+## The notes library<a id="the-notes-library"></a>
 
 The notes library is a directory (with sub dirs) on the disk with a `.txt` file for each buffer. It's created the first time you start Heynote, with the default buffer file `scratch.txt` in it. The default location for the library is:
 
@@ -139,6 +146,10 @@ The notes library is a directory (with sub dirs) on the disk with a `.txt` file 
 -   Linux: `~/.config/Heynote/notes/`
 
 You can change the path of the notes library in the settings. Heynote expects reasonably fast disk access to the notes library, so it's not recommended to use a network drive, though file syncing services like Dropbox, OneDrive, etc. should work (see below).
+
+### Image storage
+
+Images are stored alongside your notes in a hidden `.images` folder inside the notes library directory. Each image is referenced from the buffer file, and the app uses those references to clean up older, unreferenced images over time. Cleanup runs on startup and only removes unreferenced images older than 24 hours (and only if there are any referenced images, as a safety check).
 
 ### Synchronizing the notes library
 
@@ -149,14 +160,14 @@ When using a file synching service that support "offloading" of files in the clo
 As always, backup things that are important.
 
 
-### Spellchecking
+## Spellchecking
 
 Spellchecking can be toggled on or off by clicking the spellchecking icon in the status bar. Right-clicking the icon on Windows and Linux allows you to select the active dictionaries (on Mac, the default OS dictionary is used).  
 
 
-## Linux
+## Linux<a id="linux"></a>
 
-### Linux on ChromeOS
+### Linux on ChromeOS<a id="linux-on-chromeos"></a>
 
 It's been reported [(#48)](https://github.com/heyman/heynote/issues/48) that ChromeOS's Debian VM need the following packages installed to run the Heynote AppImage:
 
@@ -192,4 +203,3 @@ registerShortcut('toggleHeynote', 'Toggle Heynote', 'Ctrl+Shift+H', toggleHeynot
 See the [KWin scripting tutorial](https://develop.kde.org/docs/plasma/kwin/) for instructions on how to install the script.
 
 Remember to enable the script in the KDE System Settings. It may also be necessary to go into the KDE System Settings and bind the "Toggle Heynote" key manually.
-

@@ -17,9 +17,11 @@ import { getBlockDelimiter } from "./block/block-parsing.js"
 import { changeCurrentBlockLanguage, triggerCurrenciesLoaded, deleteBlock, selectAll } from "./block/commands.js"
 import { formatBlockContent } from "./block/format-code.js"
 import { getKeymapExtensions } from "./keymap.js"
-import { heynoteCopyCut } from "./copy-paste"
+import { heynoteCopyCut } from "./clipboard/copy-paste.js"
+import { heynoteDropPaste } from "./clipboard/drag-drop.js"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
+import { imageExtension } from "./image/image.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
 import { indentation } from "./indentation.js"
@@ -93,6 +95,7 @@ export class HeynoteEditor {
             extensions: [
                 this.keymapCompartment.of(getKeymapExtensions(this, keymap, keyBindings)),
                 heynoteCopyCut(this),
+                heynoteDropPaste(),
 
                 //minimalSetup,
                 this.lineNumberCompartment.of(showLineNumberGutter ? blockLineNumbers : []),
@@ -120,6 +123,8 @@ export class HeynoteEditor {
                 }),
 
                 autoSaveContent(this, AUTO_SAVE_INTERVAL),
+
+                imageExtension(),
 
                 // Markdown extensions, we need to add markdownKeymap manually with the highest precedence
                 // so that it takes precedence over the default keymap

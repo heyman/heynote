@@ -21,6 +21,7 @@ import {
     migrateBufferFileToLibrary, 
     NOTES_DIR_NAME 
 } from './file-library';
+import { registerProtocol, registerProtocolBeforeAppReady } from "./protocol.js"
 
 
 // The built directory structure
@@ -401,9 +402,14 @@ function registerAlwaysOnTop() {
     }
 }
 
+// register heynote-file:// protocol
+registerProtocolBeforeAppReady()
+
 app.whenReady().then(createWindow).then(async () => {
     initFileLibrary(win).then(() => {
         setupFileLibraryEventHandlers()
+        // set up handlers for heynote-file:// protocol
+        registerProtocol(fileLibrary)
     })
     initializeAutoUpdate(win)
     registerGlobalHotkey()
