@@ -22,7 +22,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && node scripts/electron/prepare-rg-universal.js && electron-builder -c electron-builder.json5",
-    "prebuild": "vue-tsc --noEmit && vite build",
+    "prebuild": "vue-tsc --noEmit && vite build && node scripts/electron/prepare-rg-universal.js",
     "preview": "vite preview",
     "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",
     "webapp:dev": "vite webapp",
