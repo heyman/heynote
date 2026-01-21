@@ -57,6 +57,7 @@ jobs:
           APPLE_API_KEY: ~/private_keys/AuthKey.p8
           APPLE_API_KEY_ID: ${{ secrets.apple_api_key_id }}
           APPLE_API_ISSUER: ${{ secrets.apple_api_key_issuer_id }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
       
       #- name: Print notarization-error.log
       #  if: ${{ matrix.os == 'macos-latest' }}
