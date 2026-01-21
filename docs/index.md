@@ -133,7 +133,7 @@ See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.ht
 ## Images
 
 Pasting image data from the clipboard will insert an inline image into the buffer. Internally, the image data is saved to a file 
-within [the notes library's](#the-notes-library) `.images` directory. Drag and dropping an image file will also insert the image 
+within [the notes library's](#user-content-the-notes-library) `.images` directory. Drag and dropping an image file will also insert the image 
 into the editor (a copy of the image will be placed in the `.images` directory).
 
 
@@ -167,7 +167,7 @@ Spellchecking can be toggled on or off by clicking the spellchecking icon in the
 
 ## Linux<a id="linux"></a>
 
-### Linux on ChromeOS
+### Linux on ChromeOS<a id="linux-on-chromeos"></a>
 
 It's been reported [(#48)](https://github.com/heyman/heynote/issues/48) that ChromeOS's Debian VM need the following packages installed to run the Heynote AppImage:
 
