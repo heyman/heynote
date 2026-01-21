@@ -2,7 +2,18 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.8.0-beta
+## 2.8.0-beta (not released yet)
+
+### Images
+
+Heynote now supports inline images. You can paste images from the clipboard or drag and drop image files. 
+Images can be selected and resized directly in the editor, and it's quick and easy to put an image back 
+on the system clipboard.
+
+<img src="https://heynote.com/img/light/images.png" style="width:400px;" alt="New image feature"> 
+<img src="https://heynote.com/img/dark/images.png" style="width:400px;" alt="New image feature">
+
+### Other changes
 
 - Add syntax highlighting for Math blocks
 - New lines in a Plaintext, Math and SQL blocks now inherits the indentation from the previous line
