@@ -29,7 +29,7 @@ Available for Mac, Windows, and Linux.
 -   Spellchecking
 
 
-## Default Key Bindings
+## Default Key Bindings<a id="default-key-bindings"></a>
 
 <!-- keyboard_shortcuts -->
 
@@ -83,7 +83,7 @@ You can see all the key bindings in the command palette and in Settings under Ke
 
 
 
-## Custom Key Bindings
+## Custom Key Bindings<a id="custom-key-bindings"></a>
 
 Heynote supports custom key bindings which you can configure in the settings. The key bindings are evaluated from top to bottom, so a binding that comes before another one will take precedence. Most commands will stop the event from propagating, but some commands only applies in certain contexts and might not stop the event from propagating to a later key binding. 
 
@@ -99,7 +99,7 @@ If installing Heynote on Linux in ChromeOS, see the [notes](#user-content-linux-
 
 On macOS, [Homebrew](https://brew.sh) users can utilize an unofficial [Homebrew Cask](https://formulae.brew.sh/cask/heynote#default): `brew install --cask heynote`
 
-## Math Blocks
+## Math Blocks<a id="math-blocks"></a>
 
 Heynote's Math blocks are powered by [Math.js expressions](https://mathjs.org/docs/expressions). Checkout their [documentation](https://mathjs.org/docs/) to see what [syntax](https://mathjs.org/docs/expressions/syntax.html), [functions](https://mathjs.org/docs/reference/functions.html), and [constants](https://mathjs.org/docs/reference/constants.html) are available.
 
@@ -131,7 +131,7 @@ format(x) = x.toLocaleString('en-GB');
 See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
 
 
-## The notes library
+## The notes library<a id="the-notes-library"></a>
 
 The notes library is a directory (with sub dirs) on the disk with a `.txt` file for each buffer. It's created the first time you start Heynote, with the default buffer file `scratch.txt` in it. The default location for the library is:
 
@@ -159,7 +159,7 @@ As always, backup things that are important.
 Spellchecking can be toggled on or off by clicking the spellchecking icon in the status bar. Right-clicking the icon on Windows and Linux allows you to select the active dictionaries (on Mac, the default OS dictionary is used).  
 
 
-## Linux
+## Linux<a id="linux"></a>
 
 ### Linux on ChromeOS
 
