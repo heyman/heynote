@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.8.0-beta.2 (not released yet)
+## 2.8.0-beta.3 (not released yet)
 
 ### Images
 
@@ -22,7 +22,6 @@ on the system clipboard.
 - New lines in a Plaintext, Math and SQL blocks now inherits the indentation from the previous line
   (other languages should already have this behaviour for new lines)
 - Add support for [Mermaid](https://mermaid.js.org/) blocks
-- Updated to latest version of Electron
 
 
 ## 2.7.1
