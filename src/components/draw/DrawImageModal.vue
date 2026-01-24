@@ -1,4 +1,5 @@
 <script>
+    import { markRaw } from "vue"
     import { Canvas, PencilBrush, FabricImage } from "fabric"
 
     export default {
@@ -35,6 +36,7 @@
                 isDrawing: false,
                 brushColor: "#f42525",
                 brushWidth: 3,
+                isDrawingMode: true,
             }
         },
 
@@ -73,13 +75,15 @@
                     return
                 }
 
-                this.canvas = new Canvas(canvasEl, {
+                this.canvas = markRaw(new Canvas(canvasEl, {
                     selection: false,
-                })
+                }))
 
                 this.canvas.isDrawingMode = true
                 this.canvas.defaultCursor = "crosshair"
+                this.isDrawingMode = true
                 this.canvas.on("path:created", this.onPathCreated)
+                this.canvas.on("object:modified", this.onObjectModified)
                 this.canvas.on("mouse:down", this.onMouseDown)
                 this.canvas.on("mouse:up", this.onMouseUp)
 
@@ -106,6 +110,7 @@
                         originY: "top",
                         selectable: false,
                         evented: false,
+                        hasControls: false,
                     })
 
 
@@ -142,13 +147,20 @@
                     return
                 }
 
+                const target = event.target
+                const tagName = target?.tagName?.toLowerCase()
+                if (tagName === "input" || tagName === "textarea" || target?.isContentEditable) {
+                    return
+                }
+
                 if (this.isDrawing) {
                     return
                 }
 
-                const target = event.target
-                const tagName = target?.tagName?.toLowerCase()
-                if (tagName === "input" || tagName === "textarea" || target?.isContentEditable) {
+                if (event.key === "Backspace" || event.key === "Delete") {
+                    if (this.deleteSelection()) {
+                        event.preventDefault()
+                    }
                     return
                 }
 
@@ -179,6 +191,7 @@
                 this.updateCanvasScale()
             },
 
+
             onMouseDown() {
                 if (this.canvas?.isDrawingMode) {
                     this.isDrawing = true
@@ -195,6 +208,33 @@
                 }
                 this.isDrawing = false
                 this.captureHistory()
+            },
+
+            onObjectModified() {
+                if (this.isRestoring) {
+                    return
+                }
+                this.captureHistory()
+            },
+
+            deleteSelection() {
+                if (!this.canvas || this.isLoading) {
+                    return false
+                }
+
+                const activeObjects = this.canvas.getActiveObjects?.() || []
+                if (activeObjects.length === 0) {
+                    return false
+                }
+
+                activeObjects.forEach((obj) => {
+                    this.canvas.remove(obj)
+                })
+
+                this.canvas.discardActiveObject()
+                this.canvas.requestRenderAll()
+                this.captureHistory()
+                return true
             },
 
             onWheel(event) {
@@ -256,15 +296,14 @@
                 }
                 this.isRestoring = true
                 const snapshot = this.history[index]
-                await new Promise((resolve) => {
-                    this.canvas.loadFromJSON(snapshot, () => {
-                        resolve()
-                        this.canvas.requestRenderAll()
-                    })
+                await this.canvas.loadFromJSON(snapshot, (_serialized, object) => {
+                    if (object?.type === "image") {
+                        object.selectable = false
+                        object.evented = false
+                        object.hasControls = false
+                    }
                 })
-                this.canvas.selection = false
-                this.canvas.isDrawingMode = true
-                this.canvas.defaultCursor = "crosshair"
+                this.setDrawingMode(this.isDrawingMode)
                 if (this.canvas.freeDrawingBrush) {
                     this.canvas.freeDrawingBrush.color = this.brushColor
                     this.canvas.freeDrawingBrush.width = this.brushWidth
@@ -386,9 +425,21 @@
                 }
             },
 
+            setDrawingMode(enabled) {
+                this.isDrawingMode = enabled
+                if (!this.canvas) {
+                    return
+                }
+                this.canvas.isDrawingMode = enabled
+                this.canvas.selection = !enabled
+                this.canvas.defaultCursor = enabled ? "crosshair" : "default"
+                this.canvas.requestRenderAll()
+            },
+
             disposeCanvas() {
                 if (this.canvas) {
                     this.canvas.off("path:created", this.onPathCreated)
+                    this.canvas.off("object:modified", this.onObjectModified)
                     this.canvas.off("mouse:down", this.onMouseDown)
                     this.canvas.off("mouse:up", this.onMouseUp)
                     this.canvas.dispose()
@@ -404,6 +455,24 @@
         <div class="dialog">
             <div class="header">
                 <div class="header-tools-left">
+                    <div class="mode-toggle">
+                        <button
+                            class="mode"
+                            :class="{ active: !isDrawingMode }"
+                            :disabled="isLoading"
+                            @click="setDrawingMode(false)"
+                        >
+                            Select
+                        </button>
+                        <button
+                            class="mode"
+                            :class="{ active: isDrawingMode }"
+                            :disabled="isLoading"
+                            @click="setDrawingMode(true)"
+                        >
+                            Draw
+                        </button>
+                    </div>
                     <label class="color-picker">
                         <input
                             type="color"
@@ -465,8 +534,6 @@
             background: rgba(0, 0, 0, 0.5)
 
         .dialog
-            --dialog-height: 680px
-            --bottom-bar-height: 56px
             box-sizing: border-box
             z-index: 2
             position: absolute
@@ -474,7 +541,7 @@
             top: 50%
             transform: translate(-50%, -50%)
             width: 920px
-            height: var(--dialog-height)
+            height: 680px
             max-width: 100%
             max-height: 100%
             display: flex
@@ -501,6 +568,29 @@
                     display: flex
                     align-items: center
                     gap: 10px
+                    .mode-toggle
+                        display: flex
+                        align-items: center
+                        gap: 6px
+                    .mode
+                        height: 24px
+                        padding: 0 10px
+                        border-radius: 3px
+                        border: 1px solid #c7c7c7
+                        background: #fff
+                        cursor: pointer
+                        font-size: 12px
+                        +dark-mode
+                            border-color: #444
+                            background: #1f1f1f
+                            color: #eee
+                        &.active
+                            background: #1d7cf2
+                            border-color: #1d7cf2
+                            color: #fff
+                        &:disabled
+                            opacity: 0.6
+                            cursor: not-allowed
                     .color-picker input[type="color"]
                         width: 24px
                         height: 24px
@@ -559,7 +649,6 @@
 
             .dialog-content
                 flex-grow: 1
-                //padding: 18px 22px
                 overflow: hidden
                 display: flex
                 flex-direction: column
@@ -567,8 +656,6 @@
 
                 .canvas-stage
                     flex-grow: 1
-                    //border: 1px solid #e5e5e5
-                    //border-radius: 6px
                     background: #f7f7f7
                     overflow: hidden
                     display: flex
@@ -590,10 +677,9 @@
 
             .bottom-bar
                 box-sizing: border-box
-                height: var(--bottom-bar-height)
                 background: #f0f0f0
                 text-align: right
-                padding: 12px 22px
+                padding: 10px 18px
                 display: flex
                 justify-content: flex-end
                 gap: 10px
@@ -613,11 +699,15 @@
                     color: inherit
                     +dark-mode
                         border-color: #444
+                        &:hover
+                            background: #444
+                            
                 .save
-                    background: #1d7cf2
+                    background: #555
                     color: #fff
-                    border-color: #1d7cf2
                     &:disabled
                         opacity: 0.6
                         cursor: not-allowed
+                    &:hover
+                        background: #777
 </style>
