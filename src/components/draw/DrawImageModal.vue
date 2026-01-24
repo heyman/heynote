@@ -457,21 +457,17 @@
                 <div class="header-tools-left">
                     <div class="mode-toggle">
                         <button
-                            class="mode"
+                            class="mode select-mode"
                             :class="{ active: !isDrawingMode }"
                             :disabled="isLoading"
                             @click="setDrawingMode(false)"
-                        >
-                            Select
-                        </button>
+                        ></button>
                         <button
-                            class="mode"
+                            class="mode draw-mode"
                             :class="{ active: isDrawingMode }"
                             :disabled="isLoading"
                             @click="setDrawingMode(true)"
-                        >
-                            Draw
-                        </button>
+                        ></button>
                     </div>
                     <label class="color-picker">
                         <input
@@ -484,8 +480,8 @@
                 </div>
                 <div class="header-tools">
                     <div class="history-controls">
-                        <button class="history" @click="undo" :disabled="historyIndex <= 0 || isLoading">Undo</button>
-                        <button class="history" @click="redo" :disabled="historyIndex >= history.length - 1 || isLoading">Redo</button>
+                        <button class="history undo" @click="undo" :disabled="historyIndex <= 0 || isLoading"></button>
+                        <button class="history redo" @click="redo" :disabled="historyIndex >= history.length - 1 || isLoading"></button>
                     </div>
                     <div class="zoom-controls">
                         <button class="zoom" @click="zoomOut" :disabled="isLoading">-</button>
@@ -573,24 +569,32 @@
                         align-items: center
                         gap: 6px
                     .mode
-                        height: 24px
-                        padding: 0 10px
+                        height: 26px
+                        width: 26px
                         border-radius: 3px
                         border: 1px solid #c7c7c7
                         background: #fff
                         cursor: pointer
                         font-size: 12px
+                        background-size: 13px
+                        background-position: center center
+                        background-repeat: no-repeat
                         +dark-mode
                             border-color: #444
-                            background: #1f1f1f
+                            background-color: #1f1f1f
                             color: #eee
                         &.active
-                            background: #1d7cf2
+                            background-color: #1d7cf2
                             border-color: #1d7cf2
                             color: #fff
+                        &.select-mode
+                            +dark-mode
+                                background-image: url("@/assets/icons/arrow-pointer-white.svg")
+                        &.draw-mode
+                            +dark-mode
+                                background-image: url("@/assets/icons/paint-white.svg")
                         &:disabled
                             opacity: 0.6
-                            cursor: not-allowed
                     .color-picker input[type="color"]
                         width: 24px
                         height: 24px
@@ -607,20 +611,25 @@
                     align-items: center
                     gap: 6px
                     .history
-                        height: 28px
-                        padding: 0 10px
+                        height: 26px
+                        width: 26px
                         border-radius: 4px
                         border: 1px solid #c7c7c7
                         background: #fff
                         cursor: pointer
                         font-size: 12px
+                        background-size: 13px
+                        background-position: center center
+                        background-repeat: no-repeat
+                        background-image: url("@/assets/icons/undo-white.svg")
                         +dark-mode
                             border-color: #444
-                            background: #1f1f1f
+                            background-color: #1f1f1f
                             color: #eee
                         &:disabled
-                            opacity: 0.6
-                            cursor: not-allowed
+                            opacity: 0.4
+                        &.redo
+                            background-image: url("@/assets/icons/redo-white.svg")
                 .zoom-controls
                     display: flex
                     align-items: center
