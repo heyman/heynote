@@ -37,6 +37,8 @@
                 brushColor: "#f42525",
                 brushWidth: 3,
                 isDrawingMode: true,
+                dialogWidth: 920,
+                dialogHeight: 680,
             }
         },
 
@@ -121,6 +123,8 @@
                     this.imageWidth = width
                     this.imageHeight = height
                     this.zoom = 1
+                    this.updateDialogSize()
+                    await this.$nextTick()
                     this.updateCanvasScale()
                     this.canvas.add(image)
                     this.canvas.sendObjectToBack(image)
@@ -129,7 +133,7 @@
                     this.captureHistory(true)
 
                     // calculate brush width
-                    this.brushWidth = Math.min(10, Math.max(3, width / 300))
+                    this.brushWidth = Math.min(10, Math.max(4, width / 300))
                     this.canvas.freeDrawingBrush.width = this.brushWidth
                     //console.log("brush width:", this.brushWidth)
 
@@ -188,7 +192,10 @@
             },
 
             onResize() {
-                this.updateCanvasScale()
+                this.updateDialogSize()
+                this.$nextTick(() => {
+                    this.updateCanvasScale()
+                })
             },
 
 
@@ -394,6 +401,24 @@
                 }
             },
 
+            updateDialogSize() {
+                const minWidth = 400
+                const minHeight = 300
+                const dpr = window.devicePixelRatio || 1
+                const logicalWidth = this.imageWidth / dpr
+                const logicalHeight = this.imageHeight / dpr
+
+                const chromeWidth = 0
+                const chromeHeight = 140
+                const maxWidth = Math.max(minWidth, window.innerWidth)
+                const maxHeight = Math.max(minHeight, window.innerHeight - 60)
+                const desiredWidth = Math.max(minWidth, Math.round(logicalWidth + chromeWidth))
+                const desiredHeight = Math.max(minHeight, Math.round(logicalHeight + chromeHeight))
+
+                this.dialogWidth = Math.min(desiredWidth, maxWidth)
+                this.dialogHeight = Math.min(desiredHeight, maxHeight)
+            },
+
             zoomIn() {
                 if (this.isLoading) {
                     return
@@ -452,7 +477,7 @@
 
 <template>
     <div class="draw-modal">
-        <div class="dialog">
+        <div class="dialog" :style="{ width: `${dialogWidth}px`, height: `${dialogHeight}px` }">
             <div class="header">
                 <div class="header-tools-left">
                     <div class="mode-toggle">
@@ -536,8 +561,8 @@
             left: 50%
             top: 50%
             transform: translate(-50%, -50%)
-            width: 920px
-            height: 680px
+            width: auto
+            height: auto
             max-width: 100%
             max-height: 100%
             display: flex
@@ -580,13 +605,15 @@
                         background-position: center center
                         background-repeat: no-repeat
                         +dark-mode
-                            border-color: #444
+                            border-color: #353535
                             background-color: #1f1f1f
                             color: #eee
                         &.active
-                            background-color: #1d7cf2
-                            border-color: #1d7cf2
+                            border-color: transparent
                             color: #fff
+                            border: none
+                            +dark-mode
+                                border: 2px solid var(--highlight-color)
                         &.select-mode
                             +dark-mode
                                 background-image: url("@/assets/icons/arrow-pointer-white.svg")
