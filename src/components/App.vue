@@ -18,6 +18,7 @@
     import NewBuffer from './NewBuffer.vue'
     import EditBuffer from './EditBuffer.vue'
     import TabBar from './tabs/TabBar.vue'
+    import DrawImageModal from './draw/DrawImageModal.vue'
 
     export default {
         components: {
@@ -30,6 +31,7 @@
             NewBuffer,
             EditBuffer,
             TabBar,
+            DrawImageModal,
         },
 
         data() {
@@ -91,6 +93,7 @@
             showEditBuffer(value) { this.dialogWatcher(value) },
             showMoveToBufferSelector(value) { this.dialogWatcher(value) },
             showCommandPalette(value) { this.dialogWatcher(value) },
+            showDrawImageModal(value) { this.dialogWatcher(value) },
 
             currentBufferPath() {
                 this.focusEditor()
@@ -112,6 +115,9 @@
                 "showEditBuffer",
                 "showMoveToBufferSelector",
                 "showCommandPalette",
+                "showDrawImageModal",
+                "drawImageUrl",
+                "drawImageId",
                 "isFullscreen",
             ]),
             ...mapState(useSettingsStore, [
@@ -119,7 +125,7 @@
             ]),
 
             dialogVisible() {
-                return this.showLanguageSelector || this.showBufferSelector || this.showCreateBuffer || this.showEditBuffer || this.showMoveToBufferSelector || this.showCommandPalette || this.showSettings
+                return this.showLanguageSelector || this.showBufferSelector || this.showCreateBuffer || this.showEditBuffer || this.showMoveToBufferSelector || this.showCommandPalette || this.showDrawImageModal || this.showSettings
             },
 
             editorInert() {
@@ -145,6 +151,7 @@
                 "closeBufferSelector",
                 "openBuffer",
                 "closeMoveToBufferSelector",
+                "closeDrawImageModal",
                 "deleteBuffer",
                 "focusEditor",
             ]),
@@ -193,6 +200,10 @@
             onMoveCurrentBlockToOtherEditor(path) {
                 this.editorCacheStore.moveCurrentBlockToOtherEditor(path)
                 this.closeMoveToBufferSelector()
+            },
+
+            onSaveDrawImage(imageDataUrl) {
+                this.closeDrawImageModal()
             },
         },
     }
@@ -261,6 +272,13 @@
             <EditBuffer 
                 v-if="showEditBuffer"
                 @close="closeDialog"
+            />
+            <DrawImageModal
+                v-if="showDrawImageModal"
+                :imageUrl="drawImageUrl"
+                :imageId="drawImageId"
+                @close="closeDrawImageModal"
+                @save="onSaveDrawImage"
             />
             <ErrorMessages />
         </div>

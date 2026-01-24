@@ -35,6 +35,9 @@ export const useHeynoteStore = defineStore("heynote", {
         showEditBuffer: false,
         showMoveToBufferSelector: false,
         showCommandPalette: false,
+        showDrawImageModal: false,
+        drawImageUrl: null,
+        drawImageId: null,
 
         isFullscreen: false,
         isFocused: true,
@@ -198,6 +201,17 @@ export const useHeynoteStore = defineStore("heynote", {
             }
             this.showCreateBuffer = true
         },
+        openDrawImageModal(imageUrl, imageId) {
+            this.closeDialog()
+            this.drawImageUrl = imageUrl
+            this.drawImageId = imageId
+            this.showDrawImageModal = true
+        },
+        closeDrawImageModal() {
+            this.showDrawImageModal = false
+            this.drawImageUrl = null
+            this.drawImageId = null
+        },
         closeDialog() {
             this.showCreateBuffer = false
             this.showBufferSelector = false
@@ -205,6 +219,9 @@ export const useHeynoteStore = defineStore("heynote", {
             this.showEditBuffer = false
             this.showMoveToBufferSelector = false
             this.showCommandPalette = false
+            this.showDrawImageModal = false
+            this.drawImageUrl = null
+            this.drawImageId = null
         },
 
         closeBufferSelector() {
