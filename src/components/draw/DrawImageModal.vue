@@ -307,7 +307,6 @@
                 const dataUrl = this.canvas.toDataURL({
                     format: "png",
                 })
-
                 this.$emit("save", this.imageId, dataUrl)
                 this.$emit("close")
             },

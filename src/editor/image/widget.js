@@ -106,6 +106,13 @@ export class ImageWidget extends WidgetType {
                 copyButton.innerText = "Copy"
             }, 2000)
         })
+        
+        let img = document.createElement("img")
+        img.src = this.path
+        img.style.height = this.getHeight(img)
+        img.style.width = this.getWidth(img)
+        inner.appendChild(img)
+
         const drawButton = document.createElement("button")
         drawButton.className = "draw"
         drawButton.innerHTML = "<span>Draw</span>"
@@ -115,15 +122,8 @@ export class ImageWidget extends WidgetType {
         })
         drawButton.addEventListener("click", (event) => {
             event.preventDefault()
-            heynoteStore.openDrawImageModal(this.path, this.id)
+            heynoteStore.openDrawImageModal(img.src, wrap.dataset.id)
         })
-        
-        
-        let img = document.createElement("img")
-        img.src = this.path
-        img.style.height = this.getHeight(img)
-        img.style.width = this.getWidth(img)
-        inner.appendChild(img)
         
 
         let initialWidth, initialHeight, initialX, initialY

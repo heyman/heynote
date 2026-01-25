@@ -1,4 +1,5 @@
 <script>
+    import { toRaw } from 'vue'
     import { mapState, mapActions } from 'pinia'
 
     import { mapWritableState, mapStores } from 'pinia'
@@ -8,6 +9,7 @@
     import { useEditorCacheStore } from '../stores/editor-cache'
 
     import { OPEN_SETTINGS_EVENT, MOVE_BLOCK_EVENT, CHANGE_BUFFER_EVENT } from '@/src/common/constants'
+    import { setImageFile } from "@/src/editor/image/image-parsing.js"
 
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
@@ -202,8 +204,30 @@
                 this.closeMoveToBufferSelector()
             },
 
-            onSaveDrawImage(imageDataUrl) {
-                this.closeDrawImageModal()
+            async onSaveDrawImage(imageId, imageDataUrl) {
+                try {
+                    const editor = toRaw(this.heynoteStore.currentEditor)
+                    if (!editor?.view) {
+                        console.error("No active editor available to update image")
+                        return
+                    }
+                    const response = await fetch(imageDataUrl)
+                    const blob = await response.blob()
+                    const filename = await window.heynote.buffer.saveImage({
+                        data: new Uint8Array(await blob.arrayBuffer()),
+                        mime: blob.type,
+                    })
+                    if (!filename) {
+                        console.error("Failed to save image data")
+                        return
+                    }
+                    const imageUrl = "heynote-file://image/" + encodeURIComponent(filename)
+                    setImageFile(editor.view, imageId, imageUrl)
+                } catch (error) {
+                    console.error("Failed to save drawn image", error)
+                } finally {
+                    this.closeDrawImageModal()
+                }
             },
         },
     }
