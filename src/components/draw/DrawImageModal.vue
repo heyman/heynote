@@ -94,6 +94,7 @@
                 this.isDrawingMode = true
                 this.canvas.on("path:created", this.onPathCreated)
                 this.canvas.on("object:modified", this.onObjectModified)
+                this.canvas.on("object:added", this.onObjectAdded)
                 this.canvas.on("mouse:down", this.onMouseDown)
                 this.canvas.on("mouse:up", this.onMouseUp)
 
@@ -102,6 +103,7 @@
                 brush.width = this.brushWidth
                 brush.shadow = this.isShadowEnabled ? this.createBrushShadow() : null
                 this.canvas.freeDrawingBrush = brush
+                this.applyControlStyles()
 
                 await this.loadImage()
             },
@@ -248,6 +250,15 @@
                 this.captureHistory()
             },
 
+            onObjectAdded(event) {
+                if (this.isRestoring) {
+                    return
+                }
+                if (event?.target) {
+                    this.applyControlStyles(event.target)
+                }
+            },
+
             deleteSelection() {
                 if (!this.canvas || this.isLoading) {
                     return false
@@ -333,6 +344,7 @@
                         object.evented = false
                         object.hasControls = false
                     }
+                    this.applyControlStyles(object)
                 })
                 this.setDrawingMode(this.isDrawingMode)
                 if (this.canvas.freeDrawingBrush) {
@@ -535,13 +547,41 @@
                 this.canvas.isDrawingMode = enabled
                 this.canvas.selection = !enabled
                 this.canvas.defaultCursor = enabled ? "crosshair" : "default"
+                this.applyControlStyles()
                 this.canvas.requestRenderAll()
+            },
+
+            applyControlStyles(target) {
+                if (!this.canvas) {
+                    return
+                }
+                const color = getComputedStyle(document.documentElement)
+                    .getPropertyValue("--draw-element-handle-color")
+                    .trim() || "#007bff"
+                const applyTo = (obj) => {
+                    if (!obj || obj.type === "image") {
+                        return
+                    }
+                    obj.cornerColor = color
+                    obj.borderColor = color
+                    obj.cornerStrokeColor = color
+                    obj.borderDashArray = [5, 5]
+                    obj.borderScaleFactor = 2
+                }
+
+                if (target) {
+                    applyTo(target)
+                    return
+                }
+
+                this.canvas.getObjects().forEach(applyTo)
             },
 
             disposeCanvas() {
                 if (this.canvas) {
                     this.canvas.off("path:created", this.onPathCreated)
                     this.canvas.off("object:modified", this.onObjectModified)
+                    this.canvas.off("object:added", this.onObjectAdded)
                     this.canvas.off("mouse:down", this.onMouseDown)
                     this.canvas.off("mouse:up", this.onMouseUp)
                     this.canvas.dispose()
@@ -577,6 +617,7 @@
                         <label class="color-picker">
                             <input
                                 type="color"
+                                alpha
                                 :value="brushColor"
                                 :disabled="isLoading"
                                 @input="onBrushColorChange"
