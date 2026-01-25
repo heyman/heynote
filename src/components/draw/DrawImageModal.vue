@@ -37,17 +37,21 @@
                 brushColor: "#f42525",
                 brushWidth: 3,
                 isShadowEnabled: false,
+                brushWidthOptions: [1, 3, 5, 7, 10, 15, 24],
+                showBrushMenu: false,
                 isDrawingMode: true,
                 dialogWidth: 920,
                 dialogHeight: 680,
                 chromeWidth: 0,
                 chromeHeight: 0,
+                devicePixelRatio: window.devicePixelRatio,
             }
         },
 
         async mounted() {
             window.addEventListener("keydown", this.onKeyDown)
             window.addEventListener("resize", this.onResize)
+            window.addEventListener("click", this.onWindowClick)
             this.$nextTick(() => {
                 const stage = this.$refs.stage
                 stage?.addEventListener("wheel", this.onWheel, { passive: false })
@@ -58,6 +62,7 @@
         beforeUnmount() {
             window.removeEventListener("keydown", this.onKeyDown)
             window.removeEventListener("resize", this.onResize)
+            window.removeEventListener("click", this.onWindowClick)
             const stage = this.$refs.stage
             stage?.removeEventListener("wheel", this.onWheel)
             this.disposeCanvas()
@@ -137,7 +142,8 @@
                     this.captureHistory(true)
 
                     // calculate brush width
-                    this.brushWidth = Math.min(10, Math.max(4, Math.ceil(width / 300)))
+                    const suggestedWidth = Math.round(Math.max(1, Math.min(15, width / 300)))
+                    this.brushWidth = this.normalizeBrushWidth(suggestedWidth)
                     this.canvas.freeDrawingBrush.width = this.brushWidth
                     //console.log("brush width:", this.brushWidth)
 
@@ -151,6 +157,10 @@
 
             onKeyDown(event) {
                 if (event.key === "Escape") {
+                    if (this.showBrushMenu) {
+                        this.showBrushMenu = false
+                        return
+                    }
                     this.$emit("close")
                     return
                 }
@@ -200,6 +210,16 @@
                 this.$nextTick(() => {
                     this.updateCanvasScale()
                 })
+            },
+
+            onWindowClick(event) {
+                if (!this.showBrushMenu) {
+                    return
+                }
+                const menu = this.$refs.brushMenu
+                if (menu && !menu.contains(event.target)) {
+                    this.showBrushMenu = false
+                }
             },
 
 
@@ -472,6 +492,25 @@
                 }
             },
 
+            normalizeBrushWidth(value) {
+                return this.brushWidthOptions.reduce((closest, option) => {
+                    return Math.abs(option - value) < Math.abs(closest - value) ? option : closest
+                }, this.brushWidthOptions[0])
+            },
+
+            toggleBrushMenu() {
+                this.showBrushMenu = !this.showBrushMenu
+            },
+
+            setBrushWidth(value) {
+                this.brushWidth = value
+                this.showBrushMenu = false
+                if (this.canvas?.freeDrawingBrush) {
+                    this.canvas.freeDrawingBrush.width = this.brushWidth
+                    this.canvas.freeDrawingBrush.shadow = this.isShadowEnabled ? this.createBrushShadow() : null
+                }
+            },
+
             toggleBrushShadow() {
                 this.isShadowEnabled = !this.isShadowEnabled
                 if (this.canvas?.freeDrawingBrush) {
@@ -547,6 +586,31 @@
                             :disabled="isLoading"
                             @click="toggleBrushShadow"
                         ></button>
+                        <div class="brush-dropdown" ref="brushMenu">
+                            <button
+                                class="brush-toggle"
+                                :disabled="isLoading"
+                                @click.stop="toggleBrushMenu"
+                            >
+                                <span
+                                    class="brush-line"
+                                    :style="{ height: `${brushWidth/devicePixelRatio}px`, backgroundColor: brushColor }"
+                                ></span>
+                            </button>
+                            <div v-if="showBrushMenu" class="brush-menu">
+                                <button
+                                    v-for="option in brushWidthOptions"
+                                    :key="option"
+                                    class="brush-option"
+                                    @click.stop="setBrushWidth(option)"
+                                >
+                                    <span
+                                        class="brush-line"
+                                        :style="{ height: `${option/devicePixelRatio}px`, backgroundColor: brushColor }"
+                                    ></span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="header-tools">
@@ -639,6 +703,55 @@
                         display: flex
                         align-items: center
                         gap: 4px
+                    .brush-dropdown
+                        position: relative
+                    .brush-toggle
+                        width: 28px
+                        height: 24px
+                        border-radius: 3px
+                        border: 1px solid #c7c7c7
+                        background: #fff
+                        cursor: pointer
+                        padding: 0
+                        display: inline-flex
+                        align-items: center
+                        justify-content: center
+                        +dark-mode
+                            border-color: #353535
+                            background-color: #1f1f1f
+                            color: #eee
+                        &:disabled
+                            opacity: 0.6
+                            cursor: not-allowed
+                    .brush-menu
+                        position: absolute
+                        top: 100%
+                        right: 0
+                        margin-top: 6px
+                        padding: 6px
+                        display: grid
+                        gap: 4px
+                        background: #fff
+                        border: 1px solid #c7c7c7
+                        border-radius: 4px
+                        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12)
+                        z-index: 2
+                        +dark-mode
+                            background: #1f1f1f
+                            border-color: #444
+                    .brush-option
+                        width: 40px
+                        height: 24px
+                        border: none
+                        background: transparent
+                        cursor: pointer
+                        padding: 0
+                        display: flex
+                        align-items: center
+                        justify-content: center
+                    .brush-line
+                        width: 22px
+                        border-radius: 999px
                     .mode
                         height: 26px
                         width: 26px
