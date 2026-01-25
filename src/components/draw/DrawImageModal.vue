@@ -1,6 +1,6 @@
 <script>
     import { markRaw } from "vue"
-    import { Canvas, PencilBrush, FabricImage } from "fabric"
+    import { Canvas, PencilBrush, FabricImage, Shadow } from "fabric"
 
     export default {
         props: {
@@ -36,9 +36,12 @@
                 isDrawing: false,
                 brushColor: "#f42525",
                 brushWidth: 3,
+                isShadowEnabled: false,
                 isDrawingMode: true,
                 dialogWidth: 920,
                 dialogHeight: 680,
+                chromeWidth: 0,
+                chromeHeight: 0,
             }
         },
 
@@ -92,6 +95,7 @@
                 const brush = new PencilBrush(this.canvas)
                 brush.color = this.brushColor
                 brush.width = this.brushWidth
+                brush.shadow = this.isShadowEnabled ? this.createBrushShadow() : null
                 this.canvas.freeDrawingBrush = brush
 
                 await this.loadImage()
@@ -133,7 +137,7 @@
                     this.captureHistory(true)
 
                     // calculate brush width
-                    this.brushWidth = Math.min(10, Math.max(4, width / 300))
+                    this.brushWidth = Math.min(10, Math.max(4, Math.ceil(width / 300)))
                     this.canvas.freeDrawingBrush.width = this.brushWidth
                     //console.log("brush width:", this.brushWidth)
 
@@ -314,6 +318,7 @@
                 if (this.canvas.freeDrawingBrush) {
                     this.canvas.freeDrawingBrush.color = this.brushColor
                     this.canvas.freeDrawingBrush.width = this.brushWidth
+                    this.canvas.freeDrawingBrush.shadow = this.isShadowEnabled ? this.createBrushShadow() : null
                 }
                 this.canvas.requestRenderAll()
                 this.isRestoring = false
@@ -408,15 +413,32 @@
                 const logicalWidth = this.imageWidth / dpr
                 const logicalHeight = this.imageHeight / dpr
 
-                const chromeWidth = 0
-                const chromeHeight = 140
+                this.measureChrome()
                 const maxWidth = Math.max(minWidth, window.innerWidth)
                 const maxHeight = Math.max(minHeight, window.innerHeight - 60)
-                const desiredWidth = Math.max(minWidth, Math.round(logicalWidth + chromeWidth))
-                const desiredHeight = Math.max(minHeight, Math.round(logicalHeight + chromeHeight))
+                const desiredWidth = Math.max(minWidth, Math.round(logicalWidth + this.chromeWidth))
+                const desiredHeight = Math.max(minHeight, Math.round(logicalHeight + this.chromeHeight))
 
                 this.dialogWidth = Math.min(desiredWidth, maxWidth)
                 this.dialogHeight = Math.min(desiredHeight, maxHeight)
+            },
+
+            measureChrome() {
+                const header = this.$refs.header
+                const bottomBar = this.$refs.bottomBar
+                const content = this.$refs.dialogContent
+
+                const headerHeight = header?.offsetHeight || 0
+                const footerHeight = bottomBar?.offsetHeight || 0
+                const contentHorizontalPadding = content
+                    ? content.offsetWidth - content.clientWidth
+                    : 0
+                const contentVerticalPadding = content
+                    ? content.offsetHeight - content.clientHeight
+                    : 0
+
+                this.chromeWidth = contentHorizontalPadding
+                this.chromeHeight = headerHeight + footerHeight + contentVerticalPadding
             },
 
             zoomIn() {
@@ -450,6 +472,22 @@
                 }
             },
 
+            toggleBrushShadow() {
+                this.isShadowEnabled = !this.isShadowEnabled
+                if (this.canvas?.freeDrawingBrush) {
+                    this.canvas.freeDrawingBrush.shadow = this.isShadowEnabled ? this.createBrushShadow() : null
+                }
+            },
+
+            createBrushShadow() {
+                return new Shadow({
+                    color: "rgba(0, 0, 0, 0.35)",
+                    blur: this.brushWidth,
+                    offsetX: 0,
+                    offsetY: 0,
+                })
+            },
+
             setDrawingMode(enabled) {
                 this.isDrawingMode = enabled
                 if (!this.canvas) {
@@ -478,9 +516,9 @@
 <template>
     <div class="draw-modal">
         <div class="dialog" :style="{ width: `${dialogWidth}px`, height: `${dialogHeight}px` }">
-            <div class="header">
+            <div class="header" ref="header">
                 <div class="header-tools-left">
-                    <div class="mode-toggle">
+                    <div class="button-group">
                         <button
                             class="mode select-mode"
                             :class="{ active: !isDrawingMode }"
@@ -494,14 +532,22 @@
                             @click="setDrawingMode(true)"
                         ></button>
                     </div>
-                    <label class="color-picker">
-                        <input
-                            type="color"
-                            :value="brushColor"
+                    <div class="button-group">
+                        <label class="color-picker">
+                            <input
+                                type="color"
+                                :value="brushColor"
+                                :disabled="isLoading"
+                                @input="onBrushColorChange"
+                            />
+                        </label>
+                        <button
+                            class="mode shadow-mode"
+                            :class="{ active: isShadowEnabled }"
                             :disabled="isLoading"
-                            @input="onBrushColorChange"
-                        />
-                    </label>
+                            @click="toggleBrushShadow"
+                        ></button>
+                    </div>
                 </div>
                 <div class="header-tools">
                     <div class="history-controls">
@@ -516,7 +562,7 @@
                     </div>
                 </div>
             </div>
-            <div class="dialog-content">
+            <div class="dialog-content" ref="dialogContent">
                 <div
                     class="canvas-stage"
                     ref="stage"
@@ -527,7 +573,7 @@
                 </div>
                 <div v-if="loadError" class="error">Failed to load image.</div>
             </div>
-            <div class="bottom-bar">
+            <div class="bottom-bar" ref="bottomBar">
                 <button @click="$emit('close')" class="close">Cancel</button>
                 <button @click="saveImage" class="save" :disabled="isLoading">Save</button>
             </div>
@@ -588,11 +634,11 @@
                 .header-tools-left
                     display: flex
                     align-items: center
-                    gap: 10px
-                    .mode-toggle
+                    gap: 12px
+                    .button-group
                         display: flex
                         align-items: center
-                        gap: 6px
+                        gap: 4px
                     .mode
                         height: 26px
                         width: 26px
@@ -620,6 +666,13 @@
                         &.draw-mode
                             +dark-mode
                                 background-image: url("@/assets/icons/paint-white.svg")
+                        &.shadow-mode
+                            height: 22px
+                            width: 22px
+                            background-size: 14px
+                            background-image: url("@/assets/icons/shadow-light.svg")
+                            +dark-mode
+                                background-image: url("@/assets/icons/shadow-dark.svg")
                         &:disabled
                             opacity: 0.6
                     .color-picker input[type="color"]
@@ -636,7 +689,7 @@
                 .history-controls
                     display: flex
                     align-items: center
-                    gap: 6px
+                    gap: 4px
                     .history
                         height: 26px
                         width: 26px
