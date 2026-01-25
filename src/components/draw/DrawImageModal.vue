@@ -308,7 +308,7 @@
                     format: "png",
                 })
 
-                this.$emit("save", dataUrl)
+                this.$emit("save", this.imageId, dataUrl)
                 this.$emit("close")
             },
 
