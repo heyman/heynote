@@ -177,6 +177,13 @@
                     return
                 }
 
+                const isMod = event.metaKey || event.ctrlKey
+                if (isMod && event.key === "Enter") {
+                    event.preventDefault()
+                    this.saveImage()
+                    return
+                }
+
                 if (event.key === "Backspace" || event.key === "Delete") {
                     if (this.deleteSelection()) {
                         event.preventDefault()
@@ -184,7 +191,6 @@
                     return
                 }
 
-                const isMod = event.metaKey || event.ctrlKey
                 if (!isMod) {
                     return
                 }
