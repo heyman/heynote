@@ -142,7 +142,7 @@
                     this.captureHistory(true)
 
                     // calculate brush width
-                    const suggestedWidth = Math.round(Math.max(1, Math.min(15, width / 300)))
+                    const suggestedWidth = Math.round(Math.max(3, Math.min(15, width / 300)))
                     this.brushWidth = this.normalizeBrushWidth(suggestedWidth)
                     this.canvas.freeDrawingBrush.width = this.brushWidth
                     //console.log("brush width:", this.brushWidth)
@@ -427,8 +427,8 @@
             },
 
             updateDialogSize() {
-                const minWidth = 400
-                const minHeight = 300
+                const minWidth = 440
+                const minHeight = 320
                 const dpr = window.devicePixelRatio || 1
                 const logicalWidth = this.imageWidth / dpr
                 const logicalHeight = this.imageHeight / dpr
