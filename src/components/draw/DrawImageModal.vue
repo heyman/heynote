@@ -563,12 +563,14 @@
                             :class="{ active: !isDrawingMode }"
                             :disabled="isLoading"
                             @click="setDrawingMode(false)"
+                            title="Select"
                         ></button>
                         <button
                             class="mode draw-mode"
                             :class="{ active: isDrawingMode }"
                             :disabled="isLoading"
                             @click="setDrawingMode(true)"
+                            title="Paint Brush"
                         ></button>
                     </div>
                     <div class="button-group">
@@ -585,8 +587,9 @@
                             :class="{ active: isShadowEnabled }"
                             :disabled="isLoading"
                             @click="toggleBrushShadow"
+                            title="Drop Shadow"
                         ></button>
-                        <div class="brush-dropdown" ref="brushMenu">
+                        <div class="brush-dropdown" ref="brushMenu" title="Brush Size">
                             <button
                                 class="brush-toggle"
                                 :disabled="isLoading"
@@ -615,14 +618,14 @@
                 </div>
                 <div class="header-tools">
                     <div class="history-controls">
-                        <button class="history undo" @click="undo" :disabled="historyIndex <= 0 || isLoading"></button>
-                        <button class="history redo" @click="redo" :disabled="historyIndex >= history.length - 1 || isLoading"></button>
+                        <button class="history undo" @click="undo" :disabled="historyIndex <= 0 || isLoading" title="Undo"></button>
+                        <button class="history redo" @click="redo" :disabled="historyIndex >= history.length - 1 || isLoading" title="Redo"></button>
                     </div>
                     <div class="zoom-controls">
-                        <button class="zoom" @click="zoomOut" :disabled="isLoading">-</button>
+                        <button class="zoom zoom-out" @click="zoomOut" :disabled="isLoading"></button>
                         <div class="zoom-value">{{ Math.round(baseScale * zoom * 100) }}%</div>
-                        <button class="zoom" @click="zoomIn" :disabled="isLoading">+</button>
-                        <button class="zoom reset" @click="resetZoom" :disabled="isLoading">Fit</button>
+                        <button class="zoom zoom-in" @click="zoomIn" :disabled="isLoading"></button>
+                        <button class="zoom reset" @click="resetZoom" :disabled="isLoading" title="Reset Zoom"></button>
                     </div>
                 </div>
             </div>
@@ -654,6 +657,16 @@
         left: 0
         bottom: 0
         right: 0
+        --draw-chrome-bg: #eee
+        --draw-chrome-border: #e5e5e5
+        --draw-button-bg: #fff
+        --draw-button-border: #c7c7c7
+
+        +dark-mode
+            --draw-chrome-bg: #2f2f2f
+            --draw-chrome-border: #1e1e1e
+            --draw-button-bg: #1f1f1f
+            --draw-button-border: #404040
 
         .shader
             z-index: 1
@@ -678,12 +691,10 @@
             display: flex
             flex-direction: column
             border-radius: 6px
-            background: #fff
             color: #333
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.2)
             overflow: hidden
             +dark-mode
-                background: #2f2f2f
                 color: #eee
                 box-shadow: 0 0 25px rgba(0, 0, 0, 0.35)
 
@@ -691,10 +702,9 @@
                 display: flex
                 align-items: center
                 justify-content: space-between
-                padding: 10px 18px
-                border-bottom: 1px solid #eee
-                +dark-mode
-                    border-bottom: 1px solid #1e1e1e
+                padding: 8px 18px
+                background-color: var(--draw-chrome-bg)
+                border-bottom: 1px solid var(--draw-chrome-border)
                 .header-tools-left
                     display: flex
                     align-items: center
@@ -709,20 +719,20 @@
                         width: 28px
                         height: 24px
                         border-radius: 3px
-                        border: 1px solid #c7c7c7
-                        background: #fff
+                        border: 1px solid var(--draw-button-border)
+                        background: var(--draw-button-bg)
                         cursor: pointer
                         padding: 0
                         display: inline-flex
                         align-items: center
                         justify-content: center
-                        +dark-mode
-                            border-color: #353535
-                            background-color: #1f1f1f
-                            color: #eee
                         &:disabled
                             opacity: 0.6
                             cursor: not-allowed
+                        &:hover
+                            background-color: #f4f4f4
+                            +dark-mode
+                                background-color: #111
                     .brush-menu
                         position: absolute
                         top: 100%
@@ -749,6 +759,10 @@
                         display: flex
                         align-items: center
                         justify-content: center
+                        &:hover
+                            background-color: #f4f4f4
+                            +dark-mode
+                                background-color: #333
                     .brush-line
                         width: 22px
                         border-radius: 999px
@@ -756,32 +770,33 @@
                         height: 26px
                         width: 26px
                         border-radius: 3px
-                        border: 1px solid #c7c7c7
-                        background: #fff
+                        border: 1px solid var(--draw-button-border)
+                        background-color: var(--draw-button-bg)
                         cursor: pointer
                         font-size: 12px
                         background-size: 13px
                         background-position: center center
                         background-repeat: no-repeat
-                        +dark-mode
-                            border-color: #353535
-                            background-color: #1f1f1f
-                            color: #eee
+                        &:hover
+                            background-color: #f4f4f4
+                            +dark-mode
+                                background-color: #111
+                            
                         &.active
-                            border-color: transparent
-                            color: #fff
-                            border: none
+                            border: 2px solid var(--highlight-color)
                             +dark-mode
                                 border: 2px solid var(--highlight-color)
                         &.select-mode
+                            background-image: url("@/assets/icons/arrow-pointer-black.svg")
                             +dark-mode
                                 background-image: url("@/assets/icons/arrow-pointer-white.svg")
                         &.draw-mode
+                            background-image: url("@/assets/icons/paint-black.svg")
                             +dark-mode
                                 background-image: url("@/assets/icons/paint-white.svg")
                         &.shadow-mode
-                            height: 22px
-                            width: 22px
+                            height: 24px
+                            width: 24px
                             background-size: 14px
                             background-image: url("@/assets/icons/shadow-light.svg")
                             +dark-mode
@@ -789,10 +804,10 @@
                         &:disabled
                             opacity: 0.6
                     .color-picker input[type="color"]
-                        width: 24px
-                        height: 24px
+                        width: 31px
+                        height: 31px
                         padding: 0 2px
-                        background-color: #3e3e3e
+                        background-color: var(--draw-chrome-bg)
                         border: none
                         border-radius: 3px
                 .header-tools
@@ -807,47 +822,71 @@
                         height: 26px
                         width: 26px
                         border-radius: 4px
-                        border: 1px solid #c7c7c7
-                        background: #fff
+                        border: 1px solid var(--draw-button-border)
+                        background: var(--draw-button-bg)
                         cursor: pointer
                         font-size: 12px
                         background-size: 13px
                         background-position: center center
                         background-repeat: no-repeat
-                        background-image: url("@/assets/icons/undo-white.svg")
+                        background-image: url("@/assets/icons/undo-black.svg")
                         +dark-mode
-                            border-color: #444
-                            background-color: #1f1f1f
-                            color: #eee
+                            background-image: url("@/assets/icons/undo-white.svg")
+                        &:hover
+                            background-color: #f4f4f4
+                            +dark-mode
+                                background-color: #111
                         &:disabled
                             opacity: 0.4
+                            &:hover
+                                background-color: var(--draw-button-bg)
+                                +dark-mode
+                                    background-color: var(--draw-button-bg)
                         &.redo
-                            background-image: url("@/assets/icons/redo-white.svg")
+                            background-image: url("@/assets/icons/redo-black.svg")
+                            +dark-mode
+                                background-image: url("@/assets/icons/redo-white.svg")
                 .zoom-controls
                     display: flex
                     align-items: center
-                    gap: 6px
+                    gap: 4px
                     font-size: 12px
                     .zoom
-                        width: 28px
-                        height: 28px
+                        width: 26px
+                        height: 26px
                         border-radius: 4px
-                        border: 1px solid #c7c7c7
-                        background: #fff
+                        border: 1px solid var(--draw-button-border)
+                        background-color: var(--draw-button-bg)
                         cursor: pointer
+                        background-size: 13px
+                        background-position: center center
+                        background-repeat: no-repeat
+                        background-image: url("@/assets/icons/plus-bright-light.svg")
                         +dark-mode
-                            border-color: #444
-                            background: #1f1f1f
-                            color: #eee
+                            background-image: url("@/assets/icons/plus-bright-dark.svg")
                         &:disabled
                             opacity: 0.6
                             cursor: not-allowed
-                    .reset
-                        width: auto
-                        padding: 0 10px
+                        &:hover
+                            background-color: #f4f4f4
+                            +dark-mode
+                                background-color: #111
+                        &.zoom-out
+                            background-image: url("@/assets/icons/minus-bright-light.svg")
+                            +dark-mode
+                                background-image: url("@/assets/icons/minus-bright-dark.svg")
+                        &.reset
+                            background-image: url("@/assets/icons/fit-zoom-light.svg")
+                            background-size: 16px
+                            +dark-mode
+                                background-image: url("@/assets/icons/fit-zoom-dark.svg")
                     .zoom-value
-                        min-width: 48px
+                        color: #555
+                        font-size: 11px
+                        min-width: 32px
                         text-align: center
+                        +dark-mode
+                            color: #bbb
 
             .dialog-content
                 flex-grow: 1
@@ -868,7 +907,6 @@
                         align-items: flex-start
                         justify-content: flex-start
                     +dark-mode
-                        //border-color: #1f1f1f
                         background: #222
                     canvas
                         display: block
@@ -879,37 +917,40 @@
 
             .bottom-bar
                 box-sizing: border-box
-                background: #f0f0f0
+                background-color: var(--draw-chrome-bg)
+                border-top: 1px solid var(--draw-chrome-border)
                 text-align: right
                 padding: 10px 18px
                 display: flex
                 justify-content: flex-end
                 gap: 10px
-                border-top: 1px solid #eee
-                +dark-mode
-                    background: #2f2f2f
-                    border-top: 1px solid #1e1e1e
                 button
                     height: 32px
                     padding: 0 14px
                     border-radius: 4px
                     border: 1px solid transparent
                     cursor: pointer
-                .close
-                    background: transparent
-                    border-color: #c7c7c7
-                    color: inherit
-                    +dark-mode
-                        border-color: #444
+                    &.close
+                        background: transparent
+                        border-color: var(--draw-button-border)
+                        color: inherit
                         &:hover
-                            background: #444
-                            
-                .save
-                    background: #555
-                    color: #fff
-                    &:disabled
-                        opacity: 0.6
-                        cursor: not-allowed
-                    &:hover
-                        background: #777
+                            background: #f5f5f5
+                        +dark-mode
+                            border-color: #444
+                            &:hover
+                                background: #444
+                                
+                    &.save
+                        background: #f9f9f9
+                        border: 1px solid var(--draw-button-border)
+                        color: #444
+                        &:hover
+                            background: #fff
+                        +dark-mode
+                            background: #555
+                            color: #fff
+                            border: none
+                            &:hover
+                                background: #777
 </style>
