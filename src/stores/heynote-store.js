@@ -1,6 +1,7 @@
 import { toRaw, nextTick, watch } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../common/note-format"
+import { toSafeBrowserLocale } from "../util/locale.js"
 import { useEditorCacheStore } from "./editor-cache"
 import { 
     SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, 
@@ -397,5 +398,5 @@ export async function initHeynoteStore() {
     watch(() => heynoteStore.currentBufferPath, () => heynoteStore.saveTabsState())
     watch(() => heynoteStore.openTabs, () => heynoteStore.saveTabsState())
 
-    heynoteStore.systemLocale = await window.heynote.getSystemLocale()
+    heynoteStore.systemLocale = toSafeBrowserLocale(await window.heynote.getSystemLocale())
 }
