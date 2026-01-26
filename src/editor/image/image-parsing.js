@@ -1,3 +1,5 @@
+import { EditorSelection } from "@codemirror/state"
+
 import { heynoteEvent, IMAGE_RESIZE } from "../annotation.js"
 import { IMAGE_REGEX } from "@/src/common/constants.js"
 
@@ -119,7 +121,8 @@ export function setImageFile(view, id, file) {
                 to: image.to,
                 insert: createImageTag(image),
             },
-        }))
+            selection: EditorSelection.cursor(image.to, -1)
+        }, {scrollIntoView: true}))
     } else {
         console.error(`Image with id ${id} not found`)
     }
