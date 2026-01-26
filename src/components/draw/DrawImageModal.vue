@@ -1,5 +1,7 @@
 <script>
     import { markRaw } from "vue"
+    import { mapStores } from "pinia"
+    import { useSettingsStore } from "@/src/stores/settings-store.js"
     import { Canvas, PencilBrush, FabricImage, Shadow } from "fabric"
 
     export default {
@@ -36,7 +38,7 @@
                 isDrawing: false,
                 brushColor: "#f42525",
                 brushWidth: 3,
-                isShadowEnabled: false,
+                isShadowEnabled: true,
                 brushWidthOptions: [1, 3, 5, 7, 10, 15, 24],
                 showBrushMenu: false,
                 isDrawingMode: true,
@@ -56,6 +58,7 @@
                 const stage = this.$refs.stage
                 stage?.addEventListener("wheel", this.onWheel, { passive: false })
             })
+            this.applyStoredDrawSettings()
             await this.initCanvas()
         },
 
@@ -72,6 +75,10 @@
             imageUrl() {
                 this.initCanvas()
             },
+        },
+
+        computed: {
+            ...mapStores(useSettingsStore),
         },
 
         methods: {
@@ -507,6 +514,7 @@
                 if (this.canvas?.freeDrawingBrush) {
                     this.canvas.freeDrawingBrush.color = this.brushColor
                 }
+                this.persistDrawSettings()
             },
 
             normalizeBrushWidth(value) {
@@ -533,6 +541,7 @@
                 if (this.canvas?.freeDrawingBrush) {
                     this.canvas.freeDrawingBrush.shadow = this.isShadowEnabled ? this.createBrushShadow() : null
                 }
+                this.persistDrawSettings()
             },
 
             createBrushShadow() {
@@ -541,6 +550,25 @@
                     blur: this.brushWidth,
                     offsetX: 0,
                     offsetY: 0,
+                })
+            },
+
+            applyStoredDrawSettings() {
+                const stored = this.settingsStore?.settings?.drawSettings
+                if (stored?.color) {
+                    this.brushColor = stored.color
+                }
+                if (stored?.shadowEnabled !== undefined) {
+                    this.isShadowEnabled = stored.shadowEnabled === true
+                }
+            },
+
+            persistDrawSettings() {
+                this.settingsStore.updateSettings({
+                    drawSettings: {
+                        color: this.brushColor,
+                        shadowEnabled: this.isShadowEnabled,
+                    },
                 })
             },
 
