@@ -62,6 +62,7 @@
             overflow: hidden
             container-type: inline-size
             button
+                height: 24px
                 font-size: 12px
                 background-color: #646e71
                 color: #fff
@@ -80,11 +81,18 @@
                 min-width: 0
                 white-space: nowrap
                 overflow: hidden
+                margin-right: 4px
                 &:hover
                     background-color: #51595c
                     opacity: 1.0
-                @container (max-width: 50px)
+                @container (max-width: 100px)
+                    padding: 3px 12px
+                    span
+                        display: none
+                @container (max-width: 48px)
                     display: none
+                &.draw
+                    background-image: url("@/assets/icons/pencil-white.svg")
                 
 
     

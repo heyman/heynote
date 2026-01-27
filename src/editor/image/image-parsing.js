@@ -1,3 +1,5 @@
+import { EditorSelection } from "@codemirror/state"
+
 import { heynoteEvent, IMAGE_RESIZE } from "../annotation.js"
 import { IMAGE_REGEX } from "@/src/common/constants.js"
 
@@ -104,5 +106,24 @@ export function setImageDisplayDimensions(view, id, width, height) {
             },
             annotations: [heynoteEvent.of(IMAGE_RESIZE)],
         }))
+    }
+}
+
+export function setImageFile(view, id, file) {
+    const images = Object.fromEntries(parseImages(view.state).map(img => [img.id, img]))
+
+    if (Object.hasOwn(images, id)) {
+        const image = images[id]
+        image.file = file
+        view.dispatch(view.state.update({
+            changes: {
+                from: image.from,
+                to: image.to,
+                insert: createImageTag(image),
+            },
+            selection: EditorSelection.cursor(image.to, -1)
+        }, {scrollIntoView: true}))
+    } else {
+        console.error(`Image with id ${id} not found`)
     }
 }

@@ -3,6 +3,7 @@ import { WidgetType } from "@codemirror/view"
 
 import { copyImage } from "../clipboard/copy-paste.js"
 import { setImageDisplayDimensions } from "./image-parsing.js"
+import { useHeynoteStore } from "../../stores/heynote-store.js"
 
 const FOLDED_HEIGHT = 16
 
@@ -63,6 +64,7 @@ export class ImageWidget extends WidgetType {
 
     toDOM(view) {
         //console.log("toDOM", this.selected, this.height)
+        const heynoteStore = useHeynoteStore()
         let wrap = document.createElement("div")
         wrap.dataset.id = this.id
         wrap.dataset.idealWidth = this.idealWidth
@@ -91,7 +93,7 @@ export class ImageWidget extends WidgetType {
         buttonsContainer.className = "buttons-container"
         inner.appendChild(buttonsContainer)
         const copyButton = document.createElement("button")
-        copyButton.innerHTML = "Copy"
+        copyButton.innerHTML = "<span>Copy</span>"
         buttonsContainer.appendChild(copyButton)
         copyButton.addEventListener("mousedown", (event) => {
             event.preventDefault()
@@ -105,12 +107,23 @@ export class ImageWidget extends WidgetType {
             }, 2000)
         })
         
-        
         let img = document.createElement("img")
         img.src = this.path
         img.style.height = this.getHeight(img)
         img.style.width = this.getWidth(img)
         inner.appendChild(img)
+
+        const drawButton = document.createElement("button")
+        drawButton.className = "draw"
+        drawButton.innerHTML = "<span>Draw</span>"
+        buttonsContainer.appendChild(drawButton)
+        drawButton.addEventListener("mousedown", (event) => {
+            event.preventDefault()
+        })
+        drawButton.addEventListener("click", (event) => {
+            event.preventDefault()
+            heynoteStore.openDrawImageModal(img.src, wrap.dataset.id)
+        })
         
 
         let initialWidth, initialHeight, initialX, initialY

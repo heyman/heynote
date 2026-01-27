@@ -70,6 +70,7 @@
     "electron-builder": "^26.4.0",
     "electron-store": "^8.1.0",
     "electron-updater": "^6.6.2",
+    "fabric": "^7.1.0",
     "fs-jetpack": "^5.1.0",
     "heynote-lang-mathjs": "^1.0.1",
     "lezer-elixir": "^1.1.2",

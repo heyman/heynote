@@ -1,4 +1,5 @@
 <script>
+    import { toRaw } from 'vue'
     import { mapState, mapActions } from 'pinia'
 
     import { mapWritableState, mapStores } from 'pinia'
@@ -8,6 +9,7 @@
     import { useEditorCacheStore } from '../stores/editor-cache'
 
     import { OPEN_SETTINGS_EVENT, MOVE_BLOCK_EVENT, CHANGE_BUFFER_EVENT } from '@/src/common/constants'
+    import { setImageFile } from "@/src/editor/image/image-parsing.js"
 
     import StatusBar from './StatusBar.vue'
     import Editor from './Editor.vue'
@@ -18,6 +20,7 @@
     import NewBuffer from './NewBuffer.vue'
     import EditBuffer from './EditBuffer.vue'
     import TabBar from './tabs/TabBar.vue'
+    import DrawImageModal from './draw/DrawImageModal.vue'
 
     export default {
         components: {
@@ -30,6 +33,7 @@
             NewBuffer,
             EditBuffer,
             TabBar,
+            DrawImageModal,
         },
 
         data() {
@@ -91,6 +95,7 @@
             showEditBuffer(value) { this.dialogWatcher(value) },
             showMoveToBufferSelector(value) { this.dialogWatcher(value) },
             showCommandPalette(value) { this.dialogWatcher(value) },
+            showDrawImageModal(value) { this.dialogWatcher(value) },
 
             currentBufferPath() {
                 this.focusEditor()
@@ -112,6 +117,9 @@
                 "showEditBuffer",
                 "showMoveToBufferSelector",
                 "showCommandPalette",
+                "showDrawImageModal",
+                "drawImageUrl",
+                "drawImageId",
                 "isFullscreen",
             ]),
             ...mapState(useSettingsStore, [
@@ -119,7 +127,7 @@
             ]),
 
             dialogVisible() {
-                return this.showLanguageSelector || this.showBufferSelector || this.showCreateBuffer || this.showEditBuffer || this.showMoveToBufferSelector || this.showCommandPalette || this.showSettings
+                return this.showLanguageSelector || this.showBufferSelector || this.showCreateBuffer || this.showEditBuffer || this.showMoveToBufferSelector || this.showCommandPalette || this.showDrawImageModal || this.showSettings
             },
 
             editorInert() {
@@ -145,6 +153,7 @@
                 "closeBufferSelector",
                 "openBuffer",
                 "closeMoveToBufferSelector",
+                "closeDrawImageModal",
                 "deleteBuffer",
                 "focusEditor",
             ]),
@@ -193,6 +202,32 @@
             onMoveCurrentBlockToOtherEditor(path) {
                 this.editorCacheStore.moveCurrentBlockToOtherEditor(path)
                 this.closeMoveToBufferSelector()
+            },
+
+            async onSaveDrawImage(imageId, imageDataUrl) {
+                try {
+                    const editor = toRaw(this.heynoteStore.currentEditor)
+                    if (!editor?.view) {
+                        console.error("No active editor available to update image")
+                        return
+                    }
+                    const response = await fetch(imageDataUrl)
+                    const blob = await response.blob()
+                    const filename = await window.heynote.buffer.saveImage({
+                        data: new Uint8Array(await blob.arrayBuffer()),
+                        mime: blob.type,
+                    })
+                    if (!filename) {
+                        console.error("Failed to save image data")
+                        return
+                    }
+                    const imageUrl = "heynote-file://image/" + encodeURIComponent(filename)
+                    setImageFile(editor.view, imageId, imageUrl)
+                } catch (error) {
+                    console.error("Failed to save drawn image", error)
+                } finally {
+                    this.closeDrawImageModal()
+                }
             },
         },
     }
@@ -261,6 +296,13 @@
             <EditBuffer 
                 v-if="showEditBuffer"
                 @close="closeDialog"
+            />
+            <DrawImageModal
+                v-if="showDrawImageModal"
+                :imageUrl="drawImageUrl"
+                :imageId="drawImageId"
+                @close="closeDrawImageModal"
+                @save="onSaveDrawImage"
             />
             <ErrorMessages />
         </div>
