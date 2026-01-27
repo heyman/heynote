@@ -35,6 +35,19 @@ test.beforeEach(async ({ page }) => {
     });
     heynotePage = new HeynotePage(page);
     await heynotePage.goto();
+    await heynotePage.page.evaluate(async () => {
+        const img = new Image();
+        img.src = "/icon.png";
+        await img.decode();
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        window.__baseImageDataUrl = canvas.toDataURL("image/png");
+        const base64 = window.__baseImageDataUrl.split(",")[1] || "";
+        window.__baseImageSize = atob(base64).length;
+    });
 });
 
 test("draw modal saves image and updates tag", async () => {
@@ -55,6 +68,7 @@ test("draw modal saves image and updates tag", async () => {
                     binary += String.fromCharCode(byte);
                 }
                 window.__mockSavedImageDataUrl = `data:${payload.mime};base64,${btoa(binary)}`;
+                window.__mockSavedImageSize = bytes.length;
             }
             return "drawn-test.png";
         };
@@ -99,8 +113,59 @@ test("draw modal saves image and updates tag", async () => {
     expect(saveCall.mime).toBe("image/png");
     expect(saveCall.size).toBeGreaterThan(0);
 
+    const sizeChanged = await heynotePage.page.evaluate(() => {
+        return window.__mockSavedImageSize !== window.__baseImageSize;
+    });
+    expect(sizeChanged).toBe(true);
+
     const updatedContent = await heynotePage.getContent();
     const images = parseImagesFromString(updatedContent);
     const image = images.find((entry) => entry.id === "img-draw-1");
     expect(image?.file).toBe("heynote-file://image/drawn-test.png");
+});
+
+test("draw modal saves without drawing keeps image unchanged", async () => {
+    await heynotePage.page.evaluate(() => {
+        window.__saveImageCalls = [];
+        window.heynote.buffer.saveImage = async (payload) => {
+            if (payload?.data && payload?.mime) {
+                const bytes = payload.data instanceof Uint8Array ? payload.data : new Uint8Array(payload.data);
+                let binary = "";
+                for (const byte of bytes) {
+                    binary += String.fromCharCode(byte);
+                }
+                window.__mockSavedImageDataUrl = `data:${payload.mime};base64,${btoa(binary)}`;
+                window.__mockSavedImageSize = bytes.length;
+            }
+            return "drawn-test.png";
+        };
+    });
+
+    const tag = "<∞img;id=img-draw-2;file=/icon.png;w=120;h=120∞>";
+    await heynotePage.setContent(buildContent(tag));
+
+    const imageWidget = heynotePage.page.locator(".heynote-image");
+    await expect(imageWidget).toBeVisible();
+    await imageWidget.hover();
+
+    const drawButton = heynotePage.page.locator(".heynote-image .buttons-container .draw");
+    await expect(drawButton).toBeVisible();
+    await drawButton.click();
+
+    const modal = heynotePage.page.locator(".draw-modal");
+    await expect(modal).toBeVisible();
+    await expect(modal.locator("canvas").first()).toBeVisible();
+
+    await modal.locator(".bottom-bar .save").click();
+    await expect(modal).toHaveCount(0);
+
+    await expect.poll(async () => {
+        return await heynotePage.page.evaluate(() => window.__mockSavedImageSize || 0);
+    }).toBeGreaterThan(0);
+
+    const isUnchanged = await heynotePage.page.evaluate(() => {
+        return window.__mockSavedImageDataUrl === window.__baseImageDataUrl
+            && window.__mockSavedImageSize === window.__baseImageSize;
+    });
+    expect(isUnchanged).toBe(true);
 });
