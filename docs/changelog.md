@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.8.0-beta.3 (not released yet)
+## 2.8.0-beta.4
 
 ### Images
 
@@ -15,6 +15,10 @@ on the system clipboard.
   <img src="https://heynote.com/img/light/images.png" width="400" alt="New image feature">
 </picture>
 
+### Drawing on images
+
+Heynote comes with a lightweight drawing tool for adding quick, freehand annotations on top of images.
+
 
 ### Other changes
 
@@ -23,6 +27,10 @@ on the system clipboard.
   (other languages should already have this behaviour for new lines)
 - Add support for [Mermaid](https://mermaid.js.org/) blocks
 
+
+## v2.7.2
+
+- Fix issue causing broken status bar on some system locales (#434)
 
 ## 2.7.1
 
