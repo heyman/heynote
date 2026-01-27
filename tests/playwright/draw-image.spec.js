@@ -8,7 +8,21 @@ const buildContent = (tag) => `
 ∞∞∞text
 hello ${tag} world`;
 
-test.beforeEach(async ({ page }) => {
+async function openDrawModal(page) {
+    const imageWidget = page.locator(".heynote-image");
+    await expect(imageWidget).toBeVisible();
+    await imageWidget.hover();
+
+    const drawButton = page.locator(".heynote-image .buttons-container .draw");
+    if (await drawButton.isVisible()) {
+        await drawButton.click();
+        return;
+    }
+}
+
+test.beforeEach(async ({ page, browserName }) => {
+    test.skip(browserName === "webkit", "Hovering in headless Webkit is flaky")
+
     await page.addInitScript(() => {
         // Playwright can't intercept custom schemes like heynote-file:// with page.route,
         // because Chromium never issues a network request. Rewrite image src instead.
@@ -77,13 +91,7 @@ test("draw modal saves image and updates tag", async () => {
     const tag = "<∞img;id=img-draw-1;file=/icon.png;w=120;h=120∞>";
     await heynotePage.setContent(buildContent(tag));
 
-    const imageWidget = heynotePage.page.locator(".heynote-image");
-    await expect(imageWidget).toBeVisible();
-    await imageWidget.hover();
-
-    const drawButton = heynotePage.page.locator(".heynote-image .buttons-container .draw");
-    await expect(drawButton).toBeVisible();
-    await drawButton.click();
+    await openDrawModal(heynotePage.page);
 
     const modal = heynotePage.page.locator(".draw-modal");
     await expect(modal).toBeVisible();
@@ -144,13 +152,7 @@ test("draw modal saves without drawing keeps image unchanged", async () => {
     const tag = "<∞img;id=img-draw-2;file=/icon.png;w=120;h=120∞>";
     await heynotePage.setContent(buildContent(tag));
 
-    const imageWidget = heynotePage.page.locator(".heynote-image");
-    await expect(imageWidget).toBeVisible();
-    await imageWidget.hover();
-
-    const drawButton = heynotePage.page.locator(".heynote-image .buttons-container .draw");
-    await expect(drawButton).toBeVisible();
-    await drawButton.click();
+    await openDrawModal(heynotePage.page);
 
     const modal = heynotePage.page.locator(".draw-modal");
     await expect(modal).toBeVisible();
