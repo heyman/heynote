@@ -94,6 +94,7 @@
     "electron-log": "^5.0.1",
     "fuzzysort": "^3.0.2",
     "mime-types": "^3.0.2",
+    "npm": "^11.8.0",
     "pinia": "^2.1.7",
     "pinyin-pro": "^3.27.0",
     "semver": "^7.6.3"
