@@ -17,7 +17,7 @@ on the system clipboard.
 
 ### Drawing on images
 
-Heynote comes with a lightweight drawing tool for adding quick, freehand annotations on top of images.
+Heynote now includes a lightweight drawing tool for adding quick, freehand annotations on top of images.
 
 
 ### Other changes
