@@ -38,7 +38,7 @@
                 isDrawing: false,
                 brushColor: "#f42525",
                 brushWidth: 3,
-                isShadowEnabled: true,
+                isShadowEnabled: false,
                 brushWidthOptions: [1, 3, 5, 7, 10, 15, 24],
                 showBrushMenu: false,
                 isDrawingMode: true,
