@@ -1,6 +1,7 @@
-import { net, protocol } from "electron"
+import { protocol } from "electron"
 import * as path from "node:path"
-import { pathToFileURL } from "node:url"
+import * as jetpack from "fs-jetpack"
+import * as mimetypes from "mime-types"
 
 
 export function registerProtocolBeforeAppReady() {
@@ -22,7 +23,12 @@ export function registerProtocol(fileLibrary) {
         const filename = decodeURIComponent(encodedPath)
         const filePath = path.join(fileLibrary.imagesBasePath, filename);
 
-        // net.fetch + file URL is the modern recommended pattern
-        return net.fetch(pathToFileURL(filePath).toString())
+        const data = await jetpack.readAsync(filePath, "buffer")
+        if (!data) {
+            return new Response("Not found", { status: 404 })
+        }
+
+        const contentType = mimetypes.lookup(filePath) || "application/octet-stream"
+        return new Response(data, { headers: { "Content-Type": contentType } })
     })
 }
