@@ -43,9 +43,7 @@
                 event.preventDefault()
                 //console.log("event", event, event.code, keyName(event))
 
-                if (event.key === "Enter") {
-                    this.$emit("enter")
-                } else if (event.key === "Escape") {
+                if (event.key === "Escape") {
                     if (this.keys.length > 0) {
                         this.keys = []
                     } else {

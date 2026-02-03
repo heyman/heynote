@@ -26,6 +26,7 @@ Heynote now includes a lightweight drawing tool for adding quick, freehand annot
 - New lines in a Plaintext, Math and SQL blocks now inherits the indentation from the previous line
   (other languages should already have this behaviour for new lines)
 - Add support for [Mermaid](https://mermaid.js.org/) blocks
+- Fix issue not being able to record the Enter key when creating custom key bindings
 
 
 ## v2.7.2

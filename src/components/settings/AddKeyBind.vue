@@ -97,7 +97,7 @@
                             ref="keys"
                         />
                     </div>
-                    <div class="field">
+                    <div class="field command-field">
                         <label>Command</label>
                         <AutoComplete
                             dropdown
