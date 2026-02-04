@@ -41,7 +41,7 @@ detectionWorker.onmessage = (event) => {
     const block = getActiveNoteBlock(state)
     const newLang = GUESSLANG_TO_TOKEN[event.data.guesslang.language]
     if (block.language.auto === true && block.language.name !== newLang) {
-        console.log("New auto detected language:", newLang, "Confidence:", event.data.guesslang.confidence)
+        //console.log("New auto detected language:", newLang, "Confidence:", event.data.guesslang.confidence)
         let content = state.doc.sliceString(block.content.from, block.content.to)
         const threshold = content.length * 0.1
         if (levenshtein_distance(content, event.data.content) <= threshold) {

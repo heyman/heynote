@@ -40,7 +40,7 @@ onmessage = (event) => {
     //let startTime = performance.now()
     guessLang.runModel(content).then((result) => {
         //const duration = performance.now() - startTime
-        console.log("Guessing language done:", result, result[0]?.languageId, result[0]?.confidence)
+        //console.log("Guessing language done:", result, result[0]?.languageId, result[0]?.confidence)
         //console.log("Guessing language took", duration, "ms")
 
         if (result.length > 0) {
