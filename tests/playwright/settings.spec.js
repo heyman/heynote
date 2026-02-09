@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { HeynotePage } from "./test-utils.js";
 
+/** @type HeynotePage */
 let heynotePage
 
 test.beforeEach(async ({ page }) => {
@@ -37,4 +38,15 @@ test("test change line gutter setting", async ({ page }) => {
     await page.getByLabel("Show line numbers").click()
     await expect(page.locator("css=.cm-lineNumbers")).toBeVisible()
     expect((await heynotePage.getStoredSettings()).showLineNumberGutter).toBe(true)
+})
+
+test("test load editor without fold gutter", async({ page }) => {
+    expect(await page.locator(".cm-foldGutter")).toHaveCount(1)
+    await page.evaluate(() => {
+        localStorage.setItem("settings", JSON.stringify({showFoldGutter:false}))
+    })
+    await heynotePage.goto()
+    await page.locator("body").pressSequentially("hejsan")
+    await expect.poll(async () => heynotePage.getBlockContent(0)).toBe("hejsan")
+    expect(await page.locator(".cm-foldGutter")).toHaveCount(0)
 })

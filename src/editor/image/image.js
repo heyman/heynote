@@ -62,9 +62,12 @@ export const imageExtension = () => {
 
         // Construct a Set of all the positions where a fold starts
         const foldStarts = new Set()
-        state.field(foldState, false).between(0, state.doc.length, (from, _to, _value) => {
-            foldStarts.add(from)
-        })
+        const foldRanges = state.field(foldState, false)
+        if (foldRanges) {
+            foldRanges.between(0, state.doc.length, (from, _to, _value) => {
+                foldStarts.add(from)
+            })
+        }
 
         let foundSelectedImage = false
         state.field(imageState).forEach(image => {
