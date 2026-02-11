@@ -2,6 +2,10 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## 2.8.2
+
+- Fix issue with broken images after changing the buffer files path
+
 ## 2.8.1
 
 - Fix crash when fold gutter is turned off
