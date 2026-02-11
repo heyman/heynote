@@ -408,8 +408,6 @@ registerProtocolBeforeAppReady()
 app.whenReady().then(createWindow).then(async () => {
     initFileLibrary(win).then(() => {
         setupFileLibraryEventHandlers()
-        // set up handlers for heynote-file:// protocol
-        registerProtocol(fileLibrary)
     })
     initializeAutoUpdate(win)
     registerGlobalHotkey()
@@ -518,6 +516,11 @@ async function initFileLibrary(win) {
         initErrors.push(`Error: ${error.message}`)
     }
     setCurrentFileLibrary(fileLibrary)
+
+    // set up handlers for heynote-file:// protocol
+    if (fileLibrary) {
+        registerProtocol(fileLibrary)
+    }
 }
 
 ipcMain.handle("getInitErrors", () => {
@@ -551,8 +554,8 @@ ipcMain.handle('settings:set', async (event, settings) => {
         console.log("bufferPath changed, closing existing file library")
         fileLibrary.close()
         console.log("initializing new file library")
-        initFileLibrary(win)
-        await win.webContents.send("library:pathChanged")
+        await initFileLibrary(win)
+        win.webContents.send("library:pathChanged")
     }
 })
 
