@@ -70,7 +70,6 @@ def strict_function():
     expect(classToken).not.toBe(strictModelToken)
 })
 
->>>>>>> c09c3de (Add selection word count to status bar (issue #458))
 test("checkbox toggle", async ({ page }) => {
     await heynotePage.setContent(`
 ∞∞∞markdown
