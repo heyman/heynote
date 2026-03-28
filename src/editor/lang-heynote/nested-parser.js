@@ -1,41 +1,109 @@
 import { parseMixed } from "@lezer/common"
 
 import { jsonLanguage } from "@codemirror/lang-json"
-import { pythonLanguage, python } from "@codemirror/lang-python"
-import { javascriptLanguage, javascript } from "@codemirror/lang-javascript"
-import { htmlLanguage, html } from "@codemirror/lang-html"
+import { pythonLanguage } from "@codemirror/lang-python"
+import { javascriptLanguage, jsxLanguage, tsxLanguage, typescriptLanguage } from "@codemirror/lang-javascript"
+import { htmlLanguage } from "@codemirror/lang-html"
 import { sql } from "@codemirror/lang-sql"
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
-import { javaLanguage, java } from "@codemirror/lang-java"
+import { javaLanguage } from "@codemirror/lang-java"
 import { lezerLanguage } from "@codemirror/lang-lezer"
 import { phpLanguage } from "@codemirror/lang-php"
-import { rust } from "@codemirror/lang-rust"
-import { cpp } from "@codemirror/lang-cpp"
-import { xml } from "@codemirror/lang-xml"
-import { csharp } from "@replit/codemirror-lang-csharp"
+import { cssLanguage } from "@codemirror/lang-css"
+import { cppLanguage } from "@codemirror/lang-cpp"
+import { xmlLanguage } from "@codemirror/lang-xml"
+import { rustLanguage } from "@codemirror/lang-rust"
+import { csharpLanguage } from "@replit/codemirror-lang-csharp"
+import { vueLanguage } from "@codemirror/lang-vue"
 import { elixirLanguage } from "codemirror-lang-elixir"
 import { mermaidLanguage } from 'codemirror-lang-mermaid'
+
+import { StreamLanguage } from "@codemirror/language"
+import { ruby } from "@codemirror/legacy-modes/mode/ruby"
+import { shell } from "@codemirror/legacy-modes/mode/shell"
+import { yaml } from "@codemirror/legacy-modes/mode/yaml"
+import { go } from "@codemirror/legacy-modes/mode/go"
+import { clojure } from "@codemirror/legacy-modes/mode/clojure"
+import { erlang } from "@codemirror/legacy-modes/mode/erlang"
+import { toml } from "@codemirror/legacy-modes/mode/toml"
+import { swift } from "@codemirror/legacy-modes/mode/swift"
+import { kotlin, dart, scala } from "@codemirror/legacy-modes/mode/clike"
+import { groovy } from "@codemirror/legacy-modes/mode/groovy"
+import { diff } from "@codemirror/legacy-modes/mode/diff"
+import { powerShell } from "@codemirror/legacy-modes/mode/powershell"
+import { lua } from "@codemirror/legacy-modes/mode/lua"
 
 import { NoteContent, NoteLanguage } from "./parser.terms.js"
 import { LANGUAGES } from "../languages.js"
 
 const languageMapping = Object.fromEntries(LANGUAGES.map(l => [l.token, l.parser]))
 
-const markdownCodeLanguages = (info) => {
+const fallbackLanguageMapping = {
+    js: "javascript",
+    ts: "typescript",
+    py: "python",
+    sh: "shell",
+    bash: "shell",
+    yml: "yaml",
+    cplusplus: "cpp",
+    "c++": "cpp",
+    "c#": "csharp",
+    csharp: "csharp",
+    go: "golang",
+    rb: "ruby",
+    pwsh: "powershell",
+}
+
+const knownCodeLanguages = {
+    json: jsonLanguage,
+    python: pythonLanguage,
+    javascript: javascriptLanguage,
+    typescript: typescriptLanguage,
+    jsx: jsxLanguage,
+    tsx: tsxLanguage,
+    html: htmlLanguage,
+    java: javaLanguage,
+    php: phpLanguage,
+    css: cssLanguage,
+    xml: xmlLanguage,
+    sql: sql().language,
+    cpp: cppLanguage,
+    rust: rustLanguage,
+    csharp: csharpLanguage,
+    ruby: StreamLanguage.define(ruby),
+    shell: StreamLanguage.define(shell),
+    yaml: StreamLanguage.define(yaml),
+    toml: StreamLanguage.define(toml),
+    golang: StreamLanguage.define(go),
+    clojure: StreamLanguage.define(clojure),
+    elixir: elixirLanguage,
+    erlang: StreamLanguage.define(erlang),
+    swift: StreamLanguage.define(swift),
+    kotlin: StreamLanguage.define(kotlin),
+    dart: StreamLanguage.define(dart),
+    scala: StreamLanguage.define(scala),
+    groovy: StreamLanguage.define(groovy),
+    diff: StreamLanguage.define(diff),
+    powershell: StreamLanguage.define(powerShell),
+    lua: StreamLanguage.define(lua),
+    vue: vueLanguage,
+    mermaid: mermaidLanguage,
+}
+
+function normalizeLanguageName(info) {
     if (!info || typeof info !== "string") return null
-    const name = info.trim().toLowerCase()
+    let name = info.trim().toLowerCase()
+    if (name.startsWith("lang-")) name = name.slice(5)
+    name = name.split(/\s+/)[0]
+    if (!name) return null
+    if (name in fallbackLanguageMapping) return fallbackLanguageMapping[name]
+    return name
+}
 
-    if (name === "js" || name === "javascript") return javascript().language
-    if (name === "py" || name === "python") return python().language
-    if (name === "html" || name === "xhtml") return html().language
-    if (name === "java") return java().language
-    if (name === "sql") return sql().language
-    if (name === "rust") return rust().language
-    if (name === "cpp" || name === "c++") return cpp().language
-    if (name === "xml" || name === "xhtml") return xml().language
-    if (name === "c#" || name === "csharp") return csharp().language
-
-    return null
+export const markdownCodeLanguages = (info) => {
+    const name = normalizeLanguageName(info)
+    if (!name) return null
+    return knownCodeLanguages[name] || null
 }
 
 const markdownParserWithCode = markdown({
@@ -50,27 +118,29 @@ export function configureNesting() {
         if (id == NoteContent) {
             let noteLang = node.node.parent.firstChild.getChildren(NoteLanguage)[0]
             let langName = input.read(noteLang?.from, noteLang?.to)
-            
+            let normalizedLang = normalizeLanguageName(langName) || langName
+
             // if the NoteContent is empty, we don't want to return a parser, since that seems to cause an 
             // error for StreamLanguage parsers when the buffer size is large (e.g >300 kb)
             if (node.node.from == node.node.to) {
                 return null
             }
-            
-            if (langName === "markdown") {
+
+            if (normalizedLang === "markdown") {
                 return {
                     parser: markdownParserWithCode,
-                    overlay: [{from:node.from, to:node.to}],
+                    overlay: [{ from: node.from, to: node.to }],
                 }
             }
 
-            if (langName in languageMapping && languageMapping[langName] !== null) {
+            if (normalizedLang in languageMapping && languageMapping[normalizedLang] !== null) {
                 return {
-                    parser: languageMapping[langName],
-                    overlay: [{from:node.from, to:node.to}],
+                    parser: languageMapping[normalizedLang],
+                    overlay: [{ from: node.from, to: node.to }],
                 }
             }
         }
         return null
     })
 }
+
