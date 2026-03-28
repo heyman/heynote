@@ -36,6 +36,7 @@
                 "currentCursorLine",
                 "currentLanguage", 
                 "currentSelectionSize", 
+                "currentSelectionWordCount",
                 "currentLanguage",
                 "currentLanguageAuto",
                 "currentCreatedTime",
@@ -109,6 +110,9 @@
             Col <span class="num">{{ currentCursorLine?.col }}</span>
             <template v-if="currentSelectionSize > 0">
                 Sel <span class="num">{{ currentSelectionSize }}</span>
+                <template v-if="currentSelectionWordCount != null">
+                    | Words <span class="num">{{ currentSelectionWordCount }}</span>
+                </template>
             </template>
         </div>
         <div 
