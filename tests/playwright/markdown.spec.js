@@ -17,6 +17,7 @@ test("test markdown mode", async ({ page }) => {
 - [x] done
 `)
     await page.waitForTimeout(200)
+    //await page.locator("body").pressSequentially("test")
     await expect(page.locator("css=.status .status-block.lang")).toHaveText("Markdown")
 })
 
