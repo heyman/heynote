@@ -1,12 +1,13 @@
 import { toRaw, nextTick, watch } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../common/note-format"
+import { filenameSlug } from "../common/sanitize-filename"
 import { toSafeBrowserLocale } from "../util/locale.js"
 import { useEditorCacheStore } from "./editor-cache"
 import { useSettingsStore } from "./settings-store"
-import { 
-    SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, 
-    SAVE_TABS_STATE, LOAD_TABS_STATE, CONTEXT_MENU_CLOSED 
+import {
+    SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE,
+    SAVE_TABS_STATE, LOAD_TABS_STATE, CONTEXT_MENU_CLOSED
 } from "../common/constants"
 
 
@@ -283,6 +284,22 @@ export const useHeynoteStore = defineStore("heynote", {
          */
         async createNewBuffer(path, name) {
             await toRaw(this.currentEditor).createNewBuffer(path, name)
+        },
+
+        /**
+         * Create a new buffer with an auto-generated "Scratch N" name (no modal).
+         * Picks the first N whose slugified path is not already taken.
+         */
+        async createScratchBuffer() {
+            for (let n = 1; n < 10000; n++) {
+                const name = `Scratch ${n}`
+                const path = filenameSlug(name) + ".txt"
+                if (!this.buffers[path]) {
+                    await this.createNewBuffer(path, name)
+                    return
+                }
+            }
+            throw new Error("Could not find an available scratch buffer name")
         },
 
         /**

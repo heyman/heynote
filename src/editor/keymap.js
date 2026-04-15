@@ -102,6 +102,7 @@ export const DEFAULT_KEYMAP = [
     cmd("Mod-Shift-p", "openCommandPalette"),
     cmd("Mod-s", "openMoveToBuffer"),
     cmd("Mod-n", "openCreateNewBuffer"),
+    cmd("Mod-Shift-n", "createScratchBuffer"),
 
     cmd("Alt-Shift-f", "formatBlockContent"),
     cmd("Mod-Shift-Space", "toggleCheckbox"),
@@ -299,7 +300,7 @@ export function getAllKeyBindingsForCommand(command, keymapName, userKeymap, ema
         "nothing", 
         "toggleAlwaysOnTop", 
         "toggleLeftPanel",
-        "openLanguageSelector", "openBufferSelector", "openCreateNewBuffer", "openMoveToBuffer", "openCommandPalette", 
+        "openLanguageSelector", "openBufferSelector", "openCreateNewBuffer", "createScratchBuffer", "openMoveToBuffer", "openCommandPalette",
         "closeCurrentTab", "reopenLastClosedTab", "nextTab", "previousTab", 
         "switchToTab1", "switchToTab2", "switchToTab3", "switchToTab4", "switchToTab5", "switchToTab6", "switchToTab7", "switchToTab8", "switchToTab9", "switchToLastTab"
     ])

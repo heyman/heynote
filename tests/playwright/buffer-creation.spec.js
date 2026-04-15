@@ -125,6 +125,20 @@ Block C`)
 `))
 })
 
+test("create scratch buffers via Mod+Shift+N without modal", async ({page}) => {
+    for (let i = 0; i < 3; i++) {
+        await page.locator("body").press(heynotePage.agnosticKey("Mod+Shift+N"))
+        await page.waitForTimeout(100)
+        await expect(page.locator(".new-buffer")).toHaveCount(0)
+    }
+    await page.waitForTimeout(AUTO_SAVE_INTERVAL + 50)
+
+    const buffers = Object.keys(await heynotePage.getStoredBufferList())
+    expect(buffers).toContain("scratch-1.txt")
+    expect(buffers).toContain("scratch-2.txt")
+    expect(buffers).toContain("scratch-3.txt")
+})
+
 test("folder selector hides dot-prefixed folders", async ({ page }) => {
     await page.evaluate(async () => {
         await window.heynote.buffer.createDirectory(".secret")
