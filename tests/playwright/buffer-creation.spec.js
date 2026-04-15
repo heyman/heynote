@@ -134,9 +134,9 @@ test("create scratch buffers via Mod+Shift+N without modal", async ({page}) => {
     await page.waitForTimeout(AUTO_SAVE_INTERVAL + 50)
 
     const buffers = Object.keys(await heynotePage.getStoredBufferList())
-    expect(buffers).toContain("scratch-1.txt")
     expect(buffers).toContain("scratch-2.txt")
     expect(buffers).toContain("scratch-3.txt")
+    expect(buffers).toContain("scratch-4.txt")
 })
 
 test("folder selector hides dot-prefixed folders", async ({ page }) => {

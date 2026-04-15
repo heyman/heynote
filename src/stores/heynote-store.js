@@ -288,18 +288,12 @@ export const useHeynoteStore = defineStore("heynote", {
 
         /**
          * Create a new buffer with an auto-generated "Scratch N" name (no modal).
-         * Picks the first N whose slugified path is not already taken.
+         * Name is derived from the current buffer count — purely a disposable identifier.
          */
         async createScratchBuffer() {
-            for (let n = 1; n < 10000; n++) {
-                const name = `Scratch ${n}`
-                const path = filenameSlug(name) + ".txt"
-                if (!this.buffers[path]) {
-                    await this.createNewBuffer(path, name)
-                    return
-                }
-            }
-            throw new Error("Could not find an available scratch buffer name")
+            const name = `Scratch ${Object.keys(this.buffers).length + 1}`
+            const path = filenameSlug(name) + ".txt"
+            await this.createNewBuffer(path, name)
         },
 
         /**
