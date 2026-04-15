@@ -288,10 +288,15 @@ export const useHeynoteStore = defineStore("heynote", {
 
         /**
          * Create a new buffer with an auto-generated "Scratch N" name (no modal).
-         * Name is derived from the current buffer count — purely a disposable identifier.
+         * N is the highest existing Scratch index + 1, so deletions don't cause collisions.
          */
         async createScratchBuffer() {
-            const name = `Scratch ${Object.keys(this.buffers).length + 1}`
+            const scratchPathRe = /^scratch-(\d+)\.txt$/
+            const maxN = Object.keys(this.buffers).reduce((max, path) => {
+                const match = path.match(scratchPathRe)
+                return match ? Math.max(max, parseInt(match[1], 10)) : max
+            }, 0)
+            const name = `Scratch ${maxN + 1}`
             const path = filenameSlug(name) + ".txt"
             await this.createNewBuffer(path, name)
         },
