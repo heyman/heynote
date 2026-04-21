@@ -112,7 +112,7 @@
                         />
                     </template>
                     <template #footer>
-                        <li class="spacer"></li>
+                        <li class="spacer" v-if="tabs.length > 0"></li>
                     </template>
                 </draggable>
             </div>
@@ -128,7 +128,7 @@
             v-else
             class="title"
         >
-            {{ currentBufferName }}
+            {{ currentBufferName ?? "Heynote" }}
         </div>
     </nav>
 </template>

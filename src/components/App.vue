@@ -118,7 +118,7 @@
             },
 
             currentBufferName() {
-                window.heynote.setWindowTitle(this.currentBufferName)
+                window.heynote.setWindowTitle(this.currentBufferName ?? "Heynote")
             },
         },
 

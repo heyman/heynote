@@ -102,7 +102,7 @@ const schema = {
     openTabsState: {
         type: "object",
         properties: {
-            currentBufferPath: {type: "string"},
+            currentBufferPath: {type: ["string", "null"]},
             openTabs: {
                 type: "array",
                 items: {

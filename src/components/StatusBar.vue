@@ -33,6 +33,7 @@
         computed: {
             ...mapStores(useHeynoteStore),
             ...mapState(useHeynoteStore, [
+                "currentBufferPath",
                 "currentBufferName",
                 "currentCursorLine",
                 "currentLanguage", 
@@ -74,6 +75,10 @@
                 return !!window.heynote.autoUpdate
             },
 
+            hasOpenBuffer() {
+                console.log("hasOpenBuffer", this.currentBufferPath)
+                return this.currentBufferPath !== null
+            },
 
             formattedCreatedTime() {
                 if (!this.currentCreatedTime) {
@@ -113,7 +118,10 @@
         >
             <span class="icon icon-format"></span>
         </div>
-        <div class="status-block line-number">
+        <div 
+            v-if="hasOpenBuffer"
+            class="status-block line-number"
+        >
             Ln <span class="num">{{ currentCursorLine?.line }}</span>
             Col <span class="num">{{ currentCursorLine?.col }}</span>
             <template v-if="currentSelectionSize > 0">
@@ -121,6 +129,7 @@
             </template>
         </div>
         <div 
+            v-if="hasOpenBuffer"
             :title="createdTimeTitle"
             class="status-block created-time"
         >
@@ -135,6 +144,7 @@
             {{ currentBufferName }} 
         </div>
         <div 
+            v-if="hasOpenBuffer"
             @click.stop="$emit('openLanguageSelector')"
             class="status-block lang clickable"
             :title="getTooltip('Change language for current block', 'openLanguageSelector')"
@@ -143,7 +153,7 @@
             <span v-if="currentLanguageAuto" class="auto">(auto)</span>
         </div>
         <div 
-            v-if="supportsFormat"
+            v-if="hasOpenBuffer && supportsFormat"
             @click.stop="$emit('formatCurrentBlock')"
             class="status-block format clickable"
             :title="getTooltip('Format Block Content', 'formatBlockContent')"

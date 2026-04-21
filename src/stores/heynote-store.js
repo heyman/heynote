@@ -90,10 +90,10 @@ export const useHeynoteStore = defineStore("heynote", {
         },
 
         closeTab(path) {
-            if (path === SCRATCH_FILE_NAME && this.openTabs.length === 1) {
-                // don't close the scratch file if it's the only open tab
-                return
-            }
+            //if (path === SCRATCH_FILE_NAME && this.openTabs.length === 1) {
+            //    // don't close the scratch file if it's the only open tab
+            //    return
+            //}
             const editorCacheStore = useEditorCacheStore()
             
             // add the tab being closed to the closed tabs stack with its position
@@ -107,6 +107,8 @@ export const useHeynoteStore = defineStore("heynote", {
             this.openTabs = this.openTabs.filter((p) => p !== path)
             if (this.currentBufferPath === path) {
                 this.currentEditor = null
+                this.currentBufferPath = null
+                this.currentBufferName = null
                 editorCacheStore.freeEditor(path)
                 // if the current tab is closed, switch to the most recently used buffer that is open
                 const recentBuffers = this.recentBufferPaths.filter((p) => p !== path && this.openTabs.includes(p))
@@ -115,8 +117,6 @@ export const useHeynoteStore = defineStore("heynote", {
                     this.openBuffer(recentBuffers[0])
                 } else if (this.openTabs.length > 0) {
                     this.openBuffer(this.openTabs[0])
-                } else {
-                    this.openBuffer(SCRATCH_FILE_NAME)
                 }
             } else {
                 // if the current tab is not the one being closed, just free the editor
@@ -307,8 +307,8 @@ export const useHeynoteStore = defineStore("heynote", {
         async updateBufferMetadata(path, name, newPath) {
             const editorCacheStore = useEditorCacheStore()
 
-            if (this.currentEditor.path !== path) {
-                throw new Error(`Can't update note (${path}) since it's not the active one (${this.currentEditor.path})`)
+            if (this.currentEditor?.path !== path) {
+                throw new Error(`Can't update note (${path}) since it's not the active one (${this.currentEditor?.path})`)
             }
             //console.log("currentEditor", this.currentEditor)
             toRaw(this.currentEditor).setName(name)
@@ -370,16 +370,15 @@ export const useHeynoteStore = defineStore("heynote", {
             this.closedTabs = this.closedTabs.filter((closedTab) => closedTab.path !== path)
 
             // if the active buffer is deleted, we need to select a new tab
-            if (this.currentEditor.path === path) {
+            if (this.currentEditor && this.currentEditor.path === path) {
                 this.currentEditor = null
+                this.currentBufferPath = null
+                this.currentBufferName = null
                 const recentBuffers = this.recentBufferPaths.filter((p) => p !== path && this.openTabs.includes(p))
                 if (recentBuffers.length > 0) {
                     this.openBuffer(recentBuffers[0])
                 } else if (this.openTabs.length > 0) {
                     this.openBuffer(this.openTabs[0])
-                } else {
-                    this.currentBufferPath = SCRATCH_FILE_NAME
-                    this.openBuffer(SCRATCH_FILE_NAME)
                 }
             }
 
@@ -429,8 +428,6 @@ export const useHeynoteStore = defineStore("heynote", {
 
                 if (this.buffers[state.currentBufferPath]) {
                     this.openBuffer(state.currentBufferPath)
-                } else {
-                    this.openBuffer(SCRATCH_FILE_NAME)
                 }
             } else {
                 // no saved state, just open the scratch file
