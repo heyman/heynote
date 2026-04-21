@@ -1,4 +1,6 @@
 <script>
+    import { i18n } from "../../locales/i18n"
+    
     export default {
         name: "InputToggle",
         props: {
@@ -26,13 +28,13 @@
             title() {
                 switch (this.type) {
                     case "block":
-                        return "Within Current Block";
+                        return i18n.t('search.withinCurrentBlock');
                     case "case-sensitive":
-                        return "Case Sensitive";
+                        return i18n.t('search.caseSensitive');
                     case "whole-words":
-                        return "Match Whole Words";
+                        return i18n.t('search.matchWholeWords');
                     case "regex":
-                        return "Use Regular Expression";
+                        return i18n.t('search.useRegularExpression');
                     default:
                         return "";
                 }

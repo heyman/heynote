@@ -1,5 +1,6 @@
 <script>
     import { mapState, mapActions } from 'pinia'
+    import { i18n } from "../locales/i18n"
     import { useHeynoteStore } from "../stores/heynote-store"
 
     import { filenameSlug } from "@/src/common/sanitize-filename"
@@ -204,7 +205,7 @@
                     data-1p-ignore
                 />
 
-                <label for="folder-select">Create in</label>
+                <label for="folder-select">{{ $t('newBuffer.createIn') }}</label>
                 <FolderSelector 
                     v-if="directoryTree"
                     :directoryTree="directoryTree"

@@ -1,6 +1,7 @@
 <script>
     import { toRaw } from 'vue';
     import { mapState, mapActions } from 'pinia'
+    import { i18n } from "../locales/i18n"
     import { useHeynoteStore } from "../stores/heynote-store"
     import { filenameSlug } from "@/src/common/sanitize-filename"
 
@@ -178,7 +179,7 @@
                     @input="errors.name = false"
                 />
 
-                <label for="folder-select">Move to</label>
+                <label for="folder-select">{{ $t('editBuffer.moveTo') }}</label>
                 <FolderSelector 
                     v-if="directoryTree"
                     :directoryTree="directoryTree"

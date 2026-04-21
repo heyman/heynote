@@ -45,6 +45,7 @@ import { useSettingsStore } from "../stores/settings-store.js"
 import { toggleSpellcheck, enableSpellcheck, disableSpellcheck } from "./spell-check.js"
 import { insertIndentation } from "./indentation.js"
 import { toggleCheckbox } from "./todo-checkbox.ts"
+import { i18n } from "../locales/i18n"
 
 
 const cursorPreviousBlock = markModeMoveCommand(gotoPreviousBlock, selectPreviousBlock)
@@ -114,122 +115,128 @@ const nothing = (view) => {
     return true
 }
 
-const cmd = (f, category, description) => ({
+const cmd = (f, category, key) => ({
     run: f,
     name: f.name,
-    description: description,
+    get description() {
+        return i18n.t(key)
+    },
     category: category,
+    i18nKey: key,
 })
 
-const cmdLessContext = (f, category, description) => ({
+const cmdLessContext = (f, category, key) => ({
     run: (editor) => f,
     name: f.name,
-    description: description,
+    get description() {
+        return i18n.t(key)
+    },
     category: category,
+    i18nKey: key,
 })
 
 
 const HEYNOTE_COMMANDS = {
-    addNewBlockAfterCurrent: cmd(addNewBlockAfterCurrent, "Block", "Add new block after current block"),
-    addNewBlockBeforeCurrent: cmd(addNewBlockBeforeCurrent, "Block", "Add new block before current block"),
-    addNewBlockAfterLast: cmd(addNewBlockAfterLast, "Block", "Add new block after last block"),
-    addNewBlockAfterLastAndScrollDown: cmd(addNewBlockAfterLastAndScrollDown, "Block", "Add new block after last, and scroll down"),
-    addNewBlockBeforeFirst: cmd(addNewBlockBeforeFirst, "Block", "Add new block before first block"),
-    insertNewBlockAtCursor: cmd(insertNewBlockAtCursor, "Block", "Insert new block at cursor"),
-    deleteBlock: cmd(deleteBlock, "Block", "Delete block"),
-    deleteBlockSetCursorPreviousBlock: cmd(deleteBlockSetCursorPreviousBlock, "Block", "Delete block and set cursor to previous block"),
-    cursorPreviousBlock: cmd(cursorPreviousBlock, "Cursor", "Move cursor to previous block"),
-    cursorNextBlock: cmd(cursorNextBlock, "Cursor", "Move cursor to next block"),
-    cursorPreviousParagraph: cmd(cursorPreviousParagraph, "Cursor", "Move cursor to previous paragraph"),
-    cursorNextParagraph: cmd(cursorNextParagraph, "Cursor", "Move cursor to next paragraph"),
-    toggleSelectionMarkMode: cmd(toggleSelectionMarkMode, "Cursor", "Toggle selection mark mode"),
-    selectionMarkModeCancel: cmd(selectionMarkModeCancel, "Cursor", "Cancel selection mark mode"),
-    openLanguageSelector: cmd(openLanguageSelector, "Block", "Select block language…"),
-    openBufferSelector: cmd(openBufferSelector, "Buffer", "Switch buffer…"),
-    openCommandPalette: cmd(openCommandPalette, "Editor", "Open command palette…"),
-    openMoveToBuffer: cmd(openMoveToBuffer, "Block", "Move block to another buffer…"),
-    openCreateNewBuffer: cmd(openCreateNewBuffer, "Buffer", "Create new buffer…"),
-    cut: cmd(cutCommand, "Clipboard", "Cut selection"),
-    copy: cmd(copyCommand, "Clipboard", "Copy selection"),
-    foldBlock: cmd(foldBlock, "Block", "Fold block"),
-    unfoldBlock: cmd(unfoldBlock, "Block", "Unfold block"),
-    toggleBlockFold: cmd(toggleBlockFold, "Block", "Toggle block fold"),
-    toggleLeftPanel: cmd(toggleLeftPanel, "Editor", "Toggle left sidebar panel"),
+    addNewBlockAfterCurrent: cmd(addNewBlockAfterCurrent, "Block", "commands.addNewBlockAfterCurrent"),
+    addNewBlockBeforeCurrent: cmd(addNewBlockBeforeCurrent, "Block", "commands.addNewBlockBeforeCurrent"),
+    addNewBlockAfterLast: cmd(addNewBlockAfterLast, "Block", "commands.addNewBlockAfterLast"),
+    addNewBlockAfterLastAndScrollDown: cmd(addNewBlockAfterLastAndScrollDown, "Block", "commands.addNewBlockAfterLastAndScrollDown"),
+    addNewBlockBeforeFirst: cmd(addNewBlockBeforeFirst, "Block", "commands.addNewBlockBeforeFirst"),
+    insertNewBlockAtCursor: cmd(insertNewBlockAtCursor, "Block", "commands.insertNewBlockAtCursor"),
+    deleteBlock: cmd(deleteBlock, "Block", "commands.deleteBlock"),
+    deleteBlockSetCursorPreviousBlock: cmd(deleteBlockSetCursorPreviousBlock, "Block", "commands.deleteBlockSetCursorPreviousBlock"),
+    cursorPreviousBlock: cmd(cursorPreviousBlock, "Cursor", "commands.cursorPreviousBlock"),
+    cursorNextBlock: cmd(cursorNextBlock, "Cursor", "commands.cursorNextBlock"),
+    cursorPreviousParagraph: cmd(cursorPreviousParagraph, "Cursor", "commands.cursorPreviousParagraph"),
+    cursorNextParagraph: cmd(cursorNextParagraph, "Cursor", "commands.cursorNextParagraph"),
+    toggleSelectionMarkMode: cmd(toggleSelectionMarkMode, "Cursor", "commands.toggleSelectionMarkMode"),
+    selectionMarkModeCancel: cmd(selectionMarkModeCancel, "Cursor", "commands.selectionMarkModeCancel"),
+    openLanguageSelector: cmd(openLanguageSelector, "Block", "commands.openLanguageSelector"),
+    openBufferSelector: cmd(openBufferSelector, "Buffer", "commands.openBufferSelector"),
+    openCommandPalette: cmd(openCommandPalette, "Editor", "commands.openCommandPalette"),
+    openMoveToBuffer: cmd(openMoveToBuffer, "Block", "commands.openMoveToBuffer"),
+    openCreateNewBuffer: cmd(openCreateNewBuffer, "Buffer", "commands.openCreateNewBuffer"),
+    cut: cmd(cutCommand, "Clipboard", "commands.cut"),
+    copy: cmd(copyCommand, "Clipboard", "commands.copy"),
+    foldBlock: cmd(foldBlock, "Block", "commands.foldBlock"),
+    unfoldBlock: cmd(unfoldBlock, "Block", "commands.unfoldBlock"),
+    toggleBlockFold: cmd(toggleBlockFold, "Block", "commands.toggleBlockFold"),
+    toggleLeftPanel: cmd(toggleLeftPanel, "Editor", "commands.toggleLeftPanel"),
 
     // tab commands
-    closeCurrentTab: cmd(closeCurrentTab, "Buffer", "Close current tab"),
-    reopenLastClosedTab: cmd(reopenLastClosedTab, "Buffer", "Reopen last closed tab"),
-    switchToLastTab: cmd(switchToLastTab, "Buffer", "Switch to last tab"),
-    previousTab: cmd(previousTab, "Buffer", "Switch to previous tab"),
-    nextTab: cmd(nextTab, "Buffer", "Switch to next tab"),
+    closeCurrentTab: cmd(closeCurrentTab, "Buffer", "commands.closeCurrentTab"),
+    reopenLastClosedTab: cmd(reopenLastClosedTab, "Buffer", "commands.reopenLastClosedTab"),
+    switchToLastTab: cmd(switchToLastTab, "Buffer", "commands.switchToLastTab"),
+    previousTab: cmd(previousTab, "Buffer", "commands.previousTab"),
+    nextTab: cmd(nextTab, "Buffer", "commands.nextTab"),
     ...Object.fromEntries(Array.from({ length: 9 }, (_, i) => [
         "switchToTab" + (i+1), 
         cmdLessContext(() => {
             useHeynoteStore().switchToTabIndex(i)
             return true
-        }, "Buffer", `Switch to tab ${i+1}`),
+        }, "Buffer", `commands.switchToTab${i+1}`),
     ])),
 
     // spellcheck
-    toggleSpellcheck: cmd(toggleSpellcheck, "Spellchecker", "Toggle Spellchecking"),
-    enableSpellcheck: cmd(enableSpellcheck, "Spellchecker", "Enable Spellchecking"),
-    disableSpellcheck: cmd(disableSpellcheck, "Spellchecker", "Disable Spellchecking"),
-    toggleAlwaysOnTop: cmd(toggleAlwaysOnTop, "Window", "Toggle Always on top"),
+    toggleSpellcheck: cmd(toggleSpellcheck, "Spellchecker", "commands.toggleSpellcheck"),
+    enableSpellcheck: cmd(enableSpellcheck, "Spellchecker", "commands.enableSpellcheck"),
+    disableSpellcheck: cmd(disableSpellcheck, "Spellchecker", "commands.disableSpellcheck"),
+    toggleAlwaysOnTop: cmd(toggleAlwaysOnTop, "Window", "commands.toggleAlwaysOnTop"),
 
     // commands without editor context
-    paste: cmdLessContext(pasteCommand, "Clipboard", "Paste from clipboard"),
-    selectAll: cmdLessContext(selectAll, "Selection", "Select all"),
-    moveLineUp: cmdLessContext(moveLineUp, "Edit", "Move line up"),
-    moveLineDown: cmdLessContext(moveLineDown, "Edit", "Move line down"),
-    deleteLine: cmdLessContext(deleteLine, "Edit", "Delete line"),
-    formatBlockContent: cmdLessContext(formatBlockContent, "Block", "Format block content"),
-    moveCurrentBlockUp: cmdLessContext(moveCurrentBlockUp, "Block", "Move current block up"),
-    moveCurrentBlockDown: cmdLessContext(moveCurrentBlockDown, "Block", "Move current block down"),
-    newCursorAbove: cmdLessContext(newCursorAbove, "Cursor", "Add cursor above"),
-    newCursorBelow: cmdLessContext(newCursorBelow, "Cursor", "Add cursor below"),
-    selectPreviousParagraph: cmdLessContext(selectPreviousParagraph, "Selection", "Select to previous paragraph"),
-    selectNextParagraph: cmdLessContext(selectNextParagraph, "Selection", "Select to next paragraph"),
-    selectPreviousBlock: cmdLessContext(selectPreviousBlock, "Selection", "Select to previous block"),
-    selectNextBlock: cmdLessContext(selectNextBlock, "Selection", "Select to next block"),
-    nothing: cmdLessContext(nothing, "Misc", "Do nothing"),
-    insertDateAndTime: cmdLessContext(insertDateAndTime, "Misc", "Insert date and time"),
-    insertIndentation: cmdLessContext(insertIndentation, "Edit", "Insert indentation"),
+    paste: cmdLessContext(pasteCommand, "Clipboard", "commands.paste"),
+    selectAll: cmdLessContext(selectAll, "Selection", "commands.selectAll"),
+    moveLineUp: cmdLessContext(moveLineUp, "Edit", "commands.moveLineUp"),
+    moveLineDown: cmdLessContext(moveLineDown, "Edit", "commands.moveLineDown"),
+    deleteLine: cmdLessContext(deleteLine, "Edit", "commands.deleteLine"),
+    formatBlockContent: cmdLessContext(formatBlockContent, "Block", "commands.formatBlockContent"),
+    moveCurrentBlockUp: cmdLessContext(moveCurrentBlockUp, "Block", "commands.moveCurrentBlockUp"),
+    moveCurrentBlockDown: cmdLessContext(moveCurrentBlockDown, "Block", "commands.moveCurrentBlockDown"),
+    newCursorAbove: cmdLessContext(newCursorAbove, "Cursor", "commands.newCursorAbove"),
+    newCursorBelow: cmdLessContext(newCursorBelow, "Cursor", "commands.newCursorBelow"),
+    selectPreviousParagraph: cmdLessContext(selectPreviousParagraph, "Selection", "commands.selectPreviousParagraph"),
+    selectNextParagraph: cmdLessContext(selectNextParagraph, "Selection", "commands.selectNextParagraph"),
+    selectPreviousBlock: cmdLessContext(selectPreviousBlock, "Selection", "commands.selectPreviousBlock"),
+    selectNextBlock: cmdLessContext(selectNextBlock, "Selection", "commands.selectNextBlock"),
+    nothing: cmdLessContext(nothing, "Misc", "commands.nothing"),
+    insertDateAndTime: cmdLessContext(insertDateAndTime, "Misc", "commands.insertDateAndTime"),
+    insertIndentation: cmdLessContext(insertIndentation, "Edit", "commands.insertIndentation"),
 
     // directly from CodeMirror
-    undo: cmdLessContext(undo, "Edit", "Undo"),
-    redo: cmdLessContext(redo, "Edit", "Redo"),
-    indentMore: cmdLessContext(indentMore, "Edit", "Indent more"),
-    indentLess: cmdLessContext(indentLess, "Edit", "Indent less"),
-    foldCode: cmdLessContext(foldCode, "Edit", "Fold code"),
-    unfoldCode: cmdLessContext(unfoldCode, "Edit", "Unfold code"),
-    toggleFold: cmdLessContext(toggleFold, "Edit", "Toggle fold"),
-    selectNextOccurrence: cmdLessContext(selectNextOccurrence, "Cursor", "Select next occurrence"),
-    selectSelectionMatches: cmdLessContext(selectSelectionMatches, "Cursor", "Select all selection matches"),
-    openSearchPanel: cmdLessContext(openSearchPanel, "Search", "Open search panel"), 
-    closeSearchPanel: cmdLessContext(closeSearchPanel, "Search", "Close search panel"),
-    findNext: cmdLessContext(findNext, "Search", "Find next"),
-    findPrevious: cmdLessContext(findPrevious, "Search", "Find previous"),
-    selectMatches: cmdLessContext(selectMatches, "Search", "Select all matches"),
-    replaceNext: cmdLessContext(replaceNext, "Search", "Replace next"),
-    replaceAll: cmdLessContext(replaceAll, "Search", "Replace all"),
-    deleteCharBackward: cmdLessContext(deleteCharBackward, "Edit", "Delete character backward"),
-    deleteCharForward: cmdLessContext(deleteCharForward, "Edit", "Delete character forward"),
-    deleteGroupBackward: cmdLessContext(deleteGroupBackward, "Edit", "Delete group backward"),
-    deleteGroupForward: cmdLessContext(deleteGroupForward, "Edit", "Delete group forward"),
-    deleteLineBoundaryBackward: cmdLessContext(deleteLineBoundaryBackward, "Edit", "Delete from start of wrapped line"),
-    deleteLineBoundaryForward: cmdLessContext(deleteLineBoundaryForward, "Edit", "Delete to end of wrapped line"),
-    deleteToLineEnd: cmdLessContext(deleteToLineEnd, "Edit", "Delete to end of line"),
-    deleteToLineStart: cmdLessContext(deleteToLineStart, "Edit", "Delete from start of line"),
-    simplifySelection: cmdLessContext(simplifySelection, "Cursor", "Simplify selection"),
-    splitLine: cmdLessContext(splitLine, "Edit", "Split line"),
-    transposeChars: cmdLessContext(transposeChars, "Edit", "Transpose characters"),
-    insertNewlineAndIndent: cmdLessContext(insertNewlineAndIndent, "Edit", "Insert newline and indent"),
-    insertNewlineContinueMarkup: cmdLessContext(insertNewlineContinueMarkup, "Markdown", "Insert newline and continue todo lists/block quotes"),
-    toggleCheckbox: cmdLessContext(toggleCheckbox, "Markdown", "Toggle todo checkbox"),
-    toggleComment: cmdLessContext(toggleComment, "Edit", "Toggle comment"),
-    toggleBlockComment: cmdLessContext(toggleBlockComment, "Edit", "Toggle block comment"),
-    toggleLineComment: cmdLessContext(toggleLineComment, "Edit", "Toggle line comment"),
-    insertTab: cmdLessContext(insertTab, "Edit", "Insert tab"),
+    undo: cmdLessContext(undo, "Edit", "commands.undo"),
+    redo: cmdLessContext(redo, "Edit", "commands.redo"),
+    indentMore: cmdLessContext(indentMore, "Edit", "commands.indentMore"),
+    indentLess: cmdLessContext(indentLess, "Edit", "commands.indentLess"),
+    foldCode: cmdLessContext(foldCode, "Edit", "commands.foldCode"),
+    unfoldCode: cmdLessContext(unfoldCode, "Edit", "commands.unfoldCode"),
+    toggleFold: cmdLessContext(toggleFold, "Edit", "commands.toggleFold"),
+    selectNextOccurrence: cmdLessContext(selectNextOccurrence, "Cursor", "commands.selectNextOccurrence"),
+    selectSelectionMatches: cmdLessContext(selectSelectionMatches, "Cursor", "commands.selectSelectionMatches"),
+    openSearchPanel: cmdLessContext(openSearchPanel, "Search", "commands.openSearchPanel"), 
+    closeSearchPanel: cmdLessContext(closeSearchPanel, "Search", "commands.closeSearchPanel"),
+    findNext: cmdLessContext(findNext, "Search", "commands.findNext"),
+    findPrevious: cmdLessContext(findPrevious, "Search", "commands.findPrevious"),
+    selectMatches: cmdLessContext(selectMatches, "Search", "commands.selectMatches"),
+    replaceNext: cmdLessContext(replaceNext, "Search", "commands.replaceNext"),
+    replaceAll: cmdLessContext(replaceAll, "Search", "commands.replaceAll"),
+    deleteCharBackward: cmdLessContext(deleteCharBackward, "Edit", "commands.deleteCharBackward"),
+    deleteCharForward: cmdLessContext(deleteCharForward, "Edit", "commands.deleteCharForward"),
+    deleteGroupBackward: cmdLessContext(deleteGroupBackward, "Edit", "commands.deleteGroupBackward"),
+    deleteGroupForward: cmdLessContext(deleteGroupForward, "Edit", "commands.deleteGroupForward"),
+    deleteLineBoundaryBackward: cmdLessContext(deleteLineBoundaryBackward, "Edit", "commands.deleteLineBoundaryBackward"),
+    deleteLineBoundaryForward: cmdLessContext(deleteLineBoundaryForward, "Edit", "commands.deleteLineBoundaryForward"),
+    deleteToLineEnd: cmdLessContext(deleteToLineEnd, "Edit", "commands.deleteToLineEnd"),
+    deleteToLineStart: cmdLessContext(deleteToLineStart, "Edit", "commands.deleteToLineStart"),
+    simplifySelection: cmdLessContext(simplifySelection, "Cursor", "commands.simplifySelection"),
+    splitLine: cmdLessContext(splitLine, "Edit", "commands.splitLine"),
+    transposeChars: cmdLessContext(transposeChars, "Edit", "commands.transposeChars"),
+    insertNewlineAndIndent: cmdLessContext(insertNewlineAndIndent, "Edit", "commands.insertNewlineAndIndent"),
+    insertNewlineContinueMarkup: cmdLessContext(insertNewlineContinueMarkup, "Markdown", "commands.insertNewlineContinueMarkup"),
+    toggleCheckbox: cmdLessContext(toggleCheckbox, "Markdown", "commands.toggleCheckbox"),
+    toggleComment: cmdLessContext(toggleComment, "Edit", "commands.toggleComment"),
+    toggleBlockComment: cmdLessContext(toggleBlockComment, "Edit", "commands.toggleBlockComment"),
+    toggleLineComment: cmdLessContext(toggleLineComment, "Edit", "commands.toggleLineComment"),
+    insertTab: cmdLessContext(insertTab, "Edit", "commands.insertTab"),
 }
 
 // selection mark-mode:ify all cursor/select commands from CodeMirror
@@ -246,17 +253,26 @@ for (let commandSuffix of [
     "LineBoundaryBackward", "LineBoundaryForward",
     "DocStart", "DocEnd",
 ]) {
+    const cursorKey = `commands.cursor${commandSuffix}`
+    const selectKey = `commands.select${commandSuffix}`
+    
     HEYNOTE_COMMANDS[`cursor${commandSuffix}`] = {
         run: markModeMoveCommand(codeMirrorCommands[`cursor${commandSuffix}`], codeMirrorCommands[`select${commandSuffix}`]),
         name: `cursor${commandSuffix}`,
-        description: `cursor${commandSuffix}`,
+        get description() {
+            return i18n.t(cursorKey)
+        },
         category: "Cursor",
+        i18nKey: cursorKey,
     }
     HEYNOTE_COMMANDS[`select${commandSuffix}`] = {
         run: (editor) => codeMirrorCommands[`select${commandSuffix}`],
         name: `select${commandSuffix}`,
-        description: `select${commandSuffix}`,
+        get description() {
+            return i18n.t(selectKey)
+        },
         category: "Cursor",
+        i18nKey: selectKey,
     }
 }
 

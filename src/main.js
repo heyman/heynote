@@ -4,6 +4,7 @@ import '../assets/font/open-sans/open-sans.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
+import { i18n } from './locales/i18n'
 
 import App from './components/App.vue'
 import { loadCurrencies } from './currency'
@@ -16,8 +17,9 @@ const app = createApp(App)
 
 app.use(pinia)
 app.use(PrimeVue)
+app.use(i18n.plugin)
 app.mount('#app').$nextTick(() => {
-    // hide loading screen
+    // Hide loading screen
     postMessage({ payload: 'removeLoading' }, '*')
 })
 
@@ -31,7 +33,7 @@ initHeynoteStore()
 
 
 
-// load math.js currencies
+// Load math.js currencies
 loadCurrencies()
 setInterval(loadCurrencies, 1000 * 3600 * 4)
 

@@ -36,50 +36,52 @@ Available for Mac, Windows, and Linux.
 **On Mac**
 
 ```
-⌘ + Enter           Add new block below the current block
-⌥ + Enter           Add new block before the current block
-⌘ + Shift + Enter   Add new block at the end of the buffer
-⌥ + Shift + Enter   Add new block at the start of the buffer
-⌘ + ⌥ + Enter       Split the current block at cursor position
-⌘ + L               Change block language
-⌘ + N               Create a new note buffer
-⌘ + S               Move the current block to another (or new) buffer
-⌘ + P               Open note selector
-⌘ + Shift + P       Open command palette
-⌘ + Down            Goto next block
-⌘ + Up              Goto previous block
-⌘ + A               Select all text in a note block. Press again to select the whole buffer
-⌘ + ⌥ + Up/Down     Add additional cursor above/below
-⌥ + Shift + F       Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
-⌘ + ⌥ + [           Fold block(s)
-⌘ + ⌥ + ]           Unfold block(s)
-⌘ + ⌥ + .           Toggle block fold
+⌘ + Enter           在当前块下方添加新块
+⌥ + Enter           在当前块上方添加新块
+⌘ + Shift + Enter   在缓冲区末尾添加新块
+⌥ + Shift + Enter   在缓冲区开头添加新块
+⌘ + ⌥ + Enter       在光标位置拆分当前块
+⌘ + L               更改块语言
+⌘ + N               创建新的笔记缓冲区
+⌘ + S               将当前块移动到另一个（或新的）缓冲区
+⌘ + P               打开笔记选择器
+⌘ + Shift + P       打开命令面板
+⌘ + Down            转到下一个块
+⌘ + Up              转到上一个块
+⌘ + A               选择笔记块中的所有文本。再次按选择整个缓冲区
+⌘ + ⌥ + Up/Down     在上方/下方添加额外光标
+⌥ + Shift + F       格式化块内容（适用于 JSON、JavaScript、HTML、CSS 和 Markdown）
+⌘ + ⌥ + [           折叠块
+⌘ + ⌥ + ]           展开块
+⌘ + ⌥ + .           切换块折叠状态
 ```
 
 **On Windows and Linux**
 
 ```
-Ctrl + Enter           Add new block below the current block
-Alt + Enter            Add new block before the current block
-Ctrl + Shift + Enter   Add new block at the end of the buffer
-Alt + Shift + Enter    Add new block at the start of the buffer
-Ctrl + Alt + Enter     Split the current block at cursor position
-Ctrl + L               Change block language
-Ctrl + N               Create a new note buffer
-Ctrl + S               Move the current block to another (or new) buffer
-Ctrl + P               Open note selector
-Ctrl + Shift + P       Open command palette
-Ctrl + Down            Goto next block
-Ctrl + Up              Goto previous block
-Ctrl + A               Select all text in a note block. Press again to select the whole buffer
-Ctrl + Alt + Up/Down   Add additional cursor above/below
-Alt + Shift + F        Format block content (works for JSON, JavaScript, HTML, CSS and Markdown)
-Ctrl + Alt + [         Fold block(s)
-Ctrl + Alt + ]         Unfold block(s)
-Ctrl + Alt + .         Toggle block fold
+Ctrl + Enter           在当前块下方添加新块
+Alt + Enter            在当前块上方添加新块
+Ctrl + Shift + Enter   在缓冲区末尾添加新块
+Alt + Shift + Enter    在缓冲区开头添加新块
+Ctrl + Alt + Enter     在光标位置拆分当前块
+Ctrl + L               更改块语言
+Ctrl + N               创建新的笔记缓冲区
+Ctrl + S               将当前块移动到另一个（或新的）缓冲区
+Ctrl + P               打开笔记选择器
+Ctrl + Shift + P       打开命令面板
+Ctrl + Down            转到下一个块
+Ctrl + Up              转到上一个块
+Ctrl + A               选择笔记块中的所有文本。再次按选择整个缓冲区
+Ctrl + Alt + Up/Down   在上方/下方添加额外光标
+Alt + Shift + F        格式化块内容（适用于 JSON、JavaScript、HTML、CSS 和 Markdown）
+Ctrl + Alt + [         折叠块
+Ctrl + Alt + ]         展开块
+Ctrl + Alt + .         切换块折叠状态
 ```
 
 You can see all the key bindings in the command palette and in Settings under Key Bindings.
+
+
 
 
 

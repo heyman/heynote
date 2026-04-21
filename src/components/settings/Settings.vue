@@ -1,6 +1,7 @@
 <script>
     import { toRaw} from 'vue';
     import { mapStores, mapState } from 'pinia'
+    import { i18n } from "../../locales/i18n"
     import { useSettingsStore } from "@/src/stores/settings-store.js"
     import { useHeynoteStore } from "@/src/stores/heynote-store"
 
@@ -77,8 +78,9 @@
                 defaultFontSize: defaultFontSize,
                 appVersion: "",
                 theme: this.themeSetting,
+                language: i18n.locale.value || 'en',
 
-                // tracks if the add key binding dialog is visible (so that we can set inert on the save button)
+                // Tracks if the add key binding dialog is visible (so that we can set inert on the save button)
                 addKeyBindingDialogVisible: false,
             }
         },
@@ -168,6 +170,10 @@
                     this.updateSettings()
                 }
             },
+
+            updateLanguage() {
+                i18n.setLocale(this.language);
+            },
         }
     }
 </script>
@@ -177,34 +183,34 @@
         <div class="dialog">
             <div class="dialog-content">
                 <nav class="sidebar">
-                    <h1>Settings</h1>
+                    <h1>{{ $t('settings.title') }}</h1>
                     <ul>
                         <TabListItem 
-                            name="General" 
+                            :name="$t('settings.general')" 
                             tab="general" 
                             :activeTab="activeTab" 
                             @click="activeTab = 'general'"
                         />
                         <TabListItem 
-                            name="Editing" 
+                            :name="$t('settings.editing')" 
                             tab="editing"
                             :activeTab="activeTab" 
                             @click="activeTab = 'editing'"
                         />
                         <TabListItem 
-                            name="Appearance" 
+                            :name="$t('settings.appearance')" 
                             tab="appearance"
                             :activeTab="activeTab" 
                             @click="activeTab = 'appearance'"
                         />
                         <TabListItem 
-                            name="Key Bindings" 
+                            :name="$t('settings.keyBindings')" 
                             tab="keyboard-bindings" 
                             :activeTab="activeTab" 
                             @click="activeTab = 'keyboard-bindings'"
                         />
                         <TabListItem 
-                            :name="isWebApp ? 'Version' : 'Updates'" 
+                            :name="isWebApp ? $t('settings.version') : $t('settings.updates')" 
                             tab="updates" 
                             :activeTab="activeTab" 
                             @click="activeTab = 'updates'"
@@ -215,14 +221,14 @@
                     <TabContent tab="general" :activeTab="activeTab">
                         <div class="row" v-if="!isWebApp">
                             <div class="entry">
-                                <h2>Global Keyboard Shortcut</h2>
+                                <h2>{{ $t('settings.globalKeyboardShortcut') }}</h2>
                                 <label class="keyboard-shortcut-label">
                                     <input 
                                         type="checkbox" 
                                         v-model="enableGlobalHotkey" 
                                         @change="updateSettings"
                                     />
-                                    Enable Global Hotkey
+                                    {{ $t('settings.enableGlobalHotkey') }}
                                 </label>
                                 
                                 <KeyboardHotkey 
@@ -234,14 +240,14 @@
                         </div>
                         <div class="row" v-if="!isWebApp">
                             <div class="entry">
-                                <h2>Window / Application</h2>
+                                <h2>{{ $t('settings.windowApplication') }}</h2>
                                 <label v-if="isMac">
                                     <input
                                         type="checkbox"
                                         v-model="showInDock"
                                         @change="updateSettings"
                                     />
-                                    Show in dock
+                                    {{ $t('settings.showInDock') }}
                                 </label>
                                 <label>
                                     <input
@@ -251,10 +257,10 @@
                                         @change="updateSettings"
                                     />
                                     <template v-if="isMac">
-                                        Show in menu bar
+                                        {{ $t('settings.showInMenuBar') }}
                                     </template>
                                     <template v-else>
-                                        Show in system tray
+                                        {{ $t('settings.showInSystemTray') }}
                                     </template>
                                 </label>
                                 <label>
@@ -263,26 +269,26 @@
                                         v-model="alwaysOnTop"
                                         @change="updateSettings"
                                     />
-                                    Always on top
+                                    {{ $t('settings.alwaysOnTop') }}
                                 </label>
                             </div>
                         </div>
                         <div class="row" v-if="!isWebApp">
                             <div class="entry buffer-location">
-                                <h2>Buffer Files Path</h2>
+                                <h2>{{ $t('settings.bufferFilesPath') }}</h2>
                                 <label class="keyboard-shortcut-label">
                                     <input 
                                         type="checkbox" 
                                         v-model="customBufferLocation" 
                                         @change="onCustomBufferLocationChange"
                                     />
-                                    Use custom location for the buffer files
+                                    {{ $t('settings.useCustomLocation') }}
                                 </label>
                                 <div class="file-path">
                                     <button
                                         :disabled="!customBufferLocation"
                                         @click="selectBufferLocation"
-                                    >Select Directory</button>
+                                    >{{ $t('settings.selectDirectory') }}</button>
                                     <span class="path" v-show="customBufferLocation && bufferPath">{{ bufferPath }}</span>
                                 </div>
                             </div>
@@ -292,40 +298,40 @@
                     <TabContent tab="editing" :activeTab="activeTab">
                         <div class="row">
                             <div class="entry">
-                                <h2>Input settings</h2>
+                                <h2>{{ $t('settings.inputSettings') }}</h2>
                                 <label>
                                     <input 
                                         type="checkbox"
                                         v-model="bracketClosing"
                                         @change="updateSettings"
                                     />
-                                    Auto-close brackets and quotation marks
+                                    {{ $t('settings.autoCloseBrackets') }}
                                 </label>
                             </div>  
                         </div>
                         <div class="row">
                             <div class="entry">
-                                <h2>Tab Size</h2>
+                                <h2>{{ $t('settings.tabSize') }}</h2>
                                 <select v-model="tabSize" @change="updateSettings" class="tab-size">
                                     <option
                                         v-for="size in [1, 2, 3, 4, 5, 6, 7, 8]"
                                         :key="size"
                                         :selected="tabSize === size"
                                         :value="size"
-                                    >{{ size }} {{ size === 1 ? 'space' : 'spaces' }}</option>
+                                    >{{ size }} {{ size === 1 ? $t('settings.space') : $t('settings.spaces') }}</option>
                                 </select>
                             </div>
                             <div class="entry">
-                                <h2>Indent Using</h2>
+                                <h2>{{ $t('settings.indentUsing') }}</h2>
                                 <select v-model="indentType" @change="updateSettings" class="indent-type">
-                                    <option value="space" :selected="indentType === 'space'">Spaces</option>
-                                    <option value="tab" :selected="indentType === 'tab'">Tabs</option>
+                                    <option value="space" :selected="indentType === 'space'">{{ $t('settings.spacesLabel') }}</option>
+                                    <option value="tab" :selected="indentType === 'tab'">{{ $t('settings.tabsLabel') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="entry">
-                                <h2>Default Block Language</h2>
+                                <h2>{{ $t('settings.defaultBlockLanguage') }}</h2>
                                 <select v-model="defaultBlockLanguage" @change="updateSettings" class="block-language">
                                     <template v-for="lang in languageOptions" :key="lang.value">
                                         <option :selected="lang.value === defaultBlockLanguage" :value="lang.value">{{ lang.name }}</option>
@@ -338,7 +344,7 @@
                                         @change="updateSettings"
                                         class="language-auto-detect"
                                     />
-                                    Auto-detection (default: on)
+                                    {{ $t('settings.autoDetection') }}
                                 </label>
                             </div>  
                         </div>
@@ -347,24 +353,36 @@
                     <TabContent tab="appearance" :activeTab="activeTab">
                         <div class="row">
                             <div class="entry">
-                                <h2>Color Theme</h2>
+                                <h2>{{ $t('settings.colorTheme') }}</h2>
                                 <select v-model="theme" @change="updateSettings" class="theme">
-                                    <option :selected="theme === 'system'" value="system">System</option>
-                                    <option :selected="theme === 'light'" value="light">Light</option>
-                                    <option :selected="theme === 'dark'" value="dark">Dark</option>
+                                    <option :selected="theme === 'system'" value="system">{{ $t('settings.system') }}</option>
+                                    <option :selected="theme === 'light'" value="light">{{ $t('settings.light') }}</option>
+                                    <option :selected="theme === 'dark'" value="dark">{{ $t('settings.dark') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="entry">
-                                <h2>Gutters & Whitespace</h2>
+                                <h2>{{ $t('settings.language') }}</h2>
+                                <select v-model="language" @change="updateLanguage" class="language">
+                                    <option :selected="language === 'zh'" value="zh">{{ $t('settings.chineseSimplified') }}</option>
+                                    <option :selected="language === 'zh-TW'" value="zh-TW">{{ $t('settings.chineseTraditional') }}</option>
+                                    <option :selected="language === 'en'" value="en">{{ $t('settings.english') }}</option>
+                                    <option :selected="language === 'ja'" value="ja">{{ $t('settings.japanese') }}</option>
+                                    <option :selected="language === 'ko'" value="ko">{{ $t('settings.korean') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="entry">
+                                <h2>{{ $t('settings.guttersWhitespace') }}</h2>
                                 <label>
                                     <input 
                                         type="checkbox" 
                                         v-model="showLineNumberGutter" 
                                         @change="updateSettings"
                                     />
-                                    Show line numbers
+                                    {{ $t('settings.showLineNumbers') }}
                                 </label>
                                 
                                 <label>
@@ -373,7 +391,7 @@
                                         v-model="showFoldGutter" 
                                         @change="updateSettings"
                                     />
-                                    Show fold gutter
+                                    {{ $t('settings.showFoldGutter') }}
                                 </label>
 
                                 <label>
@@ -382,13 +400,13 @@
                                         v-model="showWhitespace" 
                                         @change="updateSettings"
                                     />
-                                    Show white-space
+                                    {{ $t('settings.showWhitespace') }}
                                 </label>
                             </div>
                         </div>
                         <div class="row font-settings">
                             <div class="entry">
-                                <h2>Font Family</h2>
+                                <h2>{{ $t('settings.fontFamily') }}</h2>
                                 <select v-model="fontFamily" @change="updateSettings" class="font-family">
                                     <option
                                         v-for="[font, label] in systemFonts"
@@ -398,42 +416,42 @@
                                 </select>
                             </div>
                             <div class="entry">
-                                <h2>Font Size</h2>
+                                <h2>{{ $t('settings.fontSize') }}</h2>
                                 <select v-model="fontSize" @change="updateSettings" class="font-size">
                                     <option
                                         v-for="size in [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]"
                                         :selected="size === fontSize"
                                         :value="size"
-                                    >{{ size }}px{{ size === defaultFontSize ? " (default)" : "" }}</option>
+                                    >{{ size }}px{{ size === defaultFontSize ? $t('settings.default') : "" }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="entry">
-                                <h2>Cursor Blink Rate</h2>
+                                <h2>{{ $t('settings.cursorBlinkRate') }}</h2>
                                 <select v-model.number="cursorBlinkRate" @change="updateSettings" class="cursor-blink-rate">
-                                    <option :value="0">Off</option>
-                                    <option :value="250">250 ms</option>
-                                    <option :value="500">500 ms</option>
-                                    <option :value="750">750 ms</option>
-                                    <option :value="1000">1000 ms (default)</option>
-                                    <option :value="1250">1250 ms</option>
-                                    <option :value="1500">1500 ms</option>
-                                    <option :value="2000">2000 ms</option>
+                                    <option :value="0">{{ $t('settings.off') }}</option>
+                                    <option :value="250">{{ $t('settings.ms', { ms: 250 }) }}</option>
+                                    <option :value="500">{{ $t('settings.ms', { ms: 500 }) }}</option>
+                                    <option :value="750">{{ $t('settings.ms', { ms: 750 }) }}</option>
+                                    <option :value="1000">{{ $t('settings.ms', { ms: 1000 }) }} {{ $t('settings.default') }}</option>
+                                    <option :value="1250">{{ $t('settings.ms', { ms: 1250 }) }}</option>
+                                    <option :value="1500">{{ $t('settings.ms', { ms: 1500 }) }}</option>
+                                    <option :value="2000">{{ $t('settings.ms', { ms: 2000 }) }}</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="entry">
-                                <h2>Tabs</h2>
+                                <h2>{{ $t('settings.tabs') }}</h2>
                                 <label>
                                     <input 
                                         type="checkbox" 
                                         v-model="showTabs" 
                                         @change="updateSettings"
                                     />
-                                    Show tabs
+                                    {{ $t('settings.showTabs') }}
                                 </label>
                                 
                                 <label>
@@ -443,7 +461,7 @@
                                         @change="updateSettings"
                                         :disabled="!showTabs"
                                     />
-                                    Show tabs in fullscreen mode
+                                    {{ $t('settings.showTabsInFullscreen') }}
                                 </label>
                             </div>
                         </div>
@@ -465,7 +483,7 @@
                     <TabContent tab="keyboard-bindings" :activeTab="activeTab">
                         <div class="row">
                             <div class="entry">
-                                <h2>Keymap</h2>
+                                <h2>{{ $t('settings.keymap') }}</h2>
                                 <select v-model="keymap" @change="updateSettings" class="keymap">
                                     <template v-for="km in keymaps" :key="km.value">
                                         <option :selected="km.value === keymap" :value="km.value">{{ km.name }}</option>
@@ -473,10 +491,10 @@
                                 </select>
                             </div>
                             <div class="entry" v-if="keymap === 'emacs' && isMac">
-                                <h2>Meta Key</h2>
+                                <h2>{{ $t('settings.metaKey') }}</h2>
                                 <select v-model="metaKey" @change="updateSettings" class="metaKey">
-                                    <option :selected="metaKey === 'meta'" value="meta">Command</option>
-                                    <option :selected="metaKey === 'alt'" value="alt">Option</option>
+                                    <option :selected="metaKey === 'meta'" value="meta">{{ $t('settings.command') }}</option>
+                                    <option :selected="metaKey === 'alt'" value="alt">{{ $t('settings.option') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -490,34 +508,34 @@
                     <TabContent tab="updates" :activeTab="activeTab">
                         <div class="row">
                             <div class="entry">
-                                <h2>Current Version</h2>
+                                <h2>{{ $t('settings.currentVersion') }}</h2>
                                 <b>{{ appVersion }}</b>
                             </div>
                         </div>
 
                         <div class="row" v-if="!isWebApp">
                             <div class="entry">
-                                <h2>Auto Update</h2>
+                                <h2>{{ $t('settings.autoUpdate') }}</h2>
                                 <label>
                                     <input 
                                         type="checkbox" 
                                         v-model="autoUpdate" 
                                         @change="updateSettings"
                                     />
-                                    Periodically check for new updates
+                                    {{ $t('settings.periodicallyCheckUpdates') }}
                                 </label>
                             </div>
                         </div>
                         <div class="row" v-if="!isWebApp">
                             <div class="entry">
-                                <h2>Beta Versions</h2>
+                                <h2>{{ $t('settings.betaVersions') }}</h2>
                                 <label>
                                     <input 
                                         type="checkbox" 
                                         v-model="allowBetaVersions" 
                                         @change="updateSettings"
                                     />
-                                    Use beta versions of Heynote
+                                    {{ $t('settings.useBetaVersions') }}
                                 </label>
                             </div>
                         </div>
@@ -529,7 +547,7 @@
                 <button 
                     @click="$emit('closeSettings')"
                     class="close"
-                >Close</button>
+                >{{ $t('settings.close') }}</button>
             </div>
         </div>
         <div class="shader"></div>
@@ -538,7 +556,7 @@
 
 <style lang="sass" scoped>
     .settings
-        z-index: 500 // above the search panel and other overlays
+        z-index: 500 // Above the search panel and other overlays
         position: fixed
         top: 0
         left: 0
@@ -636,6 +654,8 @@
                                 width: 280px
                             .font-size
                                 width: 120px
+                            .language
+                                width: 150px
                         
                         .buffer-location 
                             width: 100%

@@ -1,6 +1,7 @@
 <script>
     import { toRaw } from 'vue'
     import { mapState, mapActions } from 'pinia'
+    import { i18n } from "../locales/i18n"
 
     import { mapWritableState, mapStores } from 'pinia'
     import { useHeynoteStore } from "../stores/heynote-store"
@@ -82,7 +83,8 @@
             })
 
             window.heynote.mainProcess.on('tab:deleteBuffer', (event, tabPath) => {
-                if (confirm(`Are you sure you want to delete the buffer "${this.heynoteStore.getBufferTitle(tabPath)}"?`)) {
+                const title = this.heynoteStore.getBufferTitle(tabPath)
+                if (confirm(i18n.t('app.deleteConfirm', { title }))) {
                     this.deleteBuffer(tabPath)
                 }
                 this.focusEditor()

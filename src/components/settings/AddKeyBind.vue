@@ -86,10 +86,10 @@
     <div class="container add-key-binding-dialog">
         <div class="dialog">
             <div class="dialog-content">
-                <h3>Add key binding</h3>
+                <h3>{{ $t('addKeyBind.addKeyBinding') }}</h3>
                 <div class="form">
                     <div class="field">
-                        <label>Key</label>
+                        <label>{{ $t('addKeyBind.key') }}</label>
                         <RecordKeyInput 
                             v-model="key" 
                             @enter="focusCommandSelector"
@@ -98,7 +98,7 @@
                         />
                     </div>
                     <div class="field command-field">
-                        <label>Command</label>
+                        <label>{{ $t('addKeyBind.command') }}</label>
                         <AutoComplete
                             dropdown
                             forceSelection
@@ -109,7 +109,7 @@
                             :delay="0"
                             @complete="onCommandSearch"
                             ref="autocomplete"
-                            emptySearchMessage="No commands found"
+                            :emptySearchMessage="$t('addKeyBind.noCommandsFound')"
                             class="command-autocomplete"
                         >
                             <template #option="slotProps">
@@ -125,11 +125,11 @@
                 <button 
                     @click="onSave"
                     class="save"
-                >Save</button>
+                >{{ $t('addKeyBind.save') }}</button>
                 <button 
                     @click="$emit('close')"
                     class="cancel"
-                 >Cancel</button>
+                 >{{ $t('addKeyBind.cancel') }}</button>
             </div>
         </div>
     </div>

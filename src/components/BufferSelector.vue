@@ -1,5 +1,6 @@
 <script>
     import fuzzysort from 'fuzzysort'
+    import { i18n } from "../locales/i18n"
 
     import { mapState, mapActions } from 'pinia'
     import { SCRATCH_FILE_NAME } from "../common/constants"
@@ -74,6 +75,10 @@
                     bindings: this.commandKeyBindingsMap[cmdKey],
                 }))
             },
+            
+            currentLocale() {
+                return i18n.locale
+            },
 
             orderedItems() {
                 const sortKeys = Object.fromEntries(this.recentBufferPaths.map((item, idx) => [item, idx]))
@@ -101,8 +106,11 @@
             },
 
             filteredItems() {
+                // Access currentLocale to make this computed property depend on it
+                this.currentLocale
+                
                 if (this.commandsEnabled && this.filter.startsWith(">")) {
-                    // command mode if the first character is ">"
+                    // command mode if the first character is ">
                     if (this.filter.length < 2) {
                         return this.commands
                     }
@@ -134,7 +142,7 @@
                     }
                     
                     const newNoteItem = {
-                        name: "Create new…", 
+                        name: i18n.t('bufferSelector.createNew'), 
                         createNew:true,
                     }
                     return [

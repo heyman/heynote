@@ -124,29 +124,29 @@
     <div :class="className">
         <label class="modifier">
             <input type="checkbox" v-model="cmdOrCtrl" @change="onChange" />
-            <span v-if="isMac" class="text">Command</span>
-            <span v-else class="text">Ctrl</span>
+            <span v-if="isMac" class="text">{{ $t('keyboardHotkey.command') }}</span>
+            <span v-else class="text">{{ $t('keyboardHotkey.ctrl') }}</span>
         </label>
         <label class="modifier">
             <input type="checkbox" v-model="shift" @change="onChange" />
-            <span class="text">Shift</span>
+            <span class="text">{{ $t('keyboardHotkey.shift') }}</span>
         </label>
         <label v-if="isMac" class="modifier">
             <input type="checkbox" v-model="ctrl" @change="onChange" />
-            <span  class="text">Ctrl</span>
+            <span  class="text">{{ $t('keyboardHotkey.ctrl') }}</span>
         </label>
         <label class="modifier">
             <input type="checkbox" v-model="alt" @change="onChange" />
-            <span v-if="isMac" class="text">Option</span>
-            <span v-else class="text">Alt</span>
+            <span v-if="isMac" class="text">{{ $t('keyboardHotkey.option') }}</span>
+            <span v-else class="text">{{ $t('keyboardHotkey.alt') }}</span>
         </label>
         <label v-if="!isMac" class="modifier">
             <input type="checkbox" v-model="altGr" @change="onChange" />
-            <span  class="text">AltGr</span>
+            <span  class="text">{{ $t('keyboardHotkey.altGr') }}</span>
         </label>
         <label v-if="!isMac" class="modifier">
             <input type="checkbox" v-model="super" @change="onChange" />
-            <span  class="text">Win</span>
+            <span  class="text">{{ $t('keyboardHotkey.win') }}</span>
         </label>
         <select v-model="key" @change="onChange">
             <option v-for="k in keys" :key="k" :value="k">{{ k }}</option>

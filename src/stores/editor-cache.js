@@ -7,9 +7,9 @@ import { useErrorStore } from './error-store'
 import { useHeynoteStore } from './heynote-store'
 import { HeynoteEditor } from '../editor/editor'
 
-// keep max 5 editor instances that are stale in memory
+// Keep max 5 editor instances that are stale in memory
 const NUM_EDITOR_INSTANCES = 5
-// always keep an editor in memory if it was accessed in the last hour
+// Always keep an editor in memory if it was accessed in the last hour
 const EDITOR_STALE_TIME = 1000 * 3600
 
 export const useEditorCacheStore = defineStore("editorCache", {
@@ -66,7 +66,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
                 const editor = this._createEditorInstance(path)
                 this.cache[path] = editor
 
-                // add the editor to the LRU
+                // Add the editor to the LRU
                 this.updateLru(path)
 
                 this.freeStaleEditors()
@@ -77,7 +77,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
         updateLru(path, addLast=false) {
             this.lru = this.lru.filter(p => p !== path)
             if (addLast) {
-                // add to LRU, but as the first item to be removed
+                // Add to LRU, but as the first item to be removed
                 this.lru.unshift(path)
                 this.accessTimes[path] = new Date((new Date())-(3600*24*365*1000))
             } else {
@@ -203,7 +203,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
 
             this.cleanupTimer = setInterval(() => {
                 this.freeStaleEditors()
-            }, 1000 * 60 * 10) // every 10 minutes
+            }, 1000 * 60 * 10) // Every 10 minutes
 
             window.document.addEventListener("currenciesLoaded", this.onCurrenciesLoaded)
         },
@@ -238,11 +238,11 @@ export const useEditorCacheStore = defineStore("editorCache", {
                 otherEditor.appendBlockContent(content)
                 editor.deleteActiveBlock()
 
-                // add the target buffer to recent buffers so that it shows up at the top of the buffer selector
+                // Add the target buffer to recent buffers so that it shows up at the top of the buffer selector
                 heynoteStore.addRecentBuffer(targetPath)
                 heynoteStore.addRecentBuffer(heynoteStore.currentBufferPath)
 
-                // if otherEditor was just created, we can move it to the end of the LRU so that it's the first to be cleaned up
+                // If otherEditor was just created, we can move it to the end of the LRU so that it's the first to be cleaned up
                 if (created) {
                     this.updateLru(targetPath, true)
                 }

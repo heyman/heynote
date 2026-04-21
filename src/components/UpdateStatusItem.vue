@@ -1,4 +1,6 @@
 <script>
+    import { i18n } from "../locales/i18n"
+    
     export default {
         props: [
             "autoUpdate",
@@ -85,11 +87,11 @@
         computed: {
             statusText() {
                 if (this.downloading) {
-                    return "Downloading update… " + this.updateProgress.percent.toFixed(0) + "%"
+                    return i18n.t('update.downloading', { percent: this.updateProgress.percent.toFixed(0) })
                 } else if (this.updateDownloaded) {
-                    return "Update & Restart"
+                    return i18n.t('update.updateAndRestart')
                 } else if (this.updateAvailable) {
-                    return "New version available!"
+                    return i18n.t('update.newVersionAvailable')
                 } else {
                     return ""
                 }
@@ -99,11 +101,11 @@
                 if (this.downloading) {
                     return ""
                 } else if (this.updateDownloaded) {
-                    return "Click to restart and update Heynote"
+                    return i18n.t('update.clickToRestart')
                 } else if (this.updateAvailable) {
-                    return "Update to version " + this.version + " (current version: " + this.currentVersion + ")"
+                    return i18n.t('update.updateToVersion', { version: this.version, currentVersion: this.currentVersion })
                 } else {
-                    return "Check for updates"
+                    return i18n.t('update.checkForUpdates')
                 }
             },
 

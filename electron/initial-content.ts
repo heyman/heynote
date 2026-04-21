@@ -1,35 +1,56 @@
 import os from "os";
 import { keyHelpStr } from "../shared-utils/key-helper";
+import { safeTranslate } from "../src/locales/i18n-core";
+
+// Get system locale or default to English
+let systemLocale = 'en';
+
+try {
+  // First try to get language from browser (works in both dev and production)
+  if (typeof navigator !== 'undefined' && navigator.language) {
+    let browserLang = navigator.language.split('-')[0];
+    if (navigator.language === 'zh-TW' || navigator.language === 'zh-HK' || navigator.language === 'zh-MO') {
+      systemLocale = 'zh-TW';
+    } else if (browserLang === 'zh' || browserLang === 'en' || browserLang === 'ja' || browserLang === 'ko') {
+      systemLocale = browserLang;
+    }
+  } 
+  // Fallback to Electron system locale (only works in production)
+  else {
+    const { app } = require('electron');
+    if (app && app.getLocale) {
+      const locale = app.getLocale();
+      if (locale === 'zh-TW' || locale === 'zh-HK' || locale === 'zh-MO') {
+        systemLocale = 'zh-TW';
+      } else {
+        const lang = locale.split('-')[0];
+        if (lang === 'zh' || lang === 'en' || lang === 'ja' || lang === 'ko') {
+          systemLocale = lang;
+        }
+      }
+    }
+  }
+} catch (e) {
+  // Ignore errors, default to English
+}
 
 const created = (new Date()).toISOString()
+
+// Use safeTranslate directly without Vue dependency
+const t = (key) => safeTranslate(systemLocale, key);
 
 export const initialContent = `
 {"formatVersion":"1.0.0","name":"Scratch"}
 ∞∞∞text;created=${created}
-Welcome to Heynote! 👋
+${t('initialContent.welcome')}
 
 ${keyHelpStr(os.platform())}
 ∞∞∞markdown;created=${created}
-Read full documentation at https://heynote.com/docs
+${t('initialContent.documentation')}
 ∞∞∞math;created=${created}
-This is a Math block. Here, rows are evaluated as math expressions. 
-
-radius = 5
-area = radius^2 * PI
-sqrt(9)
-
-It also supports some basic unit conversions, including currencies:
-
-13 inches in cm
-time = 3900 seconds to minutes
-time * 2
-
-1 EUR in USD
+${t('initialContent.mathBlock')}
 ∞∞∞markdown;created=${created}
-In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
-
-- [x] Download Heynote
-- [ ] Try out Heynote
+${t('initialContent.markdownBlock')}
 ∞∞∞text-a;created=${created}
 `
 
