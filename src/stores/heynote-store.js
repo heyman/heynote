@@ -1,13 +1,14 @@
 import { toRaw, nextTick, watch } from 'vue';
 import { defineStore } from "pinia"
 import { NoteFormat } from "../common/note-format"
+import { filenameSlug } from "../common/sanitize-filename"
 import { toSafeBrowserLocale } from "../util/locale.js"
 import { getInitialContent, getPlatformIdFromHeynotePlatform } from "../common/initial-content.js"
 import { useEditorCacheStore } from "./editor-cache"
 import { useSettingsStore } from "./settings-store"
-import { 
-    SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE, 
-    SAVE_TABS_STATE, LOAD_TABS_STATE, CONTEXT_MENU_CLOSED 
+import {
+    SCRATCH_FILE_NAME, WINDOW_FULLSCREEN_STATE, WINDOW_FOCUS_STATE,
+    SAVE_TABS_STATE, LOAD_TABS_STATE, CONTEXT_MENU_CLOSED
 } from "../common/constants"
 
 
@@ -335,6 +336,21 @@ export const useHeynoteStore = defineStore("heynote", {
             }
 
             await this.updateBuffers()
+        },
+
+        /**
+         * Create a new buffer with an auto-generated "Scratch N" name (no modal).
+         * N is the highest existing Scratch index + 1, so deletions don't cause collisions.
+         */
+        async createScratchBuffer() {
+            const scratchPathRe = /^scratch-(\d+)\.txt$/
+            const maxN = Object.keys(this.buffers).reduce((max, path) => {
+                const match = path.match(scratchPathRe)
+                return match ? Math.max(max, parseInt(match[1], 10)) : max
+            }, 0)
+            const name = `Scratch ${maxN + 1}`
+            const path = filenameSlug(name) + ".txt"
+            await this.createNewBuffer(path, name)
         },
 
         /**
