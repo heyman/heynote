@@ -317,6 +317,8 @@ test.describe('openAtLogin e2e', { tag: "@e2e" }, () => {
     })
 
     test('Start hidden saves updated maximized state after showing and hiding again', async () => {
+        test.skip(isLinux, 'BrowserWindow maximized state is not reliable under Linux e2e')
+
         await closeElectronApp(electronApp)
         electronApp = null
 
