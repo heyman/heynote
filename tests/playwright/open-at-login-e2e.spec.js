@@ -219,10 +219,19 @@ test.describe('openAtLogin e2e', { tag: "@e2e" }, () => {
         await page.waitForLoadState('domcontentloaded')
 
         await expect.poll(async () => {
-            return await electronApp.evaluate(({ BrowserWindow }) => {
+            const raw = await fs.readFile(configPath, 'utf-8')
+            const config = JSON.parse(raw)
+            const isVisible = await electronApp.evaluate(({ BrowserWindow }) => {
                 return BrowserWindow.getAllWindows()[0]?.isVisible()
             })
-        }).toBe(false)
+            return {
+                startHidden: config.settings?.startHidden,
+                isVisible,
+            }
+        }).toEqual({
+            startHidden: true,
+            isVisible: false,
+        })
     })
 
     test('Start hidden preserves saved fullscreen state when quitting while hidden', async () => {
