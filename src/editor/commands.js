@@ -11,6 +11,7 @@ import {
     insertNewlineAndIndent,
     toggleComment, toggleBlockComment, toggleLineComment,
     insertTab,
+    copyLineDown, copyLineUp,
 } from "@codemirror/commands"
 import { foldCode, unfoldCode, toggleFold } from "@codemirror/language"
 import { 
@@ -250,6 +251,8 @@ const HEYNOTE_COMMANDS = {
     toggleBlockComment: cmdLessContext(toggleBlockComment, "Edit", "Toggle block comment"),
     toggleLineComment: cmdLessContext(toggleLineComment, "Edit", "Toggle line comment"),
     insertTab: cmdLessContext(insertTab, "Edit", "Insert tab"),
+    copyLineDown: cmdLessContext(copyLineDown, "Edit", "Copy line(s) down"),
+    copyLineUp: cmdLessContext(copyLineUp, "Edit", "Copy line(s) up"),
 }
 
 // selection mark-mode:ify all cursor/select commands from CodeMirror
