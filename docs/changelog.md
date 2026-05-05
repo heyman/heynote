@@ -37,6 +37,7 @@ For performance reasons it's recommended to use this feature if the Scratch buff
 - Improve window show/focus behavior when restoring from tray
 - Add setting for automatically starting Heynote on login
 - Add setting for starting Heynote hidden
+- Add copyLineDown and copyLineUp commands by default bound to `Alt + Shift + ArrowDown/Up`
 
 
 ## 2.8.2

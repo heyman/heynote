@@ -65,6 +65,8 @@ export const DEFAULT_KEYMAP = [
     
     cmd("Alt-ArrowUp", "moveLineUp"),
     cmd("Alt-ArrowDown", "moveLineDown"),
+    cmd("Alt-Shift-ArrowUp", "copyLineUp"),
+    cmd("Alt-Shift-ArrowDown", "copyLineDown"),
     cmd("Mod-Shift-k", "deleteLine"),
     cmd("Mod-Alt-ArrowDown", "newCursorBelow"),
     cmd("Mod-Alt-ArrowUp", "newCursorAbove"),
