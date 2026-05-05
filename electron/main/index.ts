@@ -257,27 +257,12 @@ async function createWindow() {
 
     if (hideOnStartup) {
         win.once("show", () => {
-            let restoreAttempts = 0
-            const restoreWindowState = () => {
-                if (!win || win.isDestroyed() || !win.isVisible()) {
-                    return
-                }
-                restoreAttempts += 1
-                if (windowWasMaximized && !win.isMaximized()) {
-                    win.maximize()
-                }
-                if (windowWasFullScreen && !win.isFullScreen()) {
-                    win.setFullScreen(true)
-                }
-                const needsAnotherAttempt = (
-                    (windowWasMaximized && !win.isMaximized())
-                    || (windowWasFullScreen && !win.isFullScreen())
-                )
-                if (needsAnotherAttempt && restoreAttempts < 20) {
-                    setTimeout(restoreWindowState, 50)
-                }
+            if (windowWasMaximized) {
+                win?.maximize()
             }
-            setTimeout(restoreWindowState, 0)
+            if (windowWasFullScreen && !win?.isFullScreen()) {
+                win?.setFullScreen(true)
+            }
         })
     }
     // maximize window if it was maximized last time

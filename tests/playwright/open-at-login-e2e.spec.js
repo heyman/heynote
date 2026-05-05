@@ -64,15 +64,26 @@ async function removeDirWithRetry(dirPath, retries = 5) {
 
 async function closeElectronApp(electronApp) {
     if (!electronApp) return
-    const timeout = new Promise((resolve) => setTimeout(resolve, 5000))
-    await Promise.race([electronApp.close(), timeout])
-    // Force kill if still running
-    try {
-        const pid = electronApp.process().pid
-        if (pid) process.kill(pid, 'SIGKILL')
-    } catch {
-        // already exited
+    const childProcess = electronApp.process()
+    const hasExited = () => !childProcess || childProcess.exitCode !== null || childProcess.signalCode !== null
+    const waitForExit = () => {
+        if (hasExited()) {
+            return Promise.resolve()
+        }
+        return new Promise((resolve) => childProcess.once('exit', resolve))
     }
+    const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+    await Promise.race([electronApp.close(), timeout(5000)])
+    await Promise.race([waitForExit(), timeout(1000)])
+    if (hasExited()) {
+        return
+    }
+
+    // Force kill if still running, then wait so the next launch cannot race
+    // against late config writes from this process.
+    childProcess.kill('SIGKILL')
+    await Promise.race([waitForExit(), timeout(5000)])
 }
 
 
