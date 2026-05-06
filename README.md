@@ -11,7 +11,7 @@
 - [Documentation](https://heynote.com/docs/)
 - [Changelog](https://heynote.com/docs/changelog/)
 
-Heynote is a scratchpad and note taking app for developers and power users. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
+Heynote is a scratchpad and note-taking app for developers and power users. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
 
 Heynote buffers are divided into blocks, and each block can have its own Language set (e.g. JavaScript, JSON, Markdown, etc.). This gives you syntax highlighting and lets you auto-format that JSON response. Just hit `Ctrl/Cmd + Enter` to create a new block.
 
