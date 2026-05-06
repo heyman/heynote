@@ -2,7 +2,7 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
-## 2.9.0-beta.5
+## 2.9.0
 
 ### Sidebar with tree view of the note buffers
 
@@ -25,7 +25,7 @@ key binding to open up the global search is `Ctrl/Cmd + Shift + F`.
 A new archive action has been added for the default Scratch buffer. It can be accessed from the Scratch buffer's 
 context (right click) menu. It moves the content of Scratch into a new buffer buffer and starts a fresh Scratch buffer.
 
-For performance reasons it's recommended to use this feature if the Scratch buffer grows large (e.g. multiple MBs).
+For performance reasons it's recommended to use this feature when the Scratch buffer grows really large (e.g. MBs).
 
 
 ### Other changes
