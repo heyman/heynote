@@ -11,18 +11,24 @@
 - [Documentation](https://heynote.com/docs/)
 - [Changelog](https://heynote.com/docs/changelog/)
 
-Heynote is a dedicated scratchpad for developers and power users. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
+Heynote is a scratchpad and note taking app for developers and power users. It functions as a large persistent text buffer where you can write down anything you like. Works great for that Slack message you don't want to accidentally send, a JSON response from an API you're working with, notes from a meeting, your daily to-do list, etc. 
 
-Heynote buffers is divided into blocks, and each block can have its own Language set (e.g. JavaScript, JSON, Markdown, etc.). This gives you syntax highlighting and lets you auto-format that JSON response.
+Heynote buffers are divided into blocks, and each block can have its own Language set (e.g. JavaScript, JSON, Markdown, etc.). This gives you syntax highlighting and lets you auto-format that JSON response. Just hit `Ctrl/Cmd + Enter` to create a new block.
 
 Available for Mac, Windows, and Linux.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://heynote.com/img/dark/screenshot3.png">
+  <img src="https://heynote.com/img/light/screenshot3.png" width="851" alt="New sidebar buffer tree feature">
+</picture>
+
 ## Features
 
--   Persistent text buffer(s)
+-   Persistent text buffers
 -   Block-based
 -   Inline images
 -   Multiple buffers in tabs
+-   Search (single and multi buffer)
 -   Math/Calculator mode
 -   Currency conversion
 -   Syntax highlighting:
