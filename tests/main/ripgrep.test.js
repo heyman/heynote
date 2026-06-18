@@ -184,6 +184,30 @@ describe("startLibrarySearch", () => {
         expect(submatch.start).toBe(line.lastIndexOf("foo"))
     })
 
+    it("allows CJK queries shorter than three JavaScript characters", async () => {
+        await fs.promises.writeFile(
+            path.join(tmpDir, "scratch.txt"),
+            "prefix 中文 match\n",
+            "utf8"
+        )
+
+        const events = await runLibrarySearch(tmpDir, {
+            searchId: 790,
+            query: "中",
+            caseSensitive: true,
+            wholeWord: false,
+        })
+        const matches = events.filter((event) => event.type === "match")
+
+        expect(matches).toHaveLength(1)
+        expect(matches[0]).toMatchObject({
+            buffer: "scratch.txt",
+            line: "prefix 中文 match",
+            lineNumber: 1,
+            submatches: [{ start: 7, end: 8, text: "中" }],
+        })
+    })
+
     it("ignores Heynote metadata, block delimiters, and tags", async () => {
         const tag = "<∞img;id=1;file=https://example.com/needle.png;w=10;h=10∞>"
         const content = [

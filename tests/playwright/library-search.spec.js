@@ -18,6 +18,7 @@ function installLibraryState() {
             "first needle match <∞img;id=search-test;file=https://example.com/needle.png;w=10;h=10∞>",
             "second needle match",
             "issue-123 is tracked",
+            "Chinese query 中文搜索",
             "short non-match",
         ].join("\n")),
         "folder-a/project.txt": createBufferContent("Project Note", [
@@ -84,6 +85,14 @@ test.describe("library search", () => {
         await expect(page.locator(".result-summary")).toContainText("2 results in 2 buffers")
         await expect(page.locator(".result-container .match strong", { hasText: "issue-123" })).toHaveCount(1)
         await expect(page.locator(".result-container .match strong", { hasText: "issue-456" })).toHaveCount(1)
+    })
+
+    test("supports CJK queries shorter than three JavaScript characters", async ({ page }) => {
+        await page.locator(".search-container input.search-query").fill("中")
+
+        await expect(page.locator(".result-summary")).toContainText("1 results in 1 buffers")
+        await expect(page.locator(".result-container .match")).toHaveCount(1)
+        await expect(page.locator(".result-container .match strong")).toHaveText("中")
     })
 
     test("persists search setting toggles and defaults them to off", async ({ page }) => {
