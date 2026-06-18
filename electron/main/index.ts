@@ -15,6 +15,7 @@ import CONFIG from "../config"
 import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates, updateAutoInstallUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
+import { ensureWindowBoundsVisible } from './window-bounds';
 import { 
     FileLibrary, 
     setupFileLibraryEventHandlers, 
@@ -88,6 +89,38 @@ export function quit() {
     app.quit()
 }
 
+function getVisibleWindowBounds(bounds: { width: number, height: number, x?: number, y?: number }) {
+    return ensureWindowBoundsVisible(bounds, screen.getAllDisplays())
+}
+
+function ensureWindowVisible() {
+    if (!win) {
+        return
+    }
+
+    const bounds = win.getBounds()
+    const visibleBounds = getVisibleWindowBounds(bounds)
+    if (
+        visibleBounds.x !== bounds.x ||
+        visibleBounds.y !== bounds.y ||
+        visibleBounds.width !== bounds.width ||
+        visibleBounds.height !== bounds.height
+    ) {
+        if (visibleBounds.x !== undefined && visibleBounds.y !== undefined) {
+            if (win.isFullScreen()) {
+                return
+            }
+
+            win.setBounds({
+                x: visibleBounds.x,
+                y: visibleBounds.y,
+                width: visibleBounds.width,
+                height: visibleBounds.height,
+            })
+        }
+    }
+}
+
 function showWindow() {
     if (!win) {
         return
@@ -96,6 +129,7 @@ function showWindow() {
     if (win.isMinimized()) {
         win.restore()
     }
+    ensureWindowVisible()
     if (!wasVisible) {
         // hide()+show() forces the window to the top of the window stack on
         // Linux WMs that don't raise windows on a bare show() call
@@ -139,29 +173,7 @@ async function createWindow() {
     let currentWindowIsMaximized = windowWasMaximized
     let currentWindowIsFullScreen = windowWasFullScreen
 
-    // windowBounds.x and windowBounds.y will be undefined when config file is missing, e.g. first time run
-    if (windowBounds.x !== undefined && windowBounds.y !== undefined) {
-        // check if window is outside of screen, or too large
-        const display = screen.getDisplayMatching({
-            x: windowBounds.x,
-            y: windowBounds.y,
-            width: windowBounds.width,
-            height: windowBounds.height,
-        })
-        //console.log("bounds:", display.bounds, "workArea:", display.workArea)
-        const area = display.workArea
-        if (windowBounds.width > area.width) {
-            windowBounds.width = area.width
-        }
-        if (windowBounds.height > area.height) {
-            windowBounds.height = area.height
-        }
-        if (windowBounds.x + windowBounds.width > area.x + area.width || windowBounds.y + windowBounds.height > area.y + area.height) {
-            // window is outside of screen, reset position
-            windowBounds.x = undefined
-            windowBounds.y = undefined
-        }
-    }
+    windowBounds = getVisibleWindowBounds(windowBounds)
 
     const pngSystems: NodeJS.Platform[] = ["linux", "freebsd", "openbsd", "netbsd"]
     const icon = join(
@@ -275,6 +287,7 @@ async function createWindow() {
     // without this, there are cases when Cmd-Tabbing to Heynote won't show the window
     app.on("did-become-active", (event) => {
         if (!win.isVisible()) {
+            ensureWindowVisible()
             win.show()
         }
     })
@@ -484,6 +497,11 @@ registerProtocolBeforeAppReady()
 app.whenReady().then(createWindow).then(async () => {
     initFileLibrary(win).then(() => {
         setupFileLibraryEventHandlers()
+    })
+    screen.on("display-removed", () => {
+        if (win?.isVisible()) {
+            ensureWindowVisible()
+        }
     })
     initializeAutoUpdate(win)
     registerGlobalHotkey()
