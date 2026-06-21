@@ -2,6 +2,14 @@
 
 Here are the most notable changes in each release. For a more detailed list of changes, see the [Github Releases page](https://github.com/heyman/heynote/releases).
 
+## 2.9.1-beta
+
+- Fix issue with the Heynote window ending up on a screen that has been disconnected
+- Fix so that library search works better for Chinese, Japanese and Korean languages. 
+  Previously searching required three characters to trigger but this is no longer the case 
+  for these languages.
+
+
 ## 2.9.0
 
 ### Sidebar with tree view of the note buffers
