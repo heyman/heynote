@@ -58,7 +58,7 @@
     "@electron/asar": "^3.2.2",
     "@lezer/generator": "^1.5.1",
     "@lezer/markdown": "^1.4.2",
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.61.0",
     "@replit/codemirror-lang-csharp": "^6.2.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/node": "^20.10.5",
@@ -98,5 +98,21 @@
     "pinia": "^2.1.7",
     "pinyin-pro": "^3.27.0",
     "semver": "^7.6.3"
+  },
+  "allowScripts": {
+    "electron@39.3.0": true,
+    "esbuild@0.27.2": true,
+    "esbuild@0.21.5": true,
+    "esbuild@0.25.12": true,
+    "@parcel/watcher@2.5.6": true,
+    "@vscode/ripgrep@1.17.0": true,
+    "canvas@3.2.1": true,
+    "electron-winstaller@5.4.0": true,
+    "vue-demi@0.14.10": true,
+    "fsevents@2.3.2": true,
+    "fsevents@2.3.3": true
+  },
+  "overrides": {
+    "yauzl": "^3.3.1"
   }
 }

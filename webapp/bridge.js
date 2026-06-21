@@ -14,6 +14,7 @@ import {
 import { generateClientId, TEST_CLIENT_ID } from "@/src/common/client-id";
 import { CURRENCY_RATES_URL, getCurrencyFetchOptions } from "@/src/common/currency-request";
 import { normalizeLibrarySearchMatch } from "@/src/common/library-search-match";
+import { isLibrarySearchQueryLongEnough } from "@/src/common/library-search-query.js";
 import { NoteFormat } from "../src/common/note-format";
 
 const NOTE_KEY_PREFIX = "heynote-library__"
@@ -425,7 +426,7 @@ const Heynote = {
 
 function searchLocalLibrary(options) {
     const query = options?.query || ""
-    if (query.length <= 2) {
+    if (!isLibrarySearchQueryLongEnough(query)) {
         ipcRenderer.send(LIBRARY_SEARCH_DONE, { searchId: options?.searchId })
         return
     }

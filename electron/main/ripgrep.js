@@ -4,6 +4,7 @@ import { once } from "node:events"
 import readline from "node:readline"
 
 import { IMAGE_REGEX_RIPGREP } from "@/src/common/constants.js"
+import { isLibrarySearchQueryLongEnough } from "@/src/common/library-search-query.js"
 import { normalizeLibrarySearchMatch } from "@/src/common/library-search-match.js"
 import { parseImagesFromString } from "@/src/editor/image/image-parsing.js"
 
@@ -83,8 +84,8 @@ export function startLibrarySearch(library, options, onEvent) {
         throw Error("library.basePath not set, is library initialized?")
     }
     const query = options?.query || ""
-    if (query.length <= 2) {
-        throw Error("Search query must be longer than 2 characters")
+    if (!isLibrarySearchQueryLongEnough(query)) {
+        throw Error("Search query is too short")
     }
 
     const args = [

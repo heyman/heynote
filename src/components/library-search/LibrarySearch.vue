@@ -4,6 +4,7 @@
     import { useSearchStore } from '@/src/stores/search-store';
     import { useHeynoteStore } from "@/src/stores/heynote-store";
     import { useSettingsStore } from "@/src/stores/settings-store.js";
+    import { isLibrarySearchQueryLongEnough } from "@/src/common/library-search-query.js";
     import InputToggle from '@/src/editor/search/InputToggle.vue';
     import SearchResult from "./SearchResult.vue";
 
@@ -66,7 +67,7 @@
             ]),
 
             hasSearchQuery() {
-                return this.query.trim().length > 2
+                return isLibrarySearchQueryLongEnough(this.query)
             },
 
             resultCount() {

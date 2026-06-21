@@ -6,6 +6,7 @@ import {
     LIBRARY_SEARCH_MATCH,
     LIBRARY_SEARCH_START,
 } from "@/src/common/constants"
+import { isLibrarySearchQueryLongEnough } from "@/src/common/library-search-query.js"
 
 const defaultLibrarySearchSettings = {
     caseSensitive: false,
@@ -146,7 +147,7 @@ export const useSearchStore = defineStore("search", {
             this.selectedResultRow = null
             this.error = null
 
-            if (query.trim().length <= 2) {
+            if (!isLibrarySearchQueryLongEnough(query)) {
                 this.searching = false
                 Promise.resolve(window.heynote.mainProcess.invoke(LIBRARY_SEARCH_CANCEL)).catch(() => {})
                 return
