@@ -111,5 +111,8 @@
     "vue-demi@0.14.10": true,
     "fsevents@2.3.2": true,
     "fsevents@2.3.3": true
+  },
+  "overrides": {
+    "yauzl": "^3.3.1"
   }
 }
