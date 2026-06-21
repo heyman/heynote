@@ -12,14 +12,16 @@ jobs:
     - uses: actions/checkout@v6
     - uses: actions/setup-node@v6
       with:
-        node-version: latest
+        node-version: 22
         package-manager-cache: false
+    
     - name: Install xvfb
       run: sudo apt-get install xvfb
     - name: Install dependencies
       run: npm ci
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
