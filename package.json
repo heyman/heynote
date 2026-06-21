@@ -98,5 +98,18 @@
     "pinia": "^2.1.7",
     "pinyin-pro": "^3.27.0",
     "semver": "^7.6.3"
+  },
+  "allowScripts": {
+    "electron@39.3.0": true,
+    "esbuild@0.27.2": true,
+    "esbuild@0.21.5": true,
+    "esbuild@0.25.12": true,
+    "@parcel/watcher@2.5.6": true,
+    "@vscode/ripgrep@1.17.0": true,
+    "canvas@3.2.1": true,
+    "electron-winstaller@5.4.0": true,
+    "vue-demi@0.14.10": true,
+    "fsevents@2.3.2": true,
+    "fsevents@2.3.3": true
   }
 }
