@@ -21,6 +21,56 @@ test("test markdown mode", async ({ page }) => {
     await expect(page.locator("css=.status .status-block.lang")).toHaveText("Markdown")
 })
 
+test("selection word count is shown in status bar", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞text
+Hello world test
+`)
+    await page.waitForTimeout(200)
+
+    await page.evaluate(() => {
+        const view = window._heynote_editor.view
+        const text = view.state.doc.toString()
+        const start = text.indexOf("Hello")
+        const end = text.indexOf("test") + "test".length
+        view.dispatch({
+            selection: { anchor: start, head: end },
+            scrollIntoView: true,
+        })
+    })
+
+    await page.waitForTimeout(100)
+    await expect(page.locator("css=.status .status-block.line-number")).toContainText("Words 3")
+})
+
+test("fenced Markdown code blocks are syntax highlighted by language", async ({ page }) => {
+    await heynotePage.setContent(`
+∞∞∞markdown
+\`\`\`js
+class StrictModel {
+  static fields = new Set();
+}
+\`\`\`
+\`\`\`py
+def strict_function():
+    return 1
+\`\`\`
+`)
+    await page.waitForTimeout(300)
+
+    const classToken = await page.locator("css=.cm-content span:has-text('class')").first().evaluate(el => el.className)
+    const strictModelToken = await page.locator("css=.cm-content span:has-text('StrictModel')").first().evaluate(el => el.className)
+    const defToken = await page.locator("css=.cm-content span:has-text('def')").first().evaluate(el => el.className)
+
+    expect(classToken).not.toBe("")
+    expect(strictModelToken).not.toBe("")
+    expect(defToken).not.toBe("")
+
+    // keyword-like tokens in JS and Python should have same style class and differ from identifiers.
+    expect(classToken).toBe(defToken)
+    expect(classToken).not.toBe(strictModelToken)
+})
+
 test("checkbox toggle", async ({ page }) => {
     await heynotePage.setContent(`
 ∞∞∞markdown
