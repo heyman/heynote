@@ -2,6 +2,7 @@ import { protocol } from "electron"
 import * as path from "node:path"
 import * as jetpack from "fs-jetpack"
 import * as mimetypes from "mime-types"
+import { heynoteFileProtocolPrivileges } from "./protocol-privileges"
 
 let activeFileLibrary = null
 let protocolHandlerRegistered = false
@@ -10,7 +11,7 @@ let protocolHandlerRegistered = false
 export function registerProtocolBeforeAppReady() {
     protocol.registerSchemesAsPrivileged([{
         scheme: "heynote-file",
-        privileges: { standard: true, secure: true, supportFetchAPI: true },
+        privileges: heynoteFileProtocolPrivileges,
     }])
     //console.log("registering heynote-file:// as privileged")
 }
