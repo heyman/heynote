@@ -31,7 +31,7 @@ export const useSettingsStore = defineStore("settings", {
         },
 
         updateSettings(settings) {
-            window.heynote.setSettings({
+            return window.heynote.setSettings({
                 ...toRaw(this.settings),
                 ...settings,
             })

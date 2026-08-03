@@ -3,6 +3,7 @@
     import { mapStores, mapState } from 'pinia'
     import { useSettingsStore } from "@/src/stores/settings-store.js"
     import { useHeynoteStore } from "@/src/stores/heynote-store"
+    import { useErrorStore } from "@/src/stores/error-store"
 
     import { LANGUAGES } from '../../editor/languages.js'
     import KeyboardHotkey from "./KeyboardHotkey.vue"
@@ -110,7 +111,7 @@
         },
 
         computed: {
-            ...mapStores(useSettingsStore, useHeynoteStore),
+            ...mapStores(useSettingsStore, useHeynoteStore, useErrorStore),
         },
 
         methods: {
@@ -120,11 +121,11 @@
                 }
             },
 
-            updateSettings() {
+            async updateSettings() {
                 if (this.heynoteStore.showLeftPanel !== this.showLeftPanel) {
                     this.heynoteStore.setLeftPanelVisible(this.showLeftPanel, false)
                 }
-                this.settingsStore.updateSettings({
+                const result = await this.settingsStore.updateSettings({
                     showLineNumberGutter: this.showLineNumberGutter,
                     showFoldGutter: this.showFoldGutter,
                     showWhitespace: this.showWhitespace,
@@ -155,6 +156,9 @@
                     defaultBlockLanguage: this.defaultBlockLanguage === "text" ? undefined : this.defaultBlockLanguage,
                     defaultBlockLanguageAutoDetect: this.defaultBlockLanguageAutoDetect === true ? undefined : this.defaultBlockLanguageAutoDetect,
                 })
+                if (result?.globalHotkeyError) {
+                    this.errorStore.addError(result.globalHotkeyError)
+                }
                 if (!this.showInDock) {
                     this.showInMenu = true
                 }

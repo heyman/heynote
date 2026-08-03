@@ -66,7 +66,7 @@
     "codemirror-lang-elixir": "^4.0.0",
     "codemirror-lang-mermaid": "^0.5.0",
     "debounce": "^1.2.1",
-    "electron": "^39.3.0",
+    "electron": "41.10.2",
     "electron-builder": "^26.4.0",
     "electron-store": "^8.1.0",
     "electron-updater": "^6.6.2",
@@ -100,7 +100,6 @@
     "semver": "^7.6.3"
   },
   "allowScripts": {
-    "electron@39.3.0": true,
     "esbuild@0.27.2": true,
     "esbuild@0.21.5": true,
     "esbuild@0.25.12": true,
@@ -110,7 +109,8 @@
     "electron-winstaller@5.4.0": true,
     "vue-demi@0.14.10": true,
     "fsevents@2.3.2": true,
-    "fsevents@2.3.3": true
+    "fsevents@2.3.3": true,
+    "electron@41.10.2": true
   },
   "overrides": {
     "yauzl": "^3.3.1"

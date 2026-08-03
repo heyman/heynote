@@ -16,6 +16,7 @@ import { isDev, isLinux, isMac, isWindows } from '../detect-platform';
 import { initializeAutoUpdate, checkForUpdates, updateAutoInstallUpdates } from './auto-update';
 import { fixElectronCors } from './cors';
 import { ensureWindowBoundsVisible } from './window-bounds';
+import { enableWaylandGlobalShortcutsPortal, updateGlobalHotkeyRegistration } from './global-hotkey';
 import { 
     FileLibrary, 
     setupFileLibraryEventHandlers, 
@@ -45,6 +46,8 @@ process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
+
+enableWaylandGlobalShortcutsPortal(app, isLinux)
 
 // Set application name for Windows 10+ notifications
 if (isWindows) app.setAppUserModelId(app.getName())
@@ -378,10 +381,12 @@ function createTray() {
 }
 
 function registerGlobalHotkey() {
-    globalShortcut.unregisterAll()
-    if (CONFIG.get("settings.enableGlobalHotkey")) {
-        try {
-            const ret = globalShortcut.register(CONFIG.get("settings.globalHotkey"), () => {
+    try {
+        const result = updateGlobalHotkeyRegistration({
+            accelerator: CONFIG.get("settings.globalHotkey"),
+            enabled: CONFIG.get("settings.enableGlobalHotkey"),
+            globalShortcut,
+            callback: () => {
                 if (!win) {
                     return
                 }
@@ -406,10 +411,16 @@ function registerGlobalHotkey() {
                 } else {
                     showWindow()
                 }
-            })
-        } catch (error) {
-            console.log("Could not register global hotkey:", error)
+            },
+        })
+        if (!result.success) {
+            console.log(result.message)
+            return result.message
         }
+    } catch (error) {
+        const errorMessage = `Could not register global hotkey: ${error.message}`
+        console.log(errorMessage)
+        return errorMessage
     }
 }
 
@@ -504,7 +515,10 @@ app.whenReady().then(createWindow).then(async () => {
         }
     })
     initializeAutoUpdate(win)
-    registerGlobalHotkey()
+    const globalHotkeyError = registerGlobalHotkey()
+    if (globalHotkeyError) {
+        initErrors.push(globalHotkeyError)
+    }
     registerShowInDock()
     registerShowInMenu()
     registerAlwaysOnTop()
@@ -689,9 +703,7 @@ ipcMain.handle('settings:set', async (event, settings) => {
 
     win?.webContents.send(SETTINGS_CHANGE_EVENT, settings)
 
-    if (globalHotkeyChanged) {
-        registerGlobalHotkey()
-    }
+    const globalHotkeyError = globalHotkeyChanged ? registerGlobalHotkey() : undefined
     if (showInDockChanged) {
         registerShowInDock()
     }
@@ -715,6 +727,8 @@ ipcMain.handle('settings:set', async (event, settings) => {
         await initFileLibrary(win)
         win.webContents.send("library:pathChanged")
     }
+
+    return { globalHotkeyError }
 })
 
 ipcMain.handle(SAVE_TABS_STATE, async (event, tabsState) => {
