@@ -148,7 +148,7 @@ contextBridge.exposeInMainWorld("heynote", {
     settings: CONFIG.get("settings"),
     
     setSettings(settings) {
-        ipcRenderer.invoke("settings:set", settings)
+        return ipcRenderer.invoke("settings:set", settings)
     },
 
     async getCurrencyData() {

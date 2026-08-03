@@ -182,27 +182,8 @@ libnspr4
 
 ### Wayland
 
-Due to [an issue in Electron](https://github.com/electron/electron/issues/38288), the global hotkey will not work in all applications running under Wayland. In KDE it is possible to work around this limitation by adding this Kwin script:
+Heynote uses the [XDG Desktop Portal GlobalShortcuts interface](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.GlobalShortcuts.html) for global hotkeys in Wayland sessions. The desktop environment controls this interface, so it may ask you to confirm or configure the shortcut and can reject shortcuts already reserved by the system or another application.
 
-```javascript
-function toggleHeynote() {
-  var client = workspace.clientList().find((c) => c.resourceClass.toLowerCase() === 'heynote');
-  if (client) {
-    if (client.minimized) {
-      client.minimized = false;
-      workspace.activeClient = client;
-    } else {
-      if (workspace.activeClient == client) {
-        client.minimized = true;
-      } else {
-        workspace.activeClient = client;
-      }
-    }
-  }
-}
-registerShortcut('toggleHeynote', 'Toggle Heynote', 'Ctrl+Shift+H', toggleHeynote);
-```
+For KDE Plasma, make sure `xdg-desktop-portal-kde` is installed and select a shortcut that is not already assigned in System Settings. If a global hotkey cannot be registered, Heynote will show an error explaining that it may be in use or reserved.
 
-See the [KWin scripting tutorial](https://develop.kde.org/docs/plasma/kwin/) for instructions on how to install the script.
-
-Remember to enable the script in the KDE System Settings. It may also be necessary to go into the KDE System Settings and bind the "Toggle Heynote" key manually.
+If you previously installed the old Heynote KWin-script workaround, it can continue to be used on its own. Do not enable Heynote's built-in global hotkey with the same shortcut while that script is enabled, or KDE will report a shortcut conflict. To use Heynote's built-in global hotkey, disable the old KWin script first.
