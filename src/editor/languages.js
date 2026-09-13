@@ -30,6 +30,7 @@ import { groovy } from "@codemirror/legacy-modes/mode/groovy"
 import { diff } from "@codemirror/legacy-modes/mode/diff";
 import { powerShell } from "@codemirror/legacy-modes/mode/powershell";
 import { lua } from "@codemirror/legacy-modes/mode/lua";
+import { r } from "@codemirror/legacy-modes/mode/r";
 
 import typescriptPlugin from "prettier/plugins/typescript"
 import babelPrettierPlugin from "prettier/plugins/babel"
@@ -300,6 +301,12 @@ export const LANGUAGES = [
         name: "Mermaid",
         parser: mermaidLanguage.parser ,
         guesslang: null,
+    }),
+    new Language({
+        token: "r",
+        name: "R",
+        parser: StreamLanguage.define(r).parser ,
+        guesslang: "r",
     }),
 ]
 
