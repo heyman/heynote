@@ -65,6 +65,7 @@ export class HeynoteEditor {
         spellcheckEnabled=false,
         showWhitespace=false,
         colorPreviewEnabled=true,
+        showWordCount=false,
         cursorBlinkRate=1000,
     }) {
         this.element = element
@@ -85,6 +86,7 @@ export class HeynoteEditor {
         this.fontTheme = new Compartment
         this.spellcheckEnabled = spellcheckEnabled
         this.spellcheckCompartment = new Compartment
+        this.showWordCount = showWordCount
         this.setDefaultBlockLanguage(defaultBlockToken, defaultBlockAutoDetect)
         this.contentLoaded = false
         this.notesStore = useHeynoteStore()
@@ -362,6 +364,13 @@ export class HeynoteEditor {
         this.view.dispatch({
             effects: this.colorPreviewCompartment.reconfigure(enabled ? colorPreviewExtension : []),
         })
+    }
+
+    setShowWordCount(enabled) {
+        this.showWordCount = enabled
+        if (this.path === this.notesStore.currentBufferPath) {
+            triggerCursorChange(this.view)
+        }
     }
 
     setCursorBlinkRate(cursorBlinkRate) {

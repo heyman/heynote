@@ -79,6 +79,7 @@ const schema = {
             "spellcheckEnabled": {type: "boolean", default:false},
             "showWhitespace": {type:"boolean", default:false},
             "colorPreviewEnabled": {type: "boolean", default: true},
+            "showWordCount": {type: "boolean", default: false},
             "cursorBlinkRate": {type: "integer", default: 1000},
             "drawSettings": {
                 type: "object",
@@ -182,6 +183,7 @@ const defaults = {
         spellcheckEnabled: false,
         showWhitespace: false,
         colorPreviewEnabled: true,
+        showWordCount: false,
         cursorBlinkRate: 1000,
     },
     theme: "system",
