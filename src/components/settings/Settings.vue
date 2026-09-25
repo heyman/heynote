@@ -44,6 +44,7 @@
                 showFoldGutter: this.initialSettings.showFoldGutter,
                 showWhitespace: this.initialSettings.showWhitespace,
                 colorPreviewEnabled: this.initialSettings.colorPreviewEnabled ?? true,
+                showWordCount: this.initialSettings.showWordCount,
                 showTabs: this.initialSettings.showTabs,
                 showTabsInFullscreen: this.initialSettings.showTabsInFullscreen,
                 showLeftPanel: this.initialSettings.showLeftPanel ?? true,
@@ -129,6 +130,7 @@
                     showFoldGutter: this.showFoldGutter,
                     showWhitespace: this.showWhitespace,
                     colorPreviewEnabled: this.colorPreviewEnabled,
+                    showWordCount: this.showWordCount,
                     showTabs: this.showTabs,
                     showTabsInFullscreen: this.showTabsInFullscreen,
                     showLeftPanel: this.showLeftPanel,
@@ -417,6 +419,15 @@
                                         @change="updateSettings"
                                     />
                                     Show color previews (CSS, HTML, JavaScript, TypeScript, Vue, TSX)
+                                </label>
+
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        v-model="showWordCount"
+                                        @change="updateSettings"
+                                    />
+                                    Show word count
                                 </label>
                             </div>
                         </div>

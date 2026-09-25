@@ -127,6 +127,7 @@ let initialSettings = {
     leftPanelWidth: DEFAULT_LEFT_PANEL_WIDTH,
     startHidden: false,
     colorPreviewEnabled: true,
+    showWordCount: false,
     cursorBlinkRate: 1000,
     librarySearchSettings: {
         caseSensitive: false,

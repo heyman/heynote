@@ -310,6 +310,11 @@ function getSelectionSize(state, sel) {
     return count
 }
 
+function countWords(state, block) {
+    const matches = state.doc.sliceString(block.content.from, block.content.to).match(/\S+/g)
+    return matches ? matches.length : 0
+}
+
 export function triggerCursorChange({state, dispatch}) {
     // Trigger empty change transaction that is annotated with CURRENCIES_LOADED
     // This will make Math blocks re-render so that currency conversions are applied
@@ -327,7 +332,7 @@ const emitCursorChange = (editor) => {
                 // if the selection changed or the language changed (can happen without selection change), 
                 // emit a selection change event
                 const shouldUpdate = update.transactions.some(tr => tr.annotations.some(a => a.value == LANGUAGE_CHANGE || a.value == CURSOR_CHANGE))
-                if (update.selectionSet || shouldUpdate) {
+                if (update.selectionSet || shouldUpdate || (editor.showWordCount && update.docChanged)) {
                     const cursorLine = getBlockLineFromPos(update.state, update.state.selection.main.head)
 
                     const selectionSize = update.state.selection.ranges.map(
@@ -338,6 +343,7 @@ const emitCursorChange = (editor) => {
                     if (block && cursorLine) {
                         heynoteStore.currentCursorLine = cursorLine
                         heynoteStore.currentSelectionSize = selectionSize
+                        heynoteStore.currentBlockWordCount = editor.showWordCount ? countWords(update.state, block) : null
                         heynoteStore.currentLanguage = block.language.name
                         heynoteStore.currentLanguageAuto = block.language.auto
                         heynoteStore.currentBufferName = editor.name

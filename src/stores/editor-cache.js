@@ -48,6 +48,7 @@ export const useEditorCacheStore = defineStore("editorCache", {
                     spellcheckEnabled: settingsStore.settings.spellcheckEnabled,
                     showWhitespace: settingsStore.settings.showWhitespace,
                     colorPreviewEnabled: settingsStore.settings.colorPreviewEnabled ?? true,
+                    showWordCount: settingsStore.settings.showWordCount,
                     cursorBlinkRate: settingsStore.settings.cursorBlinkRate,
                     focus: options.focus !== false,
                 })
@@ -191,6 +192,9 @@ export const useEditorCacheStore = defineStore("editorCache", {
                                 break;
                             case "colorPreviewEnabled":
                                 editor.setColorPreviewEnabled(newSettings.colorPreviewEnabled ?? true)
+                                break;
+                            case "showWordCount":
+                                editor.setShowWordCount(newSettings.showWordCount)
                                 break;
                             case "cursorBlinkRate":
                                 editor.setCursorBlinkRate(newSettings.cursorBlinkRate)
