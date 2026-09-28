@@ -22,6 +22,7 @@ import { heynoteDropPaste } from "./clipboard/drag-drop.js"
 import { languageDetection } from "./language-detection/autodetect.js"
 import { autoSaveContent } from "./save.js"
 import { imageExtension } from "./image/image.js"
+import { documentExtension } from "./document/document.js"
 import { todoCheckboxPlugin} from "./todo-checkbox.ts"
 import { links } from "./links.js"
 import { colorPreviewExtension } from "./color-preview.js"
@@ -128,6 +129,7 @@ export class HeynoteEditor {
                 autoSaveContent(this, AUTO_SAVE_INTERVAL),
 
                 imageExtension(),
+                documentExtension(),
 
                 // Markdown extensions, we need to add markdownKeymap manually with the highest precedence
                 // so that it takes precedence over the default keymap

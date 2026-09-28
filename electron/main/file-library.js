@@ -1,9 +1,9 @@
 import fs from "fs"
 import os from "node:os"
-import { join, basename } from "path"
+import { join, basename, extname } from "path"
 
 import * as jetpack from "fs-jetpack";
-import { app, ipcMain, dialog } from "electron"
+import { app, ipcMain, dialog, shell } from "electron"
 import * as mimetypes from "mime-types"
 
 import CONFIG from "../config"
@@ -11,7 +11,7 @@ import { SCRATCH_FILE_NAME, IMAGE_MIME_TYPES } from "../../src/common/constants"
 import { NoteFormat } from "../../src/common/note-format"
 import { isDev } from '../detect-platform';
 import { initialContent, initialDevContent } from '../initial-content'
-import { getImgReferences } from "./ripgrep.js"
+import { getImgReferences, getDocReferences } from "./ripgrep.js"
 
 export const NOTES_DIR_NAME = isDev ? "notes-dev" : "notes"
 
@@ -52,6 +52,7 @@ export class FileLibrary {
         }
         this.basePath = fs.realpathSync(basePath)
         this.imagesBasePath = join(this.basePath, ".images")
+        this.documentsBasePath = join(this.basePath, ".documents")
         this.jetpack = jetpack.cwd(this.basePath)
         this.files = {};
         this.watcher = null;
@@ -66,6 +67,10 @@ export class FileLibrary {
 
         // garbage collect stale images
         this.removeUnreferencedImages().catch((err) => {
+            console.error(err)
+        })
+        // garbage collect stale documents
+        this.removeUnreferencedDocuments().catch((err) => {
             console.error(err)
         })
     }
@@ -257,6 +262,48 @@ export class FileLibrary {
         return filename
     }
 
+    async saveDocument({name, data}) {
+        let baseName = basename(name || "document")
+        baseName = baseName.replace(/[/\\?%*:|"<>]/g, "_")
+        if (!baseName) {
+            baseName = "document"
+        }
+
+        let filename = baseName
+        let ext = extname(baseName)
+        let nameWithoutExt = ext ? baseName.slice(0, baseName.length - ext.length) : baseName
+        let counter = 1
+
+        while (await this.jetpack.existsAsync(join(this.documentsBasePath, filename))) {
+            filename = `${nameWithoutExt}-${counter}${ext}`
+            counter++
+        }
+
+        const u8 = data instanceof Uint8Array ? data : new Uint8Array(data)
+        const buf = Buffer.from(u8)
+        await this.jetpack.writeAsync(join(this.documentsBasePath, filename), buf)
+        return filename
+    }
+
+    async openDocument(fileOrName) {
+        let filename = fileOrName
+        if (filename.startsWith("heynote-file://document/")) {
+            filename = filename.substring("heynote-file://document/".length)
+        }
+        const decoded = decodeURIComponent(filename)
+        const safeFilename = basename(decoded)
+        const filePath = join(this.documentsBasePath, safeFilename)
+        if (!jetpack.exists(filePath)) {
+            throw new Error(`File does not exist: ${filePath}`)
+        }
+        const err = await shell.openPath(filePath)
+        if (err) {
+            console.error("Failed to open document:", err)
+            throw new Error(err)
+        }
+        return true
+    }
+
     removeImage() {
         
     }
@@ -313,6 +360,52 @@ export class FileLibrary {
             await jp.removeAsync(filename)
         }   
         console.log(`Removed ${filesToDelete.length} unreferenced image files`)
+    }
+
+    async removeUnreferencedDocuments() {
+        if (!jetpack.exists(this.documentsBasePath)) {
+            return
+        }
+
+        let referencedDocs = []
+        try {
+            referencedDocs = await getDocReferences(this.basePath)
+        } catch (err) {
+            console.error(err)
+        }
+
+        const jp = jetpack.cwd(this.documentsBasePath)
+        if (!jetpack.exists(this.documentsBasePath)) {
+            return
+        }
+        const files = await jp.findAsync("", {
+            matching: "*",
+            recursive: false,
+        })
+        let referencedDocFound = false
+        const filesToDelete = []
+        for (const filename of files) {
+            if (referencedDocs.includes(filename)) {
+                referencedDocFound = true
+                continue
+            }
+            const fileInfo = await jp.inspectAsync(filename, {times: true})
+            if (!fileInfo || !fileInfo.modifyTime) {
+                continue
+            }
+            if ((new Date() - fileInfo.modifyTime) > 1000 * 3600 * 24) {
+                filesToDelete.push(filename)
+            }
+        }
+
+        if (!referencedDocFound) {
+            return
+        }
+
+        for (const filename of filesToDelete) {
+            await jp.removeAsync(filename)
+        }
+        console.log(`Removed ${filesToDelete.length} unreferenced document files`)
     }
 }
 
@@ -449,6 +542,14 @@ export function setupFileLibraryEventHandlers() {
 
     ipcMain.handle("library:saveImage", async (event, blob) => {
         return await library.saveImage(blob)
+    })
+
+    ipcMain.handle("library:saveDocument", async (event, doc) => {
+        return await library.saveDocument(doc)
+    })
+
+    ipcMain.handle("library:openDocument", async (event, fileOrName) => {
+        return await library.openDocument(fileOrName)
     })
 }
 

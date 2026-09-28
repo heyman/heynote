@@ -3,10 +3,11 @@ import { spawn } from "node:child_process"
 import { once } from "node:events"
 import readline from "node:readline"
 
-import { IMAGE_REGEX_RIPGREP } from "@/src/common/constants.js"
+import { IMAGE_REGEX_RIPGREP, DOCUMENT_REGEX_RIPGREP } from "@/src/common/constants.js"
 import { isLibrarySearchQueryLongEnough } from "@/src/common/library-search-query.js"
 import { normalizeLibrarySearchMatch } from "@/src/common/library-search-match.js"
 import { parseImagesFromString } from "@/src/editor/image/image-parsing.js"
+import { parseDocumentsFromString } from "@/src/editor/document/document-parsing.js"
 
 
 // If @vscode/ripgrep is in an .asar file, then the binary is unpacked.
@@ -96,6 +97,8 @@ export function startLibrarySearch(library, options, onEvent) {
         "*.txt",
         "--glob",
         "!.images/**",
+        "--glob",
+        "!.documents/**",
     ]
     if (options.regexp) {
         args.push("--pcre2")
@@ -240,4 +243,28 @@ export async function getImgReferences(basePath) {
     }
     const result = await runRipgrep(["--json", IMAGE_REGEX_RIPGREP], basePath, onLine)
     return imageFiles
+}
+
+export async function getDocReferences(basePath) {
+    if (!basePath) {
+        throw Error("basePath not set, is library initialized?")
+    }
+    const docFiles = []
+    const onLine = (line) => {
+        const data = JSON.parse(line)
+        switch (data.type) {
+            case "match":
+                const matchedLine = data.data.lines.text
+                for (const doc of parseDocumentsFromString(matchedLine)) {
+                    const file = decodeURIComponent(doc.file)
+                    if (!file.startsWith("heynote-file://document/")) {
+                        console.error("Unknown document path: " + doc.file)
+                        continue
+                    }
+                    docFiles.push(file.substring("heynote-file://document/".length))
+                }
+        }
+    }
+    const result = await runRipgrep(["--json", DOCUMENT_REGEX_RIPGREP], basePath, onLine)
+    return docFiles
 }

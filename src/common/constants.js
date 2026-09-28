@@ -56,3 +56,7 @@ export const IMAGE_MIME_TYPES = [
 
 export const IMAGE_REGEX = /<∞img;([^∞>]*)∞>/g
 export const IMAGE_REGEX_RIPGREP = "<∞img;([^∞>]*)∞>"
+
+export const DOCUMENT_REGEX = /<∞doc;([^∞>]*)∞>/g
+export const DOCUMENT_REGEX_RIPGREP = "<∞doc;([^∞>]*)∞>"
+
