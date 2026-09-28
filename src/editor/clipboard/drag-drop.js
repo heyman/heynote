@@ -3,6 +3,7 @@ import { EditorSelection } from "@codemirror/state"
 
 import { createImageTag } from "../image/image-parsing.js"
 import { createDocumentTag } from "../document/document-parsing.js"
+import { isAllowedDocumentFilename } from "../../common/constants.js"
 
 const MAX_DISPLAY_HEIGHT = 200
 
@@ -51,6 +52,9 @@ const buildImageTagFromFile = async (file) => {
 }
 
 const buildDocumentTagFromFile = async (file) => {
+    if (!isAllowedDocumentFilename(file.name)) {
+        return null
+    }
     if (typeof window?.heynote?.buffer?.saveDocument !== "function") {
         return null
     }

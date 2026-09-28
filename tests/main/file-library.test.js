@@ -272,4 +272,18 @@ describe("FileLibrary", () => {
 
         await expect(library.openDocument("non-existent.pdf")).rejects.toThrow("File does not exist")
     })
+
+    it("rejects saving documents with disallowed extensions", async () => {
+        const { FileLibrary } = await loadFileLibrary()
+        library = new FileLibrary(tmpDir, {})
+
+        const data = new TextEncoder().encode("executable code")
+        const resultExe = await library.saveDocument({ name: "bad.exe", data })
+        expect(resultExe).toBeUndefined()
+        expect(fs.existsSync(path.join(tmpDir, ".documents", "bad.exe"))).toBe(false)
+
+        const resultSh = await library.saveDocument({ name: "script.sh", data })
+        expect(resultSh).toBeUndefined()
+        expect(fs.existsSync(path.join(tmpDir, ".documents", "script.sh"))).toBe(false)
+    })
 })

@@ -7,7 +7,7 @@ import { app, ipcMain, dialog, shell } from "electron"
 import * as mimetypes from "mime-types"
 
 import CONFIG from "../config"
-import { SCRATCH_FILE_NAME, IMAGE_MIME_TYPES } from "../../src/common/constants"
+import { SCRATCH_FILE_NAME, IMAGE_MIME_TYPES, isAllowedDocumentFilename } from "../../src/common/constants"
 import { NoteFormat } from "../../src/common/note-format"
 import { isDev } from '../detect-platform';
 import { initialContent, initialDevContent } from '../initial-content'
@@ -263,10 +263,13 @@ export class FileLibrary {
     }
 
     async saveDocument({name, data}) {
-        let baseName = basename(name || "document")
+        let baseName = basename(name || "")
+        if (!isAllowedDocumentFilename(baseName)) {
+            return
+        }
         baseName = baseName.replace(/[/\\?%*:|"<>]/g, "_")
         if (!baseName) {
-            baseName = "document"
+            return
         }
 
         let filename = baseName

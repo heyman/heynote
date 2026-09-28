@@ -122,3 +122,41 @@ drop here: `);
     expect(docs).toHaveLength(1);
     expect(docs[0].file).toBe("heynote-file://document/sample.pdf");
 });
+
+test("drag and drop disallowed file extension does not create document widget", async () => {
+    await heynotePage.setContent(`
+∞∞∞text
+drop here: `);
+
+    await heynotePage.page.evaluate(() => {
+        window.__savedDocs = [];
+        window.heynote.buffer.saveDocument = async ({ name, data }) => {
+            window.__savedDocs.push({ name, length: data.length });
+            return name;
+        };
+    });
+
+    // Simulate drop with an executable file
+    await heynotePage.page.evaluate(async () => {
+        const editor = document.querySelector(".cm-content");
+        const dt = new DataTransfer();
+        const file = new File(["malicious payload"], "setup.exe", { type: "application/x-msdownload" });
+        dt.items.add(file);
+
+        const dropEvent = new DragEvent("drop", {
+            bubbles: true,
+            cancelable: true,
+            dataTransfer: dt,
+            clientX: 100,
+            clientY: 100,
+        });
+        editor.dispatchEvent(dropEvent);
+    });
+
+    // Wait a brief moment to ensure no async upload occurs
+    await heynotePage.page.waitForTimeout(300);
+
+    const savedCount = await heynotePage.page.evaluate(() => window.__savedDocs.length);
+    expect(savedCount).toBe(0);
+    await expect(heynotePage.page.locator(".heynote-document")).toHaveCount(0);
+});

@@ -5,6 +5,7 @@ import {
     parseDocumentsFromString,
     formatFileSize,
 } from "../../src/editor/document/document-parsing.js"
+import { isAllowedDocumentFilename } from "../../src/common/constants.js"
 
 describe("document parsing", () => {
     it("parses document tags with required and optional params", () => {
@@ -94,5 +95,43 @@ describe("formatFileSize", () => {
         expect(formatFileSize(1073741824 * 1.2)).toBe("1.2 GB")
         expect(formatFileSize(undefined)).toBe("")
         expect(formatFileSize(null)).toBe("")
+    })
+})
+
+describe("isAllowedDocumentFilename", () => {
+    it("allows lower risk document extensions", () => {
+        expect(isAllowedDocumentFilename("doc.pdf")).toBe(true)
+        expect(isAllowedDocumentFilename("REPORT.PDF")).toBe(true)
+        expect(isAllowedDocumentFilename("report.docx")).toBe(true)
+        expect(isAllowedDocumentFilename("report.doc")).toBe(true)
+        expect(isAllowedDocumentFilename("notes.rtf")).toBe(true)
+        expect(isAllowedDocumentFilename("sheet.xlsx")).toBe(true)
+        expect(isAllowedDocumentFilename("sheet.xls")).toBe(true)
+        expect(isAllowedDocumentFilename("data.csv")).toBe(true)
+        expect(isAllowedDocumentFilename("data.tsv")).toBe(true)
+        expect(isAllowedDocumentFilename("slides.pptx")).toBe(true)
+        expect(isAllowedDocumentFilename("slides.ppt")).toBe(true)
+        expect(isAllowedDocumentFilename("book.epub")).toBe(true)
+        expect(isAllowedDocumentFilename("file.odt")).toBe(true)
+        expect(isAllowedDocumentFilename("file.ods")).toBe(true)
+        expect(isAllowedDocumentFilename("file.odp")).toBe(true)
+        expect(isAllowedDocumentFilename("memo.txt")).toBe(true)
+        expect(isAllowedDocumentFilename("readme.md")).toBe(true)
+    })
+
+    it("rejects higher risk or executable extensions", () => {
+        expect(isAllowedDocumentFilename("malware.exe")).toBe(false)
+        expect(isAllowedDocumentFilename("script.sh")).toBe(false)
+        expect(isAllowedDocumentFilename("script.bat")).toBe(false)
+        expect(isAllowedDocumentFilename("script.cmd")).toBe(false)
+        expect(isAllowedDocumentFilename("script.vbs")).toBe(false)
+        expect(isAllowedDocumentFilename("script.ps1")).toBe(false)
+        expect(isAllowedDocumentFilename("installer.pkg")).toBe(false)
+        expect(isAllowedDocumentFilename("image.dmg")).toBe(false)
+        expect(isAllowedDocumentFilename("archive.zip")).toBe(false)
+        expect(isAllowedDocumentFilename("code.js")).toBe(false)
+        expect(isAllowedDocumentFilename("noextension")).toBe(false)
+        expect(isAllowedDocumentFilename("")).toBe(false)
+        expect(isAllowedDocumentFilename(null)).toBe(false)
     })
 })
