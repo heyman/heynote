@@ -120,6 +120,14 @@ contextBridge.exposeInMainWorld("heynote", {
             return await ipcRenderer.invoke("library:saveImage", blob)
         },
 
+        async saveDocument(doc) {
+            return await ipcRenderer.invoke("library:saveDocument", doc)
+        },
+
+        async openDocument(fileOrName) {
+            return await ipcRenderer.invoke("library:openDocument", fileOrName)
+        },
+
         _onChangeCallbacks: {},
         addOnChangeCallback(path, callback) {
             // register a callback to be called when the buffer content changes for a specific file

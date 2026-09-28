@@ -1,0 +1,108 @@
+@use "include" as *
+
+.heynote-document
+    --doc-bg: #f3f4f6
+    --doc-border-color: #d1d5db
+    --doc-text-color: #1f2937
+    --doc-link-color: #2563eb
+    --doc-link-hover-color: #1d4ed8
+    --doc-size-color: #6b7280
+    --doc-outline-color: #2482ce
+    --doc-icon-color: #4b5563
+
+    +dark-mode
+        --doc-bg: #21262d
+        --doc-border-color: #30363d
+        --doc-text-color: #e6edf3
+        --doc-link-color: #58a6ff
+        --doc-link-hover-color: #79c0ff
+        --doc-size-color: #8b949e
+        --doc-outline-color: #0060c7
+        --doc-icon-color: #8b949e
+
+    display: inline-block
+    position: relative
+    vertical-align: middle
+    padding: 2px 2px
+    user-select: none
+
+    &.folded
+        padding: 0
+        .doc-size
+            display: none
+
+    .inner
+        position: relative
+        display: inline-flex
+        align-items: center
+        gap: 6px
+        background-color: var(--doc-bg)
+        border: 1px solid var(--doc-border-color)
+        border-radius: 6px
+        padding: 3px 8px
+        font-family: inherit
+        font-size: 12px
+        line-height: 1.4
+        box-sizing: border-box
+        transition: border-color 150ms ease, background-color 150ms ease
+
+        &:hover
+            border-color: var(--doc-outline-color)
+
+        .highlight-border
+            display: none
+            position: absolute
+            top: -2px
+            bottom: -2px
+            left: -2px
+            right: -2px
+            border: 2px solid var(--doc-outline-color)
+            border-radius: 8px
+            pointer-events: none
+
+        .doc-icon
+            display: inline-flex
+            align-items: center
+            color: var(--doc-icon-color)
+            flex-shrink: 0
+
+        .doc-link
+            display: inline-flex
+            align-items: center
+            gap: 4px
+            color: var(--doc-link-color)
+            text-decoration: none
+            font-weight: 500
+            cursor: pointer
+            max-width: 340px
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
+
+            &:hover
+                color: var(--doc-link-hover-color)
+                text-decoration: underline
+
+            .doc-name
+                overflow: hidden
+                text-overflow: ellipsis
+                white-space: nowrap
+
+            .doc-open-icon
+                display: inline-flex
+                align-items: center
+                opacity: 0.7
+                flex-shrink: 0
+
+            &:hover .doc-open-icon
+                opacity: 1
+
+        .doc-size
+            color: var(--doc-size-color)
+            font-size: 11px
+            margin-left: 2px
+            flex-shrink: 0
+
+    &.selected
+        .inner .highlight-border
+            display: block

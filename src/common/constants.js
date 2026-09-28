@@ -56,3 +56,47 @@ export const IMAGE_MIME_TYPES = [
 
 export const IMAGE_REGEX = /<∞img;([^∞>]*)∞>/g
 export const IMAGE_REGEX_RIPGREP = "<∞img;([^∞>]*)∞>"
+
+export const DOCUMENT_REGEX = /<∞doc;([^∞>]*)∞>/g
+export const DOCUMENT_REGEX_RIPGREP = "<∞doc;([^∞>]*)∞>"
+
+export const ALLOWED_DOCUMENT_EXTENSIONS = [
+    "doc",
+    "docx",
+    "dot",
+    "dotx",
+    "rtf",
+    "pdf",
+    "xls",
+    "xlsx",
+    "xlt",
+    "xltx",
+    "csv",
+    "tsv",
+    "ppt",
+    "pptx",
+    "pot",
+    "potx",
+    "odt",
+    "ods",
+    "odp",
+    "pages",
+    "numbers",
+    "keynote",
+    "txt",
+    "md",
+    "epub",
+]
+
+export function isAllowedDocumentFilename(filename) {
+    if (!filename || typeof filename !== "string") {
+        return false
+    }
+    const dotIdx = filename.lastIndexOf(".")
+    if (dotIdx === -1 || dotIdx === filename.length - 1) {
+        return false
+    }
+    const ext = filename.slice(dotIdx + 1).toLowerCase()
+    return ALLOWED_DOCUMENT_EXTENSIONS.includes(ext)
+}
+

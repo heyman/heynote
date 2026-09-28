@@ -29,10 +29,14 @@ export function registerProtocol(fileLibrary) {
         }
 
         // request.url like: heynote-file://image/2026-01-15T21%3A46%3A39.824Z.png
+        // or: heynote-file://document/example.pdf
         const url = new URL(request.url);
         const encodedPath = url.pathname.startsWith("/") ? url.pathname.slice(1) : url.pathname
         const filename = decodeURIComponent(encodedPath)
-        const filePath = path.join(activeFileLibrary.imagesBasePath, filename);
+        const basePath = url.host === "document"
+            ? activeFileLibrary.documentsBasePath
+            : activeFileLibrary.imagesBasePath
+        const filePath = path.join(basePath, filename);
 
         const data = await jetpack.readAsync(filePath, "buffer")
         if (!data) {

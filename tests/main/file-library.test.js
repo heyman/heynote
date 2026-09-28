@@ -10,6 +10,7 @@ vi.mock("electron", () => ({
     app: { quit: vi.fn(), getPath: vi.fn() },
     ipcMain: { handle: vi.fn() },
     dialog: { showOpenDialog: vi.fn() },
+    shell: { openPath: vi.fn(async () => "") },
 }))
 
 vi.mock("../../electron/config.js", () => ({
@@ -17,6 +18,7 @@ vi.mock("../../electron/config.js", () => ({
 }))
 
 const getImgReferencesMock = vi.fn(async () => [])
+const getDocReferencesMock = vi.fn(async () => [])
 
 const loadFileLibrary = async ({ mockRipgrep = false } = {}) => {
     vi.resetModules()
@@ -24,6 +26,7 @@ const loadFileLibrary = async ({ mockRipgrep = false } = {}) => {
         vi.doMock("../../electron/main/ripgrep.js", () => ({
             searchLibrary: vi.fn(),
             getImgReferences: (...args) => getImgReferencesMock(...args),
+            getDocReferences: (...args) => getDocReferencesMock(...args),
         }))
     } else {
         vi.unmock("../../electron/main/ripgrep.js")
@@ -41,6 +44,7 @@ describe("FileLibrary", () => {
     beforeEach(() => {
         tmpDir = makeTempDir()
         getImgReferencesMock.mockClear()
+        getDocReferencesMock.mockClear()
     })
 
     afterEach(() => {
@@ -223,5 +227,63 @@ describe("FileLibrary", () => {
         await library.removeUnreferencedImages()
 
         expect(fs.existsSync(path.join(imagesDir, orphanImage))).toBe(true)
+    })
+
+    it("saves documents in .documents folder with deduplicated names", async () => {
+        const { FileLibrary } = await loadFileLibrary()
+        library = new FileLibrary(tmpDir, {})
+
+        const data1 = new TextEncoder().encode("Doc 1 content")
+        const filename1 = await library.saveDocument({ name: "report.pdf", data: data1 })
+        expect(filename1).toBe("report.pdf")
+
+        const docPath1 = path.join(tmpDir, ".documents", filename1)
+        expect(fs.existsSync(docPath1)).toBe(true)
+        expect(fs.readFileSync(docPath1, "utf8")).toBe("Doc 1 content")
+
+        // Save another file with the same name - should deduplicate
+        const data2 = new TextEncoder().encode("Doc 2 content")
+        const filename2 = await library.saveDocument({ name: "report.pdf", data: data2 })
+        expect(filename2).toBe("report-1.pdf")
+
+        const docPath2 = path.join(tmpDir, ".documents", filename2)
+        expect(fs.existsSync(docPath2)).toBe(true)
+        expect(fs.readFileSync(docPath2, "utf8")).toBe("Doc 2 content")
+    })
+
+    it("opens document using shell.openPath", async () => {
+        const electron = await import("electron")
+        const { FileLibrary } = await loadFileLibrary()
+        library = new FileLibrary(tmpDir, {})
+
+        const filename = await library.saveDocument({ name: "contract.pdf", data: new Uint8Array([1, 2, 3]) })
+        await library.openDocument(filename)
+
+        expect(electron.shell.openPath).toHaveBeenCalledWith(path.join(library.documentsBasePath, "contract.pdf"))
+
+        // Also works with full heynote-file:// URL
+        await library.openDocument("heynote-file://document/" + encodeURIComponent(filename))
+        expect(electron.shell.openPath).toHaveBeenCalledWith(path.join(library.documentsBasePath, "contract.pdf"))
+    })
+
+    it("throws when opening a non-existent document", async () => {
+        const { FileLibrary } = await loadFileLibrary()
+        library = new FileLibrary(tmpDir, {})
+
+        await expect(library.openDocument("non-existent.pdf")).rejects.toThrow("File does not exist")
+    })
+
+    it("rejects saving documents with disallowed extensions", async () => {
+        const { FileLibrary } = await loadFileLibrary()
+        library = new FileLibrary(tmpDir, {})
+
+        const data = new TextEncoder().encode("executable code")
+        const resultExe = await library.saveDocument({ name: "bad.exe", data })
+        expect(resultExe).toBeUndefined()
+        expect(fs.existsSync(path.join(tmpDir, ".documents", "bad.exe"))).toBe(false)
+
+        const resultSh = await library.saveDocument({ name: "script.sh", data })
+        expect(resultSh).toBeUndefined()
+        expect(fs.existsSync(path.join(tmpDir, ".documents", "script.sh"))).toBe(false)
     })
 })

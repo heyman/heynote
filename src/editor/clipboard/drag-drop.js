@@ -2,6 +2,8 @@ import { EditorView } from "@codemirror/view"
 import { EditorSelection } from "@codemirror/state"
 
 import { createImageTag } from "../image/image-parsing.js"
+import { createDocumentTag } from "../document/document-parsing.js"
+import { isAllowedDocumentFilename } from "../../common/constants.js"
 
 const MAX_DISPLAY_HEIGHT = 200
 
@@ -49,7 +51,34 @@ const buildImageTagFromFile = async (file) => {
     return createImageTag(image)
 }
 
-const insertImageTags = (view, pos, tags) => {
+const buildDocumentTagFromFile = async (file) => {
+    if (!isAllowedDocumentFilename(file.name)) {
+        return null
+    }
+    if (typeof window?.heynote?.buffer?.saveDocument !== "function") {
+        return null
+    }
+
+    const data = new Uint8Array(await file.arrayBuffer())
+    const filename = await window.heynote.buffer.saveDocument({
+        name: file.name,
+        data,
+    })
+    if (!filename) {
+        return null
+    }
+
+    const doc = {
+        id: crypto.randomUUID(),
+        file: "heynote-file://document/" + encodeURIComponent(filename),
+        name: file.name || filename,
+        size: file.size || data.byteLength,
+    }
+
+    return createDocumentTag(doc)
+}
+
+const insertTags = (view, pos, tags) => {
     const insert = tags.join("")
     view.dispatch(view.state.update({
         changes: { from: pos, to: pos, insert },
@@ -75,7 +104,13 @@ export const heynoteDropPaste = () => {
 
         const tags = []
         for (const file of files) {
-            const tag = await buildImageTagFromFile(file)
+            let tag = null
+            if (file.type && file.type.startsWith("image/")) {
+                tag = await buildImageTagFromFile(file)
+            }
+            if (!tag) {
+                tag = await buildDocumentTagFromFile(file)
+            }
             if (tag) {
                 tags.push(tag)
             }
@@ -85,7 +120,7 @@ export const heynoteDropPaste = () => {
             return false
         }
 
-        insertImageTags(view, pos, tags)
+        insertTags(view, pos, tags)
         return true
     }
 
