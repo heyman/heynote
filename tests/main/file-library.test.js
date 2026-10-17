@@ -133,7 +133,7 @@ describe("FileLibrary", () => {
     it("returns metadata from getList", async () => {
         const { FileLibrary } = await loadFileLibrary()
         library = new FileLibrary(tmpDir, {})
-        const metadata = { name: "Test Note", tags: ["a", "b"] }
+        const metadata = { name: "Test Note", tags: ["a", "b"], color: "purple" }
         const note = `${JSON.stringify(metadata)}\n∞∞∞text\nbody`
 
         await fs.promises.writeFile(path.join(tmpDir, "meta.txt"), note, "utf8")

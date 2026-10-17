@@ -284,7 +284,7 @@
         &:focus
             outline: none
             border: 1px solid #fff
-            outline: 2px solid #48b57e
+            outline: 2px solid var(--ui-accent)
         &::placeholder
             color: rgba(0,0,0, 0.6)
         +dark-mode
@@ -329,7 +329,7 @@
                 background-image: url('@/assets/icons/caret-right-white-alpha50.svg')
             &:focus-visible
                 outline: none
-                border: 2px solid #48b57e
+                border: 2px solid var(--ui-accent)
             &:hover
                 background-color: rgba(0,0,0, 0.1)
                 +dark-mode
@@ -375,7 +375,7 @@
             cursor: pointer
             &:focus-visible
                 outline: none
-                border: 2px solid #48b57e
+                border: 2px solid var(--ui-accent)
             &:hover
                 background-color: rgba(0,0,0, 0.1)
                 +dark-mode

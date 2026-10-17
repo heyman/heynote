@@ -403,7 +403,7 @@
                 &:focus
                     outline: none
                     border: 1px solid #fff
-                    outline: 2px solid #48b57e
+                    outline: 2px solid var(--ui-accent)
                 +dark-mode
                     background: #3b3b3b
                     color: rgba(255,255,255, 0.9)
@@ -452,21 +452,21 @@
                     .action-buttons button
                         color: #fff
                 &.selected
-                    background: #48b57e
+                    background: var(--ui-accent-selected)
                     color: #fff
                     &.action-buttons-visible
                         background: none
-                        border: 1px solid #48b57e
+                        border: 1px solid var(--ui-accent)
                         padding: 2px 11px
                         color: #444
                     .action-buttons .show-actions
                         display: inline-block
                     +dark-mode
-                        background: #1b6540
+                        background: var(--ui-accent-selected)
                         color: rgba(255,255,255, 0.87)
                         &.action-buttons-visible
                             background: none
-                            border: 1px solid #1b6540
+                            border: 1px solid var(--ui-accent-selected)
                             color: rgba(255,255,255, 0.65)
                 &.scratch
                     font-weight: 600
@@ -534,18 +534,18 @@
                             &:hover
                                 background-color: rgba(255,255,255, 0.1)
                         &.selected
-                            background: #48b57e
+                            background: var(--ui-accent-selected)
                             color: #fff
                             &:hover
-                                background: #3ea471
+                                background: var(--ui-accent-selected-hover)
                             &.delete
                                 background: #e95050
                                 &:hover
                                     background: #ce4848
                             +dark-mode
-                                background: #1b6540
+                                background: var(--ui-accent-selected)
                                 &:hover
-                                    background: #1f7449
+                                    background: var(--ui-accent-selected-hover)
                                 &.delete
                                     background: #ae1e1e
                                     &:hover

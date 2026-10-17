@@ -162,7 +162,7 @@
             height: 22px
             padding: 2px 4px
             font-style: italic
-            border: 2px solid #48b57e
+            border: 2px solid var(--ui-accent)
             &.error
                 border-color: #b64b4b
             &:focus

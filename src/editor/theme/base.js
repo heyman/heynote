@@ -27,7 +27,7 @@ export const heynoteBase = EditorView.theme({
     },
     '.cm-panels .cm-button:focus': {
         border: "none",
-        outline: "2px solid #48b57e",
+        outline: "2px solid var(--ui-accent)",
         outlineOffset: "1px",
     },
     ".cm-panel.cm-search label": {
@@ -38,7 +38,7 @@ export const heynoteBase = EditorView.theme({
         top: "2px",
     },
     ".cm-panel.cm-search input[type=checkbox]:focus-visible": {
-        outline: "2px auto #48b57e",
+        outline: "2px auto var(--ui-accent)",
         outlineOffset: "2px",
         //borderRadius: "3px",
     },
@@ -53,7 +53,7 @@ export const heynoteBase = EditorView.theme({
         cursor: "pointer",
     },
     ".cm-panel.cm-search [name=close]:focus-visible" : {
-        border: "2px solid #48b57e",
+        border: "2px solid var(--ui-accent)",
         outline: "none",
     },
 
@@ -87,7 +87,7 @@ export const heynoteBase = EditorView.theme({
         boxSizing: 'content-box',
     },
     '.cm-highlightSpace': {
-        'background-image': 'radial-gradient(circle at 50% 54%, #aaaaaa60 11%, transparent 5%)',
+        'background-image': 'radial-gradient(circle at 50% 54%, var(--ui-whitespace) 11%, transparent 5%)',
     },
     '.cm-highlightTab': {
         'background-image': `url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg width='100%25' height='100%25' viewBox='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' xmlns:serif='http://www.serif.com/' style='fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;'%3E%3Cg%3E%3Cpath d='M15.063,9.457l-12.424,0.061l0,0.978l12.518,-0.061l-2.48,2.526l0.7,0.707l2.917,-2.967l0.006,0.006l0.7,-0.707l-3.599,-3.657l-0.7,0.707l2.362,2.407Z' style='fill-opacity:0.15;'/%3E%3C/g%3E%3C/svg%3E")`,
@@ -116,12 +116,12 @@ export const heynoteBase = EditorView.theme({
         position: "relative",
     },
     '.heynote-math-result .inner': {
-        background: '#48b57e',
+        background: 'var(--ui-math-background)',
         //background: '#4892b5',
-        color: '#fff',
+        color: 'var(--ui-math-text)',
         padding: '0px 4px',
         borderRadius: '2px',
-        boxShadow: '0 0 3px rgba(0,0,0, 0.1)',
+        boxShadow: '0 0 3px var(--ui-math-shadow)',
         cursor: 'pointer',
         whiteSpace: "nowrap",
     },
@@ -133,7 +133,7 @@ export const heynoteBase = EditorView.theme({
         width: "60px",
         transition: "opacity 500ms",
         transitionDelay: "1000ms",
-        color: "rgba(0,0,0, 0.8)",
+        color: "var(--ui-math-copied-text)",
     },
     '.heynote-math-result-copied.fade-out': {
         opacity: 0,
@@ -152,10 +152,10 @@ export const heynoteBase = EditorView.theme({
         verticalAlign: "-0.08em",
     },
 
-    ".cm-searchMatch": { backgroundColor: "#ffff00" },
+    ".cm-searchMatch": { backgroundColor: "var(--ui-search-match)" },
     ".cm-searchMatch-selected": {
-        backgroundColor: "#ffaa20",
-        outline: "1px solid #e46d00",
+        backgroundColor: "var(--ui-search-match-selected)",
+        outline: "1px solid var(--ui-search-match-outline)",
     },
 
     ".cm-foldPlaceholder .created-time": {

@@ -218,7 +218,7 @@
             &.clickable
                 cursor: pointer
                 &:hover
-                    background-color: rgba(255,255,255, 0.1)
+                    background-color: rgba(0, 0, 0, 0.1)
             .icon
                 display: block
                 width: 14px
@@ -226,17 +226,11 @@
                 +dark-mode
                     opacity: 0.9
         .line-number
-            color: rgba(255, 255, 255, 0.7)
+            color: var(--status-bar-color)
             .num
                 color: rgba(255, 255, 255, 1.0)
-            +dark-mode
-                color: rgba(255, 255, 255, 0.55)
-                .num
-                    color: rgba(255, 255, 255, 0.75)
         .lang .auto
-            color: rgba(255, 255, 255, 0.7)
-            +dark-mode
-                color: rgba(255, 255, 255, 0.55)
+            color: var(--status-bar-color)
         
         .sidebar
             padding-top: 0

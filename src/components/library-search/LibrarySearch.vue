@@ -314,7 +314,7 @@
                     &:focus
                         outline: none
                         border: 1px solid #fff
-                        outline: 2px solid #48b57e
+                        outline: 2px solid var(--ui-accent)
                         border-radius: 2px
                     &::placeholder
                         color: rgba(0,0,0, 0.6)
@@ -345,7 +345,7 @@
             &:focus
                 outline: none
                 :deep(.search-result-row.selected)
-                    outline: 1px solid #48b57e
+                    outline: 1px solid var(--ui-accent)
                     outline-offset: -1px
                     z-index: 1
 

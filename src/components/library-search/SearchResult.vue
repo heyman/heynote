@@ -267,7 +267,7 @@
             &:focus
                 outline: none
             &:focus-visible
-                outline: 1px solid #48b57e
+                outline: 1px solid var(--ui-accent)
                 outline-offset: -1px
                 z-index: 1
             .name
@@ -294,7 +294,7 @@
                 &:focus
                     outline: none
                 &:focus-visible
-                    outline: 1px solid #48b57e
+                    outline: 1px solid var(--ui-accent)
                     outline-offset: -1px
                     z-index: 1
                 .indent-guide

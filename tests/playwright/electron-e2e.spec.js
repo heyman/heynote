@@ -6,8 +6,15 @@ import { spawn } from 'node:child_process'
 import { FileLibrary } from '../../electron/main/file-library'
 
 import { HeynotePage } from "./test-utils.js"
+import { NoteFormat } from "../../src/common/note-format.js"
+import { resolveTheme } from "../../src/theme/resolve.js"
+import { getColorScheme } from "../../src/theme/schemes/index.js"
 import { parseImagesFromString } from "../../src/editor/image/image-parsing.js"
 
+
+function rgb(hex) {
+    return `rgb(${hex.slice(1).match(/../g).map(channel => parseInt(channel, 16)).join(', ')})`
+}
 
 async function ensureElectronBuild() {
     const mainPath = path.join(process.cwd(), 'dist-electron', 'main', 'index.js')
@@ -144,6 +151,87 @@ test.describe('electron app', { tag: "@e2e" }, () => {
         const library = new FileLibrary(path.join(userDataDir, 'notes'))
         const bufferContent = await library.load("scratch.txt")
         expect(bufferContent.endsWith("Hello World!")).toBeTruthy()
+    })
+
+    test('scratchpad colors persist in txt metadata across app restarts', async () => {
+        await heynotePage.setContent('{"formatVersion":"2.0.0","name":"Scratch","custom":[42]}\n∞∞∞text\nKeep this content')
+        await page.locator('.tab-item.active .buffer-color').click()
+        await page.getByRole('menuitemradio', {name: 'Purple', exact: true}).click()
+        await expect(page.getByRole('menu')).toHaveCount(0)
+
+        const scratchPath = path.join(userDataDir, 'notes', 'scratch.txt')
+        await expect.poll(async () => {
+            return NoteFormat.load(await fs.readFile(scratchPath, 'utf8')).metadata.color
+        }).toBe('purple')
+        const saved = NoteFormat.load(await fs.readFile(scratchPath, 'utf8'))
+        expect(saved.metadata).toMatchObject({name: 'Scratch', custom: [42]})
+        expect(saved.content).toBe('\n∞∞∞text\nKeep this content')
+
+        await page.locator('.add-tab').click()
+        await page.locator('.note-selector .new-note').click()
+        await page.locator('.new-buffer input[placeholder="Name"]').fill('Work')
+        await page.locator('.new-buffer button[type="submit"]').click()
+        await expect(page.locator('.tab-item.active .title')).toHaveText('Work')
+        await page.locator('.tab-item.active .buffer-color').click()
+        await page.getByRole('menuitemradio', {name: 'Blue', exact: true}).click()
+        await expect(page.getByRole('menu')).toHaveCount(0)
+
+        await electronApp.close()
+        electronApp = await electron.launch({
+            args: ['--no-sandbox', 'tests/playwright/electron-runner.cjs'],
+            env: {...process.env, HEYNOTE_TEST_USER_DATA_DIR: userDataDir},
+        })
+        page = await electronApp.firstWindow()
+        await expect(page.locator('html')).toHaveAttribute('data-buffer-color', 'blue')
+        await expect(page.locator('.tab-item.active .buffer-color')).toHaveAttribute('aria-label', 'Change color for Work (Blue)')
+
+        // Scratch has no cached editor yet. Its dot comes from the on-disk metadata.
+        const scratchTab = page.locator('.tab-item').filter({hasText: 'Scratch'})
+        await expect(scratchTab.locator('.buffer-color')).toHaveAttribute('aria-label', 'Change color for Scratch (Purple)')
+        await page.locator('.tab-item.active .buffer-color').click()
+        await expect(page.getByRole('menu', {name: 'Color for Work', exact: true})).toBeVisible()
+        await scratchTab.locator('.buffer-color').click()
+        await expect(page.getByRole('menu')).toHaveCount(1)
+        await expect(page.getByRole('menu', {name: 'Color for Scratch', exact: true})).toBeVisible()
+        await expect(page.locator('.tab-item.active .title')).toHaveText('Scratch')
+        await expect(page.locator('html')).toHaveAttribute('data-buffer-color', 'purple')
+        await page.getByRole('menuitemradio', {name: 'Pink', exact: true}).click()
+        await expect(page.getByRole('menu')).toHaveCount(0)
+        await expect(page.locator('html')).toHaveAttribute('data-buffer-color', 'pink')
+        await expect(page.locator('.status .note')).toHaveText('Scratch')
+        expect(NoteFormat.load(await fs.readFile(scratchPath, 'utf8')).metadata.color).toBe('pink')
+
+        await scratchTab.locator('.title').click()
+        await expect(page.locator('html')).toHaveAttribute('data-buffer-color', 'pink')
+        expect(await page.evaluate(() => window._heynote_editor.getContent())).toContain('Keep this content')
+    })
+
+    test('native light and dark changes apply the resolved UI and syntax palettes', async () => {
+        // Use Electron's native appearance instead of Playwright's default light emulation.
+        await page.emulateMedia({colorScheme: null})
+        await heynotePage.setContent('{"formatVersion":"2.0.0","name":"Scratch","color":"blue"}\n∞∞∞javascript\nconst count = 42;\n∞∞∞text\nSecond block')
+        const keyword = page.locator('.cm-content .cm-line span').filter({hasText: /^const$/}).first()
+        const light = resolveTheme(getColorScheme('blue'), 'light')
+        const dark = resolveTheme(getColorScheme('blue'), 'dark')
+
+        await page.evaluate(() => window.heynote.themeMode.set('light'))
+        await expect(page.locator('html')).toHaveAttribute('theme', 'light')
+        await expect(keyword).toHaveCSS('color', rgb(light.syntax.keyword))
+        await expect(page.locator('.block-odd')).toHaveCSS('background-color', rgb(light.ui.blockOdd))
+
+        await page.evaluate(() => window.heynote.themeMode.set('dark'))
+        await expect(page.locator('html')).toHaveAttribute('theme', 'dark')
+        await expect(keyword).toHaveCSS('color', rgb(dark.syntax.keyword))
+        await expect(page.locator('.block-odd')).toHaveCSS('background-color', rgb(dark.ui.blockOdd))
+
+        await heynotePage.waitForContentSaved()
+        await page.reload()
+        await expect(page.locator('html')).toHaveAttribute('theme', 'dark')
+        await expect(keyword).toHaveCSS('color', rgb(dark.syntax.keyword))
+        await expect(page.locator('html')).toHaveAttribute('data-buffer-color', 'blue')
+        await page.evaluate(() => window.heynote.themeMode.set('light'))
+        await expect(keyword).toHaveCSS('color', rgb(light.syntax.keyword))
+        expect(heynotePage.getErrors()).toEqual([])
     })
 
     test('pastes image data, stores it, and copy button writes image to clipboard', async () => {

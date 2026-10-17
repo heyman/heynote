@@ -2,13 +2,16 @@
     import { mapStores, mapState } from 'pinia'
 
     import { useHeynoteStore } from "@/src/stores/heynote-store"
+    import BufferColorPicker from './BufferColorPicker.vue'
 
     export default {
         name: 'TabItem',
+        components: { BufferColorPicker },
         props: [
             "title",
             "active",
             "path",
+            "color",
         ],
         data() {
             return {
@@ -59,7 +62,7 @@
                 temp.style.font = window.getComputedStyle(this.$el).font
                 temp.textContent = this.$el.textContent
                 document.body.appendChild(temp)
-                this.textWidth = temp.offsetWidth
+                this.textWidth = temp.offsetWidth + 23 // color button and gap
                 document.body.removeChild(temp)
                 //console.log("textWidth:", this.textWidth)
             },
@@ -78,7 +81,10 @@
 
 <template>
     <li :class="className" :title="title" @contextmenu="onContextMenu">
-        <span class="title">{{ title }}</span>
+        <span class="tab-label">
+            <BufferColorPicker :path="path" :title="title" :color="color" />
+            <span class="title">{{ title }}</span>
+        </span>
         <button
             @click.stop="onClose"
             @mousedown.prevent
@@ -91,11 +97,14 @@
 <style lang="sass" scoped>
     li
         //app-region: none
+        display: flex
+        align-items: center
+        box-sizing: border-box
         position: relative
-        height: 24px
+        height: 25px
         margin-top: 0px
         margin-right: 3px
-        padding: 6px 20px 0px 20px
+        padding: 0 22px 0 6px
         cursor: pointer
         border-radius: 5px 5px 0 0
         user-select: none
@@ -105,14 +114,13 @@
         flex-shrink: 1
         flex-basis: auto
         min-width: 84px
-        text-align: center
+        text-align: left
         transition: background-color 250ms
         //font-weight: 600
         +dark-mode
             color: rgba(255, 255, 255, 0.3)
-            height: 23px
+            height: 24px
             margin-top: 1px
-            padding-top: 5px
         &.short
             width: 120px
         &.long
@@ -123,7 +131,7 @@
             color: rgba(0,0,0, 0.9)
             border: 1px solid #dbdbdb
             border-bottom: none
-            padding: 5px 19px 0px 19px
+            padding: 0 21px 0 5px
             box-shadow: var(--tab-bar-inset-shadow)
             transition: none
             .blurred &
@@ -131,7 +139,7 @@
             +dark-mode
                 color: rgba(255, 255, 255, 0.8)
                 border: none
-                padding: 5px 20px 0px 20px
+                padding: 0 22px 0 6px
                 //border-bottom: 1px solid #191d25
                 //border-color: transparent
             .close
@@ -155,11 +163,20 @@
             .close
                 display: block
         
+        .tab-label
+            display: flex
+            align-items: center
+            gap: 3px
+            min-width: 0
+            max-width: 100%
+            height: 20px
         .title
-            display: inline-block
+            display: block
+            min-width: 0
             white-space: nowrap
             max-width: 100%
             height: 16px
+            line-height: 16px
             text-overflow: ellipsis
             overflow: hidden
         .close

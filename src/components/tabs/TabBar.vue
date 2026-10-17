@@ -9,11 +9,13 @@
 
     import TabItem from './TabItem.vue'
     import MainMenuButton from './MainMenuButton.vue'
+    import BufferColorPicker from './BufferColorPicker.vue'
 
     export default {
         components: {
             TabItem,
             MainMenuButton,
+            BufferColorPicker,
             draggable,
         },
 
@@ -42,6 +44,7 @@
                     return {
                         path: path,
                         title: this.heynoteStore.getBufferTitle(path),
+                        color: this.heynoteStore.getBufferColor(path),
                         active: path === this.heynoteStore.currentBufferPath,
                     }
                 })
@@ -101,12 +104,15 @@
                     ghost-class="ghost"
                     @end="dragEnd" 
                     item-key="path"
+                    filter=".buffer-color"
+                    :prevent-on-filter="false"
                 >
                     <template #item="{element, index}">
                         <TabItem
                             :path="element.path"
                             :title="element.title"
                             :active="element.active"
+                            :color="element.color"
                             @click.prevent="heynoteStore.openBuffer(element.path)"
                             @mouseup="heynoteStore.focusEditor"
                         />
@@ -128,6 +134,11 @@
             v-else
             class="title"
         >
+            <BufferColorPicker
+                :path="heynoteStore.currentBufferPath"
+                :title="currentBufferName"
+                :color="heynoteStore.getBufferColor(heynoteStore.currentBufferPath)"
+            />
             {{ currentBufferName }}
         </div>
     </nav>

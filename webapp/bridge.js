@@ -177,7 +177,7 @@ function getNoteMetadata(content) {
     }
     try {
         const metadata = JSON.parse(content.slice(0, firstSeparator).trim())
-        return {"name": metadata.name}
+        return {"name": metadata.name, "color": metadata.color}
     } catch (e) {
         return {}
     }

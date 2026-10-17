@@ -9,7 +9,9 @@ export const useSettingsStore = defineStore("settings", {
         return {
             settings: window.heynote.settings,
             themeSetting: "system",
-            theme: window.heynote.themeMode.initial,
+            theme: window.heynote.themeMode.initial === "system"
+                ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+                : window.heynote.themeMode.initial,
             spellcheckEnabled: window.heynote.settings.spellcheckEnabled === true,
             alwaysOnTop: window.heynote.settings.alwaysOnTop,
         }
@@ -56,12 +58,10 @@ export const useSettingsStore = defineStore("settings", {
                 this.themeSetting = mode.theme
             })
             const onThemeChange = (theme) => {
-                this.theme = theme
-                if (theme === "system") {
-                    document.documentElement.setAttribute("theme", window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-                } else {
-                    document.documentElement.setAttribute("theme", theme)
-                }
+                this.theme = theme === "system"
+                    ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+                    : theme
+                document.documentElement.setAttribute("theme", this.theme)
             }
             onThemeChange(window.heynote.themeMode.initial)
             window.heynote.themeMode.onChange(onThemeChange)

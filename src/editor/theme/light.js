@@ -1,91 +1,96 @@
-import { EditorView } from "@codemirror/view";
-import { HighlightStyle, syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
-import { tags } from '@lezer/highlight';
-
-const selection = "#77baff8c"
-const selectionBlur = "#b2c2ca85"
+import { EditorView } from "@codemirror/view"
+import { lightSyntax } from "./syntax.js"
 
 const lightTheme = EditorView.theme({
     "&": {
-        backgroundColor: "#fff",
+        backgroundColor: "var(--ui-editor-background)",
+        color: "var(--ui-editor-text)",
+    },
+    ".cm-panels": {
+        backgroundColor: "var(--ui-search-panel-background)",
+        color: "var(--ui-search-panel-text)",
+    },
+    ".cm-panels .cm-textfield": {
+        backgroundColor: "var(--ui-input-background)",
+        border: "1px solid var(--ui-input-border)",
+        color: "var(--ui-input-text)",
     },
     '.cm-panels .cm-button': {
-        background: "#959b98",//"#48b57e",
-        color: "#fff",
+        background: "var(--ui-button-background)",
+        color: "var(--ui-button-text)",
     },
     '.cm-panels .cm-button:focus': {
-        background: "#8b928e"
+        background: "var(--ui-button-hover)"
     },
     '.cm-panels .cm-button:hover': {
-        background: "#8b928e"
+        background: "var(--ui-button-hover)"
     },
     '.cm-panels .cm-textfield:focus': {
-        border: "1px solid #48b57e",
-        outline: "1px solid #48b57e",
+        border: "1px solid var(--ui-accent)",
+        outline: "1px solid var(--ui-accent)",
     },
     ".cm-panel.cm-search [name=close]" : {
-        color: "rgba(0,0,0, 0.8)",
+        color: "var(--ui-close-icon-text)",
     },
 
     ".cm-cursor, .cm-dropCursor": {
-        borderLeftColor: "#000",
+        borderLeftColor: "var(--ui-cursor)",
     },
     ".cm-gutters": {
-        backgroundColor: "rgba(0,0,0, 0.04)",
-        color: "rgba(0,0,0, 0.25)",
+        backgroundColor: "var(--ui-gutter-background)",
+        color: "var(--ui-gutter-text)",
         border: "none",
-        borderRight: "1px solid rgba(0,0,0, 0.05)",
+        borderRight: "1px solid var(--ui-gutter-border)",
     },
     ".cm-activeLineGutter": {
         backgroundColor: "transparent",
-        color: "rgba(0,0,0, 0.6)"
+        color: "var(--ui-active-gutter-text)"
     },
     ".cm-activeLine": {
-        backgroundColor: "rgba(0,0,0, 0.04)",
+        backgroundColor: "var(--ui-active-line)",
     },
     '.cm-foldPlaceholder': {
         backgroundColor: 'transparent',
         border: 'none',
-        color: 'rgba(0,0,0, 0.5)'
+        color: "var(--ui-fold-text)"
     },
     ".cm-selectionBackground": {
-        background: selectionBlur,
+        background: "var(--ui-selection-blur)",
     },
     "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground": {
-        background: selection,
+        background: "var(--ui-selection)",
     },
     '.cm-activeLine.heynote-empty-block-selected': {
-        "background-color": selection,
+        "background-color": "var(--ui-selection)",
     },
 
     ".heynote-blocks-layer .block-even": {
-        background: "#ffffff",
-        borderTop: "1px solid #dfdfdf",
+        background: "var(--ui-block-even)",
+        borderTop: "1px solid var(--ui-block-border)",
     },
     ".heynote-blocks-layer .block-odd": {
-        background: "#f4f8f4",
-        borderTop: "1px solid #dfdfdf",
+        background: "var(--ui-block-odd)",
+        borderTop: "1px solid var(--ui-block-border)",
     },
 
+    ".cm-content": { caretColor: "var(--ui-cursor)" },
+    ".cm-selectionMatch": { backgroundColor: "var(--ui-selection-match)" },
+    "&.cm-focused .cm-matchingBracket": {
+        backgroundColor: "var(--ui-bracket-match)",
+        outline: "0.5px solid var(--ui-bracket-outline)",
+    },
+    "&.cm-focused .cm-nonmatchingBracket": {
+        backgroundColor: "var(--ui-bracket-mismatch)",
+        outline: "0.5px solid var(--ui-bracket-mismatch-outline)",
+    },
+    ".cm-tooltip": { backgroundColor: "var(--ui-tooltip-background)" },
+    ".cm-tooltip-autocomplete ul li[aria-selected]": {
+        backgroundColor: "var(--ui-autocomplete-selected-background)",
+        color: "var(--ui-autocomplete-selected-text)",
+    },
     ".cm-taskmarker-toggle input[type=checkbox]": {
-        accentColor: "#1f8deb",
+        accentColor: "var(--ui-task-marker)",
     },
 })
 
-const highlightStyle = HighlightStyle.define([
-    ...defaultHighlightStyle.specs,
-
-    // override heading style, in order to remove the ugly underline
-    { tag: tags.heading, fontWeight: 'bold'},
-
-    //{ tag: [tags.function(tags.variableName)], color: "#00f" },
-    { tag: [tags.function(tags.variableName)], color: "#906c00" },
-    { tag: [tags.number], color: "#1a557e" },
-])
-
-const heynoteLight = [
-    lightTheme,
-    syntaxHighlighting(highlightStyle),
-];
-
-export { heynoteLight };
+export const heynoteLight = [lightTheme, lightSyntax]

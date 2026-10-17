@@ -87,12 +87,12 @@
         
         &.active
             background-color: #DFF1E9
-            border: 1px solid #48b57e
+            border: 1px solid var(--ui-accent)
             +dark-mode
                 background-color: #395f4f
         
         &:focus-visible
-            border: 2px solid #48b57e
+            border: 2px solid var(--ui-accent)
             outline: none
         
         &.block

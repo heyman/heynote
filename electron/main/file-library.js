@@ -36,7 +36,7 @@ async function readNoteMetadata(filePath) {
     }
     try {
         const metadata = JSON.parse(headContent.slice(0, firstSeparator).trim())
-        return {"name": metadata.name, "tags": metadata.tags}
+        return {"name": metadata.name, "tags": metadata.tags, "color": metadata.color}
     } catch (e) {
         return {}
     }

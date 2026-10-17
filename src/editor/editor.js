@@ -229,6 +229,10 @@ export class HeynoteEditor {
             throw new Error(`Failed to load note: ${e.message}`)
         }
         this.name = this.note.metadata?.name || this.path
+        this.notesStore.buffers[this.path] = {
+            ...this.notesStore.buffers[this.path],
+            color: this.note.metadata.color,
+        }
         
         return new Promise((resolve) => {
             // set buffer content
@@ -273,6 +277,14 @@ export class HeynoteEditor {
         this.note.metadata.name = name
         this.name = name
         triggerCursorChange(this.view)
+    }
+
+    setColor(color) {
+        this.note.metadata.color = color
+        this.notesStore.buffers[this.path] = {
+            ...this.notesStore.buffers[this.path],
+            color,
+        }
     }
 
     getBlocks() {
